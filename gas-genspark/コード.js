@@ -370,6 +370,59 @@ function importHtmlSlides(baseUrl, pageIndices) {
 }
 
 // =====================================================
+// CLI用: 親プレゼンのIDを取得
+// =====================================================
+function getParentId() {
+  const id = ScriptApp.getScriptId();
+  const file = DriveApp.getFileById(id);
+  const parents = file.getParents();
+  if (parents.hasNext()) {
+    return parents.next().getId();
+  }
+  return "parent not found";
+}
+
+// =====================================================
+// CLI用: clasp run で実行（プレゼンIDを指定して取り込み）
+// =====================================================
+function importHtmlSlidesCli(presentationId, baseUrl, totalSlides) {
+  const deck = SlidesApp.openById(presentationId);
+  const width = deck.getPageWidth();
+  const height = deck.getPageHeight();
+
+  deck.getSlides().forEach(s => s.remove());
+
+  const pageIndices = Array.from({ length: totalSlides }, (_, i) => i);
+  let successCount = 0;
+
+  pageIndices.forEach((idx, i) => {
+    const slideUrl = `${baseUrl}?slide=${idx + 1}`;
+    Logger.log(`処理中: ${i + 1}/${pageIndices.length} → ${slideUrl}`);
+
+    let screenshotUrl;
+    try {
+      screenshotUrl = getScreenshotImageUrl(slideUrl);
+    } catch (e) {
+      Logger.log(`  → スクリーンショット失敗: ${e.message}`);
+      return;
+    }
+
+    try {
+      const slide = deck.appendSlide(SlidesApp.PredefinedLayout.BLANK);
+      const image = slide.insertImage(screenshotUrl);
+      image.setWidth(width).setHeight(height).setLeft(0).setTop(0);
+      successCount++;
+    } catch (e) {
+      Logger.log(`  → 挿入失敗: ${e.message}`);
+    }
+
+    if (i < pageIndices.length - 1) Utilities.sleep(500);
+  });
+
+  return `完了！ ${successCount}/${pageIndices.length}枚を取り込みました。`;
+}
+
+// =====================================================
 // デバッグ: 最初の1枚だけ試す
 // =====================================================
 function debugSingleSlide() {
