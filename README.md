@@ -119,8 +119,8 @@ public/
 # プロジェクトフォルダにいることを確認
 cd projects/my-first-video
 
-# Claude Code を起動
-claude
+# Claude Code を起動（dangerousモード）
+claude --dangerously-skip-permissions
 ```
 
 起動したら、以下を入力してください：
