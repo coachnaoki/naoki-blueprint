@@ -1,0 +1,617 @@
+# Remotion 動画制作テンプレート ルール
+
+## 動画制作ワークフロー（全15ステップ）
+
+```
+step01-context         → 動画コンテキスト整理
+step02-assets          → 素材確認（動画・BGM・SE・画像）
+step03-jumpcut         → ジェットカット（FFmpegで無音自動カット）
+step04-transcript      → 文字起こし（Whisperでタイムスタンプ化）
+step05-transcript-fix  → 文字起こし修正（台本と照合して誤変換修正）
+step06-slides-gen      → 台本→HTMLスライド生成（gas-gensparkテンプレート）
+step07-slides-capture  → Puppeteerでスライド画像化（1280x720 PNG）
+step08-slide-blocks    → ブロック分割スクショ（段階表示用）
+step09-template        → テンプレート設定（templateConfig.ts）
+step10-telop           → テロップデータ作成（telopData.ts）
+step11-timeline        → スライドタイムライン（slideTimeline.ts）
+step12-composition     → メインコンポジション構築（MainComposition.tsx）
+step13-register        → コンポジション登録（Root.tsx）
+step14-preview         → プレビュー確認（スクリーンショット）
+step15-render          → 最終レンダリング（MP4書き出し）
+```
+
+### スライド生成システム
+- **テンプレート**: `gas-genspark/slides.html` に7種類のHTMLテンプレート（title / three-cards / three-tactics / two-columns / steps / big-message / closing）
+- **キャプチャ**: `gas-genspark/screenshot.js` でPuppeteerキャプチャ → `public/slides/` に出力
+- **デザイン**: ライムイエロー `#CCFF00` + ダーク `#121212`、Zen Kaku Gothic New フォント
+
+### ワークフローの3フェーズ
+1. **素材準備**（step01〜08）: コンテキスト整理 → 素材確認 → ジェットカット → 文字起こし → 誤変換修正 → スライド生成・画像化
+2. **データ定義**（step09〜11）: テンプレート設定 → テロップデータ → タイムライン
+3. **実装・確認・出力**（step12〜15）: コンポジション構築 → 登録 → プレビュー → レンダリング
+
+---
+
+## AI行動原則（最優先）
+
+### 絶対遵守事項
+1. **ルールブック優先**: 自分の判断よりCLAUDE.mdのルールを優先する
+2. **余計な追加禁止**: ルールにないスタイル（borderRadius等）を「見栄えが良さそう」で追加しない
+3. **同一セッション指示の踏襲**: 直前に作成・修正したテロップのスタイルを確認し踏襲する
+
+### テロップ作成前の必須チェック
+1. このファイルの「テロップスタイル早見表」を確認
+2. 同一セッション内で直前に指示されたスタイルがあれば踏襲
+3. 重複チェック（同タイミング・同位置の既存テロップ確認）
+
+### 絶対禁止事項
+- **borderRadius禁止**: 角丸は使わない（角は四角）
+- **勝手なデザイン判断禁止**: ルールにないプロパティを追加しない
+- **折り返し禁止**: テロップには必ず `whiteSpace: "nowrap"` を入れる
+
+---
+
+## 素材の重複禁止ルール
+
+### 絶対ルール
+- **既存のテロップ・強調字幕がある部分には、新しいテロップや字幕を追加しない**
+- 素材同士は干渉（重複）させない
+- 新しいテロップを追加する前に、同じタイミングに既存のテロップがないか必ず確認する
+
+### 確認手順
+1. 既存テロップのstartFrame/endFrameを確認
+2. 追加予定のテロップのタイミングと比較
+3. 重複がある場合は追加しない
+4. **1フレーム重複も禁止**: 前のテロップのendFrameと次のテロップのstartFrameが同じ値の場合、次のテロップのstartFrameを+1する
+
+### 新単語・固有名詞テロップの優先ルール
+- **新単語・固有名詞テロップは既存の字幕より優先する**
+- 新単語テロップと既存字幕が重複した場合:
+  1. 新単語テロップを残す
+  2. 既存字幕のendFrameを新単語テロップのstartFrame-1に短縮する
+- **理由**: 新単語・固有名詞は視聴者が初めて目にする情報であり、既存字幕（発言そのまま）より視覚的価値が高い
+
+### テキスト包含による重複（前方テロップ削除ルール）
+連続する2つのテロップで、後のテロップのテキストが前のテロップのテキストを**冒頭から含んでいる**場合、前のテロップは削除する。
+
+### 重複チェック必須項目
+- **同じ位置の字幕は絶対に重複禁止**（bottom: 100〜140の下部字幕は特に注意）
+- テロップ追加時は必ずGrepで同時間帯の他テロップを検索
+- 接触フレーム（endFrame = 次のstartFrame）も1フレームずらす
+
+### 素材干渉の定義（広義の重複）
+
+| 干渉パターン | 例 | 対処法 |
+|-------------|-----|--------|
+| テロップ × テロップ | 同位置・同時間帯の字幕重複 | 片方を削除、またはendFrameを短縮 |
+| テロップ × 画像 | テロップのendFrameが次の画像のstartFrameを超えている | テロップのendFrameを画像startFrame-1に短縮 |
+| 画像 × テロップ | 画像の上にテロップが重なり読みにくい | z-indexで解決、または画像endFrameを短縮 |
+
+### 序列・リスト表示と字幕の重複禁止ルール
+**序列/リスト形式のTelopが表示されている時間帯では、同内容の字幕は追加しない。**
+- 序列コンポーネントが発話内容を視覚的に代用しているため、下部字幕は冗長
+- 同じ情報が画面の中央と下部に同時表示されると、視聴者の視線が分散する
+
+### 画像切替点でのテロップ分割ルール
+**画像が途中で挿入される場面では、字幕を画像の切替タイミングで分割する。**
+1. 字幕のstartFrame〜endFrame内に画像のstartFrameが含まれているか確認
+2. 含まれている場合、transcript_words.jsonで自然な発話の切れ目を探す
+3. 字幕を2つに分割
+
+---
+
+## SE配置ルール
+
+### 基本原則
+**SEはテンプレート種別に応じて、対応フォルダ内のファイルからランダムに選択する。**
+- startFrameをシードにした疑似乱数で選択（毎回同じ結果を保証）
+- 直近2回と同じSEにならないよう自動回避
+
+### テンプレート → SEフォルダ対応表
+
+| テンプレート | SEフォルダ | 使用場面 |
+|---|---|---|
+| **通常+強調** | se/強調/ | 発言の中で1語を強調 |
+| **強調+サイズ大** | se/強調/ | 数字・データの大きな強調 |
+| **第三者発言** | se/強調/ | 他者の発言・口コミ・証言 |
+| **箇条書き** | se/強調/ | リスト・ポイント列挙 |
+| **表** | se/強調/ | 比較・手順・リスト表示 |
+| **強調グラデーション** | se/ポジティブ/ | 重要ワード・インパクト強調 |
+| **強調グラデーション2** | se/ポジティブ/ | より大きな強調・見出し |
+| **ネガティブ1** | se/ネガティブ/ | 警告・失敗・NG・ツッコミ |
+| **ネガティブ2** | se/ネガティブ/ | 強いネガティブ感情・絶望・衝撃 |
+| **代弁** | se/ネガティブ/ | 視聴者目線の発言・共感演出 |
+| **通常テロップ** | （SEなし） | 発言そのまま |
+
+### 第三者発言のSEタイミングルール
+**第三者発言が連続する場合、文の区切りだけSEを鳴らす。**
+- テキスト末尾が「、」または助詞（は/の/に/を/が/で/も/て/と）で終わる → スキップ（文の途中）
+- それ以外（よ/う/す/た 等の文末）→ SEを鳴らす（文の区切り）
+- 例: 「思い切ってやってみても、」→ スキップ / 「結局うまくいかないんです」→ SE鳴る
+
+### 音量基準
+- 全SE共通: 0.3〜0.4
+
+### NG事項
+- **同一フレームに複数SE禁止**: 1フレームに1SEのみ
+- **連続SE間隔**: 最低20フレーム（約0.7秒）空ける
+- **テロップとSEのズレ禁止**: SEのstartFrameはテロップのstartFrameと一致させる
+- **既存SEとの重複禁止**: 追加前に既存SEを必ず確認
+- **同じSEの連続使用禁止（直近2回）**: 直近2回以内に同じSEが使われていたらスキップ
+
+### タイミング特定のポイント
+- ユーザー指定時間は目安。±10秒程度ズレることがある
+- **transcript_words.json**でワード単位の正確なタイミングを取得
+- フレーム計算: `秒数 × 30 = フレーム数`
+
+---
+
+## テロップ追加ルール
+
+### 作業の流れ
+1. **タイミング特定**: transcript_words.jsonで正確な発話タイミングを検索
+2. **重複チェック**: 同タイミング・同位置の既存テロップを確認
+3. **コンポーネント作成**: 既存の類似テロップをテンプレートに作成
+4. **レンダリング追加**: コンポーネント内に追加
+5. **SE追加**: 対応SEを追加
+
+### テロップスタイル早見表（実装ベース）
+
+| テンプレート | フォント | サイズ | 文字色 | 縁取り/効果 | 構造 | SEフォルダ |
+|---|---|---|---|---|---|---|
+| **normal** | M PLUS Rounded 1c | 84 | 紺 `#10458B` | 白フチ SVG strokeWidth:32 | SVG 2層 | なし |
+| **normal_emphasis** | M PLUS Rounded 1c | 84 | 紺 `#10458B` + 赤 `#CC3300` | 白フチ SVG strokeWidth:20 | SVG 2層 | se/強調/ |
+| **emphasis** | Shippori Mincho | 102 | 赤グラデ `#990000→#FF2222` | 金 `#FFFFCC→#FFD700` + 白グロー | CSS 2層 斜体 | se/ポジティブ/ |
+| **emphasis2** | Shippori Mincho | 135 | 金グラデ `#FFD700→#B8860B` | 金 `#FFD700` stroke + 白グロー | CSS 2層 斜体 | se/ポジティブ/ |
+| **emphasis_large** | M PLUS Rounded 1c | 150 | 赤 `#CC3300` | 白フチ SVG strokeWidth:20 | SVG 2層 | se/強調/ |
+| **negative** | Shippori Mincho | 96 | 白 | 黒グロー textShadow×3 | CSS 2層 斜体 | se/ネガティブ/ |
+| **negative2** | Shippori Mincho | 120 | 白 | 黒縁取り `18px #000` + grayscale | CSS 1層 斜体 | se/ネガティブ/ |
+| **third_party** | M PLUS Rounded 1c | 84 | 白 | グレーフチ `#333` SVG strokeWidth:24 | SVG 2層 | se/強調/ |
+| **箇条書き** | — | 72 | 白 | 青ボックス `#2563EB` | 専用 | se/強調/ |
+| **表** | — | 72 | 黒/赤 | 白パネル + 赤タイトル `#EF4444` | 専用 | se/強調/ |
+| **代弁** | — | 78 | 黒 | 白吹き出し | 専用 | se/ネガティブ/ |
+| **LINE誘導** | — | 66 | 白 | LINE緑 `#06C755` | 専用 | 専用SE |
+| **チャンネル登録** | — | 72 | 白 | 赤ボタン `#EF4444` | 専用 | 専用SE |
+| **今回のテーマ** | — | 108 | 白 | 赤ライン `#EF4444` | 専用 | 専用SE |
+| **自己紹介** | — | 90 | 黒/赤 | 白カード + 赤ボーダー | 専用 | se/強調/ |
+| **見出し** | — | 54 | 白 | 緑〜ティール `#10B981→#059669` | 専用 | なし |
+
+### フォントルール
+
+| フォント | 用途 |
+|---------|------|
+| `'M PLUS Rounded 1c', sans-serif` | 通常系・情報系（normal / normal_emphasis / emphasis_large / third_party） |
+| `'Shippori Mincho', serif` | 強調系・ネガティブ系（emphasis / emphasis2 / negative / negative2） |
+
+### アニメーション設定
+
+| アニメーション | テンプレート | 時間 |
+|---|---|---|
+| slideUp（下から上） | emphasis / emphasis2 / emphasis_large / negative2 | 10フレーム |
+| slideLeft（左からスライド） | negative / third_party | 10フレーム |
+| なし（即表示） | normal / normal_emphasis | — |
+
+### カラーパレット（実装ベース）
+
+| 用途 | カラー | 使用箇所 |
+|------|--------|----------|
+| **通常文字** | 紺 `#10458B` | normal / normal_emphasis |
+| **強調ワード・emphasis_large** | 赤 `#CC3300` | normal_emphasisの強調部分 / emphasis_large |
+| **emphasis文字** | 赤グラデ `#990000→#FF2222` | emphasis |
+| **emphasis2文字** | 金グラデ `#FFD700→#B8860B` | emphasis2 |
+| **emphasis縁取り** | 金 `#FFFFCC→#FFD700` | emphasis背景層 |
+| **emphasis2縁取り** | 金 `#FFD700` stroke | emphasis2背景層 |
+| **SVG白フチ** | 白 `#FFFFFF` | normal / normal_emphasis / emphasis_large |
+| **SVGグレーフチ** | グレー `#333333` | third_party |
+| **ネガティブ文字** | 白 | negative / negative2 |
+| **見出しバナー** | 緑〜ティール `#10B981→#059669` | heading |
+| **箇条書きボックス** | 青 `#2563EB` | bullet_list |
+| **CTA赤** | 赤 `#EF4444` | テーマライン / 表タイトル / プロフィールボーダー |
+| **LINE** | 緑 `#06C755` | line_cta |
+
+#### 絶対禁止
+- **強調テロップ文字に青・紫は使わない**（見づらい・ブランドカラーと不一致）
+- **座布団に緑・紫は使わない**（ブランドカラーと混同するため）
+- **グラデーション座布団の上に同系色の文字は使わない**（見えなくなる）
+
+### コンポーネント命名規則
+- **HeadingBanner**: 左上の斜め緑バナー（見出し・サブタイトル）
+- **ThemeTelop**: 今回のテーマ（赤ライン + 大テキスト）
+- **NormalTelop**: 通常字幕
+- **EmphasisTelop**: 強調グラデーション1
+- **EmphasisTelop2**: 強調グラデーション2（サイズ大）
+- **NegativeTelop**: ネガティブ1（アウトライン）
+- **NegativeTelop2**: ネガティブ2（モノクロ全画面）
+- **ThirdPartyTelop**: 第三者発言（引用符）
+- **BulletList**: 箇条書きリスト
+- **TableComponent**: 表（白パネル）
+- **MascotTelop**: 代弁（マスコット吹き出し）
+- **LineCTA**: LINE誘導カード
+- **SubscribeCTA**: チャンネル登録ボタン
+- **ProfileCard**: 自己紹介名刺
+
+### NG事項
+- **同位置・同時間帯の重複禁止**
+- **endFrameとstartFrameの接触禁止**: 1フレームずらす
+- **コンポーネント追加忘れ禁止**: 定義だけでなくレンダリング部分にも追加
+
+---
+
+## テロップデザイン固定値
+
+### 共通スタイル（変更禁止）
+- **角**: 四角（borderRadius禁止）
+- **折り返し**: なし（whiteSpace: "nowrap" 必須）
+- **fontWeight**: 900
+- **位置**: 全テンプレート共通で画面下部中央（`bottom: 40`）
+- **z-index**: 10
+
+### フォント（テンプレート別）
+- **M PLUS Rounded 1c**（丸ゴシック）: normal / normal_emphasis / emphasis_large / third_party
+- **Shippori Mincho**（明朝）: emphasis / emphasis2 / negative / negative2
+
+### SVG縁取り系テンプレートのスタイル
+```typescript
+// normal: 紺文字 + 白フチ（SVG 2層構造）
+// stroke層: stroke="#FFFFFF" strokeWidth=32 strokeLinejoin="round"
+// fill層: fill="#10458B"
+// フォント: 'M PLUS Rounded 1c', fontWeight: 900
+
+// normal_emphasis: 同上 + 強調ワードは fill="#CC3300"
+// strokeWidth=20
+
+// emphasis_large: 赤文字 + 白フチ（SVG 2層構造）
+// fill="#CC3300", strokeWidth=20
+
+// third_party: 白文字 + グレーフチ + 「」引用符
+// fill="#FFFFFF", stroke="#333333" strokeWidth=24
+```
+
+### CSS 2層構造テンプレートのスタイル
+```typescript
+// emphasis: 赤グラデ文字 + 金縁取り + 白グロー（2層構造・斜体）
+// layer1(背景): background: linear-gradient(to bottom, #FFFFCC, #FFD700) + 白グロー
+// layer2(前面): background: linear-gradient(to bottom, #990000 10%, #FF2222 90%)
+
+// emphasis2: 金グラデ文字 + 金縁取り + 白グロー（2層構造・斜体）
+// layer1(背景): -webkit-text-stroke: 12px #FFD700 + 白グロー
+// layer2(前面): background: linear-gradient(to bottom, #FFD700 20%, #B8860B 100%)
+
+// negative: 白文字 + 黒グロー（2層構造・斜体）
+// layer1(背景): color: white + textShadow 3重(15px,30px,45px)
+// layer2(前面): color: white
+
+// negative2: 白文字 + 黒縁取り + grayscale（1層・斜体）
+// color: "#FFFFFF", WebkitTextStroke: "18px #000000"
+```
+
+### 文字サイズ基準（実装値）
+| テンプレート | fontSize |
+|-------------|----------|
+| emphasis_large | 150 |
+| emphasis2 | 135 |
+| theme | 108 |
+| emphasis | 102 |
+| negative | 96 |
+| profile | 90 |
+| normal / normal_emphasis / third_party | 84 |
+| mascot | 78 |
+| bullet_list / table / subscribe_cta | 72 |
+| line_cta | 66 |
+| heading | 54 |
+
+### 1行の文字数制限（必須）
+
+| fontSize | 最大文字数 |
+|----------|-----------|
+| 84（標準） | **20文字** |
+| 102（強調） | **16文字** |
+| 120〜150（強調大） | **12文字** |
+
+- **制限を超える字幕は必ず分割する**
+- 分割の優先ポイント：読点（、）、句点（。）、助詞の後
+
+---
+
+## 通常テロップ（normal）デザインルール
+
+- **位置**: 画面下部中央（bottom: 40）
+- **構造**: SVG 2層（stroke層 + fill層）で丸い縁取り
+- **文字**: 紺 `#10458B`、fontSize: 84、fontWeight: 900
+- **フォント**: `'M PLUS Rounded 1c', sans-serif`
+- **縁取り**: 白 `#FFFFFF` strokeWidth: 32, strokeLinejoin: round
+- **通常+強調の場合**: 強調ワードのみ `fill: "#CC3300"`（赤）に変更
+
+---
+
+## 見出しバナー（HeadingBanner）ルール
+
+### 仕様
+- **位置**: 左上（top: 30〜50px, left: 0）
+- **デザイン**: 斜め（transform: skewX）緑〜ティール背景
+- **文字**: 白、太字
+- **用途**: 動画全体を通して見出し・サブタイトルを表示するベース要素
+
+### 表示タイミング
+- 「自己紹介」「本日のテーマ」発表後から、動画の本編全体を通して表示
+- CTAシーン（LINE誘導・チャンネル登録）では非表示にしても可
+
+---
+
+## 今回のテーマ（ThemeTelop）ルール
+
+### 仕様
+- **"Today's theme"**: 赤色の斜体テキスト（左側）+ 赤い横ライン
+- **テーマテキスト**: 大きな文字（fontSize: 64〜80）で中央下部に表示
+- **背景**: なし（動画の上に直接）
+- **SE**: se/本日のテーマ.mp3
+
+### 表示タイミング
+- 「今日のテーマは」と言った直後のフレームから
+- テーマを言い終わるまで表示
+
+---
+
+## 自己紹介名刺（ProfileCard）ルール
+
+### 基本原則
+**動画冒頭の自己紹介パートに必ず表示する。**
+
+### デザイン仕様
+- **位置**: left: 30〜50px, top: 50%（左側・垂直中央）
+- **背景**: 白（rgba(255, 255, 255, 0.95)）
+- **ボーダー**: 赤（#EF4444）、左側に太い縦ライン
+- **z-index**: 10
+
+### 内容（video-context.md から取得）
+
+`video-context.md` の「プロフィール」セクションから以下を読み取って表示する：
+
+| 行 | 内容 | fontSize | 色 |
+|----|------|----------|-----|
+| 名前行 | プロフィールの名前 | 56〜64 | 黒 or 赤 |
+| 肩書き大 | メインの肩書き | 36〜40 | 赤 `#EF4444` |
+| 肩書き小 | サブ肩書き（英語など） | 18〜22 | グレー |
+| 実績前置き | 導入テキスト | 24 | グレー |
+| 実績①〜④ | 実績リスト | 28 | 黒 |
+
+**video-context.md にプロフィールがない場合はユーザーに確認する。**
+
+### タイミング
+- 自己紹介の発話開始フレームから表示
+- 自己紹介パート終了+数フレーム後に非表示
+- transcript_words.jsonで正確なタイミングを取得すること
+
+### SE
+- 名刺表示タイミングに se/強調/ からランダム選択（volume: 0.35）
+
+### コンポーネントテンプレート
+```typescript
+const ProfileCard: React.FC = () => {
+  const frame = useCurrentFrame();
+  const startFrame = /*自己紹介開始フレーム*/;
+  const endFrame = /*自己紹介終了フレーム*/;
+  if (frame < startFrame || frame > endFrame) return null;
+  return (
+    <div style={{
+      position: "absolute", left: 40, top: "50%",
+      transform: "translateY(-50%)", zIndex: 10,
+      background: "rgba(255, 255, 255, 0.95)",
+      borderLeft: "8px solid #EF4444",
+      padding: "30px 40px",
+      display: "flex", flexDirection: "column",
+      gap: 8, whiteSpace: "nowrap",
+    }}>
+      <div style={{
+        fontSize: 60, fontWeight: 900,
+        fontFamily: "'M PLUS Rounded 1c', sans-serif",
+        color: "#111111",
+      }}>{/* video-context.mdの名前 */}</div>
+      <div style={{
+        fontSize: 38, fontWeight: 900,
+        fontFamily: "'M PLUS Rounded 1c', sans-serif",
+        color: "#EF4444",
+      }}>{/* video-context.mdの肩書き */}</div>
+      <div style={{
+        fontSize: 20, fontWeight: 400,
+        fontFamily: "'M PLUS Rounded 1c', sans-serif",
+        color: "#666666",
+      }}>{/* video-context.mdのサブ肩書き */}</div>
+      <div style={{
+        fontSize: 24, color: "#888888",
+        fontFamily: "'M PLUS Rounded 1c', sans-serif",
+        marginTop: 8,
+      }}>{/* video-context.mdの導入テキスト */}</div>
+      {/* video-context.mdの実績リスト */}
+      {["・実績1", "・実績2", "・実績3", "・実績4"].map((item, i) => (
+        <div key={i} style={{
+          fontSize: 28, fontWeight: 700,
+          fontFamily: "'M PLUS Rounded 1c', sans-serif",
+          color: "#111111",
+        }}>{item}</div>
+      ))}
+    </div>
+  );
+};
+```
+
+---
+
+## 自律判断ガイドライン
+
+### 字幕カバー率90%ルール（最優先）
+
+**発話時間の90%以上を字幕でカバーする。字幕がない時間は動画全体の10%以下に抑える。**
+
+#### 基本方針: デフォルト字幕ON
+- **すべての発話にデフォルトで字幕をつける**
+- 特別なキーワード（数字・固有名詞・感情ピーク等）→ 強調スタイル + 対応SE
+- 特別なキーワードがない場合 → **通常テロップ**（NormalTelop）SEなし
+
+#### スキップしてよい例外
+| 例外 | 理由 |
+|------|------|
+| フィラー（えーと、あのー、まあ） | 情報がない |
+| 同じ言葉の言い直し・繰り返し | 冗長 |
+| 箇条書き/表コンポーネントが表示中の区間 | コンポーネントが内容を代替 |
+| 極端に短い相槌（うん、はい）1秒未満 | 字幕化しても読めない |
+
+#### 作業手順（字幕追加時）
+1. transcript_words.jsonを**全文通読**する
+2. 発話を文単位で区切り、**すべての文に字幕を割り当てる**
+3. 各字幕のスタイルを判断表に基づいて決定
+4. 既存の字幕・序列・表コンポーネントと重複チェック
+5. 未カバー区間がないか最終確認（カバー率90%以上を達成しているか）
+
+---
+
+### 強調すべきか判断表
+
+| 判断項目 | 強調スタイルで表示 | 通常字幕で表示 |
+|----------|------------------------|----------------------|
+| **数字・金額（必須）** | 「1年で」「3倍」「500人」「100万円」等の具体的数字 | 曖昧な表現 |
+| 固有名詞 | 地名・サービス名・ブランド名・大会名 | 一般名詞 |
+| 見出し・タイトル | 「〇〇選」「〇つのコツ」「ポイント」 | 説明の途中 |
+| 感情のピーク | 「最強」「絶対」「やばい」「注意」 | 淡々とした説明 |
+| 視聴者への呼びかけ | 「あなたも」「今すぐ」「やってみて」 | 第三者の話 |
+| 結論・要点 | 「つまり」「要するに」「ポイントは」 | 前置き・導入 |
+| 専門用語 | その分野の専門用語（`video-context.md` 参照） | 一般的な単語 |
+| **視聴者への問いかけ（必須）** | 「〜いませんか？」「〜ですよね？」「〜ご存知ですか？」 | 独り言・自問自答 |
+
+---
+
+### キーワード→スタイル早見表
+
+| キーワード例 | 判定 | スタイル | SE |
+|-------------|------|----------|-----|
+| 「上達する」「強くなれる」「勝てる」 | ポジティブ | EmphasisTelop | 強調テロップ.mp3 |
+| 「おすすめ」「最強」「一番大事」 | ポジティブ | EmphasisTelop | 強調テロップ.mp3 |
+| 「〇〇年」「〇〇人」「〇〇連覇」 | 数字強調 | EmphasisTelop2 | 強調テロップ2.mp3 |
+| 「ダメ」「やめて」「NG」 | ネガティブ | NegativeTelop | ネガティブ1.mp3 |
+| 「注意」「気をつけて」「危険」 | ネガティブ | NegativeTelop | ネガティブ1.mp3 |
+| 「もったいない」「損してる」 | ネガティブ強 | NegativeTelop2 | ネガティブ2.mp3 |
+| 地名・ブランド名・サービス名 | 固有名詞 | EmphasisTelop | 強調テロップ.mp3 |
+| 「〜な人向け」「〜いませんか？」 | ターゲット共感 | NegativeTelop | ネガティブ1.mp3 |
+| 「やってみましょう」「始めましょう」 | 行動促進 | EmphasisTelop | 強調テロップ.mp3 |
+| 視聴者の悩み・不安を代弁する場面 | 代弁 | MascotTelop | 代弁.mp3 |
+| その分野の専門用語 | 専門用語 | EmphasisTelop | 強調テロップ.mp3 |
+
+---
+
+### 座布団スタイル判断表
+
+| 発話内容の特徴 | スタイル | コンポーネント | SE |
+|---------------|---------|---------------|-----|
+| 成功・達成・実績 | 強調グラデ | EmphasisTelop | 強調テロップ.mp3 |
+| メリット・おすすめ | 強調グラデ | EmphasisTelop | 強調テロップ.mp3 |
+| 数字・データ強調 | 強調大 | EmphasisTelop2 | 強調+サイズ大.mp3 |
+| 失敗・ダメな例 | ネガティブ1 | NegativeTelop | ネガティブ1.mp3 |
+| 注意・警告 | ネガティブ1 | NegativeTelop | ネガティブ1.mp3 |
+| 強い不安・絶望感 | ネガティブ2 | NegativeTelop2 | ネガティブ2.mp3 |
+| 視聴者への問いかけ | ネガティブ1 | NegativeTelop | ネガティブ1.mp3 |
+| 他者の発言・証言 | 第三者発言 | ThirdPartyTelop | 第三者発言.mp3 |
+| 発言そのまま表示 | ノーマル | NormalTelop | なし |
+| 見出し・章タイトル | 今回のテーマ | ThemeTelop | 本日のテーマ.mp3 |
+| リスト・ポイント列挙 | 箇条書き | BulletList | 箇条書き.mp3 |
+
+---
+
+## 動画コンテキスト確認ルール（必須）
+
+**字幕・テロップ作業を開始する前に、必ず `video-context.md` を読んで動画のターゲット・趣旨を把握する。**
+
+### 手順
+1. `video-context.md` がプロジェクトルートに存在するか確認する
+2. **存在する場合**: ファイルを読み、ターゲット・趣旨・注意点を把握してから作業開始
+3. **存在しない場合**: ユーザーに以下を質問してからファイルを作成する
+   - この動画のターゲット（誰に向けた動画か）
+   - 動画の趣旨・目的
+   - 特に意識すべきポイント
+
+---
+
+## z-index（重なり順）ルール
+
+| 要素 | z-index | 説明 |
+|------|---------|------|
+| 動画（ベース） | 0 | 一番下 |
+| 背景画像・カバー画像 | 5 | 動画の上、字幕の下 |
+| 暗いオーバーレイ | 7 | 画像と字幕の間（任意） |
+| テロップ・字幕 | 10〜15 | 画像の上に表示 |
+| 最重要テロップ（ProfileCard等） | 20 | 他の全要素より上 |
+
+### 必須ルール
+1. **画像を追加する際は必ずz-index: 5以下を指定**
+2. **テロップ・字幕は必ずz-index: 10以上を指定**
+3. **position: absoluteが両方に必要**（z-indexが効かないため）
+
+---
+
+## 画像表示ルール（絶対遵守）
+
+**画像は常にフェードイン/フェードアウトなし。パッと表示してパッと消える。**
+
+```typescript
+// NG: フェードアニメーション（絶対禁止）
+const opacity = interpolate(frame, [startFrame, startFrame + 15, endFrame - 15, endFrame], [0, 1, 1, 0]);
+
+// OK: パッと表示
+if (frame < startFrame || frame > endFrame) return null;
+// opacityのinterpolateは一切使わない
+```
+
+---
+
+## 複数座布団の固定位置配置ルール（全種類共通・必須）
+
+**複数の座布団（テロップブロック）が順番に表示される場面すべて**に適用する。
+
+`justifyContent: "center"` や `transform: translateY(-50%)` で中央配置すると、ボックスが追加されるたびに全体が上下に動いて視聴者の目障りになる。
+
+**最終状態（全ボックスが出揃った状態）の位置を逆算して、上から固定位置で配置する。**
+
+```typescript
+// NG: 動的中央配置
+style={{ top: "50%", transform: "translateY(-50%)" }}
+
+// OK: 最終状態から逆算した固定位置
+style={{ top: 373 }}  // 固定値
+```
+
+---
+
+## Remotion Sequence必須ルール
+
+**コンポジション途中から再生する短い動画（OffthreadVideo）は、必ず `<Sequence from={startFrame}>` でラップする。**
+
+```typescript
+// NG: Sequenceなし（静止画になる）
+{frame >= 14850 && frame <= 14994 && (
+  <OffthreadVideo src={staticFile("videos/sample.mp4")} />
+)}
+
+// OK: Sequenceでラップ（正常に再生される）
+<Sequence from={14850} durationInFrames={145} layout="none">
+  <OffthreadVideo src={staticFile("videos/sample.mp4")} />
+</Sequence>
+```
+
+---
+
+## 既存素材の微調整ルール
+
+1. **全体検索ではなく、現在位置の前後数秒以内を参照する**
+2. 既存コンポーネントのstartFrame/endFrameを確認
+3. そのフレーム付近（±数秒＝±90フレーム程度）のtranscript_words.jsonを読む
+4. 該当する発話のタイミングを特定して調整
+
+---
+
+## 視聴維持率向上ルール（冒頭3分）
+
+- **目標**: 冒頭3分（0〜180秒）の視聴維持率を高める
+- **ルール**: 2秒に1度、以下のいずれかで動きをつける
+  - イメージ画像の追加
+  - SE（効果音）の追加
+  - テロップの切り替え
+- **理由**: アルゴリズム的に冒頭3分の維持率が動画の伸びに影響
