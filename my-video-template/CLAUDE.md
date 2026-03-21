@@ -585,28 +585,36 @@ const ProfileCard: React.FC = () => {
 - **boxShadow**: `0 4px 20px rgba(0,0,0,0.3)`
 - **表示タイミング**: スライド背景が表示されている間
 
-### 顔の位置プリセット（objectPosition）
+### 横位置プリセット（objectPosition X）
 
-| プリセット | objectPosition | 使う場面 |
+| プリセット | X値 | 使う場面 |
 |---|---|---|
-| **center** | `50% 20%` | 顔が画面中央にある |
-| **right** | `65% 20%` | 顔が画面の右寄りにある |
-| **left** | `35% 20%` | 顔が画面の左寄りにある |
+| **left** | `40%` | 顔が画面の左寄りにある |
+| **center** | `50%` | 顔が画面中央にある |
+| **right** | `60%` | 顔が画面の右寄りにある |
+
+### 縦位置プリセット（objectPosition Y）
+
+| プリセット | Y値 | 使う場面 |
+|---|---|---|
+| **top** | `10%` | 顔が画面上部にある |
+| **middle** | `20%` | 標準的な位置 |
+| **bottom** | `30%` | 顔が画面下部にある |
 
 ### 拡大率プリセット（transform: scale）
 
 | プリセット | scale | 使う場面 |
 |---|---|---|
-| **normal** | `1.0` | バストアップ（標準的なカメラ距離） |
-| **close** | `1.5` | 顔がやや小さい（カメラが遠い） |
-| **wide** | `0.8` | 顔が大きすぎる（カメラが近い） |
+| **normal** | `1.5` | 標準 |
+| **close** | `1.75` | やや寄り（カメラがやや遠い） |
+| **closer** | `2.0` | 寄り（カメラが遠い） |
 
 ### 自動判定手順（step12 の冒頭で実施）
 1. 元動画の5秒目あたりのフレームをffmpegで1枚スクショする
    ```bash
    ffmpeg -i public/video/input.mp4 -ss 5 -frames:v 1 -update 1 -q:v 2 /tmp/wipe_check.jpg
    ```
-2. スクショを確認して顔の位置（center/right/left）と距離感（normal/close/wide）を判定
+2. スクショを確認して顔の横位置（left/center/right）・縦位置（top/middle/bottom）・距離感（normal/close/closer）を判定
 3. 判定結果をワイプの `objectPosition` と `scale` に反映
 4. スクショを削除
 
@@ -628,8 +636,8 @@ const ProfileCard: React.FC = () => {
       style={{
         width: "100%", height: "100%",
         objectFit: "cover",
-        objectPosition: "50% 20%",  // ← プリセットに応じて変更
-        transform: "scale(1.0)",    // ← プリセットに応じて変更
+        objectPosition: "50% 20%",  // ← X: left=40%, center=50%, right=60% / Y: top=10%, middle=20%, bottom=30%
+        transform: "scale(1.5)",    // ← normal=1.5, close=1.75, closer=2.0
       }}
     />
   </div>
