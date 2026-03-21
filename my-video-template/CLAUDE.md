@@ -574,6 +574,70 @@ const ProfileCard: React.FC = () => {
 
 ---
 
+## ワイプ（丸い小窓）ルール
+
+スライド表示中に話者の顔を丸い小窓で見せる。
+
+### 基本仕様
+- **位置**: 右上（top: 30px, right: 30px）
+- **サイズ**: 280×280px、円形クリップ（borderRadius: "50%"）
+- **z-index**: 8（スライドの上、テロップの下）
+- **boxShadow**: `0 4px 20px rgba(0,0,0,0.3)`
+- **表示タイミング**: スライド背景が表示されている間
+
+### 顔の位置プリセット（objectPosition）
+
+| プリセット | objectPosition | 使う場面 |
+|---|---|---|
+| **center** | `50% 20%` | 顔が画面中央にある |
+| **right** | `65% 20%` | 顔が画面の右寄りにある |
+| **left** | `35% 20%` | 顔が画面の左寄りにある |
+
+### 拡大率プリセット（transform: scale）
+
+| プリセット | scale | 使う場面 |
+|---|---|---|
+| **normal** | `1.0` | バストアップ（標準的なカメラ距離） |
+| **close** | `1.5` | 顔がやや小さい（カメラが遠い） |
+| **wide** | `0.8` | 顔が大きすぎる（カメラが近い） |
+
+### 自動判定手順（step12 の冒頭で実施）
+1. 元動画の5秒目あたりのフレームをffmpegで1枚スクショする
+   ```bash
+   ffmpeg -i public/video/input.mp4 -ss 5 -frames:v 1 -update 1 -q:v 2 /tmp/wipe_check.jpg
+   ```
+2. スクショを確認して顔の位置（center/right/left）と距離感（normal/close/wide）を判定
+3. 判定結果をワイプの `objectPosition` と `scale` に反映
+4. スクショを削除
+
+### コンポーネントテンプレート
+```typescript
+// ワイプ表示
+{slideVisible && (
+  <div style={{
+    position: "absolute",
+    top: 30, right: 30,
+    width: 280, height: 280,
+    borderRadius: "50%",
+    overflow: "hidden",
+    zIndex: 8,
+    boxShadow: "0 4px 20px rgba(0,0,0,0.3)",
+  }}>
+    <OffthreadVideo
+      src={staticFile("video/input_cut.mp4")}
+      style={{
+        width: "100%", height: "100%",
+        objectFit: "cover",
+        objectPosition: "50% 20%",  // ← プリセットに応じて変更
+        transform: "scale(1.0)",    // ← プリセットに応じて変更
+      }}
+    />
+  </div>
+)}
+```
+
+---
+
 ## 画像表示ルール（絶対遵守）
 
 **画像は常にフェードイン/フェードアウトなし。パッと表示してパッと消える。**
