@@ -50,14 +50,6 @@ pip install openai-whisper
 
 > Windows では `openai-whisper` を使用します。GPU(CUDA)がある場合は自動で高速化されます。
 
-### Intel Mac の場合
-
-```bash
-brew install ffmpeg
-brew install python@3.12
-/usr/local/bin/python3.12 -m pip install openai-whisper
-```
-
 ---
 
 ## Step 1: このリポジトリを取得
