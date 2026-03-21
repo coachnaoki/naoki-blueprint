@@ -398,8 +398,8 @@ const calcTextWidth = (text: string, fontSize: number) =>
 ## 今回のテーマ（ThemeTelop）ルール
 
 ### 仕様
-- **"Today's theme"**: 赤色の斜体テキスト（左側）+ 赤い横ライン
-- **テーマテキスト**: 大きな文字（fontSize: 64〜80）で中央下部に表示
+- **テーマテキスト**: 大きな文字（fontSize: 80）で中央下部に表示
+- ※「Today's theme」ラベルや赤ラインは不要
 - **背景**: なし（動画の上に直接）
 - **SE**: se/本日のテーマ.mp3
 
