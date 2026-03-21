@@ -116,10 +116,8 @@ public/
 プロジェクトフォルダ内で Claude Code を起動します。
 
 ```bash
-# プロジェクトフォルダにいることを確認
-cd projects/my-first-video
-
 # Claude Code を起動（dangerousモード）
+# ※ Step 2 で cd した projects/my-first-video にいる状態で実行
 claude --dangerously-skip-permissions
 ```
 
