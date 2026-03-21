@@ -75,8 +75,10 @@ const translateY = Math.round(162.5 - faceY * coverScale);
 
 #### D. SE（効果音）システム
 - `telopData` + `templateConfig` からSEを自動生成
-- 同じSEの連続使用を回避（直近2回以内のSEはスキップ）
-- `<Sequence>` + `<Audio>` で配置、volume: 0.35
+- **最低50フレーム（2秒）間隔**: 密集するSEを間引く
+- **直近2回重複回避**: 候補リストから直近2つのSEを除外してから選択（do-whileリトライではなくfilterで除外）
+- **第三者発言の文途中スキップ**: テキスト末尾が「、」や助詞の場合SEなし
+- `<Sequence>` + `<Audio>` で配置、volume: 0.2
 
 #### E. BGM
 - `<Audio src={staticFile("bgm/bgm.mp3")} volume={0.12} />`
