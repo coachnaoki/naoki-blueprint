@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>スライドプレゼンテーション</title>
+  <title>Video Pipeline プレゼンテーション</title>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@700;900&display=swap" rel="stylesheet">
@@ -11,212 +11,612 @@
 
 <script>
 // =============================================================
-// ★ ここを編集してスライドを作成してください ★
-// =============================================================
-//
-// 【テンプレート一覧】
-//   "title"        … タイトルスライド（アイコン・大タイトル・サブタイトル）
-//   "three-cards"  … 3カラムカード（アイコン付き3枚）
-//   "three-tactics"… 3戦術カード（3番目はダーク反転可）
-//   "two-columns"  … 2カラム比較（左右対比・バッジ付き）
-//   "steps"        … 縦ステップ3行（green / gray / highlight）
-//   "big-message"  … 大メッセージ＋ダーク情報パネル
-//   "closing"      … クロージング（3サマリーカード）
-//
-// ---------------------------------------------------------------
-// 【テキスト記述ルール】
-//   1. 1項目につき最大2行まで
-//   2. 改行は文節の境界で行う（助詞・て形・文末の直後など）
-//   3. 改行直前に「、」「。」は付けない（削除する）
-//   4. 単語の途中で改行しない
-//   5. 1行に収まる文には改行を入れない
-//
-// 【改行の書き方】
-//   steps の content / label、closing の desc、panel の label
-//     → <br> を使う
-//       例: "頭の中で描いたことを「2回目」に<br>実行する場所にすぎない"
-//   big-message の message、title の title
-//     → \n を使う（自動で <br> に変換される）
-//       例: "勝敗を分けるのは\nどちらの試合を制するかだ"
-//
-// 【ハイライト（黄色マーカー）の書き方】
-//   <span style='background:#CCFF00'>強調テキスト</span>
-//   ※ px-2 などのパディングは絶対に付けない（隣の文字に被るため）
-//
-// ---------------------------------------------------------------
-// 【titleテンプレートの注意点】
-//   ・title（1行目）と titleHighlight（2行目の黄色ハイライト部分）に
-//     同じ文章を入れない → 重複表示になる
-//   ・title の末尾に「、」を付けない（次行との間の改行直前になるため）
-//   ・titleSuffix = 2行目のハイライト後に続く非ハイライト文字列（任意）
-//
-// 【stepsテンプレートのスタイル】
-//   style: "green"     … 緑ボーダー（通常の重要項目）
-//   style: "gray"      … グレー（補足・やや重要度が低い項目）
-//   style: "highlight" … 黄緑背景（最重要・まとめ）
-//
+// Video Pipeline プレゼン — 31枚
 // =============================================================
 
 const SLIDE_SCRIPT = [
 
-  // ---- スライド 1: 衝撃の事実！プロのダブルス事情 ----
+  // =============================================
+  // Part 1: イントロ
+  // =============================================
+
+  // ---- 1: タイトル ----
   {
     type: "title",
-    icon: "fa-baseball-ball",
-    title: "プロのダブルスデータ",
-    subtitle: "ラリーは「平均3〜4球」で終了する"
+    icon: "fa-film",
+    title: "Video Pipeline",
+    titleHighlight: "AI動画制作キット",
+    subtitle: "撮影したMP4 → YouTube動画 を自動化する"
   },
 
-  // ---- スライド 2: 要注意！あなたの試合は？ ----
-  {
-    type: "big-message",
-    label: "WARNING",
-    title: "あなたの試合は大丈夫？",
-    titleUnderline: "大丈夫？",
-    icon: "fa-exclamation-triangle",
-    badgeIcon: "fa-exclamation",
-    badgeIconColor: "red",
-    message: "「自分たちはもっとラリーが続いてるよ」\nそう思った方、実は<span style='background:#CCFF00'>危険です</span>！"
-  },
-
-  // ---- スライド 3: プロのラリーが一瞬で終わる理由 ----
-  {
-    type: "big-message",
-    label: "PRO DOUBLES",
-    title: "なぜプロの試合は一瞬なのか？",
-    titleUnderline: "一瞬",
-    icon: "fa-crosshairs",
-    badgeIcon: "fa-trophy",
-    message: "結論：<span style='background:#CCFF00'>前衛がポーチで</span>\n<span style='background:#CCFF00'>確実に仕留めている</span>から"
-  },
-
-  // ---- スライド 4: アマチュアラリーが長引くワケ ----
+  // ---- 2: Before / After ----
   {
     type: "two-columns",
-    title: "アマチュアのラリーが長引く理由",
-    titleHighlight: "長引く理由",
-    catchphrase: "",
+    title: "動画編集のBefore / After",
     columns: [
       {
-        badge: "問題1",
+        badge: "Before",
         badgeColor: "dark",
         borderColor: "dark",
-        icon: "fa-user-slash",
-        main: "前衛が\n機能していない"
+        icon: "fa-clock",
+        main: "従来の動画編集",
+        mainSize: "text-5xl",
+        sub: "編集ソフトを覚える必要あり\nカット・字幕・SE…全部手作業\n10分の動画に6〜10時間",
+        dividerColor: "dark"
       },
       {
-        badge: "問題2",
-        badgeColor: "dark",
-        borderColor: "dark",
-        icon: "fa-exchange-alt",
-        main: "ストローク\n合戦になっている"
+        badge: "After",
+        badgeColor: "green",
+        borderColor: "green",
+        icon: "fa-magic",
+        main: "Video Pipeline",
+        mainSize: "text-5xl",
+        sub: "コマンドを15回打つだけ\nAIが字幕もSEも自動判定\n編集ソフトの操作は一切不要",
+        dividerColor: "green"
       }
     ]
   },
 
-  // ---- スライド 5: 前衛のよくあるお悩み3選 ----
+  // ---- 3: 全体像 ----
   {
-    type: "steps",
-    title: "よくあるお悩み",
-    titleUnderline: "よくあるお悩み",
-    catchphrase: "",
-    steps: [
-      {
-        label: "ストレートが怖い",
-        icon: "fa-ghost",
-        style: "green",
-        content: "ポーチに出たいが<br>ストレートを抜かれるのが<span style='background:#CCFF00'>怖い</span>",
-        num: "01"
-      },
-      {
-        label: "ボレーが浮く",
-        icon: "fa-arrow-up",
-        style: "green",
-        content: "勇気を出して触っても<br>ボレーが浮いて逆襲される",
-        num: "02"
-      },
+    type: "flowchart",
+    icon: "fa-sitemap",
+    title: "全体像（1枚で伝える）",
+    nodes: [
+      { icon: "fa-video", label: "撮影した MP4 + BGM", sub: "あなたが用意するのはこれだけ", highlight: true },
+      { icon: "fa-terminal", label: "15個のスラッシュコマンドを順番に実行", sub: "/step01 → /step02 → … → /step15" },
+      { icon: "fa-cut", label: "ジャンプカット・字幕・テロップ", sub: "FFmpeg + Whisper + AI が自動処理" },
+      { icon: "fa-images", label: "スライド・SE・BGM を統合", sub: "Puppeteer + Remotion で合成" },
+      { icon: "fa-youtube", label: "YouTube にアップロードできる MP4", sub: "完成！", highlight: true },
     ]
   },
 
-  // ---- スライド 6: 安心してください！原因はコレ ----
-  {
-    type: "big-message",
-    label: "GOOD NEWS",
-    title: "安心してください！",
-    titleUnderline: "安心",
-    icon: "fa-hand-holding-heart",
-    badgeIcon: "fa-check-circle",
-    message: "原因は<span style='background:#CCFF00'>「前衛としての正しい知識」</span>を\n知らないだけ"
-  },
+  // =============================================
+  // Part 2: 3フェーズの概要
+  // =============================================
 
-  // ---- スライド 7: 本日のテーマ ----
-  {
-    type: "title",
-    icon: "fa-chalkboard-teacher",
-    title: "ダブルス勝率を劇的に変える！",
-    titleHighlight: "前衛のポーチとポジショニング",
-    subtitle: "参考にすべき「女子プロのダブルス」を徹底分析"
-  },
-
-  // ---- スライド 8: 今日マスターする3つの極意 ----
+  // ---- 4: 3つのフェーズ ----
   {
     type: "three-cards",
-    title: "今日マスターする3つの極意",
-    titleHighlight: "3つの極意",
+    title: "3つのフェーズ",
     cards: [
       {
-        icon: "fa-map-marker-alt",
-        title: "ポジショニング",
-        lines: ["ストレートを", "抜かれない立ち位置"]
+        icon: "fa-utensils",
+        title: "フェーズ1",
+        lines: ["素材を整える", "Step 01〜08", "＝食材の下ごしらえ"]
       },
       {
-        icon: "fa-shoe-prints",
-        title: "動き方と<br>タイミング",
-        lines: ["相手にバレずに", "スッと入れる技術"]
+        icon: "fa-book-open",
+        title: "フェーズ2",
+        lines: ["演出データを作る", "Step 09〜11", "＝レシピを決める"]
       },
       {
-        icon: "fa-bullseye",
-        title: "プレイスメント",
-        lines: ["確実にポイントにする", "「配球」の極意"]
+        icon: "fa-fire",
+        title: "フェーズ3",
+        lines: ["組み立てて書き出す", "Step 12〜15", "＝調理して盛り付ける"]
       }
     ]
   },
 
-  // ---- スライド 9: あなたが得られる未来 ----
+  // ---- 5: 技術スタック一覧 ----
   {
-    type: "steps",
-    title: "あなたが得られる未来",
-    titleUnderline: "得られる未来",
-    catchphrase: "",
-    steps: [
+    type: "table",
+    icon: "fa-layer-group",
+    title: "使っている技術スタック",
+    headers: ["役割", "技術", "ひとことで言うと"],
+    rows: [
+      ["動画カット", "FFmpeg", "無音を見つけてカットする"],
+      ["文字起こし", "Whisper (mlx)", "音声→テキスト＋時刻"],
+      ["スライド画像化", "Puppeteer", "ブラウザでスクショ撮影"],
+      ["動画フレームワーク", "Remotion (React)", "コードで動画を作る"],
+      ["AI 判断・自動化", "Claude Code", "字幕スタイルやSEを判定"],
+      ["最終書き出し", "Remotion render", "フレーム連結→MP4"],
+    ],
+    highlightRows: [4],
+    note: "すべて無料 or OSSで動作"
+  },
+
+  // =============================================
+  // Part 3: フェーズ1 — 素材を整える
+  // =============================================
+
+  // ---- 6: Step 01 — 動画コンテキスト ----
+  {
+    type: "big-message",
+    title: "Step 01 — 動画コンテキスト",
+    titleUnderline: "Step 01",
+    label: "フェーズ1: 素材を整える",
+    icon: "fa-bullseye",
+    message: "「誰に」「何を伝える」\n動画かを決める",
+    panel: {
+      itemCols: 2,
+      items: [
+        { icon: "fa-user-friends", label: "ターゲットを答える", sub: "例: テニスプレイヤー" },
+        { icon: "fa-pencil-alt", label: "趣旨を答える", sub: "例: ポーチの解説" },
+      ],
+      conclusion: { icon: "fa-file-alt", prefix: "出力", main: "video-context.md" }
+    }
+  },
+
+  // ---- 7: Step 01 — なぜ必要？ ----
+  {
+    type: "two-columns",
+    title: "なぜコンテキストが必要？",
+    catchphrase: "同じ言葉でも意味が変わる",
+    columns: [
       {
-        label: "景色が変わる",
-        icon: "fa-eye",
-        style: "green",
-        content: "次の週末から<br>前衛の景色が<span style='background:#CCFF00'>180度変わる</span>",
-        num: "01"
+        badge: "テニス動画",
+        badgeColor: "green",
+        borderColor: "green",
+        icon: "fa-table-tennis",
+        main: "「ポーチ」",
+        mainSize: "text-6xl",
+        sub: "専門用語 → 強調テロップ\nAIが大きく目立たせる",
+        dividerColor: "green"
       },
       {
-        label: "知識と戦術で圧倒",
-        icon: "fa-brain",
-        style: "green",
-        content: "体力ゼロでも<br>知識と戦術で圧倒できる",
-        num: "02"
-      },
+        badge: "料理動画",
+        badgeColor: "dark",
+        borderColor: "dark",
+        icon: "fa-egg",
+        main: "「ポーチ」",
+        mainSize: "text-6xl",
+        sub: "普通の単語 → 通常テロップ\nAIは普通に表示する",
+        dividerColor: "dark"
+      }
     ]
   },
 
-  // ---- スライド 10: さっそく本編へ！ ----
+  // ---- 8: Step 02 — 素材チェック ----
   {
-    type: "closing",
-    icon: "fa-play-circle",
-    title: "行ってみましょう！",
-    cards: [
-      { title: "プロの映像で解説", desc: "女子プロのダブルスを<br>徹底分析します" },
-      { title: "実践テクニック",    desc: "すぐに使える<br>ポーチの極意を伝授" },
-      { title: "Let's Go!",        desc: "さっそく<br>本編スタート！" }
+    type: "steps",
+    titleUnderline: "Step 02 — 素材チェック",
+    label: "フェーズ1: 素材を整える",
+    steps: [
+      { icon: "fa-video", label: "撮影動画", content: "public/video/ に MP4 を配置", num: "01", style: "green" },
+      { icon: "fa-music", label: "BGM", content: "public/bgm/ に MP3 を配置", num: "02", style: "green" },
+      { icon: "fa-volume-up", label: "SE（効果音）", content: "public/se/ にプリセット入り", num: "03", style: "highlight" },
+    ],
+    catchphrase: "ユーザーはファイルを入れるだけ"
+  },
+
+  // ---- 9: Step 03 — ジャンプカット ----
+  {
+    type: "code-block",
+    icon: "fa-cut",
+    title: "Step 03 — ジャンプカット",
+    lang: "bash",
+    highlightLines: [2, 3],
+    code: `# 無音部分を自動検出してカット\nffmpeg -i public/video/input.mp4 \\\n  -af silencedetect=noise=-30dB:d=0.3 \\\n  -f null - 2>&1 | grep "silence_"\n\n# Before: 「えーと...[0.8秒無音]...次に...[1.2秒無音]...」\n# After:  「えーと、次に、」（テンポUP！）`,
+    note: "0.3秒以上の無音を検出 → 自動でカット → ユーザーは何もしない"
+  },
+
+  // ---- 10: Step 04 — 文字起こし ----
+  {
+    type: "code-block",
+    icon: "fa-microphone",
+    title: "Step 04 — 文字起こし（Whisper）",
+    lang: "JSON",
+    highlightLines: [2, 3, 4],
+    code: `// Whisperが音声を聞いてテキスト+タイムスタンプに変換\n{\n  "word": "テニス",\n  "start": 3.42,\n  "end": 3.88\n}\n// → 「3.42秒目〜3.88秒目に "テニス" と言った」\n// 全単語にこのタイムスタンプがつく\n// → 字幕の正確なタイミングの元データになる`,
+    note: "Apple Silicon向け高速版 mlx-whisper を使用 → ユーザーは何もしない"
+  },
+
+  // ---- 11: Step 05 — 文字起こし修正 ----
+  {
+    type: "two-columns",
+    title: "Step 05 — 文字起こし修正",
+    catchphrase: "AIでも聞き間違える",
+    columns: [
+      {
+        badge: "Whisperの出力",
+        badgeColor: "dark",
+        borderColor: "dark",
+        icon: "fa-times-circle",
+        main: "全営に出る\nポーチー",
+        mainSize: "text-5xl",
+        sub: "AIが聞き取った結果\n間違いが混じっている",
+        subColor: "dark",
+        dividerColor: "dark"
+      },
+      {
+        badge: "台本と照合後",
+        badgeColor: "green",
+        borderColor: "green",
+        icon: "fa-check-circle",
+        main: "前衛に出る\nポーチ",
+        mainSize: "text-5xl",
+        sub: "台本があれば自動修正\nなくてもAIが推測して修正",
+        dividerColor: "green"
+      }
     ]
-  }
+  },
+
+  // ---- 12: Step 06 — スライド生成 ----
+  {
+    type: "three-cards",
+    title: "Step 06 — スライドHTML生成",
+    titleHighlight: "スライド",
+    cards: [
+      {
+        icon: "fa-heading",
+        title: "タイトル系",
+        lines: ["title", "big-message", "closing"]
+      },
+      {
+        icon: "fa-columns",
+        title: "レイアウト系",
+        lines: ["three-cards", "two-columns", "three-tactics"]
+      },
+      {
+        icon: "fa-list-ol",
+        title: "データ系",
+        lines: ["steps / table", "code-block", "flowchart"]
+      }
+    ]
+  },
+
+  // ---- 13: Step 07 — スライド画像化 ----
+  {
+    type: "big-message",
+    title: "Step 07 — スライド画像化",
+    titleUnderline: "Step 07",
+    label: "フェーズ1: 素材を整える",
+    icon: "fa-camera",
+    message: "HTMLスライドを\nPNG画像にキャプチャ",
+    panel: {
+      itemCols: 3,
+      items: [
+        { icon: "fa-chrome", label: "Puppeteer" },
+        { icon: "fa-expand-arrows-alt", label: "1280×720px" },
+        { icon: "fa-images", label: "slide-01.png …" },
+      ],
+      conclusion: { icon: "fa-folder-open", prefix: "出力先", main: "public/slides/" }
+    }
+  },
+
+  // ---- 14: Step 08 — ブロック分割 ----
+  {
+    type: "steps",
+    titleUnderline: "Step 08 — ブロック分割",
+    label: "フェーズ1: 素材を整える",
+    steps: [
+      { icon: "fa-heading", label: "タイトルだけ", content: "slide-04-title.png", num: "01", style: "gray" },
+      { icon: "fa-plus", label: "＋1枚目", content: "slide-04-col1.png", num: "02", style: "green" },
+      { icon: "fa-plus", label: "＋2枚目", content: "slide-04-col2.png", num: "03", style: "green" },
+      { icon: "fa-check", label: "全部表示", content: "slide-04-full.png", num: "04", style: "highlight" },
+    ],
+    catchphrase: "1→2→3と順番に出す"
+  },
+
+  // =============================================
+  // Part 4: フェーズ2 — 演出データを作る
+  // =============================================
+
+  // ---- 15: フェーズ2の概要 ----
+  {
+    type: "three-cards",
+    title: "フェーズ2 — 演出データを作る",
+    titleHighlight: "演出データ",
+    cards: [
+      {
+        icon: "fa-palette",
+        title: "templateConfig",
+        lines: ["テロップの見た目", "フォント・色・サイズ", "を定義"]
+      },
+      {
+        icon: "fa-closed-captioning",
+        title: "telopData",
+        lines: ["全字幕のデータ", "テキスト・タイミング", "スタイル判定"]
+      },
+      {
+        icon: "fa-clock",
+        title: "slideTimeline",
+        lines: ["スライドの表示", "タイミングを定義", "Ken Burnsモーション"]
+      }
+    ]
+  },
+
+  // ---- 16: Step 09 — テンプレート設定 ----
+  {
+    type: "table",
+    icon: "fa-palette",
+    title: "Step 09 — テロップテンプレート",
+    headers: ["テンプレート", "見た目", "使う場面", "SE"],
+    highlightRows: [2],
+    rows: [
+      ["通常", "紺文字＋白フチ", "普通の発言", "なし"],
+      ["通常＋強調", "紺＋赤文字", "1語を目立たせたい", "強調/"],
+      ["強調グラデ", "赤→金グラデ＋斜体", "重要ワード", "ポジティブ/"],
+      ["ネガティブ", "白文字＋黒グロー", "警告・失敗", "ネガティブ/"],
+      ["第三者発言", "白＋グレーフチ＋「」", "他人の言葉", "強調/"],
+      ["代弁", "吹き出し", "視聴者の気持ち", "ネガティブ/"],
+    ],
+    note: "フォント: 丸ゴシック（情報系）/ 明朝体（感情系）"
+  },
+
+  // ---- 17: Step 10 — テロップデータ作成 ----
+  {
+    type: "code-block",
+    icon: "fa-file-code",
+    title: "Step 10 — テロップデータ作成",
+    lang: "TypeScript",
+    highlightLines: [2, 3, 4, 5],
+    fontSize: "18px",
+    code: `// AIが発話内容からテンプレートを自動判定\nconst telopData = [\n  {\n    text: "500人以上を指導",\n    startFrame: 450,   // 15秒目\n    endFrame: 510,     // 17秒目\n    template: "emphasis2"  // → 金グラデ大\n  },\n  {\n    text: "それはダメです",\n    startFrame: 720,\n    endFrame: 780,\n    template: "negative"   // → 白+黒グロー\n  }\n];`,
+    note: "全発話の90%以上に字幕を割り当てる（カバー率ルール）"
+  },
+
+  // ---- 18: Step 10 — 判定フロー ----
+  {
+    type: "flowchart",
+    icon: "fa-project-diagram",
+    title: "Step 10 — テロップ自動判定フロー",
+    nodes: [
+      { icon: "fa-comment", label: "発話テキストを取得", sub: "transcript_words.json から" },
+      { icon: "fa-sort-numeric-up", label: "数字・金額がある？", sub: "「500人」「3連覇」", right: "→ 強調大" },
+      { icon: "fa-exclamation-triangle", label: "ネガティブワード？", sub: "「ダメ」「注意」「危険」", right: "→ ネガティブ" },
+      { icon: "fa-book", label: "専門用語？", sub: "video-context.md 参照", right: "→ 強調" },
+      { icon: "fa-question-circle", label: "問いかけ？", sub: "「〜いませんか？」", right: "→ ネガティブ" },
+      { icon: "fa-align-left", label: "通常テロップ", sub: "SEなし", highlight: true },
+    ]
+  },
+
+  // ---- 19: Step 11 — スライドタイムライン ----
+  {
+    type: "code-block",
+    icon: "fa-clock",
+    title: "Step 11 — スライドタイムライン",
+    lang: "TypeScript",
+    highlightLines: [3, 4, 5, 6],
+    fontSize: "18px",
+    code: `// どのスライドを何秒目〜何秒目に表示するか定義\nconst slideTimeline = [\n  {\n    slideNumber: 4,\n    startFrame: 900,    // 30秒目\n    endFrame: 1200,     // 40秒目\n    image: "slides/blocks/slide-04-col1.png",\n    motion: "panRight"  // Ken Burnsモーション\n  },\n  // ブロックスライドは同じ番号で複数エントリ\n  // → テロップに合わせて段階的に表示\n];`,
+    note: "フェードインアニメーション（8フレーム）で自然に切り替わる"
+  },
+
+  // =============================================
+  // Part 5: フェーズ3 — 組み立てて書き出す
+  // =============================================
+
+  // ---- 20: フェーズ3の概要 ----
+  {
+    type: "big-message",
+    title: "フェーズ3 — 組み立てて書き出す",
+    titleUnderline: "フェーズ3",
+    icon: "fa-puzzle-piece",
+    message: "素材 + 演出データ\n→ Reactに統合 → MP4",
+    panel: {
+      itemCols: 3,
+      items: [
+        { icon: "fa-layer-group", label: "Step 12: 統合" },
+        { icon: "fa-check-square", label: "Step 13-14: 確認" },
+        { icon: "fa-file-video", label: "Step 15: 書き出し" },
+      ],
+      conclusion: { icon: "fa-youtube", prefix: "ゴール", main: "YouTube動画 完成" }
+    }
+  },
+
+  // ---- 21: Step 12 — レイヤー構造 ----
+  {
+    type: "steps",
+    titleUnderline: "Step 12 — 5つのレイヤー",
+    label: "フェーズ3: 組み立てて書き出す",
+    steps: [
+      { icon: "fa-volume-up", label: "⑤ SE + BGM", content: "音声レイヤー（聞こえる）", num: "z:—", style: "gray" },
+      { icon: "fa-closed-captioning", label: "④ テロップ", content: "字幕レイヤー（一番上）", num: "z:10", style: "highlight" },
+      { icon: "fa-user-circle", label: "③ ワイプ", content: "話者の顔（丸い小窓）", num: "z:8", style: "green" },
+      { icon: "fa-images", label: "② スライド背景", content: "解説スライド画像", num: "z:5", style: "green" },
+      { icon: "fa-film", label: "① メイン動画", content: "カット済みMP4（一番下）", num: "z:0", style: "gray" },
+    ]
+  },
+
+  // ---- 22: Step 12 — レイヤー詳細 ----
+  {
+    type: "table",
+    icon: "fa-layer-group",
+    title: "Step 12 — レイヤー詳細",
+    headers: ["レイヤー", "内容", "特徴"],
+    highlightRows: [1, 3],
+    rows: [
+      ["① メイン動画", "カット済みMP4を全画面表示", "一番下のベース"],
+      ["② スライド背景", "slideTimelineに従って切替", "Ken Burnsで動きをつける"],
+      ["③ ワイプ", "話者の顔を丸い小窓で表示", "右上 280×280px 円形"],
+      ["④ テロップ", "telopDataに従って字幕表示", "テンプレートでスタイル適用"],
+      ["⑤ SE + BGM", "テロップ出現と同時にSE", "BGMは全体にかける"],
+    ],
+    note: "5つのレイヤーを1つのReactコンポーネントに統合"
+  },
+
+  // ---- 23: Step 12 — SE自動選択 ----
+  {
+    type: "steps",
+    titleUnderline: "Step 12 — SE自動選択",
+    label: "フェーズ3: 組み立てて書き出す",
+    steps: [
+      { icon: "fa-star", label: "強調テロップ", content: "se/強調/ からランダム選択", num: "01", style: "green" },
+      { icon: "fa-thumbs-down", label: "ネガティブ", content: "se/ネガティブ/ からランダム選択", num: "02", style: "green" },
+      { icon: "fa-ban", label: "連続回避ルール", content: "直近2回と同じSEにならない<br>最低20フレーム（0.7秒）空ける", num: "!!", style: "highlight" },
+    ],
+    catchphrase: "毎回同じ結果を保証（シード固定）"
+  },
+
+  // ---- 24: Step 13 — 登録 ----
+  {
+    type: "big-message",
+    title: "Step 13 — Remotion に登録",
+    titleUnderline: "Step 13",
+    label: "フェーズ3: 組み立てて書き出す",
+    icon: "fa-plus-circle",
+    message: "Root.tsx に\nコンポジションを登録",
+    panel: {
+      itemCols: 2,
+      items: [
+        { icon: "fa-id-card", label: "動画ID", sub: "MainComposition" },
+        { icon: "fa-expand-arrows-alt", label: "解像度", sub: "1920×1080 / 30fps" },
+      ],
+      conclusion: { icon: "fa-play-circle", prefix: "これで", main: "プレビュー可能に" }
+    }
+  },
+
+  // ---- 25: Step 14 — プレビュー確認 ----
+  {
+    type: "three-cards",
+    title: "Step 14 — プレビュー確認",
+    titleHighlight: "プレビュー",
+    cards: [
+      {
+        icon: "fa-search",
+        title: "字幕チェック",
+        lines: ["位置・サイズは正しいか", "文字が見切れていないか"]
+      },
+      {
+        icon: "fa-exchange-alt",
+        title: "スライド切替",
+        lines: ["タイミングは合っているか", "ブロック表示は自然か"]
+      },
+      {
+        icon: "fa-wrench",
+        title: "問題があれば",
+        lines: ["その場で修正", "再度プレビューで確認"]
+      }
+    ]
+  },
+
+  // ---- 26: Step 15 — 最終レンダリング ----
+  {
+    type: "code-block",
+    icon: "fa-file-video",
+    title: "Step 15 — 最終レンダリング",
+    lang: "bash",
+    highlightLines: [2],
+    code: `# コマンド1つで完了！\nnpx remotion render MainComposition output/final.mp4\n\n# 書き出し後の自動チェック:\n#   ✅ ファイルサイズ\n#   ✅ 動画の長さ\n#   ✅ 解像度（1920×1080）\n#\n# → 完成！YouTubeにアップロードできる状態`,
+    note: "30fpsの10分動画 = 18,000フレームをReactがレンダリング"
+  },
+
+  // =============================================
+  // Part 6: Remotionとは？
+  // =============================================
+
+  // ---- 27: なぜ Remotion を選んだか ----
+  {
+    type: "two-columns",
+    title: "なぜ Remotion を選んだか",
+    catchphrase: "コード = AIが読み書きできる",
+    columns: [
+      {
+        badge: "従来の編集ソフト",
+        badgeColor: "dark",
+        borderColor: "dark",
+        icon: "fa-desktop",
+        main: "GUI操作",
+        mainSize: "text-5xl",
+        sub: "AIが操作できない\nプロジェクトファイルは\nテキストベースではない",
+        dividerColor: "dark"
+      },
+      {
+        badge: "Remotion",
+        badgeColor: "green",
+        borderColor: "green",
+        icon: "fa-code",
+        main: "コードで定義",
+        mainSize: "text-5xl",
+        sub: "Reactの知識がそのまま使える\nバージョン管理できる\nAIとの相性が抜群",
+        dividerColor: "green"
+      }
+    ]
+  },
+
+  // ---- 28: Remotion の仕組み ----
+  {
+    type: "flowchart",
+    icon: "fa-cogs",
+    title: "Remotion の仕組み",
+    nodes: [
+      { icon: "fa-code", label: "React コンポーネント", sub: "JSX で映像の各要素を定義" },
+      { icon: "fa-th", label: "各フレーム（1/30秒ごと）をレンダリング", sub: "useCurrentFrame() で現在のフレーム番号を取得" },
+      { icon: "fa-images", label: "フレーム画像を連結", sub: "30fps × 10分 = 18,000フレーム" },
+      { icon: "fa-file-video", label: "MP4 動画", sub: "完成！", highlight: true },
+    ]
+  },
+
+  // =============================================
+  // Part 7: AIは何をしているのか
+  // =============================================
+
+  // ---- 29: AIの役割まとめ ----
+  {
+    type: "two-columns",
+    title: "AIの役割 vs ルール処理",
+    columns: [
+      {
+        badge: "AIが判断",
+        badgeColor: "green",
+        borderColor: "green",
+        icon: "fa-brain",
+        main: "考えて決める",
+        mainSize: "text-5xl",
+        sub: "字幕スタイル判定（Step10）\n聞き間違い修正（Step05）\nスライドテンプレ選択（Step06）\nReactコード生成（Step12）",
+        dividerColor: "green"
+      },
+      {
+        badge: "ルールで動く",
+        badgeColor: "dark",
+        borderColor: "dark",
+        icon: "fa-robot",
+        main: "決められた通り",
+        mainSize: "text-5xl",
+        sub: "FFmpegで無音カット（Step03）\nWhisperで文字起こし（Step04）\nPuppeteerでスクショ（Step07-08）\nRemotionで書き出し（Step15）",
+        dividerColor: "dark"
+      }
+    ]
+  },
+
+  // ---- 30: CLAUDE.md ----
+  {
+    type: "steps",
+    titleUnderline: "CLAUDE.md — AIのルールブック",
+    label: "約500行のルールファイル",
+    steps: [
+      { icon: "fa-palette", label: "デザイン固定", content: "色・フォント・サイズ全て固定値", num: "01", style: "green" },
+      { icon: "fa-ban", label: "重複禁止", content: "同タイミングに字幕2つ出さない", num: "02", style: "green" },
+      { icon: "fa-percentage", label: "カバー率", content: "発話の90%以上に字幕をつける", num: "03", style: "highlight" },
+    ],
+    catchphrase: "AIが勝手にデザインを変えない"
+  },
+
+  // =============================================
+  // Part 8: まとめ
+  // =============================================
+
+  // ---- 31: 全体フロー（最終まとめ） ----
+  {
+    type: "table",
+    icon: "fa-stream",
+    title: "全体フロー — 15ステップまとめ",
+    headers: ["Step", "やること", "使う技術"],
+    compact: true,
+    cellSize: "text-base",
+    headerSize: "text-lg",
+    highlightRows: [2, 9],
+    rows: [
+      ["01", "ターゲット・趣旨を決める", "—"],
+      ["02", "素材チェック", "ffprobe"],
+      ["03", "無音カット", "FFmpeg"],
+      ["04", "文字起こし", "Whisper"],
+      ["05", "誤変換修正", "AI + 台本"],
+      ["06", "スライドHTML生成", "テンプレート"],
+      ["07", "スライド画像化", "Puppeteer"],
+      ["08", "ブロック分割", "Puppeteer"],
+      ["09", "テロップ設定定義", "TypeScript"],
+      ["10", "全字幕データ生成", "AI自動判定"],
+      ["11", "スライドタイムライン", "TypeScript"],
+      ["12", "React統合", "Remotion"],
+      ["13", "登録", "Remotion"],
+      ["14", "プレビュー確認", "Remotion"],
+      ["15", "MP4書き出し", "Remotion render"],
+    ],
+    note: "ハイライト行 = AIが判断を行うステップ"
+  },
 
 ];
 // =============================================================
@@ -537,7 +937,6 @@ function renderClosing(s) {
 
 function renderCodeBlock(s) {
   const lines = s.code.split('\n').map((line, i) => {
-    // ハイライト行の判定
     const isHighlight = s.highlightLines && s.highlightLines.includes(i + 1);
     const bg = isHighlight ? 'background:rgba(204,255,0,0.15);border-left:4px solid ' + G : 'border-left:4px solid transparent';
     const escaped = line.replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -674,7 +1073,6 @@ function renderSlide(s) {
 
 // DOMContentLoaded 後に描画
 document.addEventListener('DOMContentLoaded', () => {
-  // ?slide=N で特定スライドのみ表示（スクリーンショット用）
   const params = new URLSearchParams(location.search);
   const slideParam = params.get('slide');
   const screenshotMode = slideParam !== null;
@@ -682,7 +1080,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const stage = document.getElementById('stage');
 
   if (screenshotMode) {
-    // スクリーンショットモード: 指定スライドを1枚だけ表示、ナビなし
     const idx = Math.max(0, Math.min(parseInt(slideParam) - 1, SLIDE_SCRIPT.length - 1));
     document.body.style.background = '#f3f4f6';
     const div = document.createElement('div');
@@ -691,7 +1088,6 @@ document.addEventListener('DOMContentLoaded', () => {
     stage.appendChild(div);
     document.getElementById('nav').style.display = 'none';
   } else {
-    // 通常モード: 全スライド表示
     SLIDE_SCRIPT.forEach((s, i) => {
       const div = document.createElement('div');
       div.className = 'slide' + (i === 0 ? ' active' : '');
