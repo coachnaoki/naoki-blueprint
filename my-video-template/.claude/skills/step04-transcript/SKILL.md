@@ -6,22 +6,22 @@ allowed-tools: Read, Write, Glob, Grep, Bash(ls *), Bash(wc *), Bash(node *), Ba
 
 # Step 04: 文字起こし＋トランスクリプト解析
 
-カット済み動画（`*_cut.mp4`）にWhisperで文字起こしを実行し、`public/transcript_words.json` を生成・解析する。
+カット済み動画（`public/video/*_cut.mp4`）にWhisperで文字起こしを実行し、`public/transcript_words.json` を生成・解析する。
 
 ## 前提条件
-- Step 03（ジェットカット）でカット済み動画が存在すること
+- Step 03（ジェットカット）でカット済み動画が `public/video/` に存在すること
 - Whisper環境: `/opt/homebrew/bin/python3.12` + `mlx-whisper`（**python3.14では動かない、必ず3.12を使用**）
 
 ## やること
 
 ### 0. Whisperで文字起こし実行
 
-カット済み動画（`public/*_cut.mp4`）に対してWhisperを実行する。
+カット済み動画（`public/video/*_cut.mp4`）に対してWhisperを実行する。
 
 ```bash
 /opt/homebrew/bin/python3.12 -c "
 import json, mlx_whisper
-result = mlx_whisper.transcribe('public/動画名_cut.mp4', word_timestamps=True, path_or_hf_repo='mlx-community/whisper-small-mlx')
+result = mlx_whisper.transcribe('public/video/動画名_cut.mp4', word_timestamps=True, path_or_hf_repo='mlx-community/whisper-small-mlx')
 words = [{'word': w['word'].strip(), 'start': round(w['start'],3), 'end': round(w['end'],3)} for seg in result['segments'] for w in seg.get('words',[])]
 with open('public/transcript_words.json','w',encoding='utf-8') as f:
     json.dump({'language': result.get('language','ja'), 'words': words}, f, ensure_ascii=False, indent=2)

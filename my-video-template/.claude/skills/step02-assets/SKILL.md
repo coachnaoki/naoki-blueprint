@@ -16,9 +16,10 @@ allowed-tools: Read, Glob, Grep, Bash(ls *), Bash(ffprobe *)
 
 | 素材 | パス | 必須 |
 |------|------|------|
-| メイン動画 | `public/` 内の `.mp4` ファイル | ✅ |
-| BGM | `public/bgm.mp3` | ✅ |
+| メイン動画 | `public/video/` 内の `.mp4` ファイル | ✅ |
+| BGM | `public/bgm/bgm.mp3` | ✅ |
 | SE（効果音） | `public/se/*.mp3` | ✅ |
+| 台本 | `public/script/` 内のテキストファイル | 任意 |
 | トランスクリプト | `public/transcript_words.json` | ✅ |
 | スライドHTML | ユーザーに確認 | 任意 |
 | 追加画像 | `public/slides/` 内の画像 | 任意 |

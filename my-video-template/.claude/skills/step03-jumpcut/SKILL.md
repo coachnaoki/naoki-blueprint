@@ -20,7 +20,7 @@ allowed-tools: Read, Write, Bash(ffmpeg *), Bash(ffprobe *), Bash(ls *), Bash(wc
 FFmpegの `silencedetect` フィルターで無音区間を検出する。
 
 ```bash
-ffmpeg -i public/元動画.mp4 -af silencedetect=noise=-30dB:d=0.3 -f null - 2>&1 | grep "silence_"
+ffmpeg -i public/video/元動画.mp4 -af silencedetect=noise=-30dB:d=0.3 -f null - 2>&1 | grep "silence_"
 ```
 
 パラメータ：
@@ -39,10 +39,10 @@ FFmpegの `concat` フィルターまたは `select` フィルターで非無音
 
 ```bash
 # セグメントごとにカットして結合
-ffmpeg -i public/元動画.mp4 -filter_complex "..." -c:v libx264 -c:a aac public/動画名_cut.mp4
+ffmpeg -i public/video/元動画.mp4 -filter_complex "..." -c:v libx264 -c:a aac public/video/動画名_cut.mp4
 ```
 
-出力ファイル名: `public/元ファイル名_cut.mp4`
+出力ファイル名: `public/video/元ファイル名_cut.mp4`
 
 ### 4. 結果の確認
 
@@ -67,7 +67,7 @@ ffmpeg -i public/元動画.mp4 -filter_complex "..." -c:v libx264 -c:a aac publi
 ユーザーの動画の特性に応じて調整する。結果を見て閾値を微調整することもある。
 
 ## 完了条件
-- カット済み動画（`*_cut.mp4`）が `public/` に存在する
+- カット済み動画（`*_cut.mp4`）が `public/video/` に存在する
 - カット前後の長さ・カット率を把握している
 - 元動画が保持されている
 
