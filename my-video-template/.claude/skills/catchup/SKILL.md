@@ -24,7 +24,9 @@ allowed-tools: Read, Glob, Grep, Bash(ls *), Bash(npx tsc *)
 ### アセット確認
 8. `public/slides/` — スライドPNG一覧
 9. `public/se/` — SEファイル一覧
-10. `public/` — 動画・BGM等の一覧
+10. `public/video/` — 動画ファイル一覧
+11. `public/bgm/` — BGMファイル一覧
+12. `public/script/` — 台本ファイル一覧
 
 ## やること
 
@@ -38,7 +40,7 @@ allowed-tools: Read, Glob, Grep, Bash(ls *), Bash(npx tsc *)
 | ステップ | 完了条件 |
 |---------|---------|
 | 01 context | `video-context.md` が存在する |
-| 02 assets | メイン動画・BGM・SEが `public/` に存在する |
+| 02 assets | メイン動画が `public/video/`・BGMが `public/bgm/`・SEが `public/se/` に存在する |
 | 03 slides | `public/slides/slide-*.png` が存在する |
 | 04 transcript | `public/transcript_words.json` が存在する |
 | 05 template | `src/templateConfig.ts` が存在し、型が定義されている |
