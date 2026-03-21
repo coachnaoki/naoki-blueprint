@@ -256,26 +256,34 @@ step15-render          → 最終レンダリング（MP4書き出し）
 // stroke層: stroke="#FFFFFF" strokeWidth=32 strokeLinejoin="round"
 // fill層: fill="#10458B"
 // フォント: 'M PLUS Rounded 1c', fontWeight: 900
+// ★ドロップシャドウ: filter: "drop-shadow(0px 8px 6px rgba(0,0,0,0.2))"
 
 // normal_emphasis: 同上 + 強調ワードは fill="#CC3300"
 // strokeWidth=20
+// ★ドロップシャドウ: filter: "drop-shadow(0px 4px 4px rgba(0,0,0,0.15))"
 
 // emphasis_large: 赤文字 + 白フチ（SVG 2層構造）
 // fill="#CC3300", strokeWidth=20
+// ★ドロップシャドウ: filter: "drop-shadow(0px 4px 4px rgba(0,0,0,0.15))"
 
 // third_party: 白文字 + グレーフチ + 「」引用符
 // fill="#FFFFFF", stroke="#333333" strokeWidth=24
+// ★ドロップシャドウ: filter: "drop-shadow(0px 4px 4px rgba(0,0,0,0.15))"
 ```
 
 ### CSS 2層構造テンプレートのスタイル
 ```typescript
 // emphasis: 赤グラデ文字 + 金縁取り + 白グロー（2層構造・斜体）
-// layer1(背景): background: linear-gradient(to bottom, #FFFFCC, #FFD700) + 白グロー
+// layer1(背景): background: linear-gradient(to bottom, #FFFFCC, #FFD700)
+//   ★ドロップシャドウ: filter: "drop-shadow(0 0 8px rgba(255,255,255,0.7)) drop-shadow(0 0 20px rgba(0,0,0,0.2))"
 // layer2(前面): background: linear-gradient(to bottom, #990000 10%, #FF2222 90%)
+//   ★ドロップシャドウ: filter: "drop-shadow(0 -1px 1px rgba(255,255,255,0.5)) drop-shadow(1px 1px 2px rgba(0,0,0,0.3))"
 
 // emphasis2: 金グラデ文字 + 金縁取り + 白グロー（2層構造・斜体）
-// layer1(背景): -webkit-text-stroke: 12px #FFD700 + 白グロー
+// layer1(背景): -webkit-text-stroke: 12px #FFD700
+//   ★ドロップシャドウ: filter: "drop-shadow(0 0 10px white) drop-shadow(0 0 20px white)"
 // layer2(前面): background: linear-gradient(to bottom, #FFD700 20%, #B8860B 100%)
+//   ★ドロップシャドウ: filter: "drop-shadow(0 -1px 2px rgba(255,255,255,0.6)) drop-shadow(0 2px 3px rgba(0,0,0,0.6)) drop-shadow(1px 1px 4px rgba(0,0,0,0.3))"
 
 // negative: 白文字 + 黒グロー（2層構造・斜体）
 // layer1(背景): color: white + textShadow 3重(15px,30px,45px)
@@ -284,6 +292,25 @@ step15-render          → 最終レンダリング（MP4書き出し）
 // negative2: 白文字 + 黒縁取り + grayscale（1層・斜体）
 // color: "#FFFFFF", WebkitTextStroke: "18px #000000"
 ```
+
+### テロップのドロップシャドウ（必須）
+
+**すべてのテロップにドロップシャドウをつける。** 影がないと背景と文字が溶けて読みにくくなる。
+
+| テンプレート | ドロップシャドウ |
+|---|---|
+| **normal** | `filter: "drop-shadow(0px 8px 6px rgba(0,0,0,0.2))"` |
+| **normal_emphasis / emphasis_large / third_party** | `filter: "drop-shadow(0px 4px 4px rgba(0,0,0,0.15))"` |
+| **emphasis (背景層)** | `filter: "drop-shadow(0 0 8px rgba(255,255,255,0.7)) drop-shadow(0 0 20px rgba(0,0,0,0.2))"` |
+| **emphasis (前面層)** | `filter: "drop-shadow(0 -1px 1px rgba(255,255,255,0.5)) drop-shadow(1px 1px 2px rgba(0,0,0,0.3))"` |
+| **emphasis2 (背景層)** | `filter: "drop-shadow(0 0 10px white) drop-shadow(0 0 20px white)"` |
+| **emphasis2 (前面層)** | `filter: "drop-shadow(0 -1px 2px rgba(255,255,255,0.6)) drop-shadow(0 2px 3px rgba(0,0,0,0.6)) drop-shadow(1px 1px 4px rgba(0,0,0,0.3))"` |
+| **negative** | textShadow 3重で代替（既に黒グローがある） |
+| **negative2** | WebkitTextStroke で代替（既に黒縁取りがある） |
+
+- SVG系テロップ: SVGの外側の `<div>` に `filter` を指定する
+- CSS系テロップ: 各レイヤーの `<div>` に `filter` を指定する
+- negative系: 既に黒グロー/黒縁取りがあるため追加不要
 
 ### 文字サイズ基準（実装値）
 | テンプレート | fontSize |
