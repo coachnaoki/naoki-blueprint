@@ -338,6 +338,36 @@ step15-render          → 最終レンダリング（MP4書き出し）
 - **制限を超える字幕は必ず分割する**
 - 分割の優先ポイント：読点（、）、句点（。）、助詞の後
 
+### SVG テロップ文字幅計算（見切れ防止）
+
+SVGテロップの幅は以下の計算式で算出する。小さい値だと文字が左右で切れる。
+
+```typescript
+const charW = (ch: string) => (/[\x00-\x7F]/.test(ch) ? 0.6 : 1.0);
+const calcTextWidth = (text: string, fontSize: number) =>
+  [...text].reduce((sum, ch) => sum + charW(ch), 0) * fontSize + 200;
+```
+
+- 半角文字: 0.6em、全角文字: 1.0em
+- パディング: 200px（ドロップシャドウ含む余白）
+- `textAnchor="middle"` + `x={svgWidth/2}` で中央配置
+
+### CSS 強調テロップの見切れ防止（emphasis / emphasis2）
+
+イタリック体は右端が斜めにはみ出すため、両レイヤーにパディングが必要：
+
+```typescript
+// layer1（背景・absolute）
+<div style={{ ...layer1, position: "absolute", top: 0, left: 0,
+  paddingLeft: fontSize * 0.4, paddingRight: fontSize * 0.4 }}>{text}</div>
+// layer2（前面）
+<div style={{ ...layer2,
+  paddingLeft: fontSize * 0.4, paddingRight: fontSize * 0.4 }}>{text}</div>
+```
+
+- パディング: fontSize × 0.4（イタリックのはみ出し分）
+- 両レイヤーに同じパディングを入れないと位置がズレる
+
 ---
 
 ## 通常テロップ（normal）デザインルール
@@ -580,52 +610,22 @@ const ProfileCard: React.FC = () => {
 
 ### 基本仕様
 - **位置**: 右上（top: 30px, right: 30px）
-- **サイズ**: 280×280px、円形クリップ（borderRadius: "50%"）
+- **サイズ**: 325×325px、円形クリップ（borderRadius: "50%"）
 - **z-index**: 8（スライドの上、テロップの下）
 - **boxShadow**: `0 4px 20px rgba(0,0,0,0.3)`
 - **表示タイミング**: スライド背景が表示されている間
 
-### 横位置プリセット（objectPosition X）
-
-| プリセット | X値 | 使う場面 |
-|---|---|---|
-| **left** | `40%` | 顔が画面の左寄りにある |
-| **center** | `50%` | 顔が画面中央にある |
-| **right** | `60%` | 顔が画面の右寄りにある |
-
-### 縦位置プリセット（objectPosition Y）
-
-| プリセット | Y値 | 使う場面 |
-|---|---|---|
-| **top** | `10%` | 顔が画面上部にある |
-| **middle** | `20%` | 標準的な位置 |
-| **bottom** | `30%` | 顔が画面下部にある |
-
-### 拡大率プリセット（transform: scale）
-
-| プリセット | scale | 使う場面 |
-|---|---|---|
-| **normal** | `1.5` | 標準 |
-| **close** | `1.75` | やや寄り（カメラがやや遠い） |
-| **closer** | `2.0` | 寄り（カメラが遠い） |
-
-### 自動判定手順（step12 の冒頭で実施）
-1. 元動画の5秒目あたりのフレームをffmpegで1枚スクショする
-   ```bash
-   ffmpeg -i public/video/input.mp4 -ss 5 -frames:v 1 -update 1 -q:v 2 /tmp/wipe_check.jpg
-   ```
-2. スクショを確認して顔の横位置（left/center/right）・縦位置（top/middle/bottom）・距離感（normal/close/closer）を判定
-3. 判定結果をワイプの `objectPosition` と `scale` に反映
-4. スクショを削除
+### サイズが325pxの理由
+280pxだと `objectPosition` + `scale` の組み合わせが極端な場合に**動画フレームの端が円の隅に灰色の角として露出する**。325pxにすることで `object-fit: cover` の計算が変わり、端の露出を防げる。
 
 ### コンポーネントテンプレート
 ```typescript
-// ワイプ表示
+// ワイプ表示（325pxで端露出を防止）
 {slideVisible && (
   <div style={{
     position: "absolute",
     top: 30, right: 30,
-    width: 280, height: 280,
+    width: 325, height: 325,
     borderRadius: "50%",
     overflow: "hidden",
     zIndex: 8,
@@ -636,13 +636,48 @@ const ProfileCard: React.FC = () => {
       style={{
         width: "100%", height: "100%",
         objectFit: "cover",
-        objectPosition: "50% 20%",  // ← X: left=40%, center=50%, right=60% / Y: top=10%, middle=20%, bottom=30%
-        transform: "scale(1.5)",    // ← normal=1.5, close=1.75, closer=2.0
+        objectPosition: "50% 0%",
+        transform: "scale(1.5)",
       }}
     />
   </div>
 )}
 ```
+
+### ワイプ位置調整手順（計算＋方向ループ）
+
+objectPositionの数値は直感と合わないため、以下の手順で合わせる。
+
+#### Step 1: 顔座標の特定
+1. `ffmpeg -ss 5 -frames:v 1` で動画フレームを1枚取得
+2. Puppeteerで50px刻みのピクセルグリッド画像を生成して表示
+3. ユーザーに顔の中心座標を聞く（例: X:1300, Y:450）
+
+#### Step 2: 初期値計算
+```javascript
+// divサイズは325px
+const coverScale = 325 / 1080;           // = 0.3009
+const renderedW = 1920 * coverScale;      // = 577.8
+const overflowX = renderedW - 325;        // = 252.8
+const renderedFaceX = faceX * coverScale;
+const visibleHalfW = 325 / scale / 2;
+const offsetX = renderedFaceX - visibleHalfW - (162.5 - 162.5 / scale);
+const objX = Math.round(Math.min(100, Math.max(0, offsetX / overflowX * 100)));
+const translateY = Math.round(162.5 - faceY * coverScale);
+```
+→ `objectPosition: "{objX}% 0%"`, `transform: "scale({scale}) translateY({translateY}px)"`
+
+#### Step 3: レンダリングして確認
+スライド表示中のフレームでスクショを撮り、ユーザーに見せる
+
+#### Step 4: 方向ループ（最大2-3回）
+ユーザーに「**上 / 下 / 左 / 右 / OK**」を聞いて微調整：
+- **上**: translateY += 7
+- **下**: translateY -= 7
+- **左**: objX += 3
+- **右**: objX -= 3
+
+OKが出たら確定。
 
 ---
 
