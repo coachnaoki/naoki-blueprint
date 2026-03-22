@@ -33,6 +33,7 @@ export interface TemplateConfig {
   label: string;           // 日本語ラベル
   fontFamily: string;      // フォント
   fontSize: number;        // 文字サイズ
+  maxChars: number;        // 1行の最大文字数（全角基準、半角=0.6換算）
   seFolder: string | null; // SEフォルダパス（nullはSEなし）
 }
 
@@ -64,24 +65,24 @@ npx tsc --noEmit
 
 ## テンプレート一覧（実装ベース）
 
-| テンプレート名 | fontFamily | fontSize | SEフォルダ |
-|---------------|-----------|----------|-----------|
-| normal | FONT_MPLUS | 84 | null |
-| normal_emphasis | FONT_MPLUS | 84 | se/強調/ |
-| emphasis | FONT_SHIPPORI | 102 | se/ポジティブ/ |
-| emphasis2 | FONT_SHIPPORI | 135 | se/ポジティブ/ |
-| emphasis_large | FONT_MPLUS | 150 | se/強調/ |
-| negative | FONT_SHIPPORI | 96 | se/ネガティブ/ |
-| negative2 | FONT_SHIPPORI | 120 | se/ネガティブ/ |
-| third_party | FONT_MPLUS | 84 | se/強調/ |
-| mascot | FONT_MPLUS | 78 | se/ネガティブ/ |
-| bullet_list | FONT_MPLUS | 72 | se/強調/ |
-| table | FONT_MPLUS | 72 | se/強調/ |
-| line_cta | FONT_MPLUS | 66 | （専用SE） |
-| subscribe_cta | FONT_MPLUS | 72 | （専用SE） |
-| theme | FONT_MPLUS | 108 | （専用SE） |
-| profile | FONT_MPLUS | 90 | se/強調/ |
-| heading | FONT_MPLUS | 54 | null |
+| テンプレート名 | fontFamily | fontSize | maxChars | SEフォルダ |
+|---------------|-----------|----------|----------|-----------|
+| normal | FONT_MPLUS | 84 | 20 | null |
+| normal_emphasis | FONT_MPLUS | 84 | 20 | se/強調/ |
+| emphasis | FONT_SHIPPORI | 102 | 16 | se/ポジティブ/ |
+| emphasis2 | FONT_SHIPPORI | 135 | 12 | se/ポジティブ/ |
+| emphasis_large | FONT_MPLUS | 150 | 12 | se/強調/ |
+| negative | FONT_SHIPPORI | 96 | 16 | se/ネガティブ/ |
+| negative2 | FONT_SHIPPORI | 120 | 12 | se/ネガティブ/ |
+| third_party | FONT_MPLUS | 84 | 20 | se/強調/ |
+| mascot | FONT_MPLUS | 78 | 20 | se/ネガティブ/ |
+| bullet_list | FONT_MPLUS | 72 | 22 | se/強調/ |
+| table | FONT_MPLUS | 72 | 22 | se/強調/ |
+| line_cta | FONT_MPLUS | 66 | 24 | （専用SE） |
+| subscribe_cta | FONT_MPLUS | 72 | 22 | （専用SE） |
+| theme | FONT_MPLUS | 108 | 14 | （専用SE） |
+| profile | FONT_MPLUS | 90 | 18 | se/強調/ |
+| heading | FONT_MPLUS | 54 | 30 | null |
 
 ## 完了条件
 - `src/templateConfig.ts` が存在する
