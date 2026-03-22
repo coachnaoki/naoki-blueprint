@@ -1,11 +1,11 @@
 ---
-name: step13-slide-blocks
+name: step18-slide-blocks
 description: ブロック分割スライドのスクリーンショットをPuppeteerで撮影する。テロップタイミングに合わせてブロックを順次表示するための段階的画像を生成する。
 argument-hint: [対象スライド番号（省略時は全対象スライド）]
 allowed-tools: Read, Write, Edit, Glob, Bash(node *), Bash(ls *), Bash(mkdir *)
 ---
 
-# Step 13: ブロック分割スライドキャプチャ
+# Step 18: ブロック分割スライドキャプチャ
 
 スライド内の複数ブロック（カード、カラム、ステップ等）を段階的に表示するスクリーンショットを撮影する。
 
@@ -14,7 +14,7 @@ allowed-tools: Read, Write, Edit, Glob, Bash(node *), Bash(ls *), Bash(mkdir *)
 テロップのタイミングに合わせてスライド内のブロックを1つずつ表示させることで、視聴者の注目を誘導し、情報の段階的理解を促す。
 
 ## 前提条件
-- Step 12（スライドキャプチャ）が完了していること
+- Step 17（スライドキャプチャ）が完了していること
 - `scripts/captureSlideBlocks.mjs` が存在すること
 - 元のHTMLスライドファイルが存在すること（`gas-genspark/slides.html`）
 
@@ -153,7 +153,7 @@ npx tsc --noEmit
 ```
 ✅ Step 08 完了: ブロック分割スライドキャプチャが完了しました。
 
-次のステップ → /step14-slide-timeline（テンプレート設定）
+次のステップ → /step19-slide-timeline（テンプレート設定）
 進めますか？
 
 【生成ファイル】
