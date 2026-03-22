@@ -25,6 +25,7 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash(npx tsc *), Bash(npx remotion
 
 - **Sequence必須**: コンポジション途中から再生する動画は必ず `<Sequence from={startFrame}>` でラップする
 - **z-index**: 5以下（テロップの下）
+- **全画面動画の表示中は見出しバナーとワイプを非表示にする**
 
 ### 音声あり
 ```typescript
