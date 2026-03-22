@@ -86,6 +86,6 @@ npx remotion studio
 - 終盤: ✅
 - （修正があれば記載）
 
-次のステップ → /step11-slides-gen（スライド追加する場合）または /step15-render（スライドなし）（レンダリング）
+次のステップ → /step11-bgm（BGM挿入）（レンダリング）
 進めますか？
 ```
