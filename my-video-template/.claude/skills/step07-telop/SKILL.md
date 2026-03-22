@@ -1,16 +1,16 @@
 ---
-name: step10-telop
+name: step07-telop
 description: transcript_words.jsonとvideo-context.mdを元に、テロップデータ（telopData.ts）を作成する。CLAUDE.mdのルールに従いテンプレートを自動判定する。
 allowed-tools: Read, Write, Edit, Glob, Grep
 ---
 
-# Step 10: テロップデータ作成
+# Step 07: テロップデータ作成
 
 `transcript_words.json` の発話タイミングと `video-context.md` の企画情報を元に、`src/telopData.ts` を作成する。
 
 ## 前提条件
 - Step 04（トランスクリプト解析）が完了していること
-- Step 09（テンプレート設定）が完了していること
+- Step 06（テンプレート設定）が完了していること
 - `public/transcript_words.json` が存在すること
 - `src/templateConfig.ts` が存在すること
 
@@ -84,6 +84,6 @@ export const telopData: TelopEntry[] = [
 【テンプレート内訳】normal: ○, emphasis: ○, negative: ○, ...
 【カバー率】○○%
 
-次のステップ → /step11-timeline（スライドタイムライン作成）
+次のステップ → /step08-composition（スライドタイムライン作成）
 進めますか？
 ```

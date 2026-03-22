@@ -8,15 +8,16 @@ step02-assets          → 素材確認（動画・BGM・SE・画像）
 step03-jumpcut         → ジェットカット（FFmpegで無音自動カット）
 step04-transcript      → 文字起こし（Whisperでタイムスタンプ化）
 step05-transcript-fix  → 文字起こし修正（台本と照合して誤変換修正）
-step06-slides-gen      → 台本→HTMLスライド生成（gas-gensparkテンプレート）
-step07-slides-capture  → Puppeteerでスライド画像化（1280x720 PNG）
-step08-slide-blocks    → ブロック分割スクショ（段階表示用）
-step09-template        → テンプレート設定（templateConfig.ts）
-step10-telop           → テロップデータ作成（telopData.ts）
-step11-timeline        → スライドタイムライン（slideTimeline.ts）
-step12-composition     → メインコンポジション構築（MainComposition.tsx）
-step13-register        → コンポジション登録（Root.tsx）
-step14-preview         → プレビュー確認（スクリーンショット）
+step06-template        → テンプレート設定（templateConfig.ts）
+step07-telop           → テロップデータ作成（telopData.ts）
+step08-composition     → メインコンポジション構築（MainComposition.tsx）
+step09-register        → コンポジション登録（Root.tsx）
+step10-preview         → プレビュー確認（スクリーンショット）
+--- ここまでで動画は完成。スライドを入れる場合は以下を実行 ---
+step11-slides-gen      → 台本→HTMLスライド生成（gas-gensparkテンプレート）
+step12-slides-capture  → Puppeteerでスライド画像化（1280x720 PNG）
+step13-slide-blocks    → ブロック分割スクショ（段階表示用）
+step14-slide-timeline  → スライドタイムライン（slideTimeline.ts）
 step15-render          → 最終レンダリング（MP4書き出し）
 ```
 
@@ -26,9 +27,9 @@ step15-render          → 最終レンダリング（MP4書き出し）
 - **デザイン**: ライムイエロー `#CCFF00` + ダーク `#121212`、Zen Kaku Gothic New フォント
 
 ### ワークフローの3フェーズ
-1. **素材準備**（step01〜08）: コンテキスト整理 → 素材確認 → ジェットカット → 文字起こし → 誤変換修正 → スライド生成・画像化
-2. **データ定義**（step09〜11）: テンプレート設定 → テロップデータ → タイムライン
-3. **実装・確認・出力**（step12〜15）: コンポジション構築 → 登録 → プレビュー → レンダリング
+1. **素材準備**（step01〜05）: コンテキスト整理 → 素材確認 → ジェットカット → 文字起こし → 誤変換修正
+2. **動画構築**（step06〜10）: テンプレート設定 → テロップ → コンポジション → 登録 → プレビュー
+3. **スライド追加（任意）+ 出力**（step11〜15）: スライド生成 → 撮影 → ブロック分割 → タイムライン → レンダリング
 
 ---
 

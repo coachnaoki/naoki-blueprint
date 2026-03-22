@@ -1,17 +1,17 @@
 ---
-name: step11-timeline
+name: step14-slide-timeline
 description: スライドタイムライン（slideTimeline.ts）を作成する。各スライドの表示フレーム範囲・画像挿入・Ken Burnsモーションを定義する。
 allowed-tools: Read, Write, Edit, Glob, Grep
 ---
 
-# Step 11: スライドタイムライン作成
+# Step 14: スライドタイムライン作成
 
 `src/slideTimeline.ts` を作成し、各スライドの表示フレーム範囲を定義する。
 
 ## 前提条件
-- Step 07（スライドキャプチャ）でスライドPNGが存在すること
+- Step 12（スライドキャプチャ）でスライドPNGが存在すること
 - Step 04（トランスクリプト解析）で無音区間・セクション区切りを把握していること
-- Step 10（テロップデータ）で各セクションのフレーム範囲を把握していること
+- Step 07（テロップデータ）で各セクションのフレーム範囲を把握していること
 
 ## やること
 
@@ -73,6 +73,6 @@ npx tsc --noEmit
 【画像挿入区間】○○箇所
 【Ken Burns適用】○○箇所
 
-次のステップ → /step12-composition（メインコンポジション構築）
+次のステップ → /step15-render（メインコンポジション構築）
 進めますか？
 ```

@@ -1,16 +1,16 @@
 ---
-name: step14-preview
+name: step10-preview
 description: 重要なフレームのスクリーンショットを撮影して視覚的に確認する。問題があれば修正する。確認後スクショは即削除する。
 argument-hint: [フレーム番号（任意）]
 allowed-tools: Read, Glob, Grep, Bash(npx remotion still *), Bash(rm *), Bash(ls *)
 ---
 
-# Step 14: プレビュー確認
+# Step 10: プレビュー確認
 
 `npx remotion still` でスクリーンショットを撮影し、視覚的に動画の各ポイントを確認する。
 
 ## 前提条件
-- Step 13（コンポジション登録）が完了していること
+- Step 09（コンポジション登録）が完了していること
 - TypeScript ビルドが通ること
 
 ## やること
@@ -86,6 +86,6 @@ npx remotion studio
 - 終盤: ✅
 - （修正があれば記載）
 
-次のステップ → /step15-render（レンダリング）
+次のステップ → /step11-slides-gen（スライド追加する場合）または /step15-render（スライドなし）（レンダリング）
 進めますか？
 ```

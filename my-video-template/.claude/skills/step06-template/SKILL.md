@@ -1,10 +1,10 @@
 ---
-name: step09-template
+name: step06-template
 description: テロップのテンプレート設定（templateConfig.ts）を作成する。フォント・サイズ・SE対応を定義する。
 allowed-tools: Read, Write, Edit, Glob, Grep
 ---
 
-# Step 09: テンプレート設定
+# Step 06: テンプレート設定
 
 `src/templateConfig.ts` を作成し、テロップの種類ごとにフォント・サイズ・SE対応を定義する。
 
@@ -98,6 +98,6 @@ npx tsc --noEmit
 【定義テンプレート数】○○種類
 【SE対応】○○個のSEファイルを紐付け
 
-次のステップ → /step10-telop（テロップデータ作成）
+次のステップ → /step07-telop（テロップデータ作成）
 進めますか？
 ```
