@@ -1,17 +1,17 @@
 ---
-name: step20-preview
+name: step19-preview
 description: 素材・スライドをすべて入れた最終状態のプレビュー確認。問題があれば修正する。
 argument-hint: [フレーム番号（任意）]
 allowed-tools: Read, Glob, Grep, Bash(npx remotion still *), Bash(rm *), Bash(ls *), Bash(npx remotion studio *)
 ---
 
-# Step 20: 最終プレビュー確認
+# Step 19: 最終プレビュー確認
 
 BGM・画像・動画・スライドをすべて入れた最終状態を確認する。
 
 ## 前提条件
-- 素材挿入（step11〜15）が完了していること
-- スライドを入れる場合はstep16〜19も完了していること
+- 素材挿入（step11〜14）が完了していること
+- スライドを入れる場合はstep15〜18も完了していること
 
 ## やること
 
@@ -71,7 +71,7 @@ Remotion Studioで通し再生して最終確認する。
 ## 完了後
 
 ```
-✅ Step 20 完了: 最終プレビュー確認が完了しました。
+✅ Step 19 完了: 最終プレビュー確認が完了しました。
 
 【確認結果】
 - テロップ: ✅
@@ -82,6 +82,6 @@ Remotion Studioで通し再生して最終確認する。
 - ワイプ: ✅
 - （修正があれば記載）
 
-次のステップ → /step21-render（レンダリング）
+次のステップ → /step20-render（レンダリング）
 進めますか？
 ```

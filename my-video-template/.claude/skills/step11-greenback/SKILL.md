@@ -15,7 +15,7 @@ allowed-tools: Read, Write, Edit, Glob, Bash(ls *), Bash(ffmpeg *), Bash(npx tsc
 - 背景画像が `public/images/` に配置されていること
 
 ## スキップ条件
-- グリーンバック撮影でない場合はスキップ → step12-heading へ
+- グリーンバック撮影でない場合はスキップ → step12-bgm へ
 
 ## やること
 
@@ -61,6 +61,6 @@ npx tsc --noEmit
 【設定】
 - 背景画像: public/images/background.jpg
 
-次のステップ → /step12-heading（見出しバナー挿入）
+次のステップ → /step12-bgm（BGM挿入）
 進めますか？
 ```
