@@ -29,6 +29,7 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash(npx tsc *), Bash(npx remotion
 
 - **z-index**: 5以下（テロップの下）
 - **position: absolute** 必須
+- **全画面画像の表示中は見出しバナーとワイプを非表示にする**
 
 ## アニメーション実装
 
