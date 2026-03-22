@@ -9,7 +9,7 @@ allowed-tools: Read, Glob, Bash(npx remotion render *), Bash(ls *), Bash(open *)
 Remotion CLIで最終動画をMP4ファイルとして書き出す。
 
 ## 前提条件
-- Step 14（プレビュー確認）が完了していること
+- Step 10（プレビュー確認）が完了していること
 - TypeScript ビルドが通ること
 - ディスク容量に十分な空きがあること
 

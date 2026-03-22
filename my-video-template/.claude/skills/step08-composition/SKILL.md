@@ -1,10 +1,10 @@
 ---
-name: step12-composition
+name: step08-composition
 description: メインコンポジション（MainComposition.tsx）を構築する。スライド背景・ワイプ・テロップレンダラー・SE・BGMを統合する。
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash(npx tsc *)
 ---
 
-# Step 12: メインコンポジション構築
+# Step 08: メインコンポジション構築
 
 `src/MainComposition.tsx`（メインのReactコンポーネント）を構築する。
 
@@ -120,6 +120,6 @@ npx tsc --noEmit
 - SE自動生成: ✅
 - BGM: ✅
 
-次のステップ → /step13-register（コンポジション登録）
+次のステップ → /step09-register（コンポジション登録）
 進めますか？
 ```
