@@ -12,47 +12,73 @@ const WIDTH = 1280;
 const HEIGHT = 720;
 
 // ブロック分割定義
+// 各スライドの設定:
+//   steps: 段階表示の配列。suffix=ファイル名接尾辞, hide=非表示CSSセレクタ(null=全表示)
+//   extraCss: (任意) スライド全体に適用する追加CSS（ワイプ・テロップ回避等）
+//
+// CSSセレクタ早見表:
+//   two-columns の右カラム非表示: ".flex-1.flex.px-10 > .flex-1:nth-child(2)"
+//   three-cards のN番目以降非表示: ".grid.grid-cols-3 > div:nth-child(n+N)"
+//   steps のN番目以降非表示: ".flex-1.flex.flex-col.px-12.pb-10 > div:nth-child(n+N)"
+//   closing のN番目以降非表示: ".grid > div:nth-child(n+N)"
 const BLOCK_CONFIGS = {
-  // スライド4: two-columns（問題1→問題2）
-  4: {
-    steps: [
-      { suffix: "title", hide: ".flex-1.flex.px-10 > .flex-1" },
-      { suffix: "col1", hide: ".flex-1.flex.px-10 > .flex-1:nth-child(2)" },
-      { suffix: "full", hide: null },
-    ],
-  },
+  // 例: two-columns（左カラム→全表示）
+  // 2: {
+  //   steps: [
+  //     { suffix: "col1", hide: ".flex-1.flex.px-10 > .flex-1:nth-child(2)" },
+  //     { suffix: "full", hide: null },
+  //   ],
+  // },
 
-  // スライド8: three-cards（カード1→2→3）
-  8: {
-    steps: [
-      { suffix: "title", hide: ".grid.grid-cols-3 > div" },
-      { suffix: "card1", hide: ".grid.grid-cols-3 > div:nth-child(n+2)" },
-      { suffix: "card2", hide: ".grid.grid-cols-3 > div:nth-child(3)" },
-      { suffix: "full", hide: null },
-    ],
-  },
+  // 例: three-cards（カード1→2→全表示）
+  // 3: {
+  //   steps: [
+  //     { suffix: "card1", hide: ".grid.grid-cols-3 > div:nth-child(n+2)" },
+  //     { suffix: "card2", hide: ".grid.grid-cols-3 > div:nth-child(3)" },
+  //     { suffix: "full", hide: null },
+  //   ],
+  // },
 
-  // スライド9: steps（ステップ1→2）
-  9: {
-    steps: [
-      { suffix: "title", hide: ".flex-1.flex.flex-col.px-12 > div" },
-      { suffix: "step1", hide: ".flex-1.flex.flex-col.px-12 > div:nth-child(2)" },
-      { suffix: "full", hide: null },
-    ],
-  },
+  // 例: steps×3（ステップ1→2→全表示）
+  // 4: {
+  //   steps: [
+  //     { suffix: "step1", hide: ".flex-1.flex.flex-col.px-12.pb-10 > div:nth-child(n+2)" },
+  //     { suffix: "step2", hide: ".flex-1.flex.flex-col.px-12.pb-10 > div:nth-child(n+3)" },
+  //     { suffix: "full", hide: null },
+  //   ],
+  // },
 
-  // スライド10: closing（3カード順次）
-  10: {
-    steps: [
-      { suffix: "title", hide: ".grid > div" },
-      { suffix: "card1", hide: ".grid > div:nth-child(n+2)" },
-      { suffix: "card2", hide: ".grid > div:nth-child(3)" },
-      { suffix: "full", hide: null },
-    ],
-  },
+  // 例: steps×5 + ワイプ・テロップ回避CSS
+  // 6: {
+  //   extraCss: `
+  //     .flex-1.flex.flex-col.px-12.pb-10 {
+  //       padding-left: 14rem !important;
+  //       padding-right: 16rem !important;
+  //       padding-bottom: 12rem !important;
+  //       gap: 2px !important;
+  //     }
+  //     .rounded-2xl.py-3 { padding-top: 5px !important; padding-bottom: 5px !important; }
+  //     .rounded-2xl .text-xl { display: none !important; }
+  //     .rounded-2xl > .right-6 { right: 1rem !important; }
+  //     .rounded-2xl .text-4xl { font-size: 3.25rem !important; }
+  //   `,
+  //   steps: [
+  //     { suffix: "step1", hide: ".flex-1.flex.flex-col.px-12.pb-10 > div:nth-child(n+2)" },
+  //     { suffix: "step2", hide: ".flex-1.flex.flex-col.px-12.pb-10 > div:nth-child(n+3)" },
+  //     { suffix: "step3", hide: ".flex-1.flex.flex-col.px-12.pb-10 > div:nth-child(n+4)" },
+  //     { suffix: "step4", hide: ".flex-1.flex.flex-col.px-12.pb-10 > div:nth-child(5)" },
+  //     { suffix: "full", hide: null },
+  //   ],
+  // },
 };
 
 async function main() {
+  const configKeys = Object.keys(BLOCK_CONFIGS);
+  if (configKeys.length === 0) {
+    console.log("BLOCK_CONFIGS が空です。対象スライドを設定してください。");
+    return;
+  }
+
   const browser = await puppeteer.launch({
     headless: "new",
     args: ["--no-sandbox", "--disable-setuid-sandbox"],
@@ -76,6 +102,11 @@ async function main() {
         waitUntil: "networkidle0",
         timeout: 30000,
       });
+
+      // スライドレベルの追加CSS（ワイプ・テロップ回避等）
+      if (config.extraCss) {
+        await page.addStyleTag({ content: config.extraCss });
+      }
 
       // ブロック非表示CSS追加
       if (step.hide) {
