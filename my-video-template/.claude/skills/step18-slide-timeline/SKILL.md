@@ -1,10 +1,10 @@
 ---
-name: step19-slide-timeline
+name: step18-slide-timeline
 description: スライドタイムライン（slideTimeline.ts）を作成する。各スライドの表示フレーム範囲・画像挿入・Ken Burnsモーションを定義する。
 allowed-tools: Read, Write, Edit, Glob, Grep
 ---
 
-# Step 19: スライドタイムライン作成
+# Step 18: スライドタイムライン作成
 
 `src/slideTimeline.ts` を作成し、各スライドの表示フレーム範囲を定義する。
 
@@ -73,6 +73,6 @@ npx tsc --noEmit
 【画像挿入区間】○○箇所
 【Ken Burns適用】○○箇所
 
-次のステップ → /step20-preview（メインコンポジション構築）
+次のステップ → /step19-preview（最終プレビュー）
 進めますか？
 ```

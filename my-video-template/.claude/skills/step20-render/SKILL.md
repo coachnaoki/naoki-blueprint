@@ -1,15 +1,15 @@
 ---
-name: step21-render
+name: step20-render
 description: Remotionで最終動画をMP4にレンダリングする。書き出し完了後、ファイルサイズと長さを確認して開く。
 allowed-tools: Read, Glob, Bash(npx remotion render *), Bash(ls *), Bash(open *), Bash(ffprobe *), Bash(rm *), Bash(du *)
 ---
 
-# Step 21: レンダリング
+# Step 20: レンダリング
 
 Remotion CLIで最終動画をMP4ファイルとして書き出す。
 
 ## 前提条件
-- Step 20（最終プレビュー確認）が完了していること
+- Step 19（最終プレビュー確認）が完了していること
 - TypeScript ビルドが通ること
 - ディスク容量に十分な空きがあること
 
@@ -68,7 +68,7 @@ open public/output/MainComposition.mp4
 ## 完了後
 
 ```
-✅ Step 15 完了: レンダリングが完了しました！
+✅ Step 20 完了: レンダリングが完了しました！
 
 【出力ファイル】
 - パス: public/output/MainComposition.mp4

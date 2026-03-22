@@ -1,6 +1,6 @@
 # Remotion 動画制作テンプレート ルール
 
-## 動画制作ワークフロー（全15ステップ）
+## 動画制作ワークフロー（全20ステップ）
 
 ```
 step01-context         → 動画コンテキスト整理
@@ -15,18 +15,17 @@ step09-register        → コンポジション登録（Root.tsx）
 step10-preview         → プレビュー確認（テロップ・コンポジション）
 --- 素材挿入 ---
 step11-greenback       → グリーンバック背景置換（任意）
-step12-heading         → 見出しバナー挿入（任意）
-step13-bgm             → BGM挿入
-step14-images          → 画像挿入
-step15-videos          → 動画クリップ挿入
+step12-bgm             → BGM挿入
+step13-images          → 画像・見出し挿入（見出しバナー / タイトルコール / イメージ画像）
+step14-videos          → 動画クリップ挿入
 --- スライドを入れる場合は以下を実行 ---
-step16-slides-gen      → 台本→HTMLスライド生成（gas-gensparkテンプレート）（任意）
-step17-slides-capture  → Puppeteerでスライド画像化（1280x720 PNG）（任意）
-step18-slide-blocks    → ブロック分割スクショ（段階表示用）（任意）
-step19-slide-timeline  → スライドタイムライン（slideTimeline.ts）（任意）
+step15-slides-gen      → 台本→HTMLスライド生成（gas-gensparkテンプレート）（任意）
+step16-slides-capture  → Puppeteerでスライド画像化（1280x720 PNG）（任意）
+step17-slide-blocks    → ブロック分割スクショ（段階表示用）（任意）
+step18-slide-timeline  → スライドタイムライン（slideTimeline.ts）（任意）
 --- 最終確認・出力 ---
-step20-preview         → 最終プレビュー確認
-step21-render          → 最終レンダリング（MP4書き出し）
+step19-preview         → 最終プレビュー確認
+step20-render          → 最終レンダリング（MP4書き出し）
 ```
 
 ### スライド生成システム
@@ -37,8 +36,8 @@ step21-render          → 最終レンダリング（MP4書き出し）
 ### ワークフローの4フェーズ
 1. **素材準備**（step01〜05）: コンテキスト整理 → 素材確認 → ジェットカット → 文字起こし → 誤変換修正
 2. **動画構築**（step06〜10）: テンプレート設定 → テロップ → コンポジション → 登録 → プレビュー
-3. **素材挿入**（step11〜15）: グリーンバック背景 → 見出しバナー → BGM → 画像 → 動画クリップ
-4. **スライド追加（任意）+ 最終確認・出力**（step16〜21）: スライド生成 → 撮影 → ブロック分割 → タイムライン → 最終プレビュー → レンダリング
+3. **素材挿入**（step11〜14）: グリーンバック背景 → BGM → 画像・見出し → 動画クリップ
+4. **スライド追加（任意）+ 最終確認・出力**（step15〜20）: スライド生成 → 撮影 → ブロック分割 → タイムライン → 最終プレビュー → レンダリング
 
 ---
 

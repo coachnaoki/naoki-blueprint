@@ -86,6 +86,6 @@ npx remotion studio
 - 終盤: ✅
 - （修正があれば記載）
 
-次のステップ → /step11-greenback（グリーンバック背景置換）または /step12-heading（見出しバナー挿入）
+次のステップ → /step11-greenback（グリーンバック背景置換）または /step12-bgm（BGM挿入）
 進めますか？
 ```
