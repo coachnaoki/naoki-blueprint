@@ -203,9 +203,85 @@ function setupSheet() {
 }
 
 // =====================================================
-// テスト用
+// スプレッドシートメニュー
 // =====================================================
-function testValidate() {
-  const result = activateLicense("TEST-001", "test-fingerprint");
-  Logger.log(JSON.stringify(result));
+function onOpen() {
+  SpreadsheetApp.getUi()
+    .createMenu("★ライセンス管理")
+    .addItem("新しいライセンスを発行", "menuIssueLicense")
+    .addItem("ライセンスを無効化", "menuDeactivateLicense")
+    .addItem("PC紐付けを解除", "menuResetFingerprint")
+    .addToUi();
+}
+
+// =====================================================
+// メニュー: 新しいライセンスを発行
+// =====================================================
+function menuIssueLicense() {
+  const ui = SpreadsheetApp.getUi();
+
+  const nameResult = ui.prompt("ライセンス発行 (1/2)", "受講生の名前:", ui.ButtonSet.OK_CANCEL);
+  if (nameResult.getSelectedButton() !== ui.Button.OK) return;
+  const name = nameResult.getResponseText().trim();
+  if (!name) { ui.alert("名前を入力してください"); return; }
+
+  const emailResult = ui.prompt("ライセンス発行 (2/2)", "メールアドレス（空欄OK）:", ui.ButtonSet.OK_CANCEL);
+  if (emailResult.getSelectedButton() !== ui.Button.OK) return;
+  const email = emailResult.getResponseText().trim();
+
+  const result = issueLicense(name, email);
+
+  ui.alert(
+    "ライセンス発行完了",
+    "名前: " + name + "\n"
+    + "ID: " + result.license_id + "\n"
+    + "有効期限: " + new Date(result.expires).toLocaleDateString("ja-JP") + "\n\n"
+    + "このIDを受講生にお渡しください",
+    ui.ButtonSet.OK
+  );
+}
+
+// =====================================================
+// メニュー: ライセンスを無効化
+// =====================================================
+function menuDeactivateLicense() {
+  const ui = SpreadsheetApp.getUi();
+
+  const result = ui.prompt("ライセンス無効化", "無効にするライセンスID:", ui.ButtonSet.OK_CANCEL);
+  if (result.getSelectedButton() !== ui.Button.OK) return;
+  const licenseId = result.getResponseText().trim();
+
+  const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  const sheet = ss.getSheetByName(SHEET_NAME);
+  if (!sheet) { ui.alert("シートが見つかりません"); return; }
+
+  const data = sheet.getDataRange().getValues();
+  const row = findLicenseRow(sheet, data, licenseId);
+  if (!row) { ui.alert("ライセンスIDが見つかりません"); return; }
+
+  sheet.getRange(row.rowIndex + 1, 4).setValue("inactive");
+  ui.alert("無効化完了", row.name + " のライセンス（" + licenseId + "）を無効にしました", ui.ButtonSet.OK);
+}
+
+// =====================================================
+// メニュー: PC紐付けを解除（PC変更時に使用）
+// =====================================================
+function menuResetFingerprint() {
+  const ui = SpreadsheetApp.getUi();
+
+  const result = ui.prompt("PC紐付け解除", "解除するライセンスID:", ui.ButtonSet.OK_CANCEL);
+  if (result.getSelectedButton() !== ui.Button.OK) return;
+  const licenseId = result.getResponseText().trim();
+
+  const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  const sheet = ss.getSheetByName(SHEET_NAME);
+  if (!sheet) { ui.alert("シートが見つかりません"); return; }
+
+  const data = sheet.getDataRange().getValues();
+  const row = findLicenseRow(sheet, data, licenseId);
+  if (!row) { ui.alert("ライセンスIDが見つかりません"); return; }
+
+  sheet.getRange(row.rowIndex + 1, 6).setValue("");  // activated_at
+  sheet.getRange(row.rowIndex + 1, 7).setValue("");  // fingerprint
+  ui.alert("解除完了", row.name + " のPC紐付けを解除しました。\n新しいPCで再認証できます。", ui.ButtonSet.OK);
 }
