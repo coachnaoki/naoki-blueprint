@@ -41,6 +41,57 @@ function doGet(e) {
 }
 
 // =====================================================
+// POST: 署名受付
+// =====================================================
+function doPost(e) {
+  try {
+    const data = JSON.parse(e.postData.contents);
+    const action = (data.action || "").trim();
+
+    if (action === "sign") {
+      const result = recordSignature(data);
+      return ContentService
+        .createTextOutput(JSON.stringify(result))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+
+    return ContentService
+      .createTextOutput(JSON.stringify({ success: false, error: "unknown action" }))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch (err) {
+    return ContentService
+      .createTextOutput(JSON.stringify({ success: false, error: err.message }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+// =====================================================
+// 署名を記録
+// =====================================================
+function recordSignature(data) {
+  const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  const SIGN_SHEET = "署名";
+  let sheet = ss.getSheetByName(SIGN_SHEET);
+
+  if (!sheet) {
+    sheet = ss.insertSheet(SIGN_SHEET);
+    sheet.appendRow(["signed_at", "name", "email", "address", "agreed"]);
+    sheet.getRange("1:1").setFontWeight("bold");
+  }
+
+  const name = (data.name || "").trim();
+  const email = (data.email || "").trim();
+  const address = (data.address || "").trim();
+
+  if (!name) return { success: false, error: "氏名が入力されていません" };
+  if (!email) return { success: false, error: "メールアドレスが入力されていません" };
+
+  sheet.appendRow([new Date(), name, email, address, "同意済み"]);
+
+  return { success: true, name: name };
+}
+
+// =====================================================
 // 行データ取得ヘルパー
 // ヘッダー: license_id | name | email | status | expires | activated_at | fingerprint
 // =====================================================
