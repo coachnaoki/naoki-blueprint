@@ -364,7 +364,7 @@ submitBtn.addEventListener("click", async () => {
       document.getElementById("termsBox").style.display = "none";
       document.querySelector(".header").style.display = "none";
       resultSection.classList.add("success");
-      resultMsg.textContent = data.name + " さんの署名を受け付けました。ライセンスIDの発行をお待ちください。";
+      resultMsg.textContent = data.name + " さんの署名を受け付けました。";
     } else {
       errorMsg.textContent = data.error || "送信に失敗しました";
       errorMsg.style.display = "block";
