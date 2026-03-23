@@ -78,23 +78,20 @@ function doPost(e) {
 // =====================================================
 function recordSignature(data) {
   const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
-  const SIGN_SHEET = "署名";
-  let sheet = ss.getSheetByName(SIGN_SHEET);
-
-  if (!sheet) {
-    sheet = ss.insertSheet(SIGN_SHEET);
-    sheet.appendRow(["signed_at", "name", "email", "address", "agreed"]);
-    sheet.getRange("1:1").setFontWeight("bold");
-  }
+  const sheet = ss.getSheetByName(SHEET_NAME);
+  if (!sheet) return { success: false, error: "シートが見つかりません" };
 
   const name = (data.name || "").trim();
   const email = (data.email || "").trim();
-  const address = (data.address || "").trim();
 
   if (!name) return { success: false, error: "氏名が入力されていません" };
   if (!email) return { success: false, error: "メールアドレスが入力されていません" };
 
-  sheet.appendRow([new Date(), name, email, address, "同意済み"]);
+  // ライセンスシートに新しい行を追加（B:name, C:email, D:signed_at）
+  const newRow = sheet.getLastRow() + 1;
+  sheet.getRange(newRow, 2).setValue(name);       // B列: name
+  sheet.getRange(newRow, 3).setValue(email);       // C列: email
+  sheet.getRange(newRow, 4).setValue(new Date());  // D列: signed_at
 
   return { success: true, name: name };
 }
