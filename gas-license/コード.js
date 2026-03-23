@@ -98,7 +98,7 @@ function recordSignature(data) {
 
 // =====================================================
 // 行データ取得ヘルパー
-// ヘッダー: license_id | name | email | status | expires | activated_at | fingerprint
+// ヘッダー: A:license_id | B:name | C:email | D:signed_at | E:status | F:expires | G:activated_at | H:fingerprint
 // =====================================================
 function findLicenseRow(sheet, data, licenseId) {
   for (let i = 1; i < data.length; i++) {
@@ -108,10 +108,11 @@ function findLicenseRow(sheet, data, licenseId) {
         license_id: data[i][0],
         name: data[i][1],
         email: data[i][2],
-        status: String(data[i][3]).trim().toLowerCase(),
-        expires: data[i][4],
-        activated_at: data[i][5],
-        fingerprint: String(data[i][6] || "").trim()
+        signed_at: data[i][3],
+        status: String(data[i][4]).trim().toLowerCase(),
+        expires: data[i][5],
+        activated_at: data[i][6],
+        fingerprint: String(data[i][7] || "").trim()
       };
     }
   }
@@ -163,8 +164,8 @@ function activateLicense(licenseId, fp) {
   // 初回 or 同じPC → fingerprint と activated_at を記録
   if (!row.fingerprint) {
     const r = row.rowIndex + 1;
-    sheet.getRange(r, 6).setValue(new Date());       // activated_at (F列)
-    sheet.getRange(r, 7).setValue(fp);               // fingerprint (G列)
+    sheet.getRange(r, 7).setValue(new Date());       // activated_at (G列)
+    sheet.getRange(r, 8).setValue(fp);               // fingerprint (H列)
   }
 
   return { valid: true, name: row.name, license_id: licenseId };
@@ -208,14 +209,14 @@ function issueLicense(name, email) {
 
   if (!sheet) {
     sheet = ss.insertSheet(SHEET_NAME);
-    sheet.appendRow(["license_id", "name", "email", "status", "expires", "activated_at", "fingerprint"]);
+    sheet.appendRow(["license_id", "name", "email", "signed_at", "status", "expires", "activated_at", "fingerprint"]);
     sheet.getRange("1:1").setFontWeight("bold");
   }
 
   const expires = new Date();
   expires.setMonth(expires.getMonth() + 1);
 
-  sheet.appendRow([licenseId, name || "", email || "", "active", expires, "", ""]);
+  sheet.appendRow([licenseId, name || "", email || "", "", "active", expires, "", ""]);
 
   return { license_id: licenseId, name: name, expires: expires.toISOString() };
 }
@@ -244,7 +245,7 @@ function setupSheet() {
   let sheet = ss.getSheetByName(SHEET_NAME);
   if (!sheet) {
     sheet = ss.insertSheet(SHEET_NAME);
-    sheet.appendRow(["license_id", "name", "email", "status", "expires", "activated_at", "fingerprint"]);
+    sheet.appendRow(["license_id", "name", "email", "signed_at", "status", "expires", "activated_at", "fingerprint"]);
     sheet.getRange("1:1").setFontWeight("bold");
     Logger.log("「ライセンス」シートを作成しました");
   } else {
@@ -267,6 +268,8 @@ function onOpen() {
     .addItem("新しいライセンスを発行", "menuIssueLicense")
     .addItem("ライセンスを無効化", "menuDeactivateLicense")
     .addItem("PC紐付けを解除", "menuResetFingerprint")
+    .addSeparator()
+    .addItem("毎日の期限チェックを設定", "setupDailyTrigger")
     .addToUi();
 }
 
@@ -315,7 +318,7 @@ function menuDeactivateLicense() {
   const row = findLicenseRow(sheet, data, licenseId);
   if (!row) { ui.alert("ライセンスIDが見つかりません"); return; }
 
-  sheet.getRange(row.rowIndex + 1, 4).setValue("inactive");
+  sheet.getRange(row.rowIndex + 1, 5).setValue("inactive");  // E列: status
   ui.alert("無効化完了", row.name + " のライセンス（" + licenseId + "）を無効にしました", ui.ButtonSet.OK);
 }
 
@@ -337,9 +340,62 @@ function menuResetFingerprint() {
   const row = findLicenseRow(sheet, data, licenseId);
   if (!row) { ui.alert("ライセンスIDが見つかりません"); return; }
 
-  sheet.getRange(row.rowIndex + 1, 6).setValue("");  // activated_at
-  sheet.getRange(row.rowIndex + 1, 7).setValue("");  // fingerprint
+  sheet.getRange(row.rowIndex + 1, 7).setValue("");  // G列: activated_at
+  sheet.getRange(row.rowIndex + 1, 8).setValue("");  // H列: fingerprint
   ui.alert("解除完了", row.name + " のPC紐付けを解除しました。\n新しいPCで再認証できます。", ui.ButtonSet.OK);
+}
+
+// =====================================================
+// 毎日の期限切れチェック（トリガーで自動実行）
+// =====================================================
+function dailyExpiryCheck() {
+  const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  const sheet = ss.getSheetByName(SHEET_NAME);
+  if (!sheet) return;
+
+  const data = sheet.getDataRange().getValues();
+  const now = new Date();
+  let expiredCount = 0;
+
+  // i=0はヘッダーなのでスキップ
+  for (let i = 1; i < data.length; i++) {
+    const status = String(data[i][4]).trim().toLowerCase();  // E列: status
+    const expires = data[i][5];                               // F列: expires
+
+    if (status === "active" && expires) {
+      const expiryDate = new Date(expires);
+      if (expiryDate < now) {
+        sheet.getRange(i + 1, 5).setValue("expired");  // E列をexpiredに
+        expiredCount++;
+      }
+    }
+  }
+
+  if (expiredCount > 0) {
+    Logger.log(expiredCount + " 件のライセンスが期限切れで無効化されました");
+  }
+}
+
+// =====================================================
+// 毎日のトリガーを設定（初回のみ実行）
+// =====================================================
+function setupDailyTrigger() {
+  // 既存のdailyExpiryCheckトリガーを削除
+  const triggers = ScriptApp.getProjectTriggers();
+  triggers.forEach(t => {
+    if (t.getHandlerFunction() === "dailyExpiryCheck") {
+      ScriptApp.deleteTrigger(t);
+    }
+  });
+
+  // 毎日午前9時に実行
+  ScriptApp.newTrigger("dailyExpiryCheck")
+    .timeBased()
+    .everyDays(1)
+    .atHour(9)
+    .create();
+
+  Logger.log("毎日9時の期限チェックトリガーを設定しました");
 }
 
 // =====================================================
