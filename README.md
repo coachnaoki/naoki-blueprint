@@ -1,8 +1,20 @@
-# Video Pipeline — AI動画制作キット
+# Naoki式 丸投げビジネス動画編集テンプレート
 
 Claude Code を使って、撮影した動画から YouTube 向け動画を自動制作するツールキットです。
 
-15個のスラッシュコマンド（`/step01` 〜 `/step15`）を順番に実行するだけで、ジャンプカット・字幕・テロップ・スライド・SE・BGM付きの動画が完成します。
+20個のスラッシュコマンド（`/step01` 〜 `/step20`）を順番に実行するだけで、ジャンプカット・字幕・テロップ・スライド・SE・BGM付きの動画が完成します。
+
+---
+
+## ライセンス認証
+
+本テンプレートはライセンス認証が必要です。初回起動時にライセンスIDを入力してください。
+
+```bash
+node scripts/validateLicense.mjs NK-XXXX-XXXX-XXXX
+```
+
+> ライセンスIDは権利者（小林 尚貴）から発行されます。1台のPCに紐付けられます。
 
 ---
 
@@ -81,7 +93,21 @@ npm install
 
 ---
 
-## Step 3: 素材を配置
+## Step 3: ライセンス認証
+
+権利者から発行されたライセンスIDを入力します。
+
+```bash
+node scripts/validateLicense.mjs NK-XXXX-XXXX-XXXX
+```
+
+認証成功すると `.license` ファイルが生成されます。
+
+> PCを変更する場合は権利者にご連絡ください。
+
+---
+
+## Step 4: 素材を配置
 
 プロジェクトフォルダの `public/` の中に、素材ごとの専用フォルダが用意されています。Finder（Mac）やエクスプローラー（Windows）で、各フォルダにファイルをドラッグ＆ドロップするだけでOKです。
 
@@ -111,7 +137,7 @@ public/
 
 ---
 
-## Step 4: 動画制作スタート！
+## Step 5: 動画制作スタート！
 
 プロジェクトフォルダ内で Claude Code を起動します。
 
@@ -131,27 +157,38 @@ claude --dangerously-skip-permissions
 
 ---
 
-## ワークフロー全体像
+## ワークフロー全体像（全20ステップ）
 
 ```
+【素材準備フェーズ】
 /step01-context         動画の目的・ターゲットを整理
 /step02-assets          素材の確認
 /step03-jumpcut         無音部分を自動カット（0.3秒以上）
 /step04-transcript      Whisperで文字起こし
 /step05-transcript-fix  台本と照合して誤変換を修正
     ↓
-/step06-slides-gen      台本からスライドHTML生成 ※スライド不要ならスキップ
-/step07-slides-capture  スライドをPNG画像化
-/step08-slide-blocks    ブロック分割（段階表示用）
+【動画構築フェーズ】
+/step06-template        テンプレート設定
+/step07-telop           テロップデータ作成
+/step08-composition     メインコンポジション構築
+/step09-register        Remotionに登録
+/step10-preview         プレビュー確認
     ↓
-/step09-template        テンプレート設定
-/step10-telop           テロップデータ作成
-/step11-timeline        スライドタイムライン作成
+【素材挿入フェーズ】
+/step11-greenback       グリーンバック背景置換（任意）
+/step12-bgm             BGM挿入
+/step13-images          画像・見出し挿入
+/step14-videos          動画クリップ挿入
     ↓
-/step12-composition     メインコンポジション構築
-/step13-register        Remotionに登録
-/step14-preview         プレビュー確認
-/step15-render          MP4書き出し → 完成！
+【スライドフェーズ】（スライド不要ならスキップ可）
+/step15-slides-gen      台本からスライドHTML生成
+/step16-slides-capture  スライドをPNG画像化
+/step17-slide-blocks    ブロック分割（段階表示用）
+/step18-slide-timeline  スライドタイムライン作成
+    ↓
+【最終確認・出力フェーズ】
+/step19-preview         最終プレビュー確認
+/step20-render          MP4書き出し → 完成！
 ```
 
 ---
@@ -162,8 +199,9 @@ claude --dangerously-skip-permissions
 video-pipeline/                  ← ダウンロードしたフォルダ
 ├── README.md                    ← このファイル
 ├── my-video-template/           ← テンプレート（コピー元・編集しない）
-│   ├── .claude/skills/          ← 15個のAIスキル
+│   ├── .claude/skills/          ← 20個のAIスキル + catchup + remotion-best-practices
 │   ├── CLAUDE.md                ← AIの行動ルール
+│   ├── scripts/validateLicense.mjs  ← ライセンス認証スクリプト
 │   ├── public/video/            ← 撮影動画を入れる
 │   ├── public/bgm/              ← BGMを入れる
 │   ├── public/se/               ← SE素材（プリセット入り）
@@ -197,7 +235,7 @@ npm install
 ```
 
 ### Q: スライドなしの動画も作れる？
-はい。step06〜08をスキップすれば、ライブ映像メインの動画として制作できます。
+はい。step15〜18をスキップすれば、ライブ映像メインの動画として制作できます。
 
 ### Q: プレビューの見方は？
 ```bash
@@ -219,6 +257,11 @@ python3.12 --version
 python3.12 -c "import whisper; print('OK')"
 ```
 
+### Q: ライセンスが認証できない
+- ライセンスIDが正しいか確認してください（NK-XXXX-XXXX-XXXX形式）
+- 有効期限が切れていないか権利者に確認してください
+- 別のPCで認証済みの場合は、権利者にPC紐付け解除を依頼してください
+
 ### Q: Windows でも使える？
 はい。Step 0 で `openai-whisper` をインストールすれば動作します。GPU(CUDA)対応PCならさらに高速です。
 
@@ -226,9 +269,6 @@ python3.12 -c "import whisper; print('OK')"
 
 ## ライセンス
 
-本リポジトリは **個人利用限定** です。以下の行為を禁止します。
+本テンプレートのスキルファイルに関する著作権その他一切の知的財産権は、権利者（小林 尚貴）に帰属します。
 
-- 第三者への再配布（コピー・転載・アップロード含む）
-- 商用利用（許可なく有料サービス・教材等に組み込むこと）
-
-ご自身の動画制作にご活用ください。
+詳細は[スキルファイル利用規約](https://coachnaoki.github.io/video-pipeline/gas-genspark/terms-sign.html)をご確認ください。
