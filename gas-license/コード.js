@@ -11,6 +11,7 @@ const SHEET_NAME = "ライセンス";
 // ?action=activate&id=XXXX&fp=YYYY  → 初回アクティベーション
 // ?action=verify&id=XXXX&fp=YYYY    → 起動時検証
 // ?action=issue&name=XXX&email=YYY  → ライセンス発行
+// ?action=sign&name=XXX&email=YYY   → 署名受付
 // =====================================================
 function doGet(e) {
   const action = (e.parameter.action || "").trim();
@@ -30,6 +31,13 @@ function doGet(e) {
       const name = (e.parameter.name || "").trim();
       const email = (e.parameter.email || "").trim();
       result = issueLicense(name, email);
+      break;
+    case "sign":
+      result = recordSignature({
+        name: (e.parameter.name || "").trim(),
+        email: (e.parameter.email || "").trim(),
+        address: (e.parameter.address || "").trim()
+      });
       break;
     default:
       result = { valid: false, error: "unknown action" };

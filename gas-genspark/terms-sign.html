@@ -345,16 +345,12 @@ submitBtn.addEventListener("click", async () => {
   errorMsg.style.display = "none";
 
   try {
-    const res = await fetch(API_URL, {
-      method: "POST",
-      headers: { "Content-Type": "text/plain" },
-      body: JSON.stringify({
-        action: "sign",
-        name: nameInput.value.trim(),
-        email: emailInput.value.trim(),
-        address: ""
-      })
+    const params = new URLSearchParams({
+      action: "sign",
+      name: nameInput.value.trim(),
+      email: emailInput.value.trim()
     });
+    const res = await fetch(API_URL + "?" + params.toString());
     const data = await res.json();
 
     if (data.success) {
