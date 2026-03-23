@@ -354,13 +354,13 @@ function updateTermsDoc() {
     .setHeading(DocumentApp.ParagraphHeading.HEADING1)
     .setAlignment(DocumentApp.HorizontalAlignment.CENTER);
 
-  body.appendParagraph("Naoki式 丸投げビジネス動画編集テンプレート ｜ 小林 尚貴")
+  body.appendParagraph("AI動画編集 完全習得プログラム ｜ 株式会社Woda")
     .setAlignment(DocumentApp.HorizontalAlignment.CENTER)
     .editAsText().setFontSize(12).setBold(true);
 
   body.appendParagraph("");
 
-  body.appendParagraph("本規約は、小林 尚貴（以下「権利者」）が提供する「Naoki式 丸投げビジネス動画編集テンプレート」（以下「本プログラム」）において受講生に配布されるスキルファイル（マークダウンファイル、コマンドファイル、CLAUDE.md、SKILL.md、その他Claude Code用設定ファイルを含む。以下「本スキルファイル」）の利用条件を定めるものです。");
+  body.appendParagraph('本規約は、株式会社Woda（以下「当社」）が提供する「AI動画編集 完全習得プログラム」（以下「本プログラム」）において受講生に配布される、小林 尚貴（以下「権利者」）が制作したスキルファイル（マークダウンファイル、コマンドファイル、CLAUDE.md、SKILL.md、その他Claude Code用設定ファイルを含む。以下「本スキルファイル」）の利用条件を定めるものです。');
 
   body.appendParagraph("");
 
@@ -370,7 +370,7 @@ function updateTermsDoc() {
 
   // --- 第1条 ---
   body.appendParagraph("第1条（定義）").setHeading(DocumentApp.ParagraphHeading.HEADING2);
-  body.appendParagraph('1. 「本スキルファイル」とは、権利者が本プログラムの受講生に対して配布する、Claude Code等のAIエージェントで利用するためのマークダウンファイル（.mdファイル）、コマンドファイル、設定ファイル、スクリプトファイルおよびこれらに付随する一切のデータをいいます。');
+  body.appendParagraph('1. 「本スキルファイル」とは、権利者が制作し、当社が本プログラムの受講生に対して配布する、Claude Code等のAIエージェントで利用するためのマークダウンファイル（.mdファイル）、コマンドファイル、設定ファイル、スクリプトファイルおよびこれらに付随する一切のデータをいいます。');
   body.appendParagraph('2. 「受講生」とは、本プログラムに正規に申し込み、受講料を支払った個人をいいます。');
   body.appendParagraph('3. 「ライセンスID」とは、各受講生に発行される固有の識別子（NK-XXXX-XXXX-XXXX形式）をいい、本スキルファイルの利用認証に使用されます。');
   body.appendParagraph('4. 「マシン紐付け」とは、ライセンスIDと受講生のPC固有情報を関連付け、認証済みのPC以外での利用を制限する仕組みをいいます。');
@@ -383,7 +383,9 @@ function updateTermsDoc() {
   body.appendParagraph("　・受講生本人が自身の業務または個人利用目的でClaude Code等のAIエージェントに適用すること");
   body.appendParagraph("　・受講生本人が自身の開発環境内で本スキルファイルを複製・改変すること");
   body.appendParagraph("2. 前項の利用許諾は、非独占的かつ譲渡不能とします。");
-  body.appendParagraph("3. 利用許諾に関する一切の権限は、権利者が単独で保有します。");
+  body.appendParagraph("3. 利用許諾の有効期間は、ライセンスID発行日から1ヶ月間とします。");
+  body.appendParagraph("4. 有効期間満了後も継続して利用を希望する場合は、権利者（小林 尚貴）に直接お問い合わせください。権利者の承認を得た上で、利用期間を更新することができます。");
+  body.appendParagraph("5. 本スキルファイルに関する利用許諾、変更、取消しに関する一切の権限は、権利者が単独で保有します。");
 
   body.appendParagraph("");
 
@@ -416,7 +418,7 @@ function updateTermsDoc() {
   body.appendParagraph("第5条（知的財産権）").setHeading(DocumentApp.ParagraphHeading.HEADING2);
   body.appendParagraph("1. 本スキルファイルに関する著作権その他一切の知的財産権は、権利者に帰属します。");
   body.appendParagraph("2. 第2条に定める利用許諾は、本スキルファイルに関する知的財産権の移転を意味するものではありません。");
-  body.appendParagraph("3. 本スキルファイルの利用許諾、変更、取消しに関する一切の判断は、権利者が単独で行います。");
+  body.appendParagraph("3. 当社は本プログラムの運営者であり、本スキルファイルの知的財産権を保有するものではありません。");
 
   body.appendParagraph("");
 
