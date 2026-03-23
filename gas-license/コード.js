@@ -274,75 +274,103 @@ function onOpen() {
 }
 
 // =====================================================
-// メニュー: 新しいライセンスを発行
+// チェックされた行を取得するヘルパー（I列）
+// =====================================================
+function getCheckedRows() {
+  const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  const sheet = ss.getSheetByName(SHEET_NAME);
+  if (!sheet) return { sheet: null, rows: [] };
+
+  const lastRow = sheet.getLastRow();
+  if (lastRow < 2) return { sheet, rows: [] };
+
+  const checks = sheet.getRange(2, 9, lastRow - 1, 1).getValues(); // I列
+  const data = sheet.getDataRange().getValues();
+  const rows = [];
+
+  for (let i = 0; i < checks.length; i++) {
+    if (checks[i][0] === true) {
+      rows.push({
+        rowNum: i + 2,  // シート上の行番号
+        license_id: String(data[i + 1][0]).trim(),
+        name: String(data[i + 1][1]).trim(),
+        email: String(data[i + 1][2]).trim()
+      });
+    }
+  }
+
+  return { sheet, rows };
+}
+
+// =====================================================
+// メニュー: チェックした行にライセンスを発行
 // =====================================================
 function menuIssueLicense() {
   const ui = SpreadsheetApp.getUi();
+  const { sheet, rows } = getCheckedRows();
 
-  const nameResult = ui.prompt("ライセンス発行 (1/2)", "受講生の名前:", ui.ButtonSet.OK_CANCEL);
-  if (nameResult.getSelectedButton() !== ui.Button.OK) return;
-  const name = nameResult.getResponseText().trim();
-  if (!name) { ui.alert("名前を入力してください"); return; }
+  if (!sheet) { ui.alert("シートが見つかりません"); return; }
+  if (rows.length === 0) { ui.alert("I列にチェックを入れてから実行してください"); return; }
 
-  const emailResult = ui.prompt("ライセンス発行 (2/2)", "メールアドレス（空欄OK）:", ui.ButtonSet.OK_CANCEL);
-  if (emailResult.getSelectedButton() !== ui.Button.OK) return;
-  const email = emailResult.getResponseText().trim();
+  const results = [];
+  for (const r of rows) {
+    if (!r.name) { results.push("行" + r.rowNum + ": 名前が空のためスキップ"); continue; }
+    if (sheet.getRange(r.rowNum, 1).getValue()) { results.push(r.name + ": 既にライセンスID発行済み"); continue; }
 
-  const result = issueLicense(name, email);
+    const licenseId = generateLicenseId();
+    const expires = new Date();
+    expires.setMonth(expires.getMonth() + 1);
 
-  ui.alert(
-    "ライセンス発行完了",
-    "名前: " + name + "\n"
-    + "ID: " + result.license_id + "\n"
-    + "有効期限: " + new Date(result.expires).toLocaleDateString("ja-JP") + "\n\n"
-    + "このIDを受講生にお渡しください",
-    ui.ButtonSet.OK
-  );
+    sheet.getRange(r.rowNum, 1).setValue(licenseId);                // A列: license_id
+    sheet.getRange(r.rowNum, 5).setValue("active");                 // E列: status
+    sheet.getRange(r.rowNum, 6).setValue(expires);                  // F列: expires
+    sheet.getRange(r.rowNum, 9).setValue(false);                    // I列: チェック解除
+
+    results.push(r.name + ": " + licenseId + "（〜" + expires.toLocaleDateString("ja-JP") + "）");
+  }
+
+  ui.alert("ライセンス発行完了", results.join("\n"), ui.ButtonSet.OK);
 }
 
 // =====================================================
-// メニュー: ライセンスを無効化
+// メニュー: チェックした行のライセンスを無効化
 // =====================================================
 function menuDeactivateLicense() {
   const ui = SpreadsheetApp.getUi();
+  const { sheet, rows } = getCheckedRows();
 
-  const result = ui.prompt("ライセンス無効化", "無効にするライセンスID:", ui.ButtonSet.OK_CANCEL);
-  if (result.getSelectedButton() !== ui.Button.OK) return;
-  const licenseId = result.getResponseText().trim();
-
-  const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
-  const sheet = ss.getSheetByName(SHEET_NAME);
   if (!sheet) { ui.alert("シートが見つかりません"); return; }
+  if (rows.length === 0) { ui.alert("I列にチェックを入れてから実行してください"); return; }
 
-  const data = sheet.getDataRange().getValues();
-  const row = findLicenseRow(sheet, data, licenseId);
-  if (!row) { ui.alert("ライセンスIDが見つかりません"); return; }
+  const results = [];
+  for (const r of rows) {
+    sheet.getRange(r.rowNum, 5).setValue("inactive");  // E列: status
+    sheet.getRange(r.rowNum, 9).setValue(false);        // I列: チェック解除
+    results.push(r.name + "（" + r.license_id + "）を無効化");
+  }
 
-  sheet.getRange(row.rowIndex + 1, 5).setValue("inactive");  // E列: status
-  ui.alert("無効化完了", row.name + " のライセンス（" + licenseId + "）を無効にしました", ui.ButtonSet.OK);
+  ui.alert("無効化完了", results.join("\n"), ui.ButtonSet.OK);
 }
 
 // =====================================================
-// メニュー: PC紐付けを解除（PC変更時に使用）
+// メニュー: チェックした行のPC紐付けを解除
 // =====================================================
 function menuResetFingerprint() {
   const ui = SpreadsheetApp.getUi();
+  const { sheet, rows } = getCheckedRows();
 
-  const result = ui.prompt("PC紐付け解除", "解除するライセンスID:", ui.ButtonSet.OK_CANCEL);
-  if (result.getSelectedButton() !== ui.Button.OK) return;
-  const licenseId = result.getResponseText().trim();
-
-  const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
-  const sheet = ss.getSheetByName(SHEET_NAME);
   if (!sheet) { ui.alert("シートが見つかりません"); return; }
+  if (rows.length === 0) { ui.alert("I列にチェックを入れてから実行してください"); return; }
 
-  const data = sheet.getDataRange().getValues();
-  const row = findLicenseRow(sheet, data, licenseId);
-  if (!row) { ui.alert("ライセンスIDが見つかりません"); return; }
+  const results = [];
+  for (const r of rows) {
+    sheet.getRange(r.rowNum, 7).setValue("");   // G列: activated_at
+    sheet.getRange(r.rowNum, 8).setValue("");   // H列: fingerprint
+    sheet.getRange(r.rowNum, 9).setValue(false); // I列: チェック解除
+    results.push(r.name + " のPC紐付けを解除");
+  }
 
-  sheet.getRange(row.rowIndex + 1, 7).setValue("");  // G列: activated_at
-  sheet.getRange(row.rowIndex + 1, 8).setValue("");  // H列: fingerprint
-  ui.alert("解除完了", row.name + " のPC紐付けを解除しました。\n新しいPCで再認証できます。", ui.ButtonSet.OK);
+  ui.alert("解除完了", results.join("\n"), ui.ButtonSet.OK);
 }
 
 // =====================================================
