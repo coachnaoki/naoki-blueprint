@@ -121,17 +121,11 @@ function findLicenseRow(sheet, data, licenseId) {
 }
 
 // =====================================================
-// 共通チェック（ステータス・有効期限）
+// 共通チェック（ステータスのみ。期限チェックは廃止）
 // =====================================================
 function checkStatusAndExpiry(row) {
   if (row.status !== "active") {
     return { valid: false, error: "このライセンスは無効です（status: " + row.status + "）" };
-  }
-  if (row.expires) {
-    const expiryDate = new Date(row.expires);
-    if (expiryDate < new Date()) {
-      return { valid: false, error: "有効期限が切れています" };
-    }
   }
   return null;
 }
@@ -214,12 +208,9 @@ function issueLicense(name, email) {
     sheet.getRange("1:1").setFontWeight("bold");
   }
 
-  const expires = new Date();
-  expires.setMonth(expires.getMonth() + 1);
+  sheet.appendRow([licenseId, name || "", email || "", "", "active", "", "", ""]);
 
-  sheet.appendRow([licenseId, name || "", email || "", "", "active", expires, "", ""]);
-
-  return { license_id: licenseId, name: name, expires: expires.toISOString() };
+  return { license_id: licenseId, name: name };
 }
 
 // =====================================================
@@ -269,8 +260,6 @@ function onOpen() {
     .addItem("新しいライセンスを発行", "menuIssueLicense")
     .addItem("ライセンスを無効化", "menuDeactivateLicense")
     .addItem("PC紐付けを解除", "menuResetFingerprint")
-    .addSeparator()
-    .addItem("毎日の期限チェックを設定", "setupDailyTrigger")
     .addToUi();
 }
 
@@ -319,15 +308,12 @@ function menuIssueLicense() {
     if (sheet.getRange(r.rowNum, 1).getValue()) { results.push(r.name + ": 既にライセンスID発行済み"); continue; }
 
     const licenseId = generateLicenseId();
-    const expires = new Date();
-    expires.setMonth(expires.getMonth() + 1);
-
     sheet.getRange(r.rowNum, 1).setValue(licenseId);                // A列: license_id
     sheet.getRange(r.rowNum, 5).setValue("active");                 // E列: status
-    sheet.getRange(r.rowNum, 6).setValue(expires);                  // F列: expires
+    sheet.getRange(r.rowNum, 6).setValue("");                       // F列: expires（期限なし）
     sheet.getRange(r.rowNum, 9).setValue(false);                    // I列: チェック解除
 
-    results.push(r.name + ": " + licenseId + "（〜" + expires.toLocaleDateString("ja-JP") + "）");
+    results.push(r.name + ": " + licenseId + "（永続ライセンス）");
   }
 
   ui.alert("ライセンス発行完了", results.join("\n"), ui.ButtonSet.OK);
@@ -375,57 +361,8 @@ function menuResetFingerprint() {
 }
 
 // =====================================================
-// 毎日の期限切れチェック（トリガーで自動実行）
+// （廃止）期限チェック・日次トリガーは初回認証のみモデルに移行のため不要
 // =====================================================
-function dailyExpiryCheck() {
-  const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
-  const sheet = ss.getSheetByName(SHEET_NAME);
-  if (!sheet) return;
-
-  const data = sheet.getDataRange().getValues();
-  const now = new Date();
-  let expiredCount = 0;
-
-  // i=0はヘッダーなのでスキップ
-  for (let i = 1; i < data.length; i++) {
-    const status = String(data[i][4]).trim().toLowerCase();  // E列: status
-    const expires = data[i][5];                               // F列: expires
-
-    if (status === "active" && expires) {
-      const expiryDate = new Date(expires);
-      if (expiryDate < now) {
-        sheet.getRange(i + 1, 5).setValue("expired");  // E列をexpiredに
-        expiredCount++;
-      }
-    }
-  }
-
-  if (expiredCount > 0) {
-    Logger.log(expiredCount + " 件のライセンスが期限切れで無効化されました");
-  }
-}
-
-// =====================================================
-// 毎日のトリガーを設定（初回のみ実行）
-// =====================================================
-function setupDailyTrigger() {
-  // 既存のdailyExpiryCheckトリガーを削除
-  const triggers = ScriptApp.getProjectTriggers();
-  triggers.forEach(t => {
-    if (t.getHandlerFunction() === "dailyExpiryCheck") {
-      ScriptApp.deleteTrigger(t);
-    }
-  });
-
-  // 毎日午前9時に実行
-  ScriptApp.newTrigger("dailyExpiryCheck")
-    .timeBased()
-    .everyDays(1)
-    .atHour(9)
-    .create();
-
-  Logger.log("毎日9時の期限チェックトリガーを設定しました");
-}
 
 // =====================================================
 // 利用規約ドキュメント更新
@@ -473,9 +410,8 @@ function updateTermsDoc() {
   body.appendParagraph("　・受講生本人が自身の業務または個人利用目的でClaude Code等のAIエージェントに適用すること");
   body.appendParagraph("　・受講生本人が自身の開発環境内で本スキルファイルを複製・改変すること");
   body.appendParagraph("2. 前項の利用許諾は、非独占的かつ譲渡不能とします。");
-  body.appendParagraph("3. 利用許諾の有効期間は、ライセンスID発行日から1ヶ月間とします。");
-  body.appendParagraph("4. 有効期間満了後も継続して利用を希望する場合は、権利者（小林 尚貴）に直接お問い合わせください。権利者の承認を得た上で、利用期間を更新することができます。");
-  body.appendParagraph("5. 本スキルファイルに関する利用許諾、変更、取消しに関する一切の権限は、権利者が単独で保有します。");
+  body.appendParagraph("3. 利用許諾は、初回のライセンス認証が完了した時点から有効となり、権利者が第7条に基づきライセンスを無効化しない限り、期限の定めなく継続するものとします。");
+  body.appendParagraph("4. 本スキルファイルに関する利用許諾、変更、取消しに関する一切の権限は、権利者が単独で保有します。");
 
   body.appendParagraph("");
 

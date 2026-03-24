@@ -39,9 +39,8 @@ function updateTermsDoc() {
   body.appendParagraph("　・受講生本人が自身の業務または個人利用目的でClaude Code等のAIエージェントに適用すること");
   body.appendParagraph("　・受講生本人が自身の開発環境内で本スキルファイルを複製・改変すること");
   body.appendParagraph("2. 前項の利用許諾は、非独占的かつ譲渡不能とします。");
-  body.appendParagraph("3. 利用許諾の有効期間は、ライセンスID発行日から1ヶ月間とします。");
-  body.appendParagraph("4. 有効期間満了後も継続して利用を希望する場合は、権利者（小林 尚貴）に直接お問い合わせください。権利者の承認を得た上で、利用期間を更新することができます。");
-  body.appendParagraph("5. 本スキルファイルに関する利用許諾、変更、取消しに関する一切の権限は、権利者が単独で保有します。");
+  body.appendParagraph("3. 利用許諾は、初回のライセンス認証が完了した時点から有効となり、権利者が第7条に基づきライセンスを無効化しない限り、期限の定めなく継続するものとします。");
+  body.appendParagraph("4. 本スキルファイルに関する利用許諾、変更、取消しに関する一切の権限は、権利者が単独で保有します。");
 
   body.appendParagraph("");
 
