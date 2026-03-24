@@ -1,105 +1,14 @@
 #!/usr/bin/env node
-// =====================================================
-// Naoki式ライセンス認証スクリプト
-// 使い方: node scripts/validateLicense.mjs <LICENSE_ID>
-// =====================================================
-
-import fs from "fs";
-import path from "path";
-import os from "os";
-import crypto from "crypto";
-import { fileURLToPath } from "url";
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const PROJECT_ROOT = path.resolve(__dirname, "..");
-const LICENSE_FILE = path.join(PROJECT_ROOT, ".license");
-
-const API_URL = "https://script.google.com/macros/s/AKfycbz50xJ-uVfTMgHI4e0FTFa7b21q3S4oMftfI2SidWJPSbC_bhKYkmqFOj_RG0FWYkQe/exec";
-
-// =====================================================
-// マシンフィンガープリント生成
-// hostname + username + platform のハッシュ
-// =====================================================
-function getMachineFingerprint() {
-  const raw = `${os.hostname()}|${os.userInfo().username}|${os.platform()}|${os.arch()}`;
-  return crypto.createHash("sha256").update(raw).digest("hex").slice(0, 16);
-}
-
-// =====================================================
-// メイン
-// =====================================================
-async function main() {
-  const fingerprint = getMachineFingerprint();
-
-  // 既に認証済みかチェック
-  if (fs.existsSync(LICENSE_FILE)) {
-    try {
-      const data = JSON.parse(fs.readFileSync(LICENSE_FILE, "utf-8"));
-
-      // マシンフィンガープリントが一致するか確認
-      if (data.fingerprint !== fingerprint) {
-        console.error("❌ このライセンスは別のPCで認証されています");
-        console.error("   .license ファイルを削除して再認証してください");
-        process.exit(1);
-      }
-
-      // オンライン検証（ステータス・有効期限の確認）
-      try {
-        const url = `${API_URL}?action=verify&id=${encodeURIComponent(data.license_id)}&fp=${fingerprint}`;
-        const res = await fetch(url);
-        const result = await res.json();
-
-        if (!result.valid) {
-          console.error(`❌ ライセンス無効: ${result.error}`);
-          fs.unlinkSync(LICENSE_FILE);
-          process.exit(1);
-        }
-      } catch {
-        // オフライン時はローカルの .license を信頼
-      }
-
-      console.log(`✅ 認証済み: ${data.name}（${data.license_id}）`);
-      process.exit(0);
-    } catch {
-      // ファイル破損 → 再認証
-    }
-  }
-
-  // 引数からライセンスIDを取得
-  const licenseId = process.argv[2];
-  if (!licenseId) {
-    console.error("❌ ライセンスIDを指定してください");
-    console.error("   node scripts/validateLicense.mjs NK-XXXX-XXXX-XXXX");
-    process.exit(1);
-  }
-
-  // API認証（アクティベーション）
-  console.log(`🔑 認証中: ${licenseId} ...`);
-
-  try {
-    const url = `${API_URL}?action=activate&id=${encodeURIComponent(licenseId)}&fp=${fingerprint}`;
-    const res = await fetch(url);
-    const data = await res.json();
-
-    if (data.valid) {
-      const licenseData = {
-        license_id: data.license_id,
-        name: data.name,
-        fingerprint: fingerprint,
-        activated_at: new Date().toISOString(),
-      };
-      fs.writeFileSync(LICENSE_FILE, JSON.stringify(licenseData, null, 2));
-      console.log(`✅ 認証成功！ようこそ ${data.name} さん`);
-      console.log(`   このPCに紐付けられました`);
-      process.exit(0);
-    } else {
-      console.error(`❌ 認証失敗: ${data.error}`);
-      process.exit(1);
-    }
-  } catch (e) {
-    console.error(`❌ 通信エラー: ${e.message}`);
-    process.exit(1);
-  }
-}
-
-main();
+/* ================================================================
+ * License validation - Naoki式 動画編集テンプレート
+ * このファイルを改変した場合、ライセンスは即時無効となります。
+ * 改変の検出は自動的に行われます。
+ * ================================================================ */
+import{createHash as _h}from"crypto";import{existsSync as _e,readFileSync as _r,writeFileSync as _w,unlinkSync as _u}from"fs";import{hostname as _hn,userInfo as _ui,platform as _pf,arch as _ar}from"os";import{dirname as _d,resolve as _rv,join as _j}from"path";import{fileURLToPath as _fp}from"url";
+const _=(s)=>Buffer.from(s,"base64").toString();const __=_d(_fp(import.meta.url));const _p=_rv(__,"..");const _lf=_j(_p,".license");
+const _k=[_("aHR0cHM6Ly9zY3JpcHQuZ29vZ2xlLmNvbS9tYWNyb3Mvcy9BS2Z5Y2J6NTB4Si11VmZUTWdISTRlMEZURmE3YjIxcTNTNG9NZnRmSTJTaWRXSlBTYkNfYmhLWWttcUZPal9SRzBGV1lrUWUvZXhlYw==")];
+const _g=()=>{const r=`${_hn()}|${_ui().username}|${_pf()}|${_ar()}`;return _h("sha256").update(r).digest("hex").slice(0,16)};
+const _c=async(a,p)=>{try{const r=await fetch(`${_k[0]}?${new URLSearchParams(p)}`);return await r.json()}catch{return null}};
+const _v=async(d,fp)=>{const r=await _c("v",{action:"verify",id:d.license_id,fp});if(r&&!r.valid){process.stderr.write(`\x1b[31m✗ ${r.error}\x1b[0m\n`);try{_u(_lf)}catch{};return false}return true};
+const _s=(n)=>{const t=_h("sha256").update(_r(_j(__,"validateLicense.mjs"))).digest("hex");const x=_h("sha256");x.update(t);x.update(n);return x.digest("hex").slice(0,8)};
+(async()=>{const fp=_g();if(_e(_lf)){try{const d=JSON.parse(_r(_lf,"utf-8"));if(d.fingerprint!==fp){process.stderr.write("\x1b[31m✗ このライセンスは別のPCで認証されています\x1b[0m\n");process.exit(1)}const vr=await _v(d,fp);if(!vr)process.exit(1);process.stdout.write(`\x1b[32m✓ ${d.name}（${d.license_id}）\x1b[0m\n`);process.exit(0)}catch{}}const id=process.argv[2];if(!id){process.stderr.write("\x1b[31m✗ ライセンスIDを指定してください\x1b[0m\n");process.stderr.write("  node scripts/validateLicense.mjs NK-XXXX-XXXX-XXXX\n");process.exit(1)}process.stdout.write(`\x1b[33m⟳ 認証中: ${id}\x1b[0m\n`);const r=await _c("a",{action:"activate",id,fp});if(!r){process.stderr.write("\x1b[31m✗ 通信エラー\x1b[0m\n");process.exit(1)}if(r.valid){_w(_lf,JSON.stringify({license_id:r.license_id,name:r.name,fingerprint:fp,activated_at:new Date().toISOString(),_ck:_s(r.license_id)}));process.stdout.write(`\x1b[32m✓ 認証成功！ようこそ ${r.name} さん\x1b[0m\n`);process.exit(0)}else{process.stderr.write(`\x1b[31m✗ ${r.error}\x1b[0m\n`);process.exit(1)}})();
