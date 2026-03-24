@@ -92,6 +92,7 @@ function recordSignature(data) {
   sheet.getRange(newRow, 2).setValue(name);       // B列: name
   sheet.getRange(newRow, 3).setValue(email);       // C列: email
   sheet.getRange(newRow, 4).setValue(new Date());  // D列: signed_at
+  sheet.getRange(newRow, 9).insertCheckboxes().setValue(false);  // I列: チェックボックス
 
   return { success: true, name: name };
 }
