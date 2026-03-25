@@ -1,7 +1,7 @@
 ---
 name: step06-template
 description: テロップのテンプレート設定（templateConfig.ts）を作成する。フォント・サイズ・SE対応を定義する。
-allowed-tools: Read, Write, Edit, Glob, Grep, Bash(node scripts/_chk.mjs)
+allowed-tools: Read, Write, Edit, Glob, Grep, Bash(node scripts/_chk.mjs), Bash(npx tsc --noEmit), Bash(open public/template-preview.html)
 ---
 
 <!-- LICENSE_GUARD: DO NOT REMOVE -->
@@ -23,7 +23,27 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash(node scripts/_chk.mjs)
 
 ## やること
 
-### 1. CLAUDE.md のルール確認
+### 1. テンプレート一覧プレビューを表示
+
+まずテンプレートの見た目一覧をブラウザで表示し、ユーザーにスタイルを確認してもらう。
+
+```bash
+open public/template-preview.html
+```
+
+表示後、ユーザーに以下を確認する：
+
+```
+テロップと見出しバナーのテンプレート一覧です。
+色・フォント・サイズなど、変更したいスタイルはありますか？
+特になければこのまま進めます。
+```
+
+**ユーザーから変更希望があった場合：**
+- 該当テンプレートの設定値を変更して `templateConfig.ts` に反映する
+- `template-preview.html` のCSSも合わせて更新し、再度ブラウザで確認してもらう
+
+### 2. CLAUDE.md のルール確認
 
 CLAUDE.md から以下を読み取る：
 - テロップスタイル早見表（テンプレート名・用途・SE対応）
@@ -31,7 +51,7 @@ CLAUDE.md から以下を読み取る：
 - フォント・サイズ基準
 - SE対応表
 
-### 2. templateConfig.ts の作成
+### 3. templateConfig.ts の作成
 
 以下の型と設定を定義する：
 
@@ -47,17 +67,25 @@ export interface TemplateConfig {
 }
 
 export const templateConfig: Record<TemplateName, TemplateConfig> = { ... };
+
+// 見出しバナー設定（MainComposition.tsx で参照）
+export const headingBannerConfig = {
+  fontSize: 64,
+  backgroundColor: "#F7F4F4",
+  color: "#4B6AC6",
+  fontFamily: '"Hiragino Kaku Gothic ProN", "Meiryo", sans-serif',
+};
 ```
 
 **SEはフォルダ指定（個別ファイル名ではない）。** 再生時にフォルダ内のファイルからランダムに選択する：
 - startFrameをシードにした疑似乱数で選択（毎回同じ結果を保証）
 - 直近2回と同じSEにならないよう自動回避
 
-### 3. SE フォルダとの整合性チェック
+### 4. SE フォルダとの整合性チェック
 
 templateConfig で指定した SE フォルダが `public/se/` 内に実際に存在し、中に `.mp3` ファイルが入っているか確認する。
 
-### 4. TypeScript ビルドチェック
+### 5. TypeScript ビルドチェック
 
 ```bash
 npx tsc --noEmit
@@ -71,6 +99,7 @@ npx tsc --noEmit
 |-------------|-----------|------|
 | FONT_MPLUS | `'M PLUS Rounded 1c', sans-serif` | 通常系・情報系・CTA系（丸ゴシック・読みやすさ重視） |
 | FONT_SHIPPORI | `'Shippori Mincho', serif` | 強調系・ネガティブ系（感情・インパクト重視） |
+| FONT_NOTO | `'Noto Sans JP', sans-serif` | 箇条書き・テーマ系（テーマカラー統一） |
 
 ## テンプレート一覧（実装ベース）
 
@@ -84,28 +113,26 @@ npx tsc --noEmit
 | negative | FONT_SHIPPORI | 96 | 16 | se/ネガティブ/ |
 | negative2 | FONT_SHIPPORI | 120 | 12 | se/ネガティブ/ |
 | third_party | FONT_MPLUS | 84 | 20 | se/強調/ |
-| mascot | FONT_MPLUS | 78 | 20 | se/ネガティブ/ |
-| bullet_list | FONT_MPLUS | 72 | 22 | se/強調/ |
-| table | FONT_MPLUS | 72 | 22 | se/強調/ |
-| line_cta | FONT_MPLUS | 66 | 24 | （専用SE） |
+| bullet_list | FONT_NOTO | 76 | 22 | se/強調/ |
+| line_cta | FONT_MPLUS | 99 | 16 | （専用SE） |
 | subscribe_cta | FONT_MPLUS | 72 | 22 | （専用SE） |
 | theme | FONT_MPLUS | 108 | 14 | （専用SE） |
-| profile | FONT_MPLUS | 90 | 18 | se/強調/ |
-| heading | FONT_MPLUS | 54 | 30 | null |
 
 ## 完了条件
 - `src/templateConfig.ts` が存在する
-- 全テンプレートの型・設定が定義されている
+- 全テンプレートの型・設定が定義されている（`headingBannerConfig` 含む）
 - SE フォルダとの整合性が取れている
 - TypeScript ビルドが通る
+- ユーザーがテンプレート一覧を確認し、スタイルに合意している
 
 ## 完了後
 
 ```
-✅ Step 09 完了: テンプレート設定を作成しました。
+✅ Step 06 完了: テンプレート設定を作成しました。
 
-【定義テンプレート数】○○種類
+【定義テンプレート数】○○種類（+ 見出しバナー）
 【SE対応】○○個のSEファイルを紐付け
+【スタイル変更】あり / なし
 
 次のステップ → /step07-telop（テロップデータ作成）
 進めますか？

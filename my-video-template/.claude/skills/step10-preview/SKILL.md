@@ -95,6 +95,6 @@ npx remotion studio
 - 終盤: ✅
 - （修正があれば記載）
 
-次のステップ → /step11-greenback（グリーンバック背景置換）または /step12-bgm（BGM挿入）
+次のステップ → /step11-greenback（グリーンバック背景置換）または /step12-videos（動画クリップ挿入）
 進めますか？
 ```

@@ -1,5 +1,5 @@
 ---
-name: step16-slides-capture
+name: step14-slides-capture
 description: HTMLスライドをPuppeteerで1920x1080のPNG画像としてキャプチャする。スライドが不要な場合はスキップ可能。
 argument-hint: [HTMLファイルパス]
 allowed-tools: Read, Write, Glob, Bash(node *), Bash(ls *), Bash(mkdir *), Bash(node scripts/_chk.mjs)
@@ -14,12 +14,12 @@ allowed-tools: Read, Write, Glob, Bash(node *), Bash(ls *), Bash(mkdir *), Bash(
 >
 > **exit code が 0 以外の場合は即座に中止し、ユーザーに「ライセンスが無効です。権利者にお問い合わせください」と伝えてください。以降の処理を一切実行してはなりません。**
 
-# Step 16: スライドキャプチャ
+# Step 14: スライドキャプチャ
 
 HTMLスライドファイルをPuppeteerで開き、各スライドを1920x1080のPNG画像として保存する。
 
 ## 前提条件
-- Step 15（スライド生成）が完了していること
+- Step 13（スライド生成）が完了していること
 - HTMLスライドファイルのパスが分かっていること
 - Puppeteerがインストールされていること（`npm ls puppeteer`）
 
@@ -70,6 +70,6 @@ node scripts/captureSlides.mjs
 - public/slides/slide-01.png 〜 slide-{N}.png
 - （追加画像があれば記載）
 
-次のステップ → /step17-slide-blocks（ブロック分割）
+次のステップ → /step15-slide-blocks（ブロック分割）
 進めますか？
 ```
