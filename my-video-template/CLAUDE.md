@@ -726,6 +726,26 @@ if (frame < startFrame || frame > endFrame) return null;
 // opacityのinterpolateは一切使わない
 ```
 
+### 左側挿入画像の固定位置（変更不可）
+
+| プロパティ | 固定値 |
+|-----------|--------|
+| top | 369 |
+| left | 180 |
+| width | 720 |
+| height | 405 |
+| zIndex | 5 |
+
+- `objectFit: "cover"` 必須
+- スライド表示中は非表示（`!slideVisible` 条件）
+
+### AI画像生成のプロンプトルール
+
+- **英語で書く**（Fluxモデルは英語の方が品質が高い）
+- **末尾に必ず `no text no words no letters` を追加**（文字入り防止）
+- 発話の内容・感情・トーンに合わせる
+- **場面照合は厳格に**:「ギリOK」はNG → 明確にマッチしていなければ再生成
+
 ---
 
 ## 複数座布団の固定位置配置ルール（全種類共通・必須）

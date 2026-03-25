@@ -1,8 +1,8 @@
 ---
 name: step17-images
-description: イメージ画像を動画に挿入する。全画面表示（ズーム/フェード）と左側挿入に対応。位置は固定値。
+description: イメージ画像を動画に挿入する。画像生成（Cloudflare Workers AI）にも対応。全画面表示（ズーム/フェード）と左側挿入に対応。位置は固定値。
 argument-hint: [挿入位置の秒数やキーワード（省略時はtranscriptから判断）]
-allowed-tools: Read, Write, Edit, Glob, Grep, Bash(npx tsc *), Bash(npx remotion still *), Bash(rm *), Bash(ls *), Bash(node scripts/_chk.mjs)
+allowed-tools: Read, Write, Edit, Glob, Grep, Bash(npx tsc *), Bash(npx remotion still *), Bash(rm *), Bash(ls *), Bash(python3 *), Bash(node scripts/_chk.mjs)
 ---
 
 <!-- LICENSE_GUARD: DO NOT REMOVE -->
@@ -20,9 +20,23 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash(npx tsc *), Bash(npx remotion
 
 ## 前提条件
 - Step 16（スライドタイムライン）が完了していること（スライドがある場合）
-- 画像ファイルが `public/images/` に配置されていること
 
-## ユーザーに確認すること（必須）
+---
+
+## フロー分岐: 画像をどうするか？
+
+ユーザーに確認する：
+
+1. **画像を自分で用意する** → [A. 手動画像挿入](#a-手動画像挿入) へ
+2. **AIで画像を生成する** → [B. AI画像生成 + 挿入](#b-ai画像生成--挿入) へ
+
+---
+
+## A. 手動画像挿入
+
+画像ファイルが `public/images/` に配置されている前提。
+
+### ユーザーに確認すること（必須）
 
 各画像について以下を必ずユーザーに質問してから作業を開始する：
 
@@ -33,6 +47,106 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash(npx tsc *), Bash(npx remotion
    - `fadeLeft` — 左からフェードイン
    - `fadeBottom` — 下からフェードイン
 
+### やること
+
+1. `ls -la public/images/` で画像素材を確認
+2. `transcript_words.json` でユーザーが指定した区間の正確なフレームを特定
+3. MainComposition.tsx に追加
+4. テロップとの重複チェック（z-index確認）
+5. `npx tsc --noEmit` でコンパイル確認
+
+→ [表示ルール](#表示ルール) と [実装リファレンス](#実装リファレンス) を参照
+
+---
+
+## B. AI画像生成 + 挿入
+
+Cloudflare Workers AI（Flux）で場面に合った画像を自動生成して挿入する。
+
+### 前提
+- Cloudflare Worker がデプロイ済み（Flux画像生成API）
+- `scripts/generate-images.py` の `API_URL` と `API_KEY` が設定済み
+- 未セットアップの場合は README.md の「画像生成APIセットアップ」を参照
+
+### やること
+
+#### 1. 静かな区間の自動検出
+
+以下のすべてが **10秒以上（250フレーム）** 入っていない区間を特定する：
+- スライド（slideTimeline.ts で slideNumber > 0 の区間）
+- 動画クリップ（MainComposition.tsx の `<OffthreadVideo>` Sequence）
+- 既存画像（MainComposition.tsx の `<Img>` 表示区間）
+- BulletList（bulletListRanges）
+
+```
+slideTimeline.ts → slideNumber: 0 の区間を抽出
+MainComposition.tsx → 動画クリップ・既存画像の区間を抽出
+→ 上記すべてが入っていない連続区間 ≥ 250フレームをリストアップ
+```
+
+#### 2. 各区間の発話内容を確認
+
+`transcript_words.json` で各静かな区間の発話を取得し、場面に合った画像プロンプト（英語）を作成する。
+
+**プロンプトのルール:**
+- 英語で書く（Fluxは英語の方が品質が高い）
+- 末尾に必ず `no text no words no letters` を追加（文字入り防止）
+- 発話の内容・感情・トーンに合わせる
+
+#### 3. 画像を一括生成
+
+`scripts/generate-images.py` の `IMAGES` リストを更新して実行：
+
+```bash
+python3 scripts/generate-images.py
+```
+
+出力先: `public/images/generated/`
+
+#### 4. 画像の確認・場面照合
+
+生成された画像を1枚ずつ確認し、発話内容と照合する：
+- transcript_words.json の該当区間の発話を表示
+- 画像の内容が発話とマッチしているか判定
+- **不一致の場合はプロンプトを修正して再生成**（既存ファイルを削除してからスクリプト再実行）
+- **「ギリOK」は NG** — 明確にマッチしていなければ再生成する
+
+#### 5. MainComposition.tsx に挿入
+
+→ [表示ルール](#表示ルール) に従って挿入
+
+#### 6. コンパイル確認
+
+```bash
+npx tsc --noEmit
+```
+
+---
+
+## 表示ルール
+
+### 左側挿入画像（イメージ画像）
+
+- **表示開始**: 静かな区間が10秒続いた後、最初の **SE付きテロップの startFrame** と同時に表示
+- **表示終了**: 表示開始後、**テロップが3回切り替わったら消える**（3回目のテロップ startFrame - 1）
+- **同一区間で複数枚**: 前の画像が消えた後、さらに10秒静かなら次の画像を表示
+
+### SE付きテロップの判定
+
+templateConfig で `seFolder` が null でないテンプレート:
+`normal_emphasis` / `emphasis` / `emphasis2` / `emphasis_large` / `negative` / `negative2` / `third_party` / `mascot` / `bullet_list` / `table` / `line_cta` / `subscribe_cta` / `theme` / `profile`
+
+### 配置の計算手順
+
+```
+1. 静かな区間の開始フレーム + 250（10秒）= cursor
+2. cursor 以降の最初のSE付きテロップ startFrame = 画像の表示開始
+3. 表示開始以降のテロップ startFrame を3つ取得 → 3つ目の startFrame - 1 = 画像の表示終了
+4. 表示終了 + 1 を新しい cursor にして、cursor + 250 が区間内なら繰り返し
+```
+
+---
+
 ## CLAUDE.md準拠ルール
 
 - **z-index**: 画像は5以下（テロップの下）
@@ -42,15 +156,15 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash(npx tsc *), Bash(npx remotion
 
 ---
 
-## イメージ画像
+## 実装リファレンス
 
 ### 左側挿入（固定位置・アニメーションなし）
 
 位置は以下の固定値を使用する（変更不可）：
 
 ```typescript
-{frame >= startFrame && frame <= endFrame && (
-  <Img src={staticFile("images/example.jpg")} style={{
+{frame >= startFrame && frame <= endFrame && !slideVisible && (
+  <Img src={staticFile("images/generated/example.jpg")} style={{
     position: "absolute",
     top: 369,
     left: 180,
@@ -69,13 +183,6 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash(npx tsc *), Bash(npx remotion
 | width | 720 |
 | height | 405 |
 | zIndex | 5 |
-
-### 表示タイミングの決め方
-
-SEと連動させる。以下のルールで開始・終了フレームを決定する：
-
-1. **開始フレーム**: 画像を入れたい区間の最初のSE付きテロップの `startFrame`
-2. **終了フレーム**: 開始から数えて5つ目のテロップの `endFrame`
 
 ### 全画面: ズーム（zoomIn）
 ```typescript
@@ -107,34 +214,6 @@ const translateY = interpolate(frame, [startFrame, startFrame + 15], [100, 0], {
 const opacity = interpolate(frame, [startFrame, startFrame + 15], [0, 1], {
   extrapolateLeft: "clamp", extrapolateRight: "clamp",
 });
-```
-
----
-
-## やること
-
-### 1. 画像素材の確認
-
-```bash
-ls -la public/images/
-```
-
-### 2. 台本のタイミング特定
-
-`transcript_words.json` でユーザーが指定した区間の正確なフレームを特定する。
-
-### 3. MainComposition.tsx に追加
-
-ユーザーが指定した表示方法・アニメーションで実装する。左側挿入は固定位置を使用。
-
-### 4. テロップとの重複チェック
-
-画像挿入区間に既存テロップがある場合、テロップが画像の上に表示されることを確認（z-index）。
-
-### 5. TypeScriptコンパイル確認
-
-```bash
-npx tsc --noEmit
 ```
 
 ---
@@ -173,7 +252,7 @@ durationInFrames={元のフレーム数 + 250}  // 10秒の場合
 - **zIndex: 20** で全要素の最前面に表示
 - フェードなし（パッと表示）
 
-※ ED用BGMはstep12（BGM挿入）で設定する。
+※ ED用BGMはstep18（BGM挿入）で設定する。
 
 ---
 
@@ -183,9 +262,13 @@ durationInFrames={元のフレーム数 + 250}  // 10秒の場合
 ✅ Step 17 完了: イメージ画像を挿入しました。
 
 【挿入一覧】
-- f{N}〜f{N}: example.jpg（左側挿入）
+- f{N}〜f{N}: example.jpg（左側挿入・SE同時表示・テロップ3回で消去）
 - f{N}〜f{N}: example2.jpg（全画面・ズーム）
 - f{N}〜f{N}: endscreen.png（エンドスクリーン ○秒）
+
+【場面照合結果】（AI生成の場合）
+- 全{N}枚が発話内容と一致 ✓
+- 不一致で再生成した画像: {N}枚
 
 他にも画像を挿入しますか？
 → はい: 同じステップを繰り返す
