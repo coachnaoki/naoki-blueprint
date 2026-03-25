@@ -107,6 +107,8 @@ export const telopData: TelopEntry[] = [
 - **重複チェック**: 隣接テロップのendFrame < 次のstartFrame（1フレーム以上の間隔）
 - **カバー率チェック**: 発話時間の90%以上をカバーしているか
 - **テンプレート存在チェック**: 指定したテンプレートがtemplateConfigに存在するか
+- **themeは1回のみ**: template: "theme" は動画全体で1エントリのみ（冒頭のテーマ紹介）。セクション見出しにはemphasis_largeを使う
+- **bullet_list区間チェック**: bullet_list表示中の時間帯に他テンプレートのテロップを配置しない（実装時にbulletListVisibleで非表示にする）
 - **TypeScript ビルドチェック**: `npx tsc --noEmit`
 
 ## 完了条件
