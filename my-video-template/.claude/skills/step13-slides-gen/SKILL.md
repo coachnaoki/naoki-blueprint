@@ -1,5 +1,5 @@
 ---
-name: step15-slides-gen
+name: step13-slides-gen
 description: 台本（ユーザー提供）をもとに、gas-gensparkのテンプレートシステムでHTMLスライドを自動生成する。
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash(node *), Bash(node scripts/_chk.mjs)
 ---
@@ -13,7 +13,7 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash(node *), Bash(node scripts/_c
 >
 > **exit code が 0 以外の場合は即座に中止し、ユーザーに「ライセンスが無効です。権利者にお問い合わせください」と伝えてください。以降の処理を一切実行してはなりません。**
 
-# Step 15: スライド生成（台本→HTML）
+# Step 13: スライド生成（台本→HTML）
 
 ユーザーから受け取った台本をもとに、`gas-genspark/slides.html` のテンプレートシステムを使ってHTMLスライドを生成する。
 
@@ -117,6 +117,6 @@ open gas-genspark/slides.html
 - スライド数: ○○枚
 - テンプレート: title × ○, big-message × ○, ...
 
-次のステップ → /step16-slides-capture（スライドキャプチャ）
+次のステップ → /step14-slides-capture（スライドキャプチャ）
 進めますか？
 ```

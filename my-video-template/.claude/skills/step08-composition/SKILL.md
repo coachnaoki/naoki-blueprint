@@ -76,6 +76,69 @@ const translateY = Math.round(162.5 - faceY * coverScale);
 - **左**: objX += 3
 - **右**: objX -= 3
 
+#### B2. BulletList（箇条書きリスト）
+step07で特定されたBulletList候補をコンポーネントとして実装する。
+
+**表示ルール:**
+- 各項目を読み上げる瞬間だけパッと表示（フェードなし）
+- 全項目を常に表示し、読み上げ中の項目だけ赤（`#CC3300`）、他は青（`#4B6AC6`）
+- 背景: `#F7F4F4`、フォント: `Noto Sans JP`、fontSize: 76、fontWeight: 900
+- 位置: 画面中央（left: 960, top: 540, transform: translate(-50%, -50%)）
+- 連番（①②③…）の場合は「●」マーカー不要
+- zIndex: 10
+
+**暗転オーバーレイ:**
+- BulletList表示中はベース動画の上に `rgba(0,0,0,0.4)` のオーバーレイ（zIndex: 7）
+
+**他要素の非表示:**
+- BulletList表示中は以下を非表示にする：
+  - スライド背景
+  - ワイプ
+  - 動画クリップ（全Sequence）
+- ベース動画は表示する（暗転オーバーレイの下に見える）
+
+```typescript
+const BulletList: React.FC<{
+  items: { text: string; startFrame: number; endFrame: number }[];
+}> = ({ items }) => {
+  const frame = useCurrentFrame();
+  const activeIdx = items.findIndex(
+    (item) => frame >= item.startFrame && frame <= item.endFrame,
+  );
+  if (activeIdx === -1) return null;
+  return (
+    <div style={{
+      position: "absolute", left: 960, top: 540,
+      transform: "translate(-50%, -50%)", zIndex: 10,
+      background: "#F7F4F4", padding: "28px 36px",
+      display: "flex", flexDirection: "column", gap: 12, whiteSpace: "nowrap",
+    }}>
+      {items.map((item, i) => (
+        <div key={i} style={{
+          fontFamily: "'Noto Sans JP', sans-serif",
+          fontSize: 76, fontWeight: 900,
+          color: i === activeIdx ? "#CC3300" : "#4B6AC6",
+        }}>{item.text}</div>
+      ))}
+    </div>
+  );
+};
+```
+
+#### B3. CTA（LINE・チャンネル登録）
+step07で特定されたCTA候補をコンポーネントとして実装する。
+
+**表示ルール:**
+- 画像エリア中心に配置（left: 540, top: 571, transform: translate(-50%, -50%)）
+- 左からスライドインアニメーション（10フレーム、-40px→0px + opacity 0→1）
+- zIndex: 10
+
+**LINE CTA:**
+- 背景: `#06C755`、文字: 白、fontSize: 99、M PLUS Rounded 1c
+
+**Subscribe CTA:**
+- 背景: `#EF4444`、文字: 白、fontSize: 72、M PLUS Rounded 1c、先頭に「▶」
+
 #### C. テロップレンダラー
 - `telopData` から現在のフレームに該当するテロップを取得
 - テンプレートごとにスタイルを分岐（switch文）
@@ -120,7 +183,7 @@ npx tsc --noEmit
 ## 完了後
 
 ```
-✅ Step 12 完了: メインコンポジションを構築しました。
+✅ Step 08 完了: メインコンポジションを構築しました。
 
 【実装システム】
 - スライド背景: ✅

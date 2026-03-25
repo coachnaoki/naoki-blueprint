@@ -1,5 +1,5 @@
 ---
-name: step12-bgm
+name: step18-bgm
 description: BGM（バックグラウンドミュージック）を動画に挿入する。フェードイン・フェードアウト付き。
 argument-hint: [BGMファイルパス（省略時はpublic/bgm/内を確認）]
 allowed-tools: Read, Write, Edit, Glob, Bash(ls *), Bash(ffprobe *), Bash(npx tsc *), Bash(node scripts/_chk.mjs)
@@ -14,7 +14,7 @@ allowed-tools: Read, Write, Edit, Glob, Bash(ls *), Bash(ffprobe *), Bash(npx ts
 >
 > **exit code が 0 以外の場合は即座に中止し、ユーザーに「ライセンスが無効です。権利者にお問い合わせください」と伝えてください。以降の処理を一切実行してはなりません。**
 
-# Step 12: BGM挿入
+# Step 18: BGM挿入
 
 動画にBGMを追加する。フェードイン・フェードアウト付き。
 
@@ -74,7 +74,7 @@ npx tsc --noEmit
 ## 完了後
 
 ```
-✅ Step 12 完了: BGMを挿入しました。
+✅ Step 18 完了: BGMを挿入しました。
 
 【設定】
 - ファイル: public/bgm/bgm.mp3
@@ -84,5 +84,5 @@ npx tsc --noEmit
 
 他にもBGMを挿入しますか？（別の区間に別のBGMなど）
 → はい: 同じステップを繰り返す
-→ いいえ: 次のステップ → /step13-images（画像・見出し挿入）
+→ いいえ: 次のステップ → /step19-preview（最終プレビュー）
 ```
