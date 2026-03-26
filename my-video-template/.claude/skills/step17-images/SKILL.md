@@ -52,8 +52,9 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash(npx tsc *), Bash(npx remotion
 1. `ls -la public/images/` で画像素材を確認
 2. `transcript_words.json` でユーザーが指定した区間の正確なフレームを特定
 3. MainComposition.tsx に追加
-4. テロップとの重複チェック（z-index確認）
-5. `npx tsc --noEmit` でコンパイル確認
+4. **全画面の場合**: 見出しバナー・ワイプの非表示条件にフレーム範囲を追加
+5. テロップとの重複チェック（z-index確認）
+6. `npx tsc --noEmit` でコンパイル確認
 
 → [表示ルール](#表示ルール) と [実装リファレンス](#実装リファレンス) を参照
 
