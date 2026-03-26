@@ -1,6 +1,6 @@
 ---
 name: step17-images
-description: イメージ画像を動画に挿入する。画像生成（Cloudflare Workers AI）にも対応。全画面表示（ズーム/フェード）と左側挿入に対応。位置は固定値。
+description: イメージ画像を感情ベースで動画に挿入する。画像生成（Gemini API）にも対応。感情が動く瞬間に配置。全画面表示と左側挿入に対応。
 argument-hint: [挿入位置の秒数やキーワード（省略時はtranscriptから判断）]
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash(npx tsc *), Bash(npx remotion still *), Bash(rm *), Bash(ls *), Bash(python3 *), Bash(node scripts/_chk.mjs)
 ---
@@ -61,37 +61,45 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash(npx tsc *), Bash(npx remotion
 
 ## B. AI画像生成 + 挿入
 
-Cloudflare Workers AI（Flux）で場面に合った画像を自動生成して挿入する。
+Gemini API で場面に合った画像を自動生成し、**感情ベース**で挿入する。
 
 ### 前提
-- Cloudflare Worker がデプロイ済み（Flux画像生成API）
-- `scripts/generate-images.py` の `API_URL` と `API_KEY` が設定済み
-- 未セットアップの場合は README.md の「画像生成APIセットアップ」を参照
+- Gemini API キーを取得済み（https://aistudio.google.com/apikey）
+- `scripts/generate-images.py` の `GEMINI_API_KEY` が設定済み
+- `pip install google-genai Pillow` 済み
 
 ### やること
 
-#### 1. 静かな区間の自動検出
+#### 1. 感情ピークの特定
 
-以下のすべてが **10秒以上（250フレーム）** 入っていない区間を特定する：
-- スライド（slideTimeline.ts で slideNumber > 0 の区間）
-- 動画クリップ（MainComposition.tsx の `<OffthreadVideo>` Sequence）
-- 既存画像（MainComposition.tsx の `<Img>` 表示区間）
-- BulletList（bulletListRanges）
+`telopData.ts` と `transcript_words.json` を読み、**視聴者の感情が動く瞬間**をピックアップする。
 
-```
-slideTimeline.ts → slideNumber: 0 の区間を抽出
-MainComposition.tsx → 動画クリップ・既存画像の区間を抽出
-→ 上記すべてが入っていない連続区間 ≥ 250フレームをリストアップ
-```
+**画像を入れるべき感情の例：**
+- 😟 困惑・挫折（「多すぎる」「分からない」「できない」）
+- 😲 驚き・感動（「すごい」「信じられない」「自動で」）
+- 😢 不安・危機感（「なくなる」「失う」「独立したら」）
+- 🤝 共感・告白（「実は〜です」「皆さんも〜ですよね」）
+- ✨ 希望・可能性（「ゼロからできる」「誰でも」「未来」）
+- 🎯 理解・整理（「つまり」「整理すると」「ファミリー」）
 
-#### 2. 各区間の発話内容を確認
+**ピックアップの手順：**
+1. telopData.ts のテロップテキストを通読する
+2. 感情が動くテロップを10〜15個マークする
+3. 以下を除外する：
+   - スライド表示中の区間（slideTimeline.ts で slideNumber > 0）
+   - 動画クリップ表示中の区間（MainComposition.tsx の `<OffthreadVideo>`）
+   - BulletList表示中の区間
+4. 残ったものから、動画全体にバランスよく分散するよう選ぶ（偏らないように）
 
-`transcript_words.json` で各静かな区間の発話を取得し、場面に合った画像プロンプト（英語）を作成する。
+#### 2. 画像プロンプトの作成
+
+各感情ピークに合う画像プロンプト（英語）を作成する。
 
 **プロンプトのルール:**
-- 英語で書く（Fluxは英語の方が品質が高い）
+- 英語で書く（英語の方が品質が高い）
 - 末尾に必ず `no text no words no letters` を追加（文字入り防止）
 - 発話の内容・感情・トーンに合わせる
+- **テロップの「意味」と画像の「内容」が明確に対応すること**（抽象的すぎるNG）
 
 #### 3. 画像を一括生成
 
@@ -106,8 +114,8 @@ python3 scripts/generate-images.py
 #### 4. 画像の確認・場面照合
 
 生成された画像を1枚ずつ確認し、発話内容と照合する：
-- transcript_words.json の該当区間の発話を表示
-- 画像の内容が発話とマッチしているか判定
+- そのフレームのテロップテキストを表示
+- 画像の内容がテロップの感情・意味とマッチしているか判定
 - **不一致の場合はプロンプトを修正して再生成**（既存ファイルを削除してからスクリプト再実行）
 - **「ギリOK」は NG** — 明確にマッチしていなければ再生成する
 
@@ -125,25 +133,28 @@ npx tsc --noEmit
 
 ## 表示ルール
 
-### 左側挿入画像（イメージ画像）
+### 左側挿入画像（感情ベース配置）
 
-- **表示開始**: 静かな区間が10秒続いた後、最初の **SE付きテロップの startFrame** と同時に表示
-- **表示終了**: 表示開始後、**テロップが3回切り替わったら消える**（3回目のテロップ startFrame - 1）
-- **同一区間で複数枚**: 前の画像が消えた後、さらに10秒静かなら次の画像を表示
+- **表示開始**: 感情ピークのテロップの **startFrame** と同時に表示
+- **表示終了**: その感情の流れが続いている間（目安: テロップ2〜4回分、約100〜150フレーム）
+- **終了の判断**: 話題が変わる / 感情のトーンが変わる / 次のスライドや動画クリップが始まる、のいずれか
+- **密度の目安**: 動画全体で8〜15枚程度。多すぎると邪魔、少なすぎると単調
 
-### SE付きテロップの判定
-
-templateConfig で `seFolder` が null でないテンプレート:
-`normal_emphasis` / `emphasis` / `emphasis2` / `emphasis_large` / `negative` / `negative2` / `third_party` / `mascot` / `bullet_list` / `table` / `line_cta` / `subscribe_cta` / `theme` / `profile`
-
-### 配置の計算手順
+### 配置のガイドライン
 
 ```
-1. 静かな区間の開始フレーム + 250（10秒）= cursor
-2. cursor 以降の最初のSE付きテロップ startFrame = 画像の表示開始
-3. 表示開始以降のテロップ startFrame を3つ取得 → 3つ目の startFrame - 1 = 画像の表示終了
-4. 表示終了 + 1 を新しい cursor にして、cursor + 250 が区間内なら繰り返し
+1. telopData.ts で感情ピークのテロップを特定（startFrame を取得）
+2. そのテロップの startFrame = 画像の表示開始
+3. 同じ感情の流れが続くテロップ群の最後の endFrame = 画像の表示終了
+4. スライド・動画クリップ・BulletList表示中は画像を入れない
+5. 動画全体にバランスよく分散させる（冒頭・中盤・終盤に偏りなく）
 ```
+
+### NG配置（避けること）
+
+- テロップの内容と画像の意味が合っていない配置
+- 同じ感情の画像が連続する（驚き→驚き→驚きなど）
+- 動画の後半に偏る、または前半だけに集中する
 
 ---
 
@@ -262,7 +273,7 @@ durationInFrames={元のフレーム数 + 250}  // 10秒の場合
 ✅ Step 17 完了: イメージ画像を挿入しました。
 
 【挿入一覧】
-- f{N}〜f{N}: example.jpg（左側挿入・SE同時表示・テロップ3回で消去）
+- f{N}〜f{N}: example.jpg「テロップテキスト」感情タグ
 - f{N}〜f{N}: example2.jpg（全画面・ズーム）
 - f{N}〜f{N}: endscreen.png（エンドスクリーン ○秒）
 
@@ -270,7 +281,7 @@ durationInFrames={元のフレーム数 + 250}  // 10秒の場合
 - 全{N}枚が発話内容と一致 ✓
 - 不一致で再生成した画像: {N}枚
 
-他にも画像を挿入しますか？
-→ はい: 同じステップを繰り返す
-→ いいえ: 次のステップ → /step18-bgm（BGM挿入）
+確認してほしいポイントがあれば教えてね！
+→ 調整したい: フレーム範囲やマッチング修正
+→ OK: 次のステップ → /step18-bgm（BGM挿入）
 ```

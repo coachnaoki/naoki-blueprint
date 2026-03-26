@@ -749,7 +749,7 @@ if (frame < startFrame || frame > endFrame) return null;
 
 ### AI画像生成のプロンプトルール
 
-- **英語で書く**（Fluxモデルは英語の方が品質が高い）
+- **英語で書く**（英語の方が品質が高い）
 - **末尾に必ず `no text no words no letters` を追加**（文字入り防止）
 - 発話の内容・感情・トーンに合わせる
 - **場面照合は厳格に**:「ギリOK」はNG → 明確にマッチしていなければ再生成
