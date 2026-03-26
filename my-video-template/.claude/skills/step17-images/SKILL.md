@@ -41,11 +41,11 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash(npx tsc *), Bash(npx remotion
 各画像について以下を必ずユーザーに質問してから作業を開始する：
 
 1. **どの区間に入れるか**（台本のどこからどこまで）
-2. **表示方法**: 全画面 or 左側挿入
+2. **表示方法**: 全画面 or 左側挿入（**毎回必ず確認する**）
 3. **全画面の場合 — アニメーション**:
    - `zoom` — ゆっくりズームイン（Ken Burns風）
-   - `fadeLeft` — 左からフェードイン
-   - `fadeBottom` — 下からフェードイン
+   - `slideUp` — 拡大しながらゆっくり上にスライド
+   - `slideLeft` — 拡大しながらゆっくり左にスライド
 
 ### やること
 
@@ -195,37 +195,51 @@ npx tsc --noEmit
 | height | 405 |
 | zIndex | 5 |
 
-### 全画面: ズーム（zoomIn）
+### 全画面: ズーム（zoom）
 ```typescript
-const scale = interpolate(frame, [startFrame, endFrame], [1.0, 1.15], {
-  extrapolateLeft: "clamp", extrapolateRight: "clamp",
-});
-<Img src={staticFile("images/example.jpg")} style={{
-  position: "absolute", width: 1920, height: 1080,
-  objectFit: "cover", zIndex: 5,
-  transform: `scale(${scale})`,
-}} />
+{frame >= startFrame && frame <= endFrame && (
+  <Img src={staticFile("images/example.jpg")} style={{
+    position: "absolute", width: 1920, height: 1080,
+    objectFit: "cover", zIndex: 5,
+    transform: `scale(${interpolate(frame, [startFrame, endFrame], [1.0, 1.15], {
+      extrapolateLeft: "clamp", extrapolateRight: "clamp",
+    })})`,
+  }} />
+)}
 ```
 
-### 全画面: 左からフェードイン（fadeLeft）
+### 全画面: 上スライド（slideUp）
 ```typescript
-const translateX = interpolate(frame, [startFrame, startFrame + 15], [-100, 0], {
-  extrapolateLeft: "clamp", extrapolateRight: "clamp",
-});
-const opacity = interpolate(frame, [startFrame, startFrame + 15], [0, 1], {
-  extrapolateLeft: "clamp", extrapolateRight: "clamp",
-});
+{frame >= startFrame && frame <= endFrame && (
+  <Img src={staticFile("images/example.jpg")} style={{
+    position: "absolute", width: 1920, height: 1080,
+    objectFit: "cover", zIndex: 5,
+    transform: `scale(1.15) translateY(${interpolate(frame, [startFrame, endFrame], [20, -20], {
+      extrapolateLeft: "clamp", extrapolateRight: "clamp",
+    })}px)`,
+  }} />
+)}
 ```
 
-### 全画面: 下からフェードイン（fadeBottom）
+### 全画面: 左スライド（slideLeft）
 ```typescript
-const translateY = interpolate(frame, [startFrame, startFrame + 15], [100, 0], {
-  extrapolateLeft: "clamp", extrapolateRight: "clamp",
-});
-const opacity = interpolate(frame, [startFrame, startFrame + 15], [0, 1], {
-  extrapolateLeft: "clamp", extrapolateRight: "clamp",
-});
+{frame >= startFrame && frame <= endFrame && (
+  <Img src={staticFile("images/example.jpg")} style={{
+    position: "absolute", width: 1920, height: 1080,
+    objectFit: "cover", zIndex: 5,
+    transform: `scale(1.15) translateX(${interpolate(frame, [startFrame, endFrame], [20, -20], {
+      extrapolateLeft: "clamp", extrapolateRight: "clamp",
+    })}px)`,
+  }} />
+)}
 ```
+
+⚠️ **注意**: `scale(1.15)` は必須。スケールなしでtranslateだけ使うと画面端に余白が出る。
+⚠️ **opacityアニメーション禁止**: フェードイン/フェードアウトは使わない。パッと表示して、表示中はスケール+移動のみ。
+
+### 全画面画像表示中のルール
+- **見出しバナー（HeadingBanner）を非表示にする**: 全画面画像のフレーム範囲をHeadingBannerの表示条件に追加
+- **ワイプを非表示にする**: 全画面画像が表示されている間はワイプも隠す
 
 ---
 
