@@ -1,54 +1,28 @@
 #!/usr/bin/env python3
 """
-Cloudflare Workers AI (Flux) を使って動画用画像を一括生成するスクリプト
+Gemini API を使って動画用画像を一括生成するスクリプト
 
 セットアップ:
-1. Cloudflareアカウントを作成 (https://dash.cloudflare.com/sign-up)
-2. Workers & Pages → Create → Start with Hello World!
-3. Edit Code で worker.js を画像生成コードに差し替え → Deploy
-4. Settings → Variables and Secrets → API_KEY を追加
-5. Settings → Bindings → Workers AI を追加（Variable name: AI）
-6. 以下の API_URL と API_KEY を更新
-
-worker.js のコード:
-```javascript
-export default {
-    async fetch(request, env) {
-        const API_KEY = env.API_KEY;
-        const url = new URL(request.url);
-        const auth = request.headers.get("Authorization");
-        if (auth !== `Bearer ${API_KEY}`) return json({ error: "Unauthorized" }, 401);
-        if (request.method !== "POST" || url.pathname !== "/") return json({ error: "Not allowed" }, 405);
-        try {
-            const { prompt } = await request.json();
-            if (!prompt) return json({ error: "Prompt is required" }, 400);
-            const result = await env.AI.run("@cf/black-forest-labs/flux-1-schnell", { prompt });
-            if (result && result.image) {
-                const binaryData = Uint8Array.from(atob(result.image), c => c.charCodeAt(0));
-                return new Response(binaryData, { headers: { "Content-Type": "image/png" } });
-            }
-            return new Response(result, { headers: { "Content-Type": "image/jpeg" } });
-        } catch (err) {
-            return json({ error: "Failed to generate image", details: err.message }, 500);
-        }
-    },
-};
-function json(data, status = 200) {
-    return new Response(JSON.stringify(data), { status, headers: { "Content-Type": "application/json" } });
-}
-```
+1. Google AI Studio (https://aistudio.google.com/apikey) でAPIキーを取得
+2. pip install google-genai Pillow
+3. 以下の GEMINI_API_KEY を更新
 """
-import urllib.request
-import json
-import ssl
 import time
 import os
+
+try:
+    from google import genai
+    from google.genai import types
+except ImportError:
+    print("google-genai がインストールされていません。以下を実行してください:")
+    print("  pip install google-genai Pillow")
+    exit(1)
 
 # ============================================================
 # 設定: ここを自分の環境に合わせて変更する
 # ============================================================
-API_URL = "https://your-worker-name.your-subdomain.workers.dev/"
-API_KEY = "your-api-key"
+GEMINI_API_KEY = "your-api-key"
+MODEL = "gemini-3.1-flash-image-preview"
 
 OUTPUT_DIR = os.path.join(os.path.dirname(__file__), "..", "public", "images", "generated")
 os.makedirs(OUTPUT_DIR, exist_ok=True)
@@ -69,31 +43,23 @@ IMAGES = [
 ]
 
 
-def generate_image(prompt: str, output_path: str) -> bool:
-    ctx = ssl.create_default_context()
-    data = json.dumps({"prompt": prompt}).encode()
-    req = urllib.request.Request(
-        API_URL,
-        data=data,
-        headers={
-            "Authorization": f"Bearer {API_KEY}",
-            "Content-Type": "application/json",
-            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36",
-        },
-        method="POST",
-    )
+def generate_image(client, prompt: str, output_path: str) -> bool:
     try:
-        with urllib.request.urlopen(req, context=ctx, timeout=120) as resp:
-            img = resp.read()
-            if len(img) < 1000:
-                print(f"  ⚠ Response too small ({len(img)} bytes), skipping")
-                return False
-            with open(output_path, "wb") as f:
-                f.write(img)
-            print(f"  ✓ Saved ({len(img):,} bytes)")
-            return True
-    except urllib.error.HTTPError as e:
-        print(f"  ✗ HTTP Error {e.code}: {e.read().decode()[:200]}")
+        response = client.models.generate_content(
+            model=MODEL,
+            contents=[prompt],
+            config=types.GenerateContentConfig(
+                response_modalities=["IMAGE", "TEXT"],
+            ),
+        )
+        for part in response.candidates[0].content.parts:
+            if part.inline_data is not None:
+                image = part.as_image()
+                image.save(output_path)
+                size = os.path.getsize(output_path)
+                print(f"  ✓ Saved ({size:,} bytes)")
+                return True
+        print("  ⚠ No image in response")
         return False
     except Exception as e:
         print(f"  ✗ Error: {e}")
@@ -105,6 +71,12 @@ def main():
         print("IMAGES リストが空です。プロンプトを追加してから実行してください。")
         return
 
+    if GEMINI_API_KEY == "your-api-key":
+        print("GEMINI_API_KEY を設定してください。")
+        print("取得先: https://aistudio.google.com/apikey")
+        return
+
+    client = genai.Client(api_key=GEMINI_API_KEY)
     print(f"=== 画像一括生成 ({len(IMAGES)}枚) ===\n")
     success = 0
     for i, img in enumerate(IMAGES, 1):
@@ -115,11 +87,11 @@ def main():
             continue
         print(f"[{i}/{len(IMAGES)}] {img['filename']}")
         print(f"  Prompt: {img['prompt'][:80]}...")
-        if generate_image(img["prompt"], output_path):
+        if generate_image(client, img["prompt"], output_path):
             success += 1
         # Rate limit対策
         if i < len(IMAGES):
-            time.sleep(2)
+            time.sleep(5)
 
     print(f"\n=== 完了: {success}/{len(IMAGES)} 枚生成 ===")
 
