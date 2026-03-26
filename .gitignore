@@ -4,3 +4,4 @@ node_modules/
 public/output/
 projects/
 .license
+.env
