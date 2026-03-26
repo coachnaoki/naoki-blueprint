@@ -153,6 +153,33 @@ const SLIDE_SCRIPT = [
     message: "<span style='font-size:500px;font-weight:900;line-height:1'>20</span>"
   },
 
+  // ---- なぜ20ステップに分けたのか ----
+  {
+    type: "two-columns",
+    title: "なぜ20ステップに分けたのか",
+    titleHighlight: "20ステップ",
+    columns: [
+      {
+        badge: "NG: 丸投げ",
+        badgeColor: "dark",
+        borderColor: "dark",
+        icon: "fa-bomb",
+        main: "動画\n作って",
+        sub: "指示が抽象的すぎて\nAIが迷走する",
+        dividerColor: "dark"
+      },
+      {
+        badge: "OK: 分割",
+        badgeColor: "green",
+        borderColor: "green",
+        icon: "fa-tasks",
+        main: "20個の\n具体に分解",
+        sub: "1ステップ1指示書\nAIが迷わない",
+        dividerColor: "green"
+      }
+    ]
+  },
+
   // =============================================
   // 第2部: みんなが抱える悩み（#9〜#13）
   // =============================================
@@ -261,7 +288,7 @@ const SLIDE_SCRIPT = [
         badgeColor: "green",
         borderColor: "green",
         icon: "fa-check-circle",
-        main: "Shippori Mincho\n102px 赤グラデ",
+        main: "明朝体\n102px  #CC0000",
         sub: "毎回同じ結果\n再現性100%",
         dividerColor: "green"
       }
@@ -270,14 +297,32 @@ const SLIDE_SCRIPT = [
 
   // ---- 15: OK例① テロップの具体 ----
   {
-    type: "code-block",
-    icon: "fa-code",
+    type: "steps",
     title: "答えを渡す = こういうこと",
-    lang: "CLAUDE.md",
-    fontSize: "18px",
-    code: "## テロップスタイル\n\n| テンプレート | フォント           | サイズ | 色              |\n|-------------|-------------------|--------|----------------|\n| 強調        | Shippori Mincho   | 102px  | #990000→#FF2222 |\n| 通常        | M PLUS Rounded 1c | 84px   | #10458B         |\n| ネガティブ   | Shippori Mincho   | 96px   | #FFFFFF         |",
-    highlightLines: [3, 4, 5, 6],
-    note: "具体的な数値をCLAUDE.mdに書く → Claudeは迷わない"
+    titleUnderline: "答えを渡す",
+    steps: [
+      {
+        label: "強調シーン",
+        icon: "fa-exclamation",
+        style: "green",
+        content: "明朝体 102px <span style='background:#CCFF00'>#CC0000</span>",
+        num: "01"
+      },
+      {
+        label: "通常シーン",
+        icon: "fa-comment",
+        style: "green",
+        content: "ゴシック体 84px <span style='background:#CCFF00'>紺色</span>",
+        num: "02"
+      },
+      {
+        label: "ネガティブ",
+        icon: "fa-cloud",
+        style: "highlight",
+        content: "明朝体 96px <span style='background:#CCFF00'>白 + 暗い背景</span>",
+        num: "03"
+      },
+    ]
   },
 
   // ---- 16: NG例② レイアウト ----
@@ -292,7 +337,7 @@ const SLIDE_SCRIPT = [
         borderColor: "dark",
         icon: "fa-times-circle",
         main: "見やすい位置に\n配置して",
-        sub: "Claudeが毎回迷う\n結果がバラバラ",
+        sub: "AIが毎回迷う\n結果がバラバラ",
         dividerColor: "dark"
       },
       {
@@ -300,7 +345,7 @@ const SLIDE_SCRIPT = [
         badgeColor: "green",
         borderColor: "green",
         icon: "fa-check-circle",
-        main: "left: 40px\ntop: 50%",
+        main: "right: 30px\ntop: 30px",
         sub: "迷いゼロ\nピクセル単位で指定",
         dividerColor: "green"
       }
@@ -309,14 +354,13 @@ const SLIDE_SCRIPT = [
 
   // ---- 17: OK例② レイアウトの具体 ----
   {
-    type: "code-block",
-    icon: "fa-code",
-    title: "ワイプ位置もピクセルで渡す",
-    lang: "CLAUDE.md",
-    fontSize: "18px",
-    code: "## ワイプ（丸い小窓）ルール\n\n- 位置: 右上（top: 30px, right: 30px）\n- サイズ: 325×325px\n- borderRadius: 50%\n- z-index: 8\n- boxShadow: 0 4px 20px rgba(0,0,0,0.3)",
-    highlightLines: [3, 4, 5, 6, 7],
-    note: "「右上に丸く」ではなく、数値で全部決める"
+    type: "big-message",
+    label: "POINT",
+    title: "レイアウトも「数値で渡す」",
+    titleUnderline: "数値で渡す",
+    icon: "fa-ruler-combined",
+    badgeIcon: "fa-crosshairs",
+    message: "位置・サイズ・影・角丸…\nすべて<span style='background:#CCFF00'>数値で決めて</span>おけば\nAIは毎回同じ結果を出す"
   },
 
   // ---- 18: 具体を出すコツ ----
@@ -343,7 +387,7 @@ const SLIDE_SCRIPT = [
         label: "STEP 3",
         icon: "fa-file-alt",
         style: "highlight",
-        content: "CLAUDE.mdに<span style='background:#CCFF00'>ルールとして書く</span>",
+        content: "AIへの<span style='background:#CCFF00'>ルールブックに書く</span>",
         num: "03"
       },
     ]
@@ -368,65 +412,56 @@ const SLIDE_SCRIPT = [
     icon: "fa-sitemap",
     title: "4つのフェーズ",
     nodes: [
-      { icon: "fa-folder-open", label: "フェーズ1: 素材準備", sub: "step01〜05: コンテキスト → 素材確認 → カット → 文字起こし → 修正", right: "5 steps" },
-      { icon: "fa-hammer", label: "フェーズ2: 動画構築", sub: "step06〜10: テンプレート → テロップ → コンポジション → 登録 → プレビュー", right: "5 steps" },
-      { icon: "fa-photo-video", label: "フェーズ3: 素材挿入", sub: "step11〜14: グリーンバック → BGM → 画像・見出し → 動画クリップ", right: "4 steps" },
-      { icon: "fa-tv", label: "フェーズ4: スライド + 出力", sub: "step15〜20: スライド生成 → キャプチャ → タイムライン → プレビュー → レンダリング", right: "6 steps", highlight: true }
-    ]
-  },
-
-  // ---- 21: なぜ20ステップに分けたのか ----
-  {
-    type: "two-columns",
-    title: "なぜ20ステップに分けたのか",
-    titleHighlight: "20ステップ",
-    columns: [
-      {
-        badge: "NG: 丸投げ",
-        badgeColor: "dark",
-        borderColor: "dark",
-        icon: "fa-bomb",
-        main: "動画\n作って",
-        sub: "指示が抽象的すぎて\nClaudeが迷走する",
-        dividerColor: "dark"
-      },
-      {
-        badge: "OK: 分割",
-        badgeColor: "green",
-        borderColor: "green",
-        icon: "fa-tasks",
-        main: "20個の\n具体に分解",
-        sub: "1ステップ1スキル\nClaudeが迷わない",
-        dividerColor: "green"
-      }
+      { icon: "fa-folder-open", label: "フェーズ1: 素材準備", sub: "step01〜05: 方向性決定 → 素材確認 → 自動カット → テキスト変換 → 修正", right: "5 steps" },
+      { icon: "fa-hammer", label: "フェーズ2: 動画構築", sub: "step06〜10: スタイル設定 → テロップ生成 → 画面統合 → 動画設定 → 中間確認", right: "5 steps" },
+      { icon: "fa-photo-video", label: "フェーズ3: 素材・スライド挿入", sub: "step11〜18: 背景合成 → 動画クリップ → スライド → 画像 → BGM", right: "8 steps" },
+      { icon: "fa-tv", label: "フェーズ4: 確認 + 出力", sub: "step19〜20: 最終確認 → 完成動画の書き出し", right: "2 steps", highlight: true }
     ]
   },
 
   // ---- 22: スキルファイルとは ----
   {
-    type: "code-block",
-    icon: "fa-file-code",
-    title: "SKILL.md = 「答え」を書いた指示書",
-    lang: "SKILL.md",
-    fontSize: "17px",
-    code: "---\nname: step07-telop\ndescription: テロップデータを作成する\n---\n\n# Step 07: テロップデータ作成\n\n## 前提条件\n- Step 06（テンプレート設定）が完了\n\n## ユーザーに確認すること\n1. 特に強調したいキーワード\n\n## 完了条件\n- telopData.ts が存在する\n- 全テロップのスタイルがルールに準拠",
-    highlightLines: [2, 3, 8, 9, 11, 12, 15, 16],
-    note: "前提条件・やること・完了条件の3点セットがスキルの基本"
+    type: "steps",
+    title: "スキルファイル = 「答え」を書いた指示書",
+    titleUnderline: "スキルファイル",
+    steps: [
+      {
+        label: "前提条件",
+        icon: "fa-clipboard-check",
+        style: "green",
+        content: "「<span style='background:#CCFF00'>何が終わっていればOKか</span>」を明記",
+        num: "01"
+      },
+      {
+        label: "やること",
+        icon: "fa-list-ol",
+        style: "green",
+        content: "「<span style='background:#CCFF00'>具体的に何をするか</span>」を手順化",
+        num: "02"
+      },
+      {
+        label: "完了条件",
+        icon: "fa-check-circle",
+        style: "highlight",
+        content: "「<span style='background:#CCFF00'>何ができたら完了か</span>」を定義",
+        num: "03"
+      },
+    ]
   },
 
   // =============================================
-  // 第5部: 20ステップ徹底解説（#23〜#42）
+  // 第5部: 20ステップ概要（#23〜#42）
   // =============================================
 
-  // ---- 23: step01 コンテキスト整理 ----
+  // ---- 23: step01 方向性を決める ----
   {
     type: "big-message",
     label: "PHASE 1 — 素材準備",
-    title: "step01: コンテキスト整理",
-    titleUnderline: "コンテキスト",
-    icon: "fa-clipboard-list",
+    title: "step01: 方向性を決める",
+    titleUnderline: "方向性",
+    icon: "fa-compass",
     badgeIcon: "fa-file-alt",
-    message: "「誰に何を伝えるか」を\n<span style='background:#CCFF00'>video-context.md</span>にまとめる\nClaudeが全ステップで参照する<span style='background:#CCFF00'>判断の軸</span>"
+    message: "「誰に・何を・どう伝えるか」を\n<span style='background:#CCFF00'>1枚のシート</span>にまとめる\nAIが全ステップで参照する<span style='background:#CCFF00'>判断の軸</span>"
   },
 
   // ---- 24: step02 素材確認 ----
@@ -437,44 +472,44 @@ const SLIDE_SCRIPT = [
     titleUnderline: "素材確認",
     icon: "fa-folder-open",
     badgeIcon: "fa-check",
-    message: "動画・BGM・SE・画像が\n<span style='background:#CCFF00'>フォルダに揃っているか</span>確認\n素材不足のまま進んで戻るのを防ぐ"
+    message: "動画・BGM・SE・画像が\n<span style='background:#CCFF00'>すべて揃っているか</span>自動チェック\n素材不足のまま進んで戻るのを防ぐ"
   },
 
-  // ---- 25: step03 ジェットカット ----
+  // ---- 25: step03 自動カット ----
   {
     type: "big-message",
     label: "PHASE 1 — 素材準備",
-    title: "step03: ジェットカット",
-    titleUnderline: "ジェットカット",
+    title: "step03: 自動カット",
+    titleUnderline: "自動カット",
     icon: "fa-cut",
     badgeIcon: "fa-volume-mute",
-    message: "FFmpegで<span style='background:#CCFF00'>無音部分を自動カット</span>\n「えーと…」「あのー…」が消えて\nテンポの良い動画に"
+    message: "「えーと…」「あのー…」など\n<span style='background:#CCFF00'>無音・言い淀みを自動検出</span>してカット\n一瞬でテンポの良い動画に"
   },
 
-  // ---- 26: step04 文字起こし ----
+  // ---- 26: step04 音声→テキスト変換 ----
   {
     type: "big-message",
     label: "PHASE 1 — 素材準備",
-    title: "step04: 文字起こし",
-    titleUnderline: "文字起こし",
+    title: "step04: 音声→テキスト変換",
+    titleUnderline: "テキスト変換",
     icon: "fa-closed-captioning",
     badgeIcon: "fa-microphone",
-    message: "Whisperで単語単位の<span style='background:#CCFF00'>タイムスタンプ付きJSON</span>生成\n全テロップのタイミングの<span style='background:#CCFF00'>元データ</span>になる"
+    message: "動画の音声を<span style='background:#CCFF00'>自動でテキスト化</span>\n「いつ・何を話したか」の\n<span style='background:#CCFF00'>タイミング情報</span>も同時に取得"
   },
 
-  // ---- 27: step05 文字起こし修正 ----
+  // ---- 27: step05 テキスト修正 ----
   {
     type: "two-columns",
-    title: "step05: 文字起こし修正",
+    title: "step05: テキスト修正",
     titleHighlight: "修正",
     columns: [
       {
-        badge: "Whisperの出力",
+        badge: "AI変換の出力",
         badgeColor: "dark",
         borderColor: "dark",
         icon: "fa-robot",
         main: "くろーど\nこーど",
-        sub: "AIは完璧じゃない\n誤変換が混じる",
+        sub: "AI音声認識は完璧じゃない\n誤変換が混じる",
         dividerColor: "dark"
       },
       {
@@ -483,383 +518,201 @@ const SLIDE_SCRIPT = [
         borderColor: "green",
         icon: "fa-spell-check",
         main: "Claude\nCode",
-        sub: "台本と照合して\n正しい表記に修正",
+        sub: "台本と照合して\n自動で正しい表記に",
         dividerColor: "green"
       }
     ]
   },
 
-  // ---- 28: step06 テンプレート設定 ----
-  {
-    type: "table",
-    icon: "fa-palette",
-    title: "step06: テンプレート設定 — 「答えを渡す」の核心",
-    headers: ["テンプレート", "フォント", "サイズ", "色"],
-    rows: [
-      ["強調", "Shippori Mincho", "102px", "#990000→#FF2222"],
-      ["強調2", "Shippori Mincho", "135px", "#FFD700→#B8860B"],
-      ["通常", "M PLUS Rounded 1c", "84px", "#10458B"],
-      ["ネガティブ", "Shippori Mincho", "96px", "#FFFFFF"],
-      ["第三者発言", "M PLUS Rounded 1c", "84px", "#FFFFFF"],
-    ],
-    highlightRows: [0, 1],
-    compact: true,
-    note: "全13種類のフォント・サイズ・色・SE対応を数値で定義 → Claudeは迷わない"
-  },
-
-  // ---- 29: step07 テロップデータ作成 ----
+  // ---- 28: step06 スタイル設定 ----
   {
     type: "big-message",
     label: "PHASE 2 — 動画構築",
-    title: "step07: テロップデータ作成",
-    titleUnderline: "テロップデータ",
+    title: "step06: スタイル設定",
+    titleUnderline: "スタイル設定",
+    icon: "fa-palette",
+    badgeIcon: "fa-paint-brush",
+    message: "テロップの<span style='background:#CCFF00'>フォント・サイズ・色</span>を\nルールとして定義\nここで「答え」を渡すから<span style='background:#CCFF00'>毎回ブレない</span>"
+  },
+
+  // ---- 29: step07 テロップ自動生成 ----
+  {
+    type: "big-message",
+    label: "PHASE 2 — 動画構築",
+    title: "step07: テロップ自動生成",
+    titleUnderline: "テロップ自動生成",
     icon: "fa-font",
     badgeIcon: "fa-magic",
-    message: "どの発話にどのスタイルを当てるかを<span style='background:#CCFF00'>自動判定</span>\n判断表に従うから<span style='background:#CCFF00'>毎回ブレない</span>"
+    message: "どの発話にどのスタイルを当てるかを\n<span style='background:#CCFF00'>AIが自動判定</span>\nルールに従うから<span style='background:#CCFF00'>毎回同じ品質</span>"
   },
 
-  // ---- 30: step08 コンポジション構築 ----
+  // ---- 30: step08 画面統合 ----
   {
     type: "big-message",
     label: "PHASE 2 — 動画構築",
-    title: "step08: コンポジション構築",
-    titleUnderline: "コンポジション",
+    title: "step08: 画面統合",
+    titleUnderline: "画面統合",
     icon: "fa-layer-group",
     badgeIcon: "fa-puzzle-piece",
-    message: "テロップ・スライド・ワイプを\n<span style='background:#CCFF00'>1つの画面に統合</span>\nReactコンポーネントとして組み立てる"
+    message: "テロップ・スライド・ワイプを\n<span style='background:#CCFF00'>1つの画面に統合</span>\n動画の「骨格」が完成"
   },
 
-  // ---- 31: step09 登録 ----
+  // ---- 31: step09 動画設定 ----
   {
     type: "big-message",
     label: "PHASE 2 — 動画構築",
-    title: "step09: コンポジション登録",
-    titleUnderline: "登録",
+    title: "step09: 動画設定",
+    titleUnderline: "動画設定",
     icon: "fa-cog",
-    message: "解像度 <span style='background:#CCFF00'>1920×1080</span>\nFPS・総フレーム数を設定して\nRemotionに登録"
+    message: "解像度 <span style='background:#CCFF00'>1920×1080</span>\nフレームレート・総尺を設定して\n動画として登録"
   },
 
-  // ---- 32: step10 プレビュー ----
+  // ---- 32: step10 中間確認 ----
   {
     type: "big-message",
     label: "PHASE 2 — 動画構築",
-    title: "step10: プレビュー確認",
-    titleUnderline: "プレビュー",
+    title: "step10: 中間確認",
+    titleUnderline: "中間確認",
     icon: "fa-search",
     badgeIcon: "fa-eye",
-    message: "スクショを撮って<span style='background:#CCFF00'>目視確認</span>\n問題があればその場で修正\nOKならブラウザで再生確認"
+    message: "ここまでの仕上がりを<span style='background:#CCFF00'>目視確認</span>\n問題があればその場で修正\nOKなら次のフェーズへ"
   },
 
-  // ---- 33: step11 グリーンバック ----
+  // ---- 33: step11 背景合成 ----
   {
     type: "big-message",
-    label: "PHASE 3 — 素材挿入",
-    title: "step11: グリーンバック背景置換",
-    titleUnderline: "グリーンバック",
+    label: "PHASE 3 — 素材・スライド挿入",
+    title: "step11: 背景合成",
+    titleUnderline: "背景合成",
     icon: "fa-image",
     badgeIcon: "fa-exchange-alt",
-    message: "グリーンバック撮影の場合\n<span style='background:#CCFF00'>背景を画像に置換</span>\n不要ならスキップ"
+    message: "グリーンバック撮影の場合\n<span style='background:#CCFF00'>背景を好きな画像に置換</span>\n不要ならスキップ"
   },
 
-  // ---- 34: step12 BGM ----
+  // ---- 34: step12 動画クリップ挿入 ----
   {
-    type: "steps",
-    title: "step12: BGM挿入",
-    titleUnderline: "BGM挿入",
-    label: "PHASE 3 — 素材挿入",
-    steps: [
-      {
-        label: "確認",
-        icon: "fa-question",
-        style: "green",
-        content: "「台本の<span style='background:#CCFF00'>どこからどこまで</span>」を聞く",
-        num: "01"
-      },
-      {
-        label: "挿入",
-        icon: "fa-music",
-        style: "green",
-        content: "<span style='background:#CCFF00'>フェードイン/アウト</span>付きで追加",
-        num: "02"
-      },
-      {
-        label: "ループ",
-        icon: "fa-redo",
-        style: "highlight",
-        content: "「他にもBGMを挿入しますか？」→<span style='background:#CCFF00'>追加ループ</span>",
-        num: "03"
-      },
-    ]
+    type: "big-message",
+    label: "PHASE 3 — 素材・スライド挿入",
+    title: "step12: 動画クリップ挿入",
+    titleUnderline: "動画クリップ",
+    icon: "fa-film",
+    badgeIcon: "fa-play",
+    message: "デモ映像・画面録画などの\n<span style='background:#CCFF00'>動画素材を挿入</span>\n音声あり/なしも選べる"
   },
 
-  // ---- 35: step13 画像・見出し ----
+  // ---- 35: step13 スライド自動生成 ----
+  {
+    type: "big-message",
+    label: "PHASE 3 — 素材・スライド挿入",
+    title: "step13: スライド自動生成",
+    titleUnderline: "スライド自動生成",
+    icon: "fa-file-powerpoint",
+    badgeIcon: "fa-magic",
+    message: "台本の内容から\n<span style='background:#CCFF00'>スライドを自動で生成</span>\nテンプレートを使い分けて統一感を保つ"
+  },
+
+  // ---- 36: step14 スライド画像化 ----
+  {
+    type: "big-message",
+    label: "PHASE 3 — 素材・スライド挿入",
+    title: "step14: スライド画像化",
+    titleUnderline: "画像化",
+    icon: "fa-camera",
+    message: "生成したスライドを\n<span style='background:#CCFF00'>動画用の画像に自動変換</span>\nフルHD品質で書き出し"
+  },
+
+  // ---- 37: step15 段階表示 ----
+  {
+    type: "big-message",
+    label: "PHASE 3 — 素材・スライド挿入",
+    title: "step15: 段階表示",
+    titleUnderline: "段階表示",
+    icon: "fa-th-large",
+    badgeIcon: "fa-layer-group",
+    message: "箇条書き・カード系スライドを\n<span style='background:#CCFF00'>1つずつ現れる</span>アニメーションに\nプレゼンのような演出効果"
+  },
+
+  // ---- 38: step16 タイムライン ----
+  {
+    type: "big-message",
+    label: "PHASE 3 — 素材・スライド挿入",
+    title: "step16: タイムライン設定",
+    titleUnderline: "タイムライン",
+    icon: "fa-stream",
+    badgeIcon: "fa-clock",
+    message: "どの場面でどのスライドを表示するか\n<span style='background:#CCFF00'>AIが提案</span>\nユーザーが<span style='background:#CCFF00'>承認 or 調整</span>して確定"
+  },
+
+  // ---- 38: step17 画像挿入 ----
   {
     type: "three-cards",
-    title: "step13: 画像・見出し挿入",
-    titleHighlight: "3種類",
+    title: "step17: 画像挿入",
+    titleHighlight: "画像挿入",
     cards: [
       {
         icon: "fa-heading",
         title: "見出しバナー",
-        lines: ["左上に表示", "左からスライドイン/アウト"]
+        lines: ["セクション区切り", "スライドインで表示"]
       },
       {
         icon: "fa-tv",
         title: "タイトルコール",
-        lines: ["画面下部に表示", "下からスライドイン/アウト"]
+        lines: ["画面下部に表示", "印象的な演出"]
       },
       {
-        icon: "fa-image",
-        title: "イメージ画像",
-        lines: ["全画面", "（ズーム/フェード）", "または左右挿入"]
+        icon: "fa-robot",
+        title: "AI画像生成",
+        lines: ["イメージに合う画像を", "AIが自動生成"]
       }
     ]
   },
 
-  // ---- 36: step14 動画クリップ ----
-  {
-    type: "steps",
-    title: "step14: 動画クリップ挿入",
-    titleUnderline: "動画クリップ挿入",
-    label: "PHASE 3 — 素材挿入",
-    steps: [
-      {
-        label: "確認",
-        icon: "fa-question",
-        style: "green",
-        content: "「台本の<span style='background:#CCFF00'>どこからどこまで</span>」を聞く",
-        num: "01"
-      },
-      {
-        label: "音声",
-        icon: "fa-volume-up",
-        style: "green",
-        content: "挿入動画の音声: <span style='background:#CCFF00'>あり or なし</span>",
-        num: "02"
-      },
-      {
-        label: "ループ",
-        icon: "fa-redo",
-        style: "highlight",
-        content: "「他にも動画を挿入しますか？」→<span style='background:#CCFF00'>追加ループ</span>",
-        num: "03"
-      },
-    ]
-  },
-
-  // ---- 37: step15 スライド生成 ----
+  // ---- 39: step18 BGM挿入 ----
   {
     type: "big-message",
-    label: "PHASE 4 — スライド + 出力",
-    title: "step15: スライド生成",
-    titleUnderline: "スライド生成",
-    icon: "fa-file-powerpoint",
-    badgeIcon: "fa-magic",
-    message: "台本からHTMLスライドを<span style='background:#CCFF00'>自動生成</span>\n7種類のテンプレートを使い分け"
+    label: "PHASE 3 — 素材・スライド挿入",
+    title: "step18: BGM挿入",
+    titleUnderline: "BGM",
+    icon: "fa-music",
+    badgeIcon: "fa-volume-up",
+    message: "好きなBGMを指定区間に挿入\n<span style='background:#CCFF00'>フェードイン/アウト</span>も自動\n複数曲の追加にも対応"
   },
 
-  // ---- 38: step16 キャプチャ ----
+  // ---- 40: step19 最終確認 ----
   {
     type: "big-message",
-    label: "PHASE 4 — スライド + 出力",
-    title: "step16: スライドキャプチャ",
-    titleUnderline: "キャプチャ",
-    icon: "fa-camera",
-    message: "PuppeteerでHTMLを\n<span style='background:#CCFF00'>1920×1080のPNG画像</span>に変換"
-  },
-
-  // ---- 39: step17 ブロック分割 ----
-  {
-    type: "big-message",
-    label: "PHASE 4 — スライド + 出力",
-    title: "step17: ブロック分割",
-    titleUnderline: "ブロック分割",
-    icon: "fa-th-large",
-    message: "箇条書き・カード系スライドを\n<span style='background:#CCFF00'>段階表示用</span>に分割撮影\n1枚ずつ現れるアニメーション効果"
-  },
-
-  // ---- 40: step18 スライドタイムライン ----
-  {
-    type: "steps",
-    title: "step18: スライドタイムライン",
-    titleUnderline: "スライドタイムライン",
-    label: "PHASE 4 — スライド + 出力",
-    steps: [
-      {
-        label: "提案",
-        icon: "fa-robot",
-        style: "green",
-        content: "AIが「<span style='background:#CCFF00'>ここにスライドが必要</span>」な箇所を提案",
-        num: "01"
-      },
-      {
-        label: "承認",
-        icon: "fa-check",
-        style: "green",
-        content: "ユーザーが<span style='background:#CCFF00'>承認 or 調整</span>",
-        num: "02"
-      },
-      {
-        label: "追加",
-        icon: "fa-plus",
-        style: "highlight",
-        content: "「他に入れたい場所は？」→<span style='background:#CCFF00'>ユーザー希望</span>を反映",
-        num: "03"
-      },
-    ]
-  },
-
-  // ---- 41: step19 最終プレビュー ----
-  {
-    type: "big-message",
-    label: "PHASE 4 — スライド + 出力",
-    title: "step19: 最終プレビュー",
-    titleUnderline: "最終プレビュー",
+    label: "PHASE 4 — 確認 + 出力",
+    title: "step19: 最終確認",
+    titleUnderline: "最終確認",
     icon: "fa-tv",
     badgeIcon: "fa-check-double",
-    message: "テロップ・スライド・BGM\n画像・動画・見出し\n<span style='background:#CCFF00'>すべて入った状態</span>で最終確認"
+    message: "テロップ・スライド・BGM\n画像・動画・見出し\n<span style='background:#CCFF00'>すべて入った状態</span>で通し確認"
   },
 
-  // ---- 42: step20 レンダリング ----
+  // ---- 41: step20 完成！ ----
   {
     type: "big-message",
-    label: "PHASE 4 — スライド + 出力",
-    title: "step20: レンダリング",
-    titleUnderline: "レンダリング",
+    label: "PHASE 4 — 確認 + 出力",
+    title: "step20: 完成！",
+    titleUnderline: "完成",
     icon: "fa-file-video",
     badgeIcon: "fa-flag-checkered",
-    message: "<span style='background:#CCFF00'>MP4書き出し</span>\nファイルサイズと長さを確認して\n<span style='background:#CCFF00'>完成！</span>"
+    message: "<span style='background:#CCFF00'>完成動画を書き出し</span>\nサイズと長さを確認して\n<span style='background:#CCFF00'>YouTube投稿へ！</span>"
+  },
+
+  // ---- 42: 全体の流れまとめ ----
+  {
+    type: "big-message",
+    label: "RECAP",
+    title: "つまり、こういうこと",
+    titleUnderline: "こういうこと",
+    icon: "fa-lightbulb",
+    badgeIcon: "fa-star",
+    message: "撮影した動画と台本を渡して\nAIが<span style='background:#CCFF00'>20ステップを順番に実行</span>\nあなたは<span style='background:#CCFF00'>その通り進めていくだけ</span>"
   },
 
   // =============================================
-  // 第6部: Claude Codeの得意・不得意（#43〜#47）
-  // =============================================
-
-  // ---- 43: 得意なこと ----
-  {
-    type: "three-cards",
-    title: "Claude Codeが得意なこと",
-    titleHighlight: "得意",
-    cards: [
-      {
-        icon: "fa-ruler",
-        title: "ルールに従う",
-        lines: ["CLAUDE.mdに", "書いた通り忠実に実行"]
-      },
-      {
-        icon: "fa-code",
-        title: "コード生成",
-        lines: ["TypeScript / React", "正確に書ける"]
-      },
-      {
-        icon: "fa-folder",
-        title: "ファイル操作",
-        lines: ["読み書き・検索・置換", "大量ファイルも得意"]
-      }
-    ]
-  },
-
-  // ---- 44: 苦手なこと ----
-  {
-    type: "three-cards",
-    title: "Claude Codeが苦手なこと",
-    titleHighlight: "苦手",
-    cards: [
-      {
-        icon: "fa-paint-brush",
-        title: "「いい感じ」",
-        lines: ["デザインの", "感覚的判断"]
-      },
-      {
-        icon: "fa-eye",
-        title: "視覚デザイン",
-        lines: ["見た目のバランス", "色の組み合わせ感覚"]
-      },
-      {
-        icon: "fa-microphone",
-        title: "音声処理",
-        lines: ["音声ファイルの", "直接操作"]
-      }
-    ]
-  },
-
-  // ---- 45: 苦手の補い方 ----
-  {
-    type: "steps",
-    title: "苦手の補い方",
-    titleUnderline: "苦手の補い方",
-    steps: [
-      {
-        label: "方法1",
-        icon: "fa-camera",
-        style: "green",
-        content: "<span style='background:#CCFF00'>スクショで確認</span>させる → 視覚を補う",
-        num: "01"
-      },
-      {
-        label: "方法2",
-        icon: "fa-ruler-combined",
-        style: "green",
-        content: "<span style='background:#CCFF00'>数値で明文化</span> → 感覚を不要にする",
-        num: "02"
-      },
-      {
-        label: "結果",
-        icon: "fa-check-circle",
-        style: "highlight",
-        content: "苦手が<span style='background:#CCFF00'>消える</span>",
-        num: "!"
-      },
-    ]
-  },
-
-  // ---- 46: 全部Claudeじゃなくていい ----
-  {
-    type: "two-columns",
-    title: "全部Claudeじゃなくていい",
-    titleHighlight: "全部Claudeじゃなくていい",
-    columns: [
-      {
-        badge: "Claude Code",
-        badgeColor: "green",
-        borderColor: "green",
-        icon: "fa-robot",
-        main: "ルール実行\n構造化",
-        sub: "コード生成・ファイル操作\nルールに従った自動判定",
-        dividerColor: "green"
-      },
-      {
-        badge: "Gemini",
-        badgeColor: "dark",
-        borderColor: "dark",
-        icon: "fa-brain",
-        main: "解析\nマルチモーダル",
-        sub: "音声認識・画像認識\nマルチモーダル・長文理解",
-        dividerColor: "dark"
-      }
-    ]
-  },
-
-  // ---- 47: 使い分け ----
-  {
-    type: "table",
-    icon: "fa-exchange-alt",
-    title: "得意な奴に任せる — 使い分けの指針",
-    headers: ["タスク", "最適なAI", "理由"],
-    rows: [
-      ["コード生成", "Claude", "正確・ルール準拠"],
-      ["文字起こし", "Whisper", "音声認識の精度"],
-      ["画像認識", "Gemini", "マルチモーダルが強い"],
-      ["ファイル操作", "Claude", "大量処理が得意"],
-      ["長文の要約", "Gemini", "コンテキスト長い"],
-    ],
-    highlightRows: [0, 3],
-    compact: true,
-    note: "適材適所 — 1つのAIに全部任せない"
-  },
-
-  // =============================================
-  // 第7部: まとめ（#48〜#50）
+  // まとめ
   // =============================================
 
   // ---- 48: 3つのポイント ----
@@ -879,44 +732,14 @@ const SLIDE_SCRIPT = [
         lines: ["「動画作って」", "ではなく20個に分解"]
       },
       {
-        icon: "fa-users-cog",
-        title: "得意な奴に\n任せる",
-        lines: ["Claude / Gemini", "/ Whisper"]
+        icon: "fa-sync-alt",
+        title: "一度作れば\n毎回同じ品質",
+        lines: ["ルールを1回決めたら", "2本目以降は自動"]
       }
     ]
   },
 
-  // ---- 49: 今日から始められること ----
-  {
-    type: "steps",
-    title: "今日から始められること",
-    titleUnderline: "今日から始められること",
-    steps: [
-      {
-        label: "TODAY",
-        icon: "fa-pen",
-        style: "green",
-        content: "「自分の答え」を<span style='background:#CCFF00'>1つ書き出す</span>",
-        num: "01"
-      },
-      {
-        label: "TOMORROW",
-        icon: "fa-file-code",
-        style: "green",
-        content: "CLAUDE.mdに<span style='background:#CCFF00'>ルールとして入れる</span>",
-        num: "02"
-      },
-      {
-        label: "NEXT WEEK",
-        icon: "fa-rocket",
-        style: "highlight",
-        content: "スキルファイルを<span style='background:#CCFF00'>1つ作ってみる</span>",
-        num: "03"
-      },
-    ]
-  },
-
-  // ---- 50: クロージング ----
+  // ---- クロージング ----
   {
     type: "closing",
     icon: "fa-hands-helping",
