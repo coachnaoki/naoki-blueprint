@@ -28,12 +28,17 @@ allowed-tools: Read, Write, Glob, Grep, Bash(ls *), Bash(node scripts/_chk.mjs)
 3. **存在しない場合**: ユーザーに以下を質問して作成する
    - この動画のターゲット（誰に向けた動画か）
    - 動画の趣旨・目的
+   - 発信者の性別・年代（画像生成のプロンプトに使用）
 4. `video-context.md` を作成 or 更新する
 
 ## video-context.md のテンプレート
 
 ```markdown
 # 動画コンテキスト
+
+## 発信者
+- 性別:
+- 年代:
 
 ## ターゲット
 （誰に向けた動画か）
