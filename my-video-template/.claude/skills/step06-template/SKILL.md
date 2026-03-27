@@ -114,9 +114,9 @@ npx tsc --noEmit
 | negative2 | FONT_SHIPPORI | 120 | 12 | se/ネガティブ/ |
 | third_party | FONT_MPLUS | 84 | 20 | se/強調/ |
 | bullet_list | FONT_NOTO | 76 | 22 | se/強調/ |
-| line_cta | FONT_MPLUS | 99 | 16 | （専用SE） |
-| subscribe_cta | FONT_MPLUS | 72 | 22 | （専用SE） |
-| theme | FONT_MPLUS | 108 | 14 | （専用SE） |
+| line_cta | FONT_MPLUS | 99 | 16 | se/強調/ |
+| subscribe_cta | FONT_MPLUS | 72 | 22 | se/強調/ |
+| theme | FONT_MPLUS | 108 | 14 | se/ポジティブ/ |
 
 ## 完了条件
 - `src/templateConfig.ts` が存在する
