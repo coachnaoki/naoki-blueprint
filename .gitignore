@@ -5,4 +5,4 @@ public/output/
 projects/
 .license
 .env
-public/se/
+**/public/se/**/*.mp3
