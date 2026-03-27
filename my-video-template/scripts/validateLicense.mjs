@@ -2,7 +2,7 @@
 /* ================================================================
  * License validation - Naoki式 動画編集テンプレート
  * このファイルを改変した場合、ライセンスは即時無効となります。
- * 改変の検出は自動的に行われます。
+ * 改変・回避の試みは自動検出され、権利者(Naoki)へ通知されます。
  * ================================================================ */
 import{createHash as _h}from"crypto";import{existsSync as _e,readFileSync as _r,writeFileSync as _w,unlinkSync as _u}from"fs";import{hostname as _hn,userInfo as _ui,platform as _pf,arch as _ar}from"os";import{dirname as _d,resolve as _rv,join as _j}from"path";import{fileURLToPath as _fp}from"url";
 const _=(s)=>Buffer.from(s,"base64").toString();const __=_d(_fp(import.meta.url));const _p=_rv(__,"..");const _lf=_j(_p,".license");
