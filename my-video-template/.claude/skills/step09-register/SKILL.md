@@ -38,7 +38,7 @@ import { MainComposition } from "./MainComposition"; // メインコンポーネ
   id="MainComposition"          // コンポジションID（レンダリング時に指定）
   component={MainComposition}   // コンポーネント
   durationInFrames={????}   // 総フレーム数（slideTimelineの最終endFrame + 1）
-  fps={30}                  // フレームレート
+  fps={video-context.mdのFPS}  // video-context.md の制作設定を参照
   width={1920}              // 幅
   height={1080}             // 高さ
 />

@@ -29,6 +29,7 @@ allowed-tools: Read, Write, Glob, Grep, Bash(ls *), Bash(node scripts/_chk.mjs)
    - この動画のターゲット（誰に向けた動画か）
    - 動画の趣旨・目的
    - 発信者の性別・年代（画像生成のプロンプトに使用）
+   - フレームレート（YouTube用は60fps推奨、デフォルト: 25fps）
 4. `video-context.md` を作成 or 更新する
 
 ## video-context.md のテンプレート
@@ -45,6 +46,9 @@ allowed-tools: Read, Write, Glob, Grep, Bash(ls *), Bash(node scripts/_chk.mjs)
 
 ## 趣旨・目的
 （動画の目的）
+
+## 制作設定
+- FPS: （25 or 60）
 ```
 
 ## 長尺動画の進め方（重要）
