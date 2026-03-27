@@ -65,7 +65,23 @@ cd naoki-blueprint
 
 ---
 
-## Step 2: プロジェクトフォルダを作成
+## Step 2: ライセンス認証（初回のみ）
+
+権利者から発行されたライセンスIDを入力します。
+
+```bash
+cd my-video-template
+node scripts/validateLicense.mjs NK-XXXX-XXXX-XXXX
+cd ..
+```
+
+認証成功すると `.license` ファイルが生成されます。2本目以降はこのステップは不要です（テンプレートをコピーすると `.license` も一緒にコピーされます）。
+
+> PCを変更する場合は権利者にご連絡ください。
+
+---
+
+## Step 3: プロジェクトフォルダを作成
 
 動画1本ごとに専用のプロジェクトフォルダを作ります。テンプレートをコピーするだけでOK。
 
@@ -87,20 +103,6 @@ cp -r my-video-template projects/ai-seminar-recap
 
 > **なぜ `projects/` に作るの？**
 > テンプレートやツール類はリポジトリ直下に残るので、2本目・3本目を作るときも同じ手順でコピーするだけ。ツールを見失う心配がありません。
-
----
-
-## Step 3: ライセンス認証
-
-権利者から発行されたライセンスIDを入力します。
-
-```bash
-node scripts/validateLicense.mjs NK-XXXX-XXXX-XXXX
-```
-
-認証成功すると `.license` ファイルが生成されます。
-
-> PCを変更する場合は権利者にご連絡ください。
 
 ---
 
