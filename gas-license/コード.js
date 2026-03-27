@@ -99,7 +99,7 @@ function recordSignature(data) {
 
 // =====================================================
 // 行データ取得ヘルパー
-// ヘッダー: A:license_id | B:name | C:email | D:signed_at | E:status | F:expires | G:activated_at | H:fingerprint
+// ヘッダー: A:license_id | B:name | C:email | D:signed_at | E:status | F:expires | G:activated_at | H:fingerprint | I:check | J:cracked
 // =====================================================
 function findLicenseRow(sheet, data, licenseId) {
   for (let i = 1; i < data.length; i++) {
@@ -153,6 +153,7 @@ function activateLicense(licenseId, fp) {
 
   // 既に別のPCで紐付け済み
   if (row.fingerprint && row.fingerprint !== fp) {
+    sheet.getRange(row.rowIndex + 1, 10).setValue(new Date());  // J列: cracked
     return { valid: false, error: "このライセンスは既に別のPCで使用されています" };
   }
 
@@ -187,6 +188,7 @@ function verifyLicense(licenseId, fp) {
 
   // マシンID不一致
   if (row.fingerprint && row.fingerprint !== fp) {
+    sheet.getRange(row.rowIndex + 1, 10).setValue(new Date());  // J列: cracked
     return { valid: false, error: "このライセンスは別のPCに紐付けられています" };
   }
 
@@ -204,7 +206,7 @@ function issueLicense(name, email) {
 
   if (!sheet) {
     sheet = ss.insertSheet(SHEET_NAME);
-    sheet.appendRow(["license_id", "name", "email", "signed_at", "status", "expires", "activated_at", "fingerprint"]);
+    sheet.appendRow(["license_id", "name", "email", "signed_at", "status", "expires", "activated_at", "fingerprint", "check", "cracked"]);
     sheet.getRange("1:1").setFontWeight("bold");
   }
 
@@ -237,7 +239,7 @@ function setupSheet() {
   let sheet = ss.getSheetByName(SHEET_NAME);
   if (!sheet) {
     sheet = ss.insertSheet(SHEET_NAME);
-    sheet.appendRow(["license_id", "name", "email", "signed_at", "status", "expires", "activated_at", "fingerprint"]);
+    sheet.appendRow(["license_id", "name", "email", "signed_at", "status", "expires", "activated_at", "fingerprint", "check", "cracked"]);
     sheet.getRange("1:1").setFontWeight("bold");
     Logger.log("「ライセンス」シートを作成しました");
   } else {

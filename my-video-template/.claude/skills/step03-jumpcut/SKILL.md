@@ -30,7 +30,7 @@ allowed-tools: Read, Write, Bash(ffmpeg *), Bash(ffprobe *), Bash(ls *), Bash(wc
 **「動画内の言い直し部分は事前に削除してありますか？」**
 
 - **削除済み** → そのまま次へ
-- **未削除 / わからない** → step05（台本照合）で言い直しを検出・カットする旨を伝えて次へ
+- **未削除 / わからない** → ジェットカット前に不要部分を削除してから再撮影、または手動で削除してもらうよう伝えて次へ
 
 ### 1. 無音区間の検出
 
@@ -98,6 +98,6 @@ ffmpeg -i public/video/元動画.mp4 -filter_complex "..." -c:v libx264 -c:a aac
 - カット後: ○○秒（○○%短縮）
 - カットした無音区間: ○○箇所（合計○○秒）
 
-次のステップ → /step04-transcript（トランスクリプト解析）
+次のステップ → /step04-video-insert（動画クリップ物理挿入）or /step05-transcript（文字起こし）
 進めますか？
 ```

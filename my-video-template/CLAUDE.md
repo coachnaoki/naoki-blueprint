@@ -16,29 +16,31 @@
 ## 動画制作ワークフロー（全20ステップ）
 
 ```
-step01-context         → 動画コンテキスト整理
+--- 素材準備 ---
+step01-context         → 動画コンテキスト整理（ターゲット・趣旨・FPS）
 step02-assets          → 素材確認（動画・BGM・SE・画像）
 step03-jumpcut         → ジェットカット（FFmpegで無音自動カット）
-step04-transcript      → 文字起こし（Whisperでタイムスタンプ化）
-step05-transcript-fix  → 文字起こし修正（台本と照合して誤変換修正）
-step06-template        → テンプレート設定（templateConfig.ts）
-step07-telop           → テロップデータ作成（telopData.ts）
-step08-composition     → メインコンポジション構築（MainComposition.tsx）
-step09-register        → コンポジション登録（Root.tsx）
-step10-preview         → プレビュー確認（テロップ・コンポジション）
+step04-video-insert    → 動画クリップ物理挿入（任意・ffmpeg trim+concat）
+step05-transcript      → 文字起こし（Whisperでタイムスタンプ化）
+step06-transcript-fix  → 文字起こし修正（台本と照合して誤変換修正）
+--- 動画構築 ---
+step07-template        → テンプレート設定（templateConfig.ts）
+step08-telop           → テロップデータ作成（telopData.ts）
+step09-composition     → コンポジション構築・登録（MainComposition.tsx + Root.tsx）
 --- 素材挿入 ---
-step11-greenback       → グリーンバック背景置換（任意）
-step12-videos          → 動画クリップ挿入
+step10-greenback       → グリーンバック背景置換（任意）
+step11-videos          → 動画クリップ挿入（オーバーレイ表示）
 --- スライドを入れる場合は以下を実行 ---
-step13-slides-gen      → 台本→HTMLスライド生成（gas-gensparkテンプレート）（任意）
-step14-slides-capture  → Puppeteerでスライド画像化（1280x720 PNG）（任意）
-step15-slide-blocks    → ブロック分割スクショ（段階表示用）（任意）
-step16-slide-timeline  → スライドタイムライン（slideTimeline.ts）（任意）
---- 画像・BGM（尺確定後） ---
-step17-images          → 画像挿入（イメージ画像・エンドスクリーン）
-step18-bgm             → BGM挿入（エンドスクリーンで尺が変わるため画像の後）
---- 最終確認・出力 ---
-step19-preview         → 最終プレビュー確認
+step12-slides-gen      → 台本→HTMLスライド生成（gas-gensparkテンプレート）（任意）
+step13-slides-capture  → スライドキャプチャ＋ブロック分割（Puppeteer）（任意）
+step14-slide-timeline  → スライドタイムライン（slideTimeline.ts）（任意）
+step15-wipe            → ワイプ位置調整（任意・スライドがある場合）
+--- 画像・特殊コンポーネント ---
+step16-images          → イメージ画像挿入（感情ベース配置）
+step17-special-components → BulletList・CTA・見出しバナー・テーマ実装
+step18-endscreen       → エンドスクリーン（おすすめ動画カード）
+--- BGM・出力 ---
+step19-bgm             → BGM挿入（区間指定・フェードイン/アウト）
 step20-render          → 最終レンダリング（MP4書き出し）
 ```
 
@@ -47,11 +49,12 @@ step20-render          → 最終レンダリング（MP4書き出し）
 - **キャプチャ**: `gas-genspark/screenshot.js` でPuppeteerキャプチャ → `public/slides/` に出力
 - **デザイン**: ライムイエロー `#CCFF00` + ダーク `#121212`、Zen Kaku Gothic New フォント
 
-### ワークフローの4フェーズ
-1. **素材準備**（step01〜05）: コンテキスト整理 → 素材確認 → ジェットカット → 文字起こし → 誤変換修正
-2. **動画構築**（step06〜10）: テンプレート設定 → テロップ → コンポジション → 登録 → プレビュー
-3. **素材挿入**（step11〜18）: グリーンバック背景 → 動画クリップ → スライド（任意） → 画像挿入 → BGM
-4. **最終確認・出力**（step19〜20）: 最終プレビュー → レンダリング
+### ワークフローの5フェーズ
+1. **素材準備**（step01〜06）: コンテキスト → 素材確認 → ジェットカット → 物理クリップ挿入（任意） → 文字起こし → 誤変換修正
+2. **動画構築**（step07〜09）: テンプレート設定 → テロップ → コンポジション構築・登録（※ここでRemotion Studio起動、以降開きっぱなし）
+3. **素材挿入**（step10〜15）: グリーンバック → 動画クリップ → スライド生成・キャプチャ・タイムライン（任意） → ワイプ調整
+4. **画像・特殊コンポーネント**（step16〜18）: イメージ画像 → BulletList/CTA/見出しバナー/テーマ → エンドスクリーン
+5. **BGM・出力**（step19〜20）: BGM挿入 → レンダリング
 
 ---
 
@@ -656,7 +659,7 @@ const ProfileCard: React.FC = () => {
 - **z-index**: 8（スライドの上、テロップの下）
 - **boxShadow**: `0 4px 20px rgba(0,0,0,0.3)`
 - **表示タイミング**: スライド背景が表示されている間（※全画面画像・全画面動画の表示中は非表示にする）
-- **bulletList表示中もワイプは維持**: ワイプはナレーター音声を運ぶため、bulletList表示中でも非表示にしない。スライド背景やデモクリップはz-indexで制御するが、ワイプは常に表示を維持すること
+- **bulletList表示中はワイプを非表示にする**: BulletList表示中はデモか話者動画のどちらが流れているか不定のため、ワイプも非表示にする
 
 ### サイズが325pxの理由
 280pxだと `objectPosition` + `scale` の組み合わせが極端な場合に**動画フレームの端が円の隅に灰色の角として露出する**。325pxにすることで `object-fit: cover` の計算が変わり、端の露出を防げる。
