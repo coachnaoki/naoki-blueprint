@@ -60,8 +60,8 @@ SE（効果音）は `public/se/` にプリセットが入っています。
 ### 1. リポジトリをクローン
 
 ```bash
-git clone https://github.com/coachnaoki/video-pipeline.git
-cd video-pipeline/my-video-template
+git clone https://github.com/coachnaoki/naoki-blueprint.git
+cd naoki-blueprint/my-video-template
 ```
 
 ### 2. 依存パッケージをインストール

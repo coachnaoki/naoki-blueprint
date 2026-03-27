@@ -412,10 +412,10 @@ const SLIDE_SCRIPT = [
     icon: "fa-sitemap",
     title: "4つのフェーズ",
     nodes: [
-      { icon: "fa-folder-open", label: "フェーズ1: 素材準備", sub: "step01〜05: 方向性決定 → 素材確認 → 自動カット → テキスト変換 → 修正", right: "5 steps" },
-      { icon: "fa-hammer", label: "フェーズ2: 動画構築", sub: "step06〜10: スタイル設定 → テロップ生成 → 画面統合 → 動画設定 → 中間確認", right: "5 steps" },
-      { icon: "fa-photo-video", label: "フェーズ3: 素材・スライド挿入", sub: "step11〜18: 背景合成 → 動画クリップ → スライド → 画像 → BGM", right: "8 steps" },
-      { icon: "fa-tv", label: "フェーズ4: 確認 + 出力", sub: "step19〜20: 最終確認 → 完成動画の書き出し", right: "2 steps", highlight: true }
+      { icon: "fa-folder-open", label: "フェーズ1: 素材準備", sub: "step01〜06: 方向性 → 素材確認 → カット → 動画挿入 → 文字起こし → 修正", right: "6 steps" },
+      { icon: "fa-hammer", label: "フェーズ2: 動画構築", sub: "step07〜09: テンプレート設定 → テロップ生成 → コンポジション統合", right: "3 steps" },
+      { icon: "fa-photo-video", label: "フェーズ3: 素材・演出挿入", sub: "step10〜18: 背景 → 動画 → スライド → ワイプ → 画像 → 見出し → エンドスクリーン", right: "9 steps" },
+      { icon: "fa-tv", label: "フェーズ4: BGM + 出力", sub: "step19〜20: BGM挿入 → 完成動画の書き出し", right: "2 steps", highlight: true }
     ]
   },
 
@@ -475,36 +475,47 @@ const SLIDE_SCRIPT = [
     message: "動画・BGM・SE・画像が\n<span style='background:#CCFF00'>すべて揃っているか</span>自動チェック\n素材不足のまま進んで戻るのを防ぐ"
   },
 
-  // ---- 25: step03 自動カット ----
+  // ---- 25: step03 ジェットカット ----
   {
     type: "big-message",
     label: "PHASE 1 — 素材準備",
-    title: "step03: 自動カット",
-    titleUnderline: "自動カット",
+    title: "step03: ジェットカット",
+    titleUnderline: "ジェットカット",
     icon: "fa-cut",
     badgeIcon: "fa-volume-mute",
-    message: "「えーと…」「あのー…」など\n<span style='background:#CCFF00'>無音・言い淀みを自動検出</span>してカット\n一瞬でテンポの良い動画に"
+    message: "「えーと…」「あのー…」など\n<span style='background:#CCFF00'>無音部分を自動検出</span>してカット\n一瞬でテンポの良い動画に"
   },
 
-  // ---- 26: step04 音声→テキスト変換 ----
+  // ---- 26: step04 動画クリップ挿入 ----
   {
     type: "big-message",
     label: "PHASE 1 — 素材準備",
-    title: "step04: 音声→テキスト変換",
-    titleUnderline: "テキスト変換",
-    icon: "fa-closed-captioning",
-    badgeIcon: "fa-microphone",
-    message: "動画の音声を<span style='background:#CCFF00'>自動でテキスト化</span>\n「いつ・何を話したか」の\n<span style='background:#CCFF00'>タイミング情報</span>も同時に取得"
+    title: "step04: 動画クリップ挿入",
+    titleUnderline: "動画クリップ",
+    icon: "fa-film",
+    badgeIcon: "fa-plus-circle",
+    message: "デモ映像・画面録画などの\n<span style='background:#CCFF00'>動画素材を物理挿入</span>\nffmpegで映像を結合し尺を変更"
   },
 
-  // ---- 27: step05 テキスト修正 ----
+  // ---- 27: step05 文字起こし ----
+  {
+    type: "big-message",
+    label: "PHASE 1 — 素材準備",
+    title: "step05: 文字起こし",
+    titleUnderline: "文字起こし",
+    icon: "fa-closed-captioning",
+    badgeIcon: "fa-microphone",
+    message: "動画の音声を<span style='background:#CCFF00'>Whisperで自動テキスト化</span>\n「いつ・何を話したか」の\n<span style='background:#CCFF00'>タイミング情報</span>も同時に取得"
+  },
+
+  // ---- 28: step06 テキスト修正 ----
   {
     type: "two-columns",
-    title: "step05: テキスト修正",
+    title: "step06: テキスト修正",
     titleHighlight: "修正",
     columns: [
       {
-        badge: "AI変換の出力",
+        badge: "Whisperの出力",
         badgeColor: "dark",
         borderColor: "dark",
         icon: "fa-robot",
@@ -524,175 +535,165 @@ const SLIDE_SCRIPT = [
     ]
   },
 
-  // ---- 28: step06 スタイル設定 ----
+  // ---- 29: step07 テンプレート設定 ----
   {
     type: "big-message",
     label: "PHASE 2 — 動画構築",
-    title: "step06: スタイル設定",
-    titleUnderline: "スタイル設定",
+    title: "step07: テンプレート設定",
+    titleUnderline: "テンプレート設定",
     icon: "fa-palette",
     badgeIcon: "fa-paint-brush",
-    message: "テロップの<span style='background:#CCFF00'>フォント・サイズ・色</span>を\nルールとして定義\nここで「答え」を渡すから<span style='background:#CCFF00'>毎回ブレない</span>"
+    message: "テロップの<span style='background:#CCFF00'>フォント・サイズ・色・SE</span>を\nルールとして定義\nここで「答え」を渡すから<span style='background:#CCFF00'>毎回ブレない</span>"
   },
 
-  // ---- 29: step07 テロップ自動生成 ----
+  // ---- 30: step08 テロップ自動生成 ----
   {
     type: "big-message",
     label: "PHASE 2 — 動画構築",
-    title: "step07: テロップ自動生成",
+    title: "step08: テロップ自動生成",
     titleUnderline: "テロップ自動生成",
     icon: "fa-font",
     badgeIcon: "fa-magic",
     message: "どの発話にどのスタイルを当てるかを\n<span style='background:#CCFF00'>AIが自動判定</span>\nルールに従うから<span style='background:#CCFF00'>毎回同じ品質</span>"
   },
 
-  // ---- 30: step08 画面統合 ----
+  // ---- 31: step09 コンポジション統合 ----
   {
     type: "big-message",
     label: "PHASE 2 — 動画構築",
-    title: "step08: 画面統合",
-    titleUnderline: "画面統合",
+    title: "step09: コンポジション統合",
+    titleUnderline: "コンポジション",
     icon: "fa-layer-group",
     badgeIcon: "fa-puzzle-piece",
-    message: "テロップ・スライド・ワイプを\n<span style='background:#CCFF00'>1つの画面に統合</span>\n動画の「骨格」が完成"
+    message: "テロップ・SE・ベース動画を\n<span style='background:#CCFF00'>1つの画面に統合</span>\n動画の「骨格」が完成"
   },
 
-  // ---- 31: step09 動画設定 ----
+  // ---- 32: step10 グリーンバック処理 ----
   {
     type: "big-message",
-    label: "PHASE 2 — 動画構築",
-    title: "step09: 動画設定",
-    titleUnderline: "動画設定",
-    icon: "fa-cog",
-    message: "解像度 <span style='background:#CCFF00'>1920×1080</span>\nフレームレート・総尺を設定して\n動画として登録"
-  },
-
-  // ---- 32: step10 中間確認 ----
-  {
-    type: "big-message",
-    label: "PHASE 2 — 動画構築",
-    title: "step10: 中間確認",
-    titleUnderline: "中間確認",
-    icon: "fa-search",
-    badgeIcon: "fa-eye",
-    message: "ここまでの仕上がりを<span style='background:#CCFF00'>目視確認</span>\n問題があればその場で修正\nOKなら次のフェーズへ"
-  },
-
-  // ---- 33: step11 背景合成 ----
-  {
-    type: "big-message",
-    label: "PHASE 3 — 素材・スライド挿入",
-    title: "step11: 背景合成",
-    titleUnderline: "背景合成",
+    label: "PHASE 3 — 素材・演出挿入",
+    title: "step10: グリーンバック処理",
+    titleUnderline: "グリーンバック",
     icon: "fa-image",
     badgeIcon: "fa-exchange-alt",
     message: "グリーンバック撮影の場合\n<span style='background:#CCFF00'>背景を好きな画像に置換</span>\n不要ならスキップ"
   },
 
-  // ---- 34: step12 動画クリップ挿入 ----
+  // ---- 33: step11 動画クリップ表示 ----
   {
     type: "big-message",
-    label: "PHASE 3 — 素材・スライド挿入",
-    title: "step12: 動画クリップ挿入",
+    label: "PHASE 3 — 素材・演出挿入",
+    title: "step11: 動画クリップ表示",
     titleUnderline: "動画クリップ",
-    icon: "fa-film",
+    icon: "fa-play-circle",
     badgeIcon: "fa-play",
-    message: "デモ映像・画面録画などの\n<span style='background:#CCFF00'>動画素材を挿入</span>\n音声あり/なしも選べる"
+    message: "デモ映像・画面録画などを\n<span style='background:#CCFF00'>全画面で表示</span>\n音声あり/なしも選べる"
   },
 
-  // ---- 35: step13 スライド自動生成 ----
+  // ---- 34: step12 スライド自動生成 ----
   {
     type: "big-message",
-    label: "PHASE 3 — 素材・スライド挿入",
-    title: "step13: スライド自動生成",
+    label: "PHASE 3 — 素材・演出挿入",
+    title: "step12: スライド自動生成",
     titleUnderline: "スライド自動生成",
     icon: "fa-file-powerpoint",
     badgeIcon: "fa-magic",
-    message: "台本の内容から\n<span style='background:#CCFF00'>スライドを自動で生成</span>\nテンプレートを使い分けて統一感を保つ"
+    message: "台本の内容から\n<span style='background:#CCFF00'>HTMLスライドを自動で生成</span>\nテンプレートを使い分けて統一感を保つ"
   },
 
-  // ---- 36: step14 スライド画像化 ----
+  // ---- 35: step13 スライド画像化 ----
   {
     type: "big-message",
-    label: "PHASE 3 — 素材・スライド挿入",
-    title: "step14: スライド画像化",
+    label: "PHASE 3 — 素材・演出挿入",
+    title: "step13: スライド画像化",
     titleUnderline: "画像化",
     icon: "fa-camera",
-    message: "生成したスライドを\n<span style='background:#CCFF00'>動画用の画像に自動変換</span>\nフルHD品質で書き出し"
+    message: "生成したHTMLスライドを\n<span style='background:#CCFF00'>PuppeteerでPNG画像に自動変換</span>\nブロック分割にも対応"
   },
 
-  // ---- 37: step15 段階表示 ----
+  // ---- 36: step14 スライドタイムライン ----
   {
     type: "big-message",
-    label: "PHASE 3 — 素材・スライド挿入",
-    title: "step15: 段階表示",
-    titleUnderline: "段階表示",
-    icon: "fa-th-large",
-    badgeIcon: "fa-layer-group",
-    message: "箇条書き・カード系スライドを\n<span style='background:#CCFF00'>1つずつ現れる</span>アニメーションに\nプレゼンのような演出効果"
-  },
-
-  // ---- 38: step16 タイムライン ----
-  {
-    type: "big-message",
-    label: "PHASE 3 — 素材・スライド挿入",
-    title: "step16: タイムライン設定",
+    label: "PHASE 3 — 素材・演出挿入",
+    title: "step14: スライドタイムライン",
     titleUnderline: "タイムライン",
     icon: "fa-stream",
     badgeIcon: "fa-clock",
-    message: "どの場面でどのスライドを表示するか\n<span style='background:#CCFF00'>AIが提案</span>\nユーザーが<span style='background:#CCFF00'>承認 or 調整</span>して確定"
+    message: "どの場面でどのスライドを表示するか\n<span style='background:#CCFF00'>AIが提案</span>\nKen Burnsモーションも自動設定"
   },
 
-  // ---- 38: step17 画像挿入 ----
+  // ---- 37: step15 ワイプ調整 ----
+  {
+    type: "big-message",
+    label: "PHASE 3 — 素材・演出挿入",
+    title: "step15: ワイプ調整",
+    titleUnderline: "ワイプ",
+    icon: "fa-user-circle",
+    badgeIcon: "fa-crosshairs",
+    message: "スライド表示中の<span style='background:#CCFF00'>丸い小窓（ワイプ）</span>\n話者の顔が中心に来るよう\n<span style='background:#CCFF00'>位置を自動計算</span>"
+  },
+
+  // ---- 38: step16 画像挿入 ----
+  {
+    type: "big-message",
+    label: "PHASE 3 — 素材・演出挿入",
+    title: "step16: 画像挿入",
+    titleUnderline: "画像挿入",
+    icon: "fa-images",
+    badgeIcon: "fa-heart",
+    message: "機械的ではなく\n<span style='background:#CCFF00'>感情が動く瞬間</span>に画像を配置\nGemini APIでの<span style='background:#CCFF00'>AI画像生成</span>にも対応"
+  },
+
+  // ---- 39: step17 特殊コンポーネント ----
   {
     type: "three-cards",
-    title: "step17: 画像挿入",
-    titleHighlight: "画像挿入",
+    title: "step17: 特殊コンポーネント",
+    titleHighlight: "特殊コンポーネント",
     cards: [
+      {
+        icon: "fa-list-ul",
+        title: "BulletList",
+        lines: ["箇条書きの", "段階表示アニメーション"]
+      },
       {
         icon: "fa-heading",
         title: "見出しバナー",
         lines: ["セクション区切り", "スライドインで表示"]
       },
       {
-        icon: "fa-tv",
-        title: "タイトルコール",
-        lines: ["画面下部に表示", "印象的な演出"]
-      },
-      {
-        icon: "fa-robot",
-        title: "AI画像生成",
-        lines: ["イメージに合う画像を", "AIが自動生成"]
+        icon: "fa-bell",
+        title: "CTA",
+        lines: ["LINE登録・チャンネル登録", "誘導オーバーレイ"]
       }
     ]
   },
 
-  // ---- 39: step18 BGM挿入 ----
+  // ---- 40: step18 エンドスクリーン ----
   {
     type: "big-message",
-    label: "PHASE 3 — 素材・スライド挿入",
-    title: "step18: BGM挿入",
+    label: "PHASE 3 — 素材・演出挿入",
+    title: "step18: エンドスクリーン",
+    titleUnderline: "エンドスクリーン",
+    icon: "fa-th-large",
+    badgeIcon: "fa-external-link-alt",
+    message: "動画の最後に\n<span style='background:#CCFF00'>おすすめ動画カード</span>を自動追加\n尺の延長も自動で処理"
+  },
+
+  // ---- 41: step19 BGM挿入 ----
+  {
+    type: "big-message",
+    label: "PHASE 4 — BGM + 出力",
+    title: "step19: BGM挿入",
     titleUnderline: "BGM",
     icon: "fa-music",
     badgeIcon: "fa-volume-up",
     message: "好きなBGMを指定区間に挿入\n<span style='background:#CCFF00'>フェードイン/アウト</span>も自動\n複数曲の追加にも対応"
   },
 
-  // ---- 40: step19 最終確認 ----
+  // ---- 42: step20 完成！ ----
   {
     type: "big-message",
-    label: "PHASE 4 — 確認 + 出力",
-    title: "step19: 最終確認",
-    titleUnderline: "最終確認",
-    icon: "fa-tv",
-    badgeIcon: "fa-check-double",
-    message: "テロップ・スライド・BGM\n画像・動画・見出し\n<span style='background:#CCFF00'>すべて入った状態</span>で通し確認"
-  },
-
-  // ---- 41: step20 完成！ ----
-  {
-    type: "big-message",
-    label: "PHASE 4 — 確認 + 出力",
+    label: "PHASE 4 — BGM + 出力",
     title: "step20: 完成！",
     titleUnderline: "完成",
     icon: "fa-file-video",
@@ -700,7 +701,7 @@ const SLIDE_SCRIPT = [
     message: "<span style='background:#CCFF00'>完成動画を書き出し</span>\nサイズと長さを確認して\n<span style='background:#CCFF00'>YouTube投稿へ！</span>"
   },
 
-  // ---- 42: 全体の流れまとめ ----
+  // ---- 43: 全体の流れまとめ ----
   {
     type: "big-message",
     label: "RECAP",
