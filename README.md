@@ -267,4 +267,4 @@ python3.12 -c "import whisper; print('OK')"
 
 本テンプレートのスキルファイルに関する著作権その他一切の知的財産権は、権利者（小林 尚貴）に帰属します。
 
-詳細は[スキルファイル利用規約](https://coachnaoki.github.io/naoki-blueprint/gas-genspark/terms-sign.html)をご確認ください。
+詳細は[スキルファイル利用規約](https://coachnaoki.github.io/naoki-blueprint/terms.html)をご確認ください。
