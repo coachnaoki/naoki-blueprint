@@ -94,7 +94,72 @@ ffmpeg -f concat -safe 0 -i /tmp/concat_list.txt -c:v libx264 -c:a aac public/vi
 
 ### 重要な注意事項
 
-> **`-c copy` は絶対に使わない。** キーフレームの問題で音ズレ・映像乱れが発生する。必ず `-c:v libx264 -c:a aac` で再エンコードする。
+> **`-c copy` は絶対に使わない。** キーフレームの問題で音ズレ・映像乱れが発生する。必ず再エンコードする。
+
+#### エンコード設定の統一（必須）
+
+**全パーツを同じエンコード設定で揃えること。** 設定が異なると結合時に映像・音声のズレや品質差が発生する。
+
+```bash
+# 全パーツ共通の設定
+-c:v libx264 -preset medium -crf 18 -r 30 -c:a aac -ar 48000 -ac 2
+```
+
+| パラメータ | 値 | 理由 |
+|-----------|-----|------|
+| `-c:v libx264` | H.264 | 互換性 |
+| `-preset medium` | 品質/速度バランス | |
+| `-crf 18` | 高品質 | |
+| `-r 30` | 30fps固定 | FPSの不一致を防ぐ |
+| `-c:a aac` | AAC音声 | |
+| `-ar 48000` | サンプルレート統一 | |
+| `-ac 2` | ステレオ | |
+
+#### 倍速・スロー再生する場合（必須）
+
+**映像と音声の速度変更は必ずセットで指定する。** 片方だけ変更すると秒数が経つほどズレが大きくなる。
+
+```bash
+# 1.5倍速の場合
+ffmpeg -y -i input.mp4 -filter_complex \
+  "[0:v]setpts=PTS/1.5,scale=1920:1080:flags=lanczos[v]; \
+   [0:a]atempo=1.5[a]" \
+  -map "[v]" -map "[a]" \
+  -c:v libx264 -preset medium -crf 18 -r 30 -c:a aac -ar 48000 -ac 2 \
+  output.mp4
+```
+
+| 速度 | 映像フィルター | 音声フィルター |
+|------|---------------|---------------|
+| 1.5倍速 | `setpts=PTS/1.5` | `atempo=1.5` |
+| 2倍速 | `setpts=PTS/2` | `atempo=2.0` |
+| 0.5倍速 | `setpts=PTS*2` | `atempo=0.5` |
+
+- `setpts` = 映像のタイムスタンプを変更（必ず指定）
+- `atempo` = 音声の速度変更（ピッチを保持する。範囲: 0.5〜2.0）
+- **`setpts` なしで `atempo` だけ指定すると、音声だけ速くなり映像はそのまま → 致命的なズレが発生する**
+
+#### 挿入クリップの音量マッチング（必須）
+
+**挿入クリップの音量をメイン動画に合わせる。** 音量差があると視聴体験が悪くなる。
+
+```bash
+# Step 1: メイン動画の平均音量を計測
+ffmpeg -i public/video/main.mp4 -af volumedetect -f null - 2>&1 | grep mean_volume
+
+# Step 2: 挿入クリップの平均音量を計測
+ffmpeg -i public/videos/clip.mp4 -af volumedetect -f null - 2>&1 | grep mean_volume
+
+# Step 3: 差分を計算してクリップのエンコード時に補正
+# 例: メイン=-18dB, クリップ=-12dB → 差分=-6dB → volume=-6dB を適用
+ffmpeg -y -i public/videos/clip.mp4 \
+  -af "volume=-6dB" \
+  -c:v libx264 -preset medium -crf 18 -r 30 -c:a aac -ar 48000 -ac 2 \
+  /tmp/part_clip.mp4
+```
+
+- 計測値の差分（`メインのmean_volume - クリップのmean_volume`）をそのまま `volume` フィルターに指定する
+- 倍速フィルターと組み合わせる場合: `-af "atempo=1.5,volume=-6dB"`
 
 ### 5. 結果の確認
 
