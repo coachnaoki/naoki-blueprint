@@ -68,6 +68,7 @@ export const slideTimeline: SlideSegment[] = [ ... ];
   - 各ブロック間にフレームの隙間を空けない（前のblockのendFrame+1 = 次のblockのstartFrame）
   - 1枚目（block1）はアニメーションなし
   - 2枚目以降（block2〜）は `motion: "fadeIn"` 固定（10フレームでフェードイン）
+  - **fadeIn時は前のブロック画像を下に表示した状態で、現在のブロック画像を上にフェードインする**（前のブロックが消えてからフェードインするのではない。block2表示中はblock1が下に見えている状態でblock2がopacity 0→1でかぶさる）
 
 ## テロップとの整合性チェック
 
