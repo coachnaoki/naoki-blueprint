@@ -49,7 +49,7 @@ export interface SlideSegment {
   startFrame: number;
   endFrame: number;
   image?: string;       // スライドPNG以外の画像を使う場合
-  motion?: "panRight" | "zoomIn" | "panUp" | "panDown"; // Ken Burnsモーション
+  motion?: "panRight" | "zoomIn" | "panUp" | "panDown" | "fadeIn"; // Ken Burnsモーション / ブロック分割フェードイン
 }
 
 export const slideTimeline: SlideSegment[] = [ ... ];
