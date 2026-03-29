@@ -235,7 +235,7 @@ step20-render          → 最終レンダリング（MP4書き出し）
 | **SVG白フチ** | 白 `#FFFFFF` | normal / normal_emphasis / emphasis_large |
 | **SVGグレーフチ** | グレー `#333333` | third_party |
 | **ネガティブ文字** | 白 | negative / negative2 |
-| **見出しバナー** | 緑〜ティール `#10B981→#059669` | heading |
+| **見出しバナー** | 薄グレー背景 `#F7F4F4` + 青紫文字 `#4B6AC6` | heading |
 | **箇条書きボックス** | 青 `#2563EB` | bullet_list |
 | **CTA赤** | 赤 `#EF4444` | テーマライン / 表タイトル / プロフィールボーダー |
 | **LINE** | 緑 `#06C755` | line_cta |
@@ -416,8 +416,10 @@ const calcTextWidth = (text: string, fontSize: number) =>
 
 ### 仕様
 - **位置**: 左上（top: 30〜50px, left: 0）
-- **デザイン**: 斜め（transform: skewX）緑〜ティール背景
-- **文字**: 白、太字
+- **デザイン**: 薄グレー背景 `#F7F4F4` + 青紫文字 `#4B6AC6`
+- **フォント**: ゴシック体（Hiragino Kaku Gothic ProN / Meiryo）、fontSize: 64、fontWeight: 900
+- **letterSpacing**: 0.05em
+- **boxShadow**: `0 4px 10px rgba(0,0,0,0.05)`
 - **用途**: 動画全体を通して見出し・サブタイトルを表示するベース要素
 
 ### 表示タイミング
@@ -661,6 +663,7 @@ const ProfileCard: React.FC = () => {
 - **boxShadow**: `0 4px 20px rgba(0,0,0,0.3)`
 - **表示タイミング**: スライド背景が表示されている間（※全画面画像・全画面動画の表示中は非表示にする）
 - **bulletList表示中はワイプを非表示にする**: BulletList表示中はデモか話者動画のどちらが流れているか不定のため、ワイプも非表示にする
+- **muted必須**: ワイプのOffthreadVideoには必ず `muted` を指定する（ベース動画と音声が二重になるため）
 
 ### サイズが325pxの理由
 280pxだと `objectPosition` + `scale` の組み合わせが極端な場合に**動画フレームの端が円の隅に灰色の角として露出する**。325pxにすることで `object-fit: cover` の計算が変わり、端の露出を防げる。
@@ -679,6 +682,7 @@ const ProfileCard: React.FC = () => {
     boxShadow: "0 4px 20px rgba(0,0,0,0.3)",
   }}>
     <OffthreadVideo
+      muted
       src={staticFile("video/input_cut.mp4")}
       style={{
         width: "100%", height: "100%",
