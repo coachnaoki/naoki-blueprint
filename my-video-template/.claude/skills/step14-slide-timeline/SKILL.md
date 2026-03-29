@@ -63,6 +63,7 @@ export const slideTimeline: SlideSegment[] = [ ... ];
 - **ワイプ表示**: スライド表示中は話者ワイプを表示する
 - **Ken Burns**: 静止画に動きをつける場合 `motion` を指定
 - **1枚のみのスライドはアニメーション不要**: ブロック分割しない単独スライドにはmotionを指定しない
+- **全画面画像のアニメーション（必須）**: `image` で全画面画像を挿入する場合、必ず `motion` を指定する（zoomIn / panUp / panDown / panRight からランダムに選択）。アニメーションなしの静止画像は視聴者の興味を引かないため禁止
 - **ブロック分割スライドのルール（必須）**:
   - 各ブロック間にフレームの隙間を空けない（前のblockのendFrame+1 = 次のblockのstartFrame）
   - 1枚目（block1）はアニメーションなし
