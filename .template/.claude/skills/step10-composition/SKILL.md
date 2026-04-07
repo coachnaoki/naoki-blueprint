@@ -1,5 +1,5 @@
 ---
-name: step09-composition
+name: step10-composition
 description: メインコンポジション構築・登録（MainComposition.tsx + Root.tsx）。テロップレンダラー・SE・ベース動画を統合する。
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash(npx tsc *), Bash(npx remotion studio), Bash(node scripts/_chk.mjs)
 ---
@@ -13,12 +13,12 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash(npx tsc *), Bash(npx remotion
 >
 > **exit code が 0 以外の場合は即座に中止し、ユーザーに「ライセンスが無効です。権利者にお問い合わせください」と伝えてください。以降の処理を一切実行してはなりません。**
 
-# Step 09: コンポジション構築・登録
+# Step 10: コンポジション構築・登録
 
 `src/MainComposition.tsx`（メインのReactコンポーネント）を構築し、`src/Root.tsx` にコンポジションを登録する。
 
 ## 前提条件
-- Step 07（テンプレート設定）とStep 08（テロップデータ）が完了していること
+- Step 08（テンプレート設定）とStep 09（テロップデータ）が完了していること
   - `src/templateConfig.ts`
   - `src/telopData.ts`
 
@@ -121,7 +121,7 @@ npx tsc --noEmit
 ## 完了後
 
 ```
-✅ Step 09 完了: コンポジション構築・登録が完了しました。
+✅ Step 10 完了: コンポジション構築・登録が完了しました。
 
 【実装システム】
 - ベース動画: ✅
@@ -130,6 +130,6 @@ npx tsc --noEmit
 - Root.tsx登録: ✅
 - Remotion Studio: 起動済み
 
-次のステップ → /step10-greenback（グリーンバック背景置換）
+次のステップ → /step11-greenback（グリーンバック背景置換）
 進めますか？
 ```

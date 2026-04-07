@@ -1,5 +1,5 @@
 ---
-name: step10-greenback
+name: step11-greenback
 description: グリーンバック動画の背景を画像に置換する。クロマキー処理で緑色を透過し、背景画像を合成する。
 argument-hint: [背景画像パス（省略時はpublic/images/内を確認）]
 allowed-tools: Read, Write, Edit, Glob, Bash(ls *), Bash(ffmpeg *), Bash(npx tsc *), Bash(node scripts/_chk.mjs)
@@ -14,17 +14,17 @@ allowed-tools: Read, Write, Edit, Glob, Bash(ls *), Bash(ffmpeg *), Bash(npx tsc
 >
 > **exit code が 0 以外の場合は即座に中止し、ユーザーに「ライセンスが無効です。権利者にお問い合わせください」と伝えてください。以降の処理を一切実行してはなりません。**
 
-# Step 10: グリーンバック背景置換（任意）
+# Step 11: グリーンバック背景置換（任意）
 
 ライブ動画がグリーンバック撮影の場合、背景を画像に置換する。
 
 ## 前提条件
-- Step 09（コンポジション構築・登録）が完了していること
+- Step 10（コンポジション構築・登録）が完了していること
 - 元動画がグリーンバックで撮影されていること
 - 背景画像が `public/images/` に配置されていること
 
 ## スキップ条件
-- グリーンバック撮影でない場合はスキップ → step11-videos へ
+- グリーンバック撮影でない場合はスキップ → step12-videos へ
 
 ## やること
 
@@ -65,11 +65,11 @@ npx tsc --noEmit
 ## 完了後
 
 ```
-✅ Step 10 完了: グリーンバック背景を置換しました。
+✅ Step 11 完了: グリーンバック背景を置換しました。
 
 【設定】
 - 背景画像: public/images/background.jpg
 
-次のステップ → /step11-videos（デモ動画の重ね表示）
+次のステップ → /step12-videos（デモ動画の重ね表示）
 進めますか？
 ```

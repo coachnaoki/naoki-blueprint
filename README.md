@@ -167,19 +167,19 @@ claude --dangerously-skip-permissions
 /step03-jumpcut         無音部分を自動カット
 /step04-video-insert    動画の差し込み結合（任意）
 /step05-transcript      Whisperで文字起こし
-/step06-transcript-fix  台本と照合して誤変換を修正
+/step06-retake-cut      言い直しカット（半自動）
+/step07-transcript-fix  台本と照合して誤変換を修正
     ↓
 【フェーズ2: 動画構築】
-/step07-template        テンプレート設定（フォント・サイズ・色・SE）
-/step08-telop           テロップデータ作成
-/step09-composition     コンポジション統合（動画の骨格が完成）
+/step08-template        テンプレート設定（フォント・サイズ・色・SE）
+/step09-telop           テロップデータ作成
+/step10-composition     コンポジション統合（動画の骨格が完成）
     ↓
 【フェーズ3: 素材・演出挿入】
-/step10-greenback       グリーンバック背景置換（任意）
-/step11-videos          デモ動画の重ね表示（任意）
-/step12-slides-gen      台本からスライドHTML生成（任意）
-/step13-slides-capture  スライドをPNG画像化（任意）
-/step14-slide-timeline  スライドタイムライン作成（任意）
+/step11-greenback       グリーンバック背景置換（任意）
+/step12-videos          デモ動画の重ね表示（任意）
+/step13-slides-gen      台本からスライドHTML生成（任意）
+/step14-slides          スライドキャプチャ＋タイムライン（任意）
 /step15-wipe            ワイプ位置調整（任意）
 /step16-images          画像挿入（感情ベース + AI画像生成）（任意）
 /step17-special-components  BulletList・見出し・CTA（任意）
@@ -234,7 +234,7 @@ npm install
 ```
 
 ### Q: スライドなしの動画も作れる？
-はい。step12〜15をスキップすれば、スライドなしの動画として制作できます。
+はい。step13〜15をスキップすれば、スライドなしの動画として制作できます。
 
 ### Q: プレビューの見方は？
 ```bash

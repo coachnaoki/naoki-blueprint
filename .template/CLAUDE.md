@@ -23,18 +23,18 @@ step02-assets          → 素材確認（動画・BGM・SE・画像）
 step03-jumpcut         → ジェットカット（FFmpegで無音自動カット）
 step04-video-insert    → 動画の差し込み結合（任意・ffmpeg trim+concat）
 step05-transcript      → 文字起こし（Whisperでタイムスタンプ化）
-step06-transcript-fix  → 文字起こし修正（台本と照合して誤変換修正）
+step06-retake-cut      → 言い直しカット（半自動・文字起こしベース）
+step07-transcript-fix  → 文字起こし修正（台本と照合して誤変換修正）
 --- 動画構築 ---
-step07-template        → テンプレート設定（templateConfig.ts）
-step08-telop           → テロップデータ作成（telopData.ts）
-step09-composition     → コンポジション構築・登録（MainComposition.tsx + Root.tsx）
+step08-template        → テンプレート設定（templateConfig.ts）
+step09-telop           → テロップデータ作成（telopData.ts）
+step10-composition     → コンポジション構築・登録（MainComposition.tsx + Root.tsx）
 --- 素材挿入 ---
-step10-greenback       → グリーンバック背景置換（任意）
-step11-videos          → デモ動画の重ね表示（オーバーレイ）
+step11-greenback       → グリーンバック背景置換（任意）
+step12-videos          → デモ動画の重ね表示（オーバーレイ）
 --- スライドを入れる場合は以下を実行 ---
-step12-slides-gen      → 台本→HTMLスライド生成（slidesテンプレート）（任意）
-step13-slides-capture  → スライドキャプチャ＋ブロック分割（Puppeteer）（任意）
-step14-slide-timeline  → スライドタイムライン（slideTimeline.ts）（任意）
+step13-slides-gen      → 台本→HTMLスライド生成（aislidesテンプレート）（任意）
+step14-slides          → スライドキャプチャ＋タイムライン（Puppeteer + slideTimeline.ts）（任意）
 step15-wipe            → ワイプ位置調整（任意・スライドがある場合）
 --- 画像・特殊コンポーネント ---
 step16-images          → イメージ画像挿入（感情ベース配置）
@@ -51,9 +51,9 @@ step20-render          → 最終レンダリング（MP4書き出し）
 - **デザイン**: ライムイエロー `#CCFF00` + ダーク `#121212`、Zen Kaku Gothic New フォント
 
 ### ワークフローの5フェーズ
-1. **素材準備**（step01〜06）: コンテキスト → 素材確認 → ジェットカット → 物理クリップ挿入（任意） → 文字起こし → 誤変換修正
-2. **動画構築**（step07〜09）: テンプレート設定 → テロップ → コンポジション構築・登録（※ここでRemotion Studio起動、以降開きっぱなし）
-3. **素材挿入**（step10〜15）: グリーンバック → 動画クリップ → スライド生成・キャプチャ・タイムライン（任意） → ワイプ調整
+1. **素材準備**（step01〜07）: コンテキスト → 素材確認 → ジェットカット → 動画差し込み（任意） → 文字起こし → 言い直しカット → 誤変換修正
+2. **動画構築**（step08〜10）: テンプレート設定 → テロップ → コンポジション構築・登録（※ここでRemotion Studio起動、以降開きっぱなし）
+3. **素材挿入**（step11〜15）: グリーンバック → 動画クリップ → スライド生成・キャプチャ+タイムライン（任意） → ワイプ調整
 4. **画像・特殊コンポーネント**（step16〜18）: イメージ画像 → BulletList/CTA/見出しバナー/テーマ → エンドスクリーン
 5. **BGM・出力**（step19〜20）: BGM挿入 → レンダリング
 

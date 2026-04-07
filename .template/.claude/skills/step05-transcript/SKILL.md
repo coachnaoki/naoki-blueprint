@@ -95,6 +95,6 @@ print(f'{len(words)}語')
 - 文の数: ○○文
 - 無音区間: ○○箇所
 
-次のステップ → /step06-transcript-fix（文字起こし修正）
+次のステップ → /step06-retake-cut（言い直しカット）
 進めますか？
 ```
