@@ -368,23 +368,23 @@ claude --dangerously-skip-permissions</code></pre>
   <div class="step-row"><span class="step-cmd">/step03-jumpcut</span><span class="step-desc">無音部分を自動カット</span></div>
   <div class="step-row"><span class="step-cmd">/step04-video-insert</span><span class="step-desc">動画の差し込み結合 <span class="step-optional">（任意）</span></span></div>
   <div class="step-row"><span class="step-cmd">/step05-transcript</span><span class="step-desc">Whisperで文字起こし</span></div>
-  <div class="step-row"><span class="step-cmd">/step06-transcript-fix</span><span class="step-desc">台本と照合して誤変換を修正</span></div>
+  <div class="step-row"><span class="step-cmd">/step06-retake-cut</span><span class="step-desc">言い直しカット（半自動）</span></div>
+  <div class="step-row"><span class="step-cmd">/step07-transcript-fix</span><span class="step-desc">台本と照合して誤変換を修正</span></div>
 
   <div class="arrow">↓</div>
 
   <div class="phase">フェーズ2: 動画構築</div>
-  <div class="step-row"><span class="step-cmd">/step07-template</span><span class="step-desc">テンプレート設定（フォント・サイズ・色・SE）</span></div>
-  <div class="step-row"><span class="step-cmd">/step08-telop</span><span class="step-desc">テロップデータ作成</span></div>
-  <div class="step-row"><span class="step-cmd">/step09-composition</span><span class="step-desc">コンポジション統合（動画の骨格が完成）</span></div>
+  <div class="step-row"><span class="step-cmd">/step08-template</span><span class="step-desc">テンプレート設定（フォント・サイズ・色・SE）</span></div>
+  <div class="step-row"><span class="step-cmd">/step09-telop</span><span class="step-desc">テロップデータ作成</span></div>
+  <div class="step-row"><span class="step-cmd">/step10-composition</span><span class="step-desc">コンポジション統合（動画の骨格が完成）</span></div>
 
   <div class="arrow">↓</div>
 
   <div class="phase">フェーズ3: 素材・演出挿入</div>
-  <div class="step-row"><span class="step-cmd">/step10-greenback</span><span class="step-desc">グリーンバック背景置換 <span class="step-optional">（任意）</span></span></div>
-  <div class="step-row"><span class="step-cmd">/step11-videos</span><span class="step-desc">デモ動画の重ね表示 <span class="step-optional">（任意）</span></span></div>
-  <div class="step-row"><span class="step-cmd">/step12-slides-gen</span><span class="step-desc">台本からスライドHTML生成 <span class="step-optional">（任意）</span></span></div>
-  <div class="step-row"><span class="step-cmd">/step13-slides-capture</span><span class="step-desc">スライドをPNG画像化 <span class="step-optional">（任意）</span></span></div>
-  <div class="step-row"><span class="step-cmd">/step14-slide-timeline</span><span class="step-desc">スライドタイムライン作成 <span class="step-optional">（任意）</span></span></div>
+  <div class="step-row"><span class="step-cmd">/step11-greenback</span><span class="step-desc">グリーンバック背景置換 <span class="step-optional">（任意）</span></span></div>
+  <div class="step-row"><span class="step-cmd">/step12-videos</span><span class="step-desc">デモ動画の重ね表示 <span class="step-optional">（任意）</span></span></div>
+  <div class="step-row"><span class="step-cmd">/step13-slides-gen</span><span class="step-desc">台本からスライドHTML生成 <span class="step-optional">（任意）</span></span></div>
+  <div class="step-row"><span class="step-cmd">/step14-slides</span><span class="step-desc">スライドキャプチャ＋タイムライン <span class="step-optional">（任意）</span></span></div>
   <div class="step-row"><span class="step-cmd">/step15-wipe</span><span class="step-desc">ワイプ位置調整 <span class="step-optional">（任意）</span></span></div>
   <div class="step-row"><span class="step-cmd">/step16-images</span><span class="step-desc">画像挿入（感情ベース + AI画像生成） <span class="step-optional">（任意）</span></span></div>
   <div class="step-row"><span class="step-cmd">/step17-special-components</span><span class="step-desc">BulletList・見出し・CTA <span class="step-optional">（任意）</span></span></div>
@@ -438,7 +438,7 @@ claude --dangerously-skip-permissions</code></pre>
   <hr>
 
   <div class="faq-q">Q: スライドなしの動画も作れる？</div>
-  <p>はい。step12〜15をスキップすれば、スライドなしの動画として制作できます。</p>
+  <p>はい。step13〜15をスキップすれば、スライドなしの動画として制作できます。</p>
 
   <hr>
 

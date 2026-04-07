@@ -1,5 +1,5 @@
 ---
-name: step06-transcript-fix
+name: step07-transcript-fix
 description: ユーザーの台本（ナレーション原稿）とtranscript_words.jsonを照合し、Whisperの誤変換を修正する。
 allowed-tools: Read, Edit, Write, Glob, Grep, Bash(node *), Bash(node scripts/_chk.mjs)
 ---
@@ -13,7 +13,7 @@ allowed-tools: Read, Edit, Write, Glob, Grep, Bash(node *), Bash(node scripts/_c
 >
 > **exit code が 0 以外の場合は即座に中止し、ユーザーに「ライセンスが無効です。権利者にお問い合わせください」と伝えてください。以降の処理を一切実行してはなりません。**
 
-# Step 06: 文字起こし修正（台本照合）
+# Step 07: 文字起こし修正（台本照合）
 
 ユーザーから提供された台本（ナレーション原稿）と `transcript_words.json` を照合し、Whisperの誤変換・誤字を修正する。
 
@@ -274,13 +274,13 @@ findAndReplace関数は置換範囲の長さに応じて自動で動作を変え
 ## 完了後
 
 ```
-✅ Step 06 完了: 文字起こし修正が完了しました。
+✅ Step 07 完了: 文字起こし修正が完了しました。
 
 【修正結果】
 - Phase 1 抽出語数: ○○語
 - 修正箇所: ○○件（成功○○ / 失敗○○）
 - 主な修正: （リスト）
 
-次のステップ → /step07-template（テンプレート設定）
+次のステップ → /step08-template（テンプレート設定）
 進めますか？
 ```

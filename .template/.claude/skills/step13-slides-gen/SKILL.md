@@ -1,5 +1,5 @@
 ---
-name: step12-slides-gen
+name: step13-slides-gen
 description: 台本（ユーザー提供）をもとに、slidesのテンプレートシステムでHTMLスライドを自動生成する。
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash(node *), Bash(node scripts/_chk.mjs)
 ---
@@ -13,12 +13,12 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash(node *), Bash(node scripts/_c
 >
 > **exit code が 0 以外の場合は即座に中止し、ユーザーに「ライセンスが無効です。権利者にお問い合わせください」と伝えてください。以降の処理を一切実行してはなりません。**
 
-# Step 12: スライド生成（台本→HTML）
+# Step 13: スライド生成（台本→HTML）
 
 ユーザーから受け取った台本をもとに、`aislides/slides.html` のテンプレートシステムを使ってHTMLスライドを生成する。
 
 ## 前提条件
-- Step 06（文字起こし修正）が完了していること
+- Step 07（文字起こし修正）が完了していること
 - ユーザーから台本（スライドの構成・内容）が提供されていること
 
 ## テンプレート一覧
@@ -130,12 +130,12 @@ open aislides/slides.html
 ## 完了後
 
 ```
-✅ Step 12 完了: スライドHTMLを生成しました。
+✅ Step 13 完了: スライドHTMLを生成しました。
 
 【生成スライド】
 - スライド数: ○○枚
 - テンプレート: title × ○, big-message × ○, ...
 
-次のステップ → /step13-slides-capture（スライドキャプチャ）
+次のステップ → /step14-slides（スライドキャプチャ＋タイムライン）
 進めますか？
 ```

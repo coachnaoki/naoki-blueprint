@@ -18,7 +18,7 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash(ffmpeg *), Bash(npx remotion 
 スライド表示中に話者の顔を見せる**325×325pxの円形ワイプ（小窓）**の位置を調整する。
 
 ## 前提条件
-- Step 14（スライドタイムライン）が完了していること
+- Step 14（スライドキャプチャ＋タイムライン）が完了していること
 - MainComposition.tsx にワイプのコードが存在すること
 - スライド表示中のフレーム番号を把握していること
 

@@ -1,5 +1,5 @@
 ---
-name: step07-template
+name: step08-template
 description: テロップのテンプレート設定（templateConfig.ts）を作成する。フォント・サイズ・SE対応を定義する。
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash(node scripts/_chk.mjs), Bash(npx tsc --noEmit), Bash(open public/template-preview.html)
 ---
@@ -13,7 +13,7 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash(node scripts/_chk.mjs), Bash(
 >
 > **exit code が 0 以外の場合は即座に中止し、ユーザーに「ライセンスが無効です。権利者にお問い合わせください」と伝えてください。以降の処理を一切実行してはなりません。**
 
-# Step 07: テンプレート設定
+# Step 08: テンプレート設定
 
 `src/templateConfig.ts` を作成し、テロップの種類ごとにフォント・サイズ・SE対応を定義する。
 
@@ -128,12 +128,12 @@ npx tsc --noEmit
 ## 完了後
 
 ```
-✅ Step 07 完了: テンプレート設定を作成しました。
+✅ Step 08 完了: テンプレート設定を作成しました。
 
 【定義テンプレート数】○○種類（+ 見出しバナー）
 【SE対応】○○個のSEファイルを紐付け
 【スタイル変更】あり / なし
 
-次のステップ → /step08-telop（テロップデータ作成）
+次のステップ → /step09-telop（テロップデータ作成）
 進めますか？
 ```

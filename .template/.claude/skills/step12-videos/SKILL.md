@@ -1,5 +1,5 @@
 ---
-name: step11-videos
+name: step12-videos
 description: デモ動画を重ね表示（オーバーレイ）する。全画面表示、音声あり/なし対応。
 argument-hint: [挿入位置の秒数やキーワード（省略時はtranscriptから判断）]
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash(npx tsc *), Bash(npx remotion still *), Bash(rm *), Bash(ls *), Bash(ffprobe *), Bash(node scripts/_chk.mjs)
@@ -14,12 +14,12 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash(npx tsc *), Bash(npx remotion
 >
 > **exit code が 0 以外の場合は即座に中止し、ユーザーに「ライセンスが無効です。権利者にお問い合わせください」と伝えてください。以降の処理を一切実行してはなりません。**
 
-# Step 11: デモ動画の重ね表示
+# Step 12: デモ動画の重ね表示
 
 デモ映像・画面録画・補足動画などを本編に挿入する。
 
 ## 前提条件
-- Step 10（グリーンバック）が完了またはスキップ済み
+- Step 11（グリーンバック）が完了またはスキップ済み
 - 動画クリップが `public/videos/` に配置されていること
 
 ## ユーザーに確認すること（必須）
@@ -98,7 +98,7 @@ npx tsc --noEmit
 ## 完了後
 
 ```
-✅ Step 11 完了: 動画クリップを挿入しました。
+✅ Step 12 完了: 動画クリップを挿入しました。
 
 【挿入動画】
 - f{N}〜f{N}: demo.mp4（全画面・音声あり）
@@ -106,5 +106,5 @@ npx tsc --noEmit
 
 他にも動画クリップを挿入しますか？
 → はい: 同じステップを繰り返す
-→ いいえ: 次のステップ → /step12-slides-gen（スライド追加する場合）または /step14-slide-timeline（スライドなし）
+→ いいえ: 次のステップ → /step13-slides-gen（スライド追加する場合）または /step15-wipe（スライドなし）
 ```

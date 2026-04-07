@@ -53,7 +53,7 @@ allowed-tools: Read, Write, Glob, Grep, Bash(ls *), Bash(node scripts/_chk.mjs)
 
 ## 長尺動画の進め方（重要）
 - 動画が長い場合（目安: 3分以上）、一度に全体を作ると **やり直しが大変**
-- **まず冒頭2分だけ**で step02〜step12 を通して確認し、ユーザーのOKをもらってから残りに進める
+- **まず冒頭2分だけ**で step02〜step13 を通して確認し、ユーザーのOKをもらってから残りに進める
 - video-context.md にも「冒頭2分を先行制作」と明記する
 
 ## 完了条件
