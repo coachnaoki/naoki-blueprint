@@ -267,7 +267,7 @@ cp -r .template projects/ai-seminar-recap</code></pre>
 <pre><code>public/
 ├── video/          <span class="comment">← 撮影した動画（MP4）をここに入れる</span>
 ├── bgm/            <span class="comment">← BGM（MP3）をここに入れる</span>
-├── se/             <span class="comment">← SE（効果音）※最初から入っています</span>
+├── se/             <span class="comment">← SE（効果音）を入れる</span>
 │   ├── 強調/       <span class="comment">← 通常の強調・箇条書き・表など</span>
 │   ├── ポジティブ/  <span class="comment">← 前向き・成功・インパクト系</span>
 │   └── ネガティブ/  <span class="comment">← 警告・失敗・ツッコミ系</span>
@@ -280,7 +280,7 @@ cp -r .template projects/ai-seminar-recap</code></pre>
   <tr><th>素材</th><th>必須？</th><th>説明</th></tr>
   <tr><td>撮影した動画</td><td><strong>必須</strong></td><td>あなたが撮影したMP4ファイルを <code>video/</code> に入れる</td></tr>
   <tr><td>BGM</td><td><strong>必須</strong></td><td>フリーBGMサイト等からダウンロードしたMP3を <code>bgm/</code> に入れる</td></tr>
-  <tr><td>SE（効果音）</td><td>不要</td><td>最初から入っています。差し替えもOK</td></tr>
+  <tr><td>SE（効果音）</td><td><strong>必須</strong></td><td>フリーSEサイト等からMP3をダウンロードして <code>se/</code> に入れる</td></tr>
   <tr><td>ナレーション台本</td><td>推奨</td><td>話した内容のテキストを <code>script/</code> に入れる（文字起こしの精度が上がります）</td></tr>
 </table>
 
@@ -340,7 +340,7 @@ claude --dangerously-skip-permissions</code></pre>
 │   ├── scripts/validateLicense.mjs  <span class="comment">← ライセンス認証</span>
 │   ├── public/video/            <span class="comment">← 撮影動画を入れる</span>
 │   ├── public/bgm/              <span class="comment">← BGMを入れる</span>
-│   ├── public/se/               <span class="comment">← SE素材（プリセット入り）</span>
+│   ├── public/se/               <span class="comment">← SE素材を入れる</span>
 │   ├── public/script/           <span class="comment">← ナレーション台本を入れる</span>
 │   └── ...
 ├── gas-genspark/                <span class="comment">← スライドテンプレートシステム</span>
