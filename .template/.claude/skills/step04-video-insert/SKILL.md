@@ -62,51 +62,74 @@ ffprobe -v quiet -show_entries format=duration -of default=noprint_wrappers=1 pu
 ffprobe -v quiet -show_entries format=duration -of default=noprint_wrappers=1 public/video/*_cut.mp4
 ```
 
-### 3. 挿入位置のプレビュー確認
+### 3. 挿入位置のプレビュー確認（3段階ズーム）
 
-ユーザーが指定したおおよその秒数の前後フレームを画像出力し、正確な挿入位置を決定する。
+ユーザーが指定したおおよその秒数から、3段階で絞り込んでフレーム単位の挿入位置を確定する。
+
+#### Step 3-1: 粗い確認（1秒間隔）
 
 ```bash
 # 指定秒数（例: 30秒）の前後を1秒間隔でフレーム抽出
-# -2秒〜+2秒の5枚を出力
 for i in -2 -1 0 1 2; do
   t=$(echo "30 + $i" | bc)
   ffmpeg -y -ss "$t" -i public/video/input_cut.mp4 -frames:v 1 -q:v 2 "/tmp/preview_${t}s.jpg"
 done
 ```
 
-出力した画像をユーザーに見せて「どの位置で切りますか？」と確認する。
+出力した画像をユーザーに見せて「どのあたりですか？」と確認する。
 
-- ユーザーが「ここ」と指定 → その秒数を挿入位置に確定
-- もっと細かく見たい場合 → 0.5秒間隔や0.1秒間隔で再出力
+#### Step 3-2: 中間確認（0.2秒間隔）
+
+ユーザーが選んだ1秒区間をさらに細分化する。
 
 ```bash
-# 0.5秒間隔で細かく確認する場合（例: 29秒〜31秒）
-for t in 29.0 29.5 30.0 30.5 31.0; do
+# 例: 30秒〜31秒の区間を0.2秒間隔で確認
+for t in 30.0 30.2 30.4 30.6 30.8 31.0; do
   ffmpeg -y -ss "$t" -i public/video/input_cut.mp4 -frames:v 1 -q:v 2 "/tmp/preview_${t}s.jpg"
 done
 ```
 
-### 4. 挿入位置の決定
+#### Step 3-3: フレーム単位の確認
 
-プレビューで確定した秒数を使う。例:
-- 「30.5秒で切る」→ メイン動画を30.5秒で分割
-- 「冒頭の前に挿入」→ クリップ + メイン動画の順で結合
-- 「最後に追加」→ メイン動画 + クリップの順で結合
-
-### 5. ffmpeg trim+concat で差し込み結合
+ユーザーが選んだ0.2秒区間の全フレームを出力する。
 
 ```bash
-# 例: 30秒の位置にclip.mp4を挿入する場合
+# 例: 30.4秒〜30.6秒の全フレームを出力（30fpsの場合 = 6フレーム）
+# video-context.md の FPS を参照すること
+FPS=30
+START=30.4
+DURATION=0.2
+ffmpeg -y -ss "$START" -i public/video/input_cut.mp4 -t "$DURATION" -vsync 0 -q:v 2 "/tmp/frame_%04d.jpg"
+```
 
-# Part A: メイン動画の0〜30秒
-ffmpeg -i public/video/input_cut.mp4 -ss 0 -t 30 -c:v libx264 -c:a aac /tmp/part_a.mp4
+出力画像を全てユーザーに見せて「どのフレームで切りますか？」と確認する。
+
+#### 挿入位置の確定
+
+ユーザーが選んだフレーム番号から正確な秒数を計算する。
+
+```
+確定秒数 = START + (選んだフレーム番号 - 1) / FPS
+例: 30.4秒起点の3枚目 → 30.4 + 2/30 = 30.467秒
+```
+
+- 「冒頭の前に挿入」→ プレビュー不要。クリップ + メイン動画の順で結合
+- 「最後に追加」→ プレビュー不要。メイン動画 + クリップの順で結合
+
+### 4. ffmpeg trim+concat で差し込み結合
+
+```bash
+# 例: 30.467秒の位置にclip.mp4を挿入する場合
+CUT_AT=30.467
+
+# Part A: メイン動画の0〜CUT_AT秒
+ffmpeg -i public/video/input_cut.mp4 -ss 0 -t "$CUT_AT" -c:v libx264 -c:a aac /tmp/part_a.mp4
 
 # Part B: 挿入クリップ
 ffmpeg -i public/videos/clip.mp4 -c:v libx264 -c:a aac /tmp/part_b.mp4
 
-# Part C: メイン動画の30秒〜最後
-ffmpeg -i public/video/input_cut.mp4 -ss 30 -c:v libx264 -c:a aac /tmp/part_c.mp4
+# Part C: メイン動画のCUT_AT秒〜最後
+ffmpeg -i public/video/input_cut.mp4 -ss "$CUT_AT" -c:v libx264 -c:a aac /tmp/part_c.mp4
 
 # concat用リスト作成
 echo "file '/tmp/part_a.mp4'
