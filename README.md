@@ -182,7 +182,7 @@ claude --dangerously-skip-permissions
 /step14-slides          スライドキャプチャ＋タイムライン（任意）
 /step15-wipe            ワイプ位置調整（任意）
 /step16-images          画像挿入（感情ベース + AI画像生成）（任意）
-/step17-special-components  BulletList・見出し・CTA（任意）
+/step17-special-components  箇条書き・見出し・CTA（任意）
 /step18-endscreen       エンドスクリーン追加（任意）
     ↓
 【フェーズ4: BGM + 出力】
