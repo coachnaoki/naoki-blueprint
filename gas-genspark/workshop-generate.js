@@ -2,7 +2,7 @@
 /**
  * 作業会ガイドスライドをPNG化する
  */
-const puppeteer = require('/Users/kobayashinaoki/Desktop/7_AI/Cursor/my-video/node_modules/puppeteer');
+const puppeteer = require('puppeteer');
 const path = require('path');
 const fs = require('fs');
 

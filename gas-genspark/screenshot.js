@@ -4,12 +4,12 @@
  * 使い方: node screenshot.js [保存先ディレクトリ]
  */
 
-const puppeteer = require('/Users/kobayashinaoki/Desktop/7_AI/Cursor/my-video/node_modules/puppeteer');
+const puppeteer = require('puppeteer');
 const path = require('path');
 const fs = require('fs');
 
 const SLIDES_HTML = path.resolve(__dirname, 'slides.html');
-const DEFAULT_OUTPUT = '/Users/kobayashinaoki/Desktop/7_AI/Cursor/my-video/public/slides';
+const DEFAULT_OUTPUT = path.resolve(__dirname, '..', '.template', 'public', 'slides');
 const OUTPUT_DIR = process.argv[2] || DEFAULT_OUTPUT;
 
 // スライドの固定サイズ
