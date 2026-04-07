@@ -32,7 +32,7 @@ step09-composition     → コンポジション構築・登録（MainCompositio
 step10-greenback       → グリーンバック背景置換（任意）
 step11-videos          → デモ動画の重ね表示（オーバーレイ）
 --- スライドを入れる場合は以下を実行 ---
-step12-slides-gen      → 台本→HTMLスライド生成（gas-gensparkテンプレート）（任意）
+step12-slides-gen      → 台本→HTMLスライド生成（slidesテンプレート）（任意）
 step13-slides-capture  → スライドキャプチャ＋ブロック分割（Puppeteer）（任意）
 step14-slide-timeline  → スライドタイムライン（slideTimeline.ts）（任意）
 step15-wipe            → ワイプ位置調整（任意・スライドがある場合）
@@ -46,8 +46,8 @@ step20-render          → 最終レンダリング（MP4書き出し）
 ```
 
 ### スライド生成システム
-- **テンプレート**: `gas-genspark/slides.html` に15種類のHTMLテンプレート（title / three-cards / three-tactics / two-columns / steps / big-message / closing / quote / before-after / stats / checklist / timeline / ranking / versus / highlight-box）
-- **キャプチャ**: `gas-genspark/screenshot.js` でPuppeteerキャプチャ → `public/slides/` に出力
+- **テンプレート**: `slides/slides.html` に15種類のHTMLテンプレート（title / three-cards / three-tactics / two-columns / steps / big-message / closing / quote / before-after / stats / checklist / timeline / ranking / versus / highlight-box）
+- **キャプチャ**: `slides/screenshot.js` でPuppeteerキャプチャ → `public/slides/` に出力
 - **デザイン**: ライムイエロー `#CCFF00` + ダーク `#121212`、Zen Kaku Gothic New フォント
 
 ### ワークフローの5フェーズ

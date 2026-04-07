@@ -18,7 +18,7 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash(node *), Bash(ls *), Bash(ope
 
 ### 1-2. テンプレートの選定
 
-`gas-genspark/seminar-slides.html` のテンプレートシステムを使う。
+`slides/seminar-slides.html` のテンプレートシステムを使う。
 
 | テンプレート | 用途 | 必須フィールド |
 |---|---|---|
@@ -41,7 +41,7 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash(node *), Bash(ls *), Bash(ope
 
 ### 1-3. SLIDE_SCRIPT の生成
 
-`gas-genspark/seminar-slides.html` の `SLIDE_SCRIPT` 配列を台本の内容で書き換える。
+`slides/seminar-slides.html` の `SLIDE_SCRIPT` 配列を台本の内容で書き換える。
 
 **テンプレートエンジン（renderTitle等の関数群）やCSS・HTMLは変更しない。SLIDE_SCRIPT部分のみ編集。**
 
@@ -78,7 +78,7 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash(node *), Bash(ls *), Bash(ope
 ### 1-4. ブラウザで確認
 
 ```bash
-open gas-genspark/seminar-slides.html
+open slides/seminar-slides.html
 ```
 
 ユーザーに確認してもらい、修正があれば対応する。
@@ -97,7 +97,7 @@ rm -rf /tmp/seminar-slides/*.png
 ### 2-2. 撮影 → 挿入の実行
 
 ```bash
-node gas-genspark/import-slides.mjs
+node slides/import-slides.mjs
 ```
 
 スクリプトが自動で以下を実行する：
@@ -119,8 +119,8 @@ open "https://docs.google.com/presentation/d/14UOt3rfC7zXiOuwysVzWxEujDGMlb8X3KG
 
 | 項目 | 値 |
 |------|-----|
-| HTMLスライド | `gas-genspark/seminar-slides.html` |
-| 挿入スクリプト | `gas-genspark/import-slides.mjs` |
+| HTMLスライド | `slides/seminar-slides.html` |
+| 挿入スクリプト | `slides/import-slides.mjs` |
 | PNG一時保存先 | `/tmp/seminar-slides/` |
 | Google Slides ID | `14UOt3rfC7zXiOuwysVzWxEujDGMlb8X3KGvrA7yxB-M` |
 | サービスアカウント | `cursor@gen-lang-client-0767362512.iam.gserviceaccount.com` |
