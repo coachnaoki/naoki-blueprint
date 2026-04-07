@@ -1,8 +1,8 @@
 ---
 name: step18-endscreen
-description: 動画の最後にエンドスクリーン（おすすめ動画カード）オーバーレイを追加する。durationInFramesの延長とエンドスクリーン画像の表示を行う。
-argument-hint: [エンドスクリーン画像パスや表示秒数（省略時はユーザーに確認）]
-allowed-tools: Read, Write, Edit, Glob, Grep, Bash(npx tsc *), Bash(ls *), Bash(node scripts/_chk.mjs)
+description: 動画の最後にエンドスクリーン（おすすめ動画カード）オーバーレイを追加する。durationInFramesの延長とエンドスクリーン画像または動画の表示を行う。
+argument-hint: [エンドスクリーン素材パス（画像or動画）や表示秒数（省略時はユーザーに確認）]
+allowed-tools: Read, Write, Edit, Glob, Grep, Bash(npx tsc *), Bash(ls *), Bash(ffprobe *), Bash(node scripts/_chk.mjs)
 ---
 
 <!-- LICENSE_GUARD: DO NOT REMOVE -->
@@ -25,8 +25,9 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash(npx tsc *), Bash(ls *), Bash(
 
 ## ユーザーに確認すること（必須）
 
-1. **エンドスクリーン画像はあるか？**（`public/images/endscreen.png` 等）
-2. **表示秒数**（デフォルト: 10秒）
+1. **エンドスクリーン素材はあるか？**（画像: `public/images/endscreen.png` / 動画: `public/videos/endscreen.mp4` 等）
+2. **画像か動画か？**
+3. **表示秒数**（画像の場合デフォルト: 10秒 / 動画の場合はクリップの尺に合わせる）
 
 ---
 
@@ -42,10 +43,12 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash(npx tsc *), Bash(ls *), Bash(
 durationInFrames={元のフレーム数 + 250}
 ```
 
-### 2. MainComposition.tsx にエンドスクリーン画像を追加
+### 2. MainComposition.tsx にエンドスクリーンを追加
+
+#### 画像の場合
 
 ```typescript
-{/* エンドスクリーン（元の最終フレーム以降） */}
+{/* エンドスクリーン画像（元の最終フレーム以降） */}
 {frame >= originalLastFrame && (
   <Img
     src={staticFile("images/endscreen.png")}
@@ -61,6 +64,37 @@ durationInFrames={元のフレーム数 + 250}
   />
 )}
 ```
+
+#### 動画の場合
+
+```typescript
+{/* エンドスクリーン動画（元の最終フレーム以降） */}
+<Sequence from={originalLastFrame} durationInFrames={endscreenDurationInFrames} layout="none">
+  <OffthreadVideo
+    src={staticFile("videos/endscreen.mp4")}
+    style={{
+      position: "absolute",
+      top: 0,
+      left: 0,
+      width: "100%",
+      height: "100%",
+      objectFit: "cover",
+      zIndex: 20,
+    }}
+  />
+</Sequence>
+```
+
+> **動画の場合は必ず `<Sequence>` でラップする。** ラップしないと動画が再生されず静止画になる。
+
+#### 動画エンドスクリーンの尺の決め方
+
+```bash
+# エンドスクリーン動画の尺を確認
+ffprobe -v quiet -show_entries format=duration -of default=noprint_wrappers=1 public/videos/endscreen.mp4
+```
+
+`endscreenDurationInFrames = Math.ceil(動画の尺(秒) × FPS)`
 
 | プロパティ | 値 |
 |-----------|-----|
@@ -97,7 +131,7 @@ npx tsc --noEmit
 Step 18 完了: エンドスクリーンを追加しました。
 
 【設定】
-- 画像: public/images/endscreen.png
+- 素材: public/images/endscreen.png（または動画）
 - 表示秒数: ○秒（○フレーム）
 - 元のフレーム数: {N} → 延長後: {N}
 - zIndex: 20（最前面）
