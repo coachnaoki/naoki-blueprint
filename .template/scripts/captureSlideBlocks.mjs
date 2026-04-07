@@ -4,7 +4,7 @@ import { fileURLToPath } from "url";
 import fs from "fs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const slidesHtml = path.resolve(__dirname, "../../slides/slides.html");
+const slidesHtml = path.resolve(__dirname, "../../aislides/slides.html");
 const outputDir = path.resolve(__dirname, "../public/slides");
 
 // 元のscreenshot.jsと同じ設定
