@@ -1,6 +1,6 @@
 ---
 name: step12-slides-gen
-description: 台本（ユーザー提供）をもとに、gas-gensparkのテンプレートシステムでHTMLスライドを自動生成する。
+description: 台本（ユーザー提供）をもとに、slidesのテンプレートシステムでHTMLスライドを自動生成する。
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash(node *), Bash(node scripts/_chk.mjs)
 ---
 
@@ -15,7 +15,7 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash(node *), Bash(node scripts/_c
 
 # Step 12: スライド生成（台本→HTML）
 
-ユーザーから受け取った台本をもとに、`gas-genspark/slides.html` のテンプレートシステムを使ってHTMLスライドを生成する。
+ユーザーから受け取った台本をもとに、`slides/slides.html` のテンプレートシステムを使ってHTMLスライドを生成する。
 
 ## 前提条件
 - Step 06（文字起こし修正）が完了していること
@@ -75,7 +75,7 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash(node *), Bash(node scripts/_c
 
 ### 3. SLIDE_SCRIPT の生成
 
-`gas-genspark/slides.html` の `SLIDE_SCRIPT` 配列を台本の内容で書き換える。
+`slides/slides.html` の `SLIDE_SCRIPT` 配列を台本の内容で書き換える。
 
 #### テキスト記述ルール（必須）
 1. 1項目につき最大2行まで
@@ -112,18 +112,18 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash(node *), Bash(node scripts/_c
 
 ### 4. slides.html の更新
 
-`gas-genspark/slides.html` の `SLIDE_SCRIPT` 部分のみを編集する。テンプレートエンジン（renderTitle等の関数群）やCSS・HTMLは変更しない。
+`slides/slides.html` の `SLIDE_SCRIPT` 部分のみを編集する。テンプレートエンジン（renderTitle等の関数群）やCSS・HTMLは変更しない。
 
 ### 5. ブラウザで確認
 
 ```bash
-open gas-genspark/slides.html
+open slides/slides.html
 ```
 
 ユーザーに確認してもらい、修正があれば対応する。
 
 ## 完了条件
-- `gas-genspark/slides.html` の SLIDE_SCRIPT が台本の内容で更新されている
+- `slides/slides.html` の SLIDE_SCRIPT が台本の内容で更新されている
 - テキスト記述ルールに準拠している
 - ユーザーが内容を確認済み
 
