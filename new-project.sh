@@ -25,7 +25,7 @@ if [ -d "projects/$PROJECT_NAME" ]; then
 fi
 
 mkdir -p projects
-cp -r my-video-template "projects/$PROJECT_NAME"
+cp -r .template "projects/$PROJECT_NAME"
 cd "projects/$PROJECT_NAME"
 npm install
 

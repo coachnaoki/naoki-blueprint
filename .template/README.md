@@ -61,7 +61,7 @@ SE（効果音）は `public/se/` にプリセットが入っています。
 
 ```bash
 git clone https://github.com/coachnaoki/naoki-blueprint.git
-cd naoki-blueprint/my-video-template
+cd naoki-blueprint/.template
 ```
 
 ### 2. 依存パッケージをインストール
@@ -164,7 +164,7 @@ Claude Code を起動して、最初のコマンドを実行：
 ## フォルダ構成
 
 ```
-my-video-template/
+.template/
 ├── .claude/skills/     ← Claude Code スキル（20ステップ + catchup + remotion-best-practices）
 ├── CLAUDE.md           ← AI の行動ルール（編集不要）
 ├── video-context.md    ← 動画の設定（step01 で作成）
