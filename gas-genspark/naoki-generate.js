@@ -2,7 +2,7 @@
 /**
  * Naoki式セミナースライドをPNG化し、スピーカーノート(カンペ)をJSONで出力する
  */
-const puppeteer = require('/Users/kobayashinaoki/Desktop/7_AI/Cursor/my-video/node_modules/puppeteer');
+const puppeteer = require('puppeteer');
 const path = require('path');
 const fs = require('fs');
 
