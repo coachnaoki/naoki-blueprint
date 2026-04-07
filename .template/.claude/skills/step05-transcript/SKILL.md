@@ -18,7 +18,7 @@ allowed-tools: Read, Write, Glob, Grep, Bash(ls *), Bash(wc *), Bash(node *), Ba
 カット済み動画（`public/video/*_cut.mp4`）にWhisperで文字起こしを実行し、`public/transcript_words.json` を生成・解析する。
 
 ## 前提条件
-- Step 03（ジェットカット）またはStep 04（動画クリップ物理挿入）でカット済み動画が `public/video/` に存在すること
+- Step 03（ジェットカット）またはStep 04（動画の差し込み結合）でカット済み動画が `public/video/` に存在すること
 - Whisper環境: `/opt/homebrew/bin/python3.12` + `mlx-whisper`（**python3.14では動かない、必ず3.12を使用**）
 
 ## やること

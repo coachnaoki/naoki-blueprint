@@ -162,7 +162,7 @@ claude --dangerously-skip-permissions
 /step01-context         動画の目的・ターゲットを整理
 /step02-assets          素材の確認
 /step03-jumpcut         無音部分を自動カット
-/step04-video-insert    動画クリップをメイン動画に物理挿入（任意）
+/step04-video-insert    動画の差し込み結合（任意）
 /step05-transcript      Whisperで文字起こし
 /step06-transcript-fix  台本と照合して誤変換を修正
     ↓
@@ -173,7 +173,7 @@ claude --dangerously-skip-permissions
     ↓
 【フェーズ3: 素材・演出挿入】
 /step10-greenback       グリーンバック背景置換（任意）
-/step11-videos          動画クリップ表示（任意）
+/step11-videos          デモ動画の重ね表示（任意）
 /step12-slides-gen      台本からスライドHTML生成（任意）
 /step13-slides-capture  スライドをPNG画像化（任意）
 /step14-slide-timeline  スライドタイムライン作成（任意）

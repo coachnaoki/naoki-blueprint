@@ -98,6 +98,6 @@ ffmpeg -i public/video/元動画.mp4 -filter_complex "..." -c:v libx264 -c:a aac
 - カット後: ○○秒（○○%短縮）
 - カットした無音区間: ○○箇所（合計○○秒）
 
-次のステップ → /step04-video-insert（動画クリップ物理挿入）or /step05-transcript（文字起こし）
+次のステップ → /step04-video-insert（動画の差し込み結合）or /step05-transcript（文字起こし）
 進めますか？
 ```
