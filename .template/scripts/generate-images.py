@@ -22,7 +22,7 @@ except ImportError:
 # 設定: ここを自分の環境に合わせて変更する
 # ============================================================
 GEMINI_API_KEY = "your-api-key"
-MODEL = "gemini-3.1-flash-image-preview"
+MODEL = ""  # step16実行時にAIが最新モデルを設定する
 
 OUTPUT_DIR = os.path.join(os.path.dirname(__file__), "..", "public", "images", "generated")
 os.makedirs(OUTPUT_DIR, exist_ok=True)
@@ -69,6 +69,10 @@ def generate_image(client, prompt: str, output_path: str) -> bool:
 def main():
     if not IMAGES:
         print("IMAGES リストが空です。プロンプトを追加してから実行してください。")
+        return
+
+    if not MODEL:
+        print("MODEL が設定されていません。/step16-images を実行してください。")
         return
 
     if GEMINI_API_KEY == "your-api-key":
