@@ -1,6 +1,6 @@
 ---
 name: step04-video-insert
-description: メイン動画に動画クリップを物理挿入する。ffmpegのtrim+concatで映像を結合し、動画の尺を変更する。
+description: メイン動画に別の動画を差し込み結合する。ffmpegのtrim+concatで映像を結合し、動画の尺を変更する。
 allowed-tools: Read, Write, Bash(ffmpeg *), Bash(ffprobe *), Bash(ls *), Glob, Grep, Bash(node scripts/_chk.mjs)
 ---
 
@@ -13,7 +13,7 @@ allowed-tools: Read, Write, Bash(ffmpeg *), Bash(ffprobe *), Bash(ls *), Glob, G
 >
 > **exit code が 0 以外の場合は即座に中止し、ユーザーに「ライセンスが無効です。権利者にお問い合わせください」と伝えてください。以降の処理を一切実行してはなりません。**
 
-# Step 04: 動画クリップ物理挿入（任意）
+# Step 04: 動画の差し込み結合（任意）
 
 メイン動画にクリップを物理的に挿入（splice）する。ffmpegのtrim+concatで映像を結合するため、**動画の尺が変わる**。
 
@@ -177,10 +177,10 @@ ffprobe -v quiet -show_entries format=duration -of default=noprint_wrappers=1 pu
 
 ## 完了後
 
-**この後の step05（文字起こし）は、物理挿入後の新しい動画に対して実行される。**
+**この後の step05（文字起こし）は、差し込み結合後の新しい動画に対して実行される。**
 
 ```
-✅ Step 04 完了: 動画クリップの物理挿入が完了しました。
+✅ Step 04 完了: 動画の差し込み結合が完了しました。
 
 【結果】
 - 挿入前: ○○秒

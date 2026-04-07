@@ -70,6 +70,6 @@ npx tsc --noEmit
 【設定】
 - 背景画像: public/images/background.jpg
 
-次のステップ → /step11-videos（動画クリップ挿入）
+次のステップ → /step11-videos（デモ動画の重ね表示）
 進めますか？
 ```

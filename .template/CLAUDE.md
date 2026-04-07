@@ -21,7 +21,7 @@
 step01-context         → 動画コンテキスト整理（ターゲット・趣旨・FPS）
 step02-assets          → 素材確認（動画・BGM・SE・画像）
 step03-jumpcut         → ジェットカット（FFmpegで無音自動カット）
-step04-video-insert    → 動画クリップ物理挿入（任意・ffmpeg trim+concat）
+step04-video-insert    → 動画の差し込み結合（任意・ffmpeg trim+concat）
 step05-transcript      → 文字起こし（Whisperでタイムスタンプ化）
 step06-transcript-fix  → 文字起こし修正（台本と照合して誤変換修正）
 --- 動画構築 ---
@@ -30,7 +30,7 @@ step08-telop           → テロップデータ作成（telopData.ts）
 step09-composition     → コンポジション構築・登録（MainComposition.tsx + Root.tsx）
 --- 素材挿入 ---
 step10-greenback       → グリーンバック背景置換（任意）
-step11-videos          → 動画クリップ挿入（オーバーレイ表示）
+step11-videos          → デモ動画の重ね表示（オーバーレイ）
 --- スライドを入れる場合は以下を実行 ---
 step12-slides-gen      → 台本→HTMLスライド生成（gas-gensparkテンプレート）（任意）
 step13-slides-capture  → スライドキャプチャ＋ブロック分割（Puppeteer）（任意）

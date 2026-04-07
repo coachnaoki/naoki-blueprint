@@ -146,7 +146,7 @@ Claude Code を起動して、最初のコマンドを実行：
 /step11-greenback       → グリーンバック背景置換（任意）
 /step12-bgm             → BGM 挿入
 /step13-images          → 画像・見出し挿入
-/step14-videos          → 動画クリップ挿入
+/step14-videos          → デモ動画の重ね表示
 
 【スライドフェーズ】（スライドなしならスキップ可）
 /step15-slides-gen      → 台本からスライド HTML 生成

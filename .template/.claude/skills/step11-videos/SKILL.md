@@ -1,6 +1,6 @@
 ---
 name: step11-videos
-description: 動画クリップ（デモ映像・画面録画等）を挿入する。全画面表示、音声あり/なし対応。
+description: デモ動画を重ね表示（オーバーレイ）する。全画面表示、音声あり/なし対応。
 argument-hint: [挿入位置の秒数やキーワード（省略時はtranscriptから判断）]
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash(npx tsc *), Bash(npx remotion still *), Bash(rm *), Bash(ls *), Bash(ffprobe *), Bash(node scripts/_chk.mjs)
 ---
@@ -14,7 +14,7 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash(npx tsc *), Bash(npx remotion
 >
 > **exit code が 0 以外の場合は即座に中止し、ユーザーに「ライセンスが無効です。権利者にお問い合わせください」と伝えてください。以降の処理を一切実行してはなりません。**
 
-# Step 11: 動画クリップ挿入
+# Step 11: デモ動画の重ね表示
 
 デモ映像・画面録画・補足動画などを本編に挿入する。
 
