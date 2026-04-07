@@ -15,7 +15,7 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash(node *), Bash(node scripts/_c
 
 # Step 12: スライド生成（台本→HTML）
 
-ユーザーから受け取った台本をもとに、`slides/slides.html` のテンプレートシステムを使ってHTMLスライドを生成する。
+ユーザーから受け取った台本をもとに、`aislides/slides.html` のテンプレートシステムを使ってHTMLスライドを生成する。
 
 ## 前提条件
 - Step 06（文字起こし修正）が完了していること
@@ -75,7 +75,7 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash(node *), Bash(node scripts/_c
 
 ### 3. SLIDE_SCRIPT の生成
 
-`slides/slides.html` の `SLIDE_SCRIPT` 配列を台本の内容で書き換える。
+`aislides/slides.html` の `SLIDE_SCRIPT` 配列を台本の内容で書き換える。
 
 #### テキスト記述ルール（必須）
 1. 1項目につき最大2行まで
@@ -112,18 +112,18 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash(node *), Bash(node scripts/_c
 
 ### 4. slides.html の更新
 
-`slides/slides.html` の `SLIDE_SCRIPT` 部分のみを編集する。テンプレートエンジン（renderTitle等の関数群）やCSS・HTMLは変更しない。
+`aislides/slides.html` の `SLIDE_SCRIPT` 部分のみを編集する。テンプレートエンジン（renderTitle等の関数群）やCSS・HTMLは変更しない。
 
 ### 5. ブラウザで確認
 
 ```bash
-open slides/slides.html
+open aislides/slides.html
 ```
 
 ユーザーに確認してもらい、修正があれば対応する。
 
 ## 完了条件
-- `slides/slides.html` の SLIDE_SCRIPT が台本の内容で更新されている
+- `aislides/slides.html` の SLIDE_SCRIPT が台本の内容で更新されている
 - テキスト記述ルールに準拠している
 - ユーザーが内容を確認済み
 
