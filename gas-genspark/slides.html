@@ -314,7 +314,7 @@ const SLIDE_SCRIPT = [
     icon: "fa-gem",
     title: "今日一番伝えたいこと",
     titleUnderline: "伝えたいこと",
-    message: "前衛は<span style='background:#CCFF00'>準備が9割</span>",
+    message: "前衛は<span style='background:#CCFF00'>準備が9割</span>だと\n思っていませんか？",
     sub: "ボールが来てから考えるのではなく\n来る前にすべてを決めておく"
   },
 
@@ -469,7 +469,7 @@ function renderThreeTactics(s) {
     const badgeBorder = c.dark ? `border:2px solid ${G}` : '';
     const badgeText = c.dark ? G : D;
     return `
-    <div class="rounded-2xl p-6 flex flex-col items-center justify-between text-center h-full"
+    <div class="rounded-2xl px-3 py-6 flex flex-col items-center justify-between text-center h-full"
          style="background:${bg};${border};box-shadow:0 4px 6px rgba(0,0,0,.1)">
       <div class="w-full flex flex-col items-center">
         <div class="px-6 py-2 rounded-full text-2xl font-black mb-6 transform -translate-y-2 shadow-sm"
@@ -715,8 +715,8 @@ function renderQuote(s) {
       <div class="absolute bottom-12 right-16 opacity-10">
         <i class="fas fa-quote-right text-9xl" style="color:${D}"></i>
       </div>
-      <div class="border-l-8 pl-12 py-4" style="border-color:${G}">
-        <p class="text-7xl font-black leading-tight mb-8" style="color:${D}">${s.quote.replace(/\n/g,'<br>')}</p>
+      <div class="border-l-8 pl-8 py-4" style="border-color:${G}">
+        <p class="text-6xl font-black leading-tight mb-8" style="color:${D}">${s.quote.replace(/\n/g,'<br>')}</p>
       </div>
       <div class="flex items-center gap-4 mt-8">
         <div class="w-20 h-20 rounded-full flex items-center justify-center" style="background:${D}">
