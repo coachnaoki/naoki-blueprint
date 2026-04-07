@@ -62,14 +62,39 @@ ffprobe -v quiet -show_entries format=duration -of default=noprint_wrappers=1 pu
 ffprobe -v quiet -show_entries format=duration -of default=noprint_wrappers=1 public/video/*_cut.mp4
 ```
 
-### 3. 挿入位置の決定
+### 3. 挿入位置のプレビュー確認
 
-ユーザーが指定したおおよその秒数を使う。例:
-- 「30秒あたりに挿入」→ メイン動画を30秒で分割
+ユーザーが指定したおおよその秒数の前後フレームを画像出力し、正確な挿入位置を決定する。
+
+```bash
+# 指定秒数（例: 30秒）の前後を1秒間隔でフレーム抽出
+# -2秒〜+2秒の5枚を出力
+for i in -2 -1 0 1 2; do
+  t=$(echo "30 + $i" | bc)
+  ffmpeg -y -ss "$t" -i public/video/input_cut.mp4 -frames:v 1 -q:v 2 "/tmp/preview_${t}s.jpg"
+done
+```
+
+出力した画像をユーザーに見せて「どの位置で切りますか？」と確認する。
+
+- ユーザーが「ここ」と指定 → その秒数を挿入位置に確定
+- もっと細かく見たい場合 → 0.5秒間隔や0.1秒間隔で再出力
+
+```bash
+# 0.5秒間隔で細かく確認する場合（例: 29秒〜31秒）
+for t in 29.0 29.5 30.0 30.5 31.0; do
+  ffmpeg -y -ss "$t" -i public/video/input_cut.mp4 -frames:v 1 -q:v 2 "/tmp/preview_${t}s.jpg"
+done
+```
+
+### 4. 挿入位置の決定
+
+プレビューで確定した秒数を使う。例:
+- 「30.5秒で切る」→ メイン動画を30.5秒で分割
 - 「冒頭の前に挿入」→ クリップ + メイン動画の順で結合
 - 「最後に追加」→ メイン動画 + クリップの順で結合
 
-### 4. ffmpeg trim+concat で物理挿入
+### 5. ffmpeg trim+concat で差し込み結合
 
 ```bash
 # 例: 30秒の位置にclip.mp4を挿入する場合
@@ -161,7 +186,7 @@ ffmpeg -y -i public/videos/clip.mp4 \
 - 計測値の差分（`メインのmean_volume - クリップのmean_volume`）をそのまま `volume` フィルターに指定する
 - 倍速フィルターと組み合わせる場合: `-af "atempo=1.5,volume=-6dB"`
 
-### 5. 結果の確認
+### 6. 結果の確認
 
 挿入前後の動画の長さを比較表示する。
 
