@@ -207,7 +207,7 @@ naoki-blueprint/                 ← ダウンロードしたフォルダ
 │   ├── public/script/           ← ナレーション台本を入れる
 │   └── ...
 ├── gas-genspark/                ← スライドテンプレートシステム
-│   ├── slides.html              ← 7種類のスライドテンプレート
+│   ├── slides.html              ← 15種類のスライドテンプレート
 │   └── screenshot.js            ← Puppeteerキャプチャスクリプト
 │
 └── projects/                    ← あなたの動画プロジェクトはここ
