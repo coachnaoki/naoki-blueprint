@@ -48,9 +48,12 @@ brew install python@3.12
 
 # Whisper（Windows版の文字起こしAI）
 pip install openai-whisper
+
+# GPU(CUDA)を使う場合はPyTorch CUDA版もインストール
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
 ```
 
-> Windows では `openai-whisper` を使用します。GPU(CUDA)がある場合は自動で高速化されます。
+> Windows では `openai-whisper` を使用します。GPU(CUDA)がある場合はPyTorch CUDA版をインストールすると高速化されます。
 
 ---
 
@@ -259,7 +262,7 @@ python3.12 -c "import whisper; print('OK')"
 - 別のPCで認証済みの場合は、権利者にPC紐付け解除を依頼してください
 
 ### Q: Windows でも使える？
-はい。Step 0 で `openai-whisper` をインストールすれば動作します。GPU(CUDA)対応PCならさらに高速です。
+はい。Step 0 で `openai-whisper` をインストールすれば動作します。GPU(CUDA)対応PCならPyTorch CUDA版をインストールするとさらに高速です。
 
 ---
 
