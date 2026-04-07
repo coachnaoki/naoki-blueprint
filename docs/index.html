@@ -292,7 +292,7 @@ cd naoki-blueprint</code></pre>
 <div class="card">
   <h2><span class="step-number">2</span> ライセンス認証（初回のみ）</h2>
   <p>権利者から発行されたライセンスIDを入力します。</p>
-  <pre><code>cd my-video-template
+  <pre><code>cd .template
 node scripts/validateLicense.mjs NK-XXXX-XXXX-XXXX
 cd ..</code></pre>
   <p>認証成功すると <code>.license</code> ファイルが生成されます。2本目以降はこのステップは不要です（テンプレートをコピーすると <code>.license</code> も一緒にコピーされます）。</p>
@@ -305,14 +305,14 @@ cd ..</code></pre>
   <p>動画1本ごとに専用のプロジェクトフォルダを作ります。テンプレートをコピーするだけでOK。</p>
   <p><strong>プロジェクト名は自由に決めてください。</strong> 動画の内容がわかる名前がおすすめです。</p>
   <pre><code>mkdir -p projects
-cp -r my-video-template projects/<span class="highlight">あなたのプロジェクト名</span>
+cp -r .template projects/<span class="highlight">あなたのプロジェクト名</span>
 cd projects/<span class="highlight">あなたのプロジェクト名</span>
 npm install</code></pre>
 
   <p>例：</p>
-  <pre><code>cp -r my-video-template projects/tennis-serve-tips
-cp -r my-video-template projects/cooking-pasta
-cp -r my-video-template projects/ai-seminar-recap</code></pre>
+  <pre><code>cp -r .template projects/tennis-serve-tips
+cp -r .template projects/cooking-pasta
+cp -r .template projects/ai-seminar-recap</code></pre>
 
   <div class="note"><strong>なぜ projects/ に作るの？</strong><br>テンプレートやツール類はリポジトリ直下に残るので、2本目・3本目を作るときも同じ手順でコピーするだけ。</div>
 
@@ -402,7 +402,7 @@ claude --dangerously-skip-permissions</code></pre>
   <div class="folder-tree">
   <pre><code>naoki-blueprint/                 <span class="comment">← ダウンロードしたフォルダ</span>
 ├── README.md                    <span class="comment">← ガイド</span>
-├── my-video-template/           <span class="comment">← テンプレート（コピー元・編集しない）</span>
+├── .template/           <span class="comment">← テンプレート（コピー元・編集しない）</span>
 │   ├── .claude/skills/          <span class="comment">← 20個のAIスキル</span>
 │   ├── CLAUDE.md                <span class="comment">← AIの行動ルール</span>
 │   ├── scripts/validateLicense.mjs  <span class="comment">← ライセンス認証</span>
