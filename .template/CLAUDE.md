@@ -193,7 +193,7 @@ step20-render          → 最終レンダリング（MP4書き出し）
 | **normal** | M PLUS Rounded 1c | 84 | 紺 `#10458B` | 白フチ SVG strokeWidth:32 | SVG 2層 | なし |
 | **normal_emphasis** | M PLUS Rounded 1c | 84 | 紺 `#10458B` + 赤 `#CC3300` | 白フチ SVG strokeWidth:20 | SVG 2層 | se/強調/ |
 | **emphasis** | Shippori Mincho | 102 | 赤グラデ `#990000→#FF2222` | 金 `#FFFFCC→#FFD700` + 白グロー | CSS 2層 斜体 | se/ポジティブ/ |
-| **emphasis2** | Shippori Mincho | 135 | 金グラデ `#FFD700→#B8860B` | 金 `#FFD700` stroke + 白グロー | CSS 2層 斜体 | se/ポジティブ/ |
+| **emphasis2** | Shippori Mincho | 135 | 金グラデ `#FFF438→#FFFFFF→#E99B00` | ダークゴールド `#624936` 縁 + 黒シャドウ + 白グロー | SVG 3層 斜体 | se/ポジティブ/ |
 | **emphasis_large** | M PLUS Rounded 1c | 150 | 赤 `#CC3300` | 白フチ SVG strokeWidth:20 | SVG 2層 | se/強調/ |
 | **negative** | Shippori Mincho | 96 | 白 | 黒グロー textShadow×3 | CSS 2層 斜体 | se/ネガティブ/ |
 | **negative2** | Shippori Mincho | 120 | 白 | 黒縁取り `18px #000` + grayscale | CSS 1層 斜体 | se/ネガティブ/ |
@@ -229,9 +229,9 @@ step20-render          → 最終レンダリング（MP4書き出し）
 | **通常文字** | 紺 `#10458B` | normal / normal_emphasis |
 | **強調ワード・emphasis_large** | 赤 `#CC3300` | normal_emphasisの強調部分 / emphasis_large |
 | **emphasis文字** | 赤グラデ `#990000→#FF2222` | emphasis |
-| **emphasis2文字** | 金グラデ `#FFD700→#B8860B` | emphasis2 |
+| **emphasis2文字** | 金グラデ `#FFF438→#FFFFFF→#E99B00` | emphasis2 |
 | **emphasis縁取り** | 金 `#FFFFCC→#FFD700` | emphasis背景層 |
-| **emphasis2縁取り** | 金 `#FFD700` stroke | emphasis2背景層 |
+| **emphasis2縁取り** | ダークゴールド `#624936` stroke | emphasis2背景層 |
 | **SVG白フチ** | 白 `#FFFFFF` | normal / normal_emphasis / emphasis_large |
 | **SVGグレーフチ** | グレー `#333333` | third_party |
 | **ネガティブ文字** | 白 | negative / negative2 |
@@ -310,18 +310,20 @@ step20-render          → 最終レンダリング（MP4書き出し）
 // layer2(前面): background: linear-gradient(to bottom, #990000 10%, #FF2222 90%)
 //   ★ドロップシャドウ: filter: "drop-shadow(0 -1px 1px rgba(255,255,255,0.5)) drop-shadow(1px 1px 2px rgba(0,0,0,0.3))"
 
-// emphasis2: 金グラデ文字 + 金縁取り + 白グロー（2層構造・斜体）
-// layer1(背景): -webkit-text-stroke: 12px #FFD700
-//   ★ドロップシャドウ: filter: "drop-shadow(0 0 10px white) drop-shadow(0 0 20px white)"
-// layer2(前面): background: linear-gradient(to bottom, #FFD700 20%, #B8860B 100%)
-//   ★ドロップシャドウ: filter: "drop-shadow(0 -1px 2px rgba(255,255,255,0.6)) drop-shadow(0 2px 3px rgba(0,0,0,0.6)) drop-shadow(1px 1px 4px rgba(0,0,0,0.3))"
+// emphasis2: SVG3層構造 + 白グロー（斜体）
+// 外側div: filter: "drop-shadow(0 0 10px white) drop-shadow(0 0 20px white) drop-shadow(0 0 35px white) drop-shadow(0 0 50px rgba(255,255,255,0.8))"
+// 層1(最背面): stroke="#000000" strokeWidth=14 opacity=0.6 y+3px（黒ドロップシャドウ）
+// 層2(中間): stroke="#624936" strokeWidth=12（ダークゴールド縁取り）
+// 層3(最前面): fill="url(#goldGrad)" stroke="#624936" strokeWidth=1（金→白→金グラデーション #FFF438→#FFFFFF→#E99B00）
 
 // negative: 白文字 + 黒グロー（2層構造・斜体）
 // layer1(背景): color: white + textShadow 3重(15px,30px,45px)
 // layer2(前面): color: white
 
-// negative2: 白文字 + 黒縁取り + grayscale（1層・斜体）
-// color: "#FFFFFF", WebkitTextStroke: "18px #000000"
+// negative2: SVG3層構造 + grayscale（斜体）
+// 層1(最外周): stroke="#000000" strokeWidth=46 （黒縁取り）
+// 層2(中間): stroke="#FFFFFF" strokeWidth=20 fill="#FFFFFF"（白縁取り）
+// 層3(最前面): fill="#000000"（黒文字）
 ```
 
 ### テロップのドロップシャドウ（必須）
@@ -334,8 +336,7 @@ step20-render          → 最終レンダリング（MP4書き出し）
 | **normal_emphasis / emphasis_large / third_party** | `filter: "drop-shadow(0px 4px 4px rgba(0,0,0,0.15))"` |
 | **emphasis (背景層)** | `filter: "drop-shadow(0 0 8px rgba(255,255,255,0.7)) drop-shadow(0 0 20px rgba(0,0,0,0.2))"` |
 | **emphasis (前面層)** | `filter: "drop-shadow(0 -1px 1px rgba(255,255,255,0.5)) drop-shadow(1px 1px 2px rgba(0,0,0,0.3))"` |
-| **emphasis2 (背景層)** | `filter: "drop-shadow(0 0 10px white) drop-shadow(0 0 20px white)"` |
-| **emphasis2 (前面層)** | `filter: "drop-shadow(0 -1px 2px rgba(255,255,255,0.6)) drop-shadow(0 2px 3px rgba(0,0,0,0.6)) drop-shadow(1px 1px 4px rgba(0,0,0,0.3))"` |
+| **emphasis2** | `filter: "drop-shadow(0 0 10px white) drop-shadow(0 0 20px white) drop-shadow(0 0 35px white) drop-shadow(0 0 50px rgba(255,255,255,0.8))"` + SVG黒シャドウ層(14px, opacity 0.6) |
 | **negative** | textShadow 3重で代替（既に黒グローがある） |
 | **negative2** | WebkitTextStroke で代替（既に黒縁取りがある） |
 
