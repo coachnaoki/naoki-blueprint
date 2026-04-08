@@ -192,11 +192,11 @@ step20-render          → 最終レンダリング（MP4書き出し）
 |---|---|---|---|---|---|---|
 | **normal** | M PLUS Rounded 1c | 84 | 紺 `#10458B` | 白フチ SVG strokeWidth:32 | SVG 2層 | なし |
 | **normal_emphasis** | M PLUS Rounded 1c | 84 | 紺 `#10458B` + 赤 `#CC3300` | 白フチ SVG strokeWidth:20 | SVG 2層 | se/強調/ |
-| **emphasis** | Shippori Mincho | 135 | 赤グラデ `#990000→#FF2222` | 金 `#FFFFCC→#FFD700` + 金グロー | CSS 2層 斜体 | se/ポジティブ/ |
-| **emphasis2** | Shippori Mincho | 135 | 金グラデ `#FFF438→#FFFFFF→#E99B00` | ダークゴールド `#624936` 縁 + 白グロー | SVG 2層 斜体 | se/ポジティブ/ |
-| **emphasis_large** | M PLUS Rounded 1c | 150 | 赤 `#CC3300` | 白フチ SVG strokeWidth:20 | SVG 2層 | se/強調/ |
+| **emphasis** | Shippori Mincho | 122 | 赤グラデ `#990000→#FF2222` | 金 `#FFFFCC→#FFD700` + 金グロー | CSS 2層 斜体 | se/ポジティブ/ |
+| **emphasis2** | Shippori Mincho | 122 | 金グラデ `#FFF438→#FFFFFF→#E99B00` | ダークゴールド `#624936` 縁 + 白グロー + 暗影 | SVG 2層 斜体 | se/ポジティブ/ |
+| **emphasis_large** | M PLUS Rounded 1c | 122 | 赤 `#CC3300` | 白フチ SVG strokeWidth:20 | SVG 2層 | se/強調/ |
 | **negative** | Shippori Mincho | 96 | 白 | 黒グロー textShadow×3 | CSS 2層 斜体 | se/ネガティブ/ |
-| **negative2** | Shippori Mincho | 120 | 白 | 黒縁取り `18px #000` + grayscale | CSS 1層 斜体 | se/ネガティブ/ |
+| **negative2** | Shippori Mincho | 122 | 白 | 黒縁取り `18px #000` + grayscale | CSS 1層 斜体 | se/ネガティブ/ |
 | **third_party** | M PLUS Rounded 1c | 84 | 白 | グレーフチ `#333` SVG strokeWidth:24 | SVG 2層 | se/強調/ |
 | **箇条書き** | — | 72 | 白 | 青ボックス `#2563EB` | 専用 | se/強調/ |
 | **表** | — | 72 | 黒/赤 | 白パネル + 赤タイトル `#EF4444` | 専用 | se/強調/ |
@@ -218,9 +218,17 @@ step20-render          → 最終レンダリング（MP4書き出し）
 
 | アニメーション | テンプレート | 時間 |
 |---|---|---|
-| slideUp（下から上） | emphasis / emphasis2 / emphasis_large / negative2 | 10フレーム |
-| slideLeft（左からスライド） | negative / third_party | 10フレーム |
+| slideUp（下から上・フェードイン） | emphasis / emphasis2 / emphasis_large / negative2 | 10フレーム |
+| slideLeft（左からスライド・フェードイン） | negative / third_party | 10フレーム |
 | なし（即表示） | normal / normal_emphasis | — |
+
+**フェードアウトは全テンプレートで無し。** テロップはパッと消える。
+
+### テロップ残留ルール
+
+**テロップは次のテロップが表示されるまで消さない。** ただし以下の例外あり：
+- 次のテロップまで**25フレーム（1秒）超**の間隔がある場合 → endFrameで消す（デモ動画・シーン切替の可能性）
+- 次のテロップまで**25フレーム以内** → 次のテロップが出るまで残留
 
 ### カラーパレット（実装ベース）
 
@@ -311,10 +319,10 @@ step20-render          → 最終レンダリング（MP4書き出し）
 // layer2(前面): background: linear-gradient(to bottom, #990000 10%, #FF2222 90%)
 //   ★ドロップシャドウ: filter: "drop-shadow(0 -1px 1px rgba(255,255,255,0.5)) drop-shadow(1px 1px 2px rgba(0,0,0,0.3))"
 
-// emphasis2: SVG2層構造 + 白グロー（斜体）
-// 外側div: filter: "drop-shadow(0 0 10px white) drop-shadow(0 0 20px white) drop-shadow(0 0 35px white) drop-shadow(0 0 50px rgba(255,255,255,0.8))"
-// 層1(背面): stroke="#624936" strokeWidth=6（ダークゴールド縁取り）
-// 層2(前面): fill="url(#goldGrad)" stroke="#624936" strokeWidth=1（金→白→金グラデーション #FFF438→#FFFFFF→#E99B00）
+// emphasis2: SVG2層構造 + 白グロー + 暗影（斜体・立体感）
+// 外側div: filter: "drop-shadow(0 0 10px white) drop-shadow(0 0 20px white) drop-shadow(0 0 35px white) drop-shadow(0 0 50px rgba(255,255,255,0.8)) drop-shadow(0 3px 6px rgba(0,0,0,0.3)) drop-shadow(0 6px 12px rgba(0,0,0,0.15))"
+// 層1(背面): stroke="#624936" strokeWidth=6（ダークゴールド縁取り）+ SVGフィルターで下方向の暗影
+// 層2(前面): fill="url(#goldGrad)" stroke="#624936" strokeWidth=1（金→白→金グラデーション #FFF438→#FFFFFF→#E99B00）+ SVGフィルターで上方向のハイライト
 
 // negative: 白文字 + 黒グロー（2層構造・斜体）
 // layer1(背景): color: white + textShadow 3重(15px,30px,45px)
@@ -337,7 +345,9 @@ step20-render          → 最終レンダリング（MP4書き出し）
 | **emphasis (外側)** | `filter: "drop-shadow(0 0 1px rgba(255,215,0,0.8)) drop-shadow(0 0 2px rgba(255,215,0,0.6)) drop-shadow(0 0 3px rgba(255,215,0,0.4)) drop-shadow(0 0 4px rgba(255,215,0,0.3))"` (金グロー) |
 | **emphasis (背景層)** | `filter: "drop-shadow(0 0 8px rgba(255,255,255,0.7)) drop-shadow(0 0 20px rgba(0,0,0,0.2))"` |
 | **emphasis (前面層)** | `filter: "drop-shadow(0 -1px 1px rgba(255,255,255,0.5)) drop-shadow(1px 1px 2px rgba(0,0,0,0.3))"` |
-| **emphasis2** | `filter: "drop-shadow(0 0 10px white) drop-shadow(0 0 20px white) drop-shadow(0 0 35px white) drop-shadow(0 0 50px rgba(255,255,255,0.8))"` |
+| **emphasis2 (外側)** | `filter: "drop-shadow(0 0 10px white) drop-shadow(0 0 20px white) drop-shadow(0 0 35px white) drop-shadow(0 0 50px rgba(255,255,255,0.8)) drop-shadow(0 3px 6px rgba(0,0,0,0.3)) drop-shadow(0 6px 12px rgba(0,0,0,0.15))"` |
+| **emphasis2 (背景層)** | SVGフィルター: `feGaussianBlur stdDeviation=3` + `feOffset dy=3` + `floodColor rgba(0,0,0,0.25)`（下方向の暗影） |
+| **emphasis2 (前面層)** | SVGフィルター: `feGaussianBlur stdDeviation=1` + `feOffset dy=-1` + `floodColor rgba(255,255,255,0.5)`（上方向のハイライト） |
 | **negative** | textShadow 3重で代替（既に黒グローがある） |
 | **negative2** | WebkitTextStroke で代替（既に黒縁取りがある） |
 
@@ -348,10 +358,8 @@ step20-render          → 最終レンダリング（MP4書き出し）
 ### 文字サイズ基準（実装値）
 | テンプレート | fontSize |
 |-------------|----------|
-| emphasis_large | 150 |
-| emphasis2 | 135 |
+| emphasis / emphasis2 / emphasis_large / negative2 | 122 |
 | theme | 108 |
-| emphasis | 135 |
 | negative | 96 |
 | profile | 90 |
 | normal / normal_emphasis / third_party | 84 |
@@ -365,8 +373,7 @@ step20-render          → 最終レンダリング（MP4書き出し）
 | fontSize | 最大文字数 |
 |----------|-----------|
 | 84（標準） | **20文字** |
-| 135（強調） | **12文字** |
-| 120〜150（強調大） | **12文字** |
+| 122（強調系） | **14文字** |
 
 - **制限を超える字幕は必ず分割する**
 - 分割の優先ポイント：読点（、）、句点（。）、助詞の後
@@ -443,10 +450,11 @@ const calcTextWidth = (text: string, fontSize: number) =>
 ### 使用制限（必須）
 - **themeテンプレートは動画全体で1回のみ使用する（冒頭のテーマ紹介のみ）**
 - セクション見出し・章タイトルにはthemeを使わず、**emphasis_large** を使う
+- **themeの次のテロップはキャンセルする**: themeのendFrameを次のテロップのendFrameまで延長し、次のテロップエントリを削除する（テーマを長く見せる）
 
 ### 表示タイミング
 - 「今日のテーマは」と言った直後のフレームから
-- テーマを言い終わるまで表示
+- 次のテロップ分の時間まで延長して表示（テーマの印象を強める）
 
 ---
 

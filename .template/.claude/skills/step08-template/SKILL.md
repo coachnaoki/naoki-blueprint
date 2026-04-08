@@ -107,11 +107,11 @@ npx tsc --noEmit
 |---------------|-----------|----------|----------|-----------|
 | normal | FONT_MPLUS | 84 | 20 | null |
 | normal_emphasis | FONT_MPLUS | 84 | 20 | se/強調/ |
-| emphasis | FONT_SHIPPORI | 102 | 16 | se/ポジティブ/ |
-| emphasis2 | FONT_SHIPPORI | 135 | 12 | se/ポジティブ/ |
-| emphasis_large | FONT_MPLUS | 150 | 12 | se/強調/ |
+| emphasis | FONT_SHIPPORI | 122 | 14 | se/ポジティブ/ |
+| emphasis2 | FONT_SHIPPORI | 122 | 14 | se/ポジティブ/ |
+| emphasis_large | FONT_MPLUS | 122 | 14 | se/強調/ |
 | negative | FONT_SHIPPORI | 96 | 16 | se/ネガティブ/ |
-| negative2 | FONT_SHIPPORI | 120 | 12 | se/ネガティブ/ |
+| negative2 | FONT_SHIPPORI | 122 | 14 | se/ネガティブ/ |
 | third_party | FONT_MPLUS | 84 | 20 | se/強調/ |
 | bullet_list | FONT_NOTO | 76 | 22 | se/強調/ |
 | line_cta | FONT_MPLUS | 99 | 16 | se/強調/ |
