@@ -20,11 +20,11 @@
 --- 素材準備 ---
 step01-context         → 動画コンテキスト整理（ターゲット・趣旨・FPS）
 step02-assets          → 素材確認（動画・BGM・SE・画像）
-step03-jumpcut         → ジェットカット（FFmpegで無音自動カット）
-step04-video-insert    → 動画の差し込み結合（任意・ffmpeg trim+concat）
-step05-transcript      → 文字起こし（Whisperでタイムスタンプ化）
-step06-retake-cut      → 言い直しカット（半自動・文字起こしベース）
-step07-transcript-fix  → 文字起こし修正（台本と照合して誤変換修正）
+step03-video-insert    → 動画の差し込み結合（任意・ffmpeg trim+concat）
+step04-transcript      → 文字起こし（元動画にWhisperでタイムスタンプ化）
+step05-transcript-fix  → 文字起こし修正（台本と照合して誤変換修正）
+step06-cut             → 無音＋言い直し一括カット（FFmpeg一発エンコード）
+step07-transcript      → カット後の再文字起こし＋修正再適用
 --- 動画構築 ---
 step08-template        → テンプレート設定（templateConfig.ts）
 step09-telop           → テロップデータ作成（telopData.ts）
@@ -51,7 +51,7 @@ step20-render          → 最終レンダリング（MP4書き出し）
 - **デザイン**: ライムイエロー `#CCFF00` + ダーク `#121212`、Zen Kaku Gothic New フォント
 
 ### ワークフローの5フェーズ
-1. **素材準備**（step01〜07）: コンテキスト → 素材確認 → ジェットカット → 動画差し込み（任意） → 文字起こし → 言い直しカット → 誤変換修正
+1. **素材準備**（step01〜07）: コンテキスト → 素材確認 → 動画差し込み（任意） → 文字起こし → 台本照合修正 → 無音＋言い直し一括カット → カット後再文字起こし
 2. **動画構築**（step08〜10）: テンプレート設定 → テロップ → コンポジション構築・登録（※ここでRemotion Studio起動、以降開きっぱなし）
 3. **素材挿入**（step11〜15）: グリーンバック → 動画クリップ → スライド生成・キャプチャ+タイムライン（任意） → ワイプ調整
 4. **画像・特殊コンポーネント**（step16〜18）: イメージ画像 → 箇条書き/CTA/見出しバナー/テーマ → エンドスクリーン
