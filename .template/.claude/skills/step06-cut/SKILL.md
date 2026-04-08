@@ -71,21 +71,43 @@ ffmpeg -i public/video/元動画.mp4 -af silencedetect=noise=-30dB:d=0.3 -f null
 
 #### パターン4: Whisperが隠した言い直し（重要）
 
-Whisperは言い直し部分を1つの単語に圧縮することがある。**単語のduration（end - start）が2秒以上の場合、言い直しが隠れている可能性が高い。**
+Whisperは言い直し部分を1つの単語に統合することがある。**1〜2文字のワードでduration（end - start）が0.7秒以上の場合、言い直しが隠れている可能性が高い。**
+
+例：「悩み…悩みを」→ Whisperが「み」を2.1秒の1ワードに統合。「前衛のポ…前衛のポーチと」→「ポ」を1.94秒に統合。
 
 検出方法：
-```javascript
-// transcript_words.jsonから異常に長い単語を検出
-const suspiciousWords = words.filter(w => (w.end - w.start) > 2.0);
+```python
+# 1〜2文字で0.7秒以上のワードを検出
+hidden_retakes = [w for w in words if len(w['word'].strip()) <= 2 and (w['end'] - w['start']) >= 0.7]
 ```
 
-隠れ言い直しが疑われる場合は、その区間の音声を細かく解析する：
-```bash
-# 該当区間の音声波形を確認（silencedetectを細かい粒度で）
-ffmpeg -i public/video/元動画.mp4 -ss 開始秒 -t 区間秒 -af silencedetect=noise=-30dB:d=0.1 -f null - 2>&1 | grep "silence_"
+#### 隠れ言い直しのカット範囲自動拡張（必須）
+
+隠れ言い直しが見つかった場合、単語そのものだけでなく**話者が戻った地点まで**カット範囲を拡張する必要がある。
+
+**アルゴリズム：**
+1. 隠れ言い直しワード内の無音区間 **S1** を特定（Phase 1のsilencedetect結果から）
+2. 隠れ言い直しワードより**前の直近の無音区間 S0** を探す
+3. **S0の開始時刻以降で最初に始まるワード** → カット開始点
+4. **S1の終了時刻** → カット終了点
+
+```
+例1: 「あなたもこんな悩み」の隠れ言い直し
+  - 隠れ言い直し: 「み」83.30-85.40s（2.1秒）
+  - S1（中の無音）: 83.57-84.16s
+  - S0（前の無音）: 81.27-82.04s
+  - S0後の最初のワード: 「あ(なた)」81.72s
+  → カット範囲: 81.72 → 84.16s（「あなたもこんな悩み」1回目まるごと）
+
+例2: 「前衛のポ」の隠れ言い直し
+  - 隠れ言い直し: 「ポ」108.86-110.80s（1.94秒）
+  - S1（中の無音）: 109.15-109.96s
+  - S0（前の無音）: 107.76-108.23s
+  - S0後の最初のワード: 「全(=前衛)」108.06s
+  → カット範囲: 108.06 → 109.96s（「前衛のポ」1回目まるごと）
 ```
 
-無音が見つかれば、その前後で言い直しが発生している可能性が高い。台本と照合して確認する。
+**なぜ前の無音まで戻るのか**: 話者は言い直す時、直前の句や節の先頭まで戻ることが多い。その戻り地点は直前の無音（息継ぎ・間）の直後と一致する。
 
 ### Phase 3: 候補の一覧表示とユーザー承認
 
@@ -149,8 +171,9 @@ if prev_end < total_duration:
 # 4. 短すぎるセグメント（0.3秒未満）を除外
 keeps = [(s, e) for s, e in keeps if e - s >= 0.3]
 
-# 5. パディング（各セグメントの前後に0.05秒の余白）
-keeps = [(max(0, s - 0.05), min(total_duration, e + 0.05)) for s, e in keeps]
+# 5. パディング（各セグメントの前後に0.075秒の余白）
+# カット境界を0.075秒だけ無音側に広げ、ブツ切り感を軽減する
+keeps = [(max(0, s - 0.075), min(total_duration, e + 0.075)) for s, e in keeps]
 ```
 
 ### Phase 5: FFmpeg一発エンコード
@@ -179,7 +202,7 @@ ffmpeg -y -i public/video/元動画.mp4 -filter_complex \
 > `[v0][a0][v1][a1][v2][a2]concat=n=3:v=1:a=1` のように、**各セグメントのビデオとオーディオを交互に並べる**。
 > `[v0][v1][v2][a0][a1][a2]` のようにビデオを先にまとめると「Media type mismatch」エラーになる。
 
-### Phase 6: 結果の確認
+### Phase 6: 結果の確認と再生（必須）
 
 ```bash
 # カット前後の尺を比較
@@ -187,7 +210,13 @@ ffprobe -v quiet -show_entries format=duration -of default=noprint_wrappers=1 pu
 ffprobe -v quiet -show_entries format=duration -of default=noprint_wrappers=1 public/video/元動画_cut.mp4
 ```
 
-カット前後の長さ・カット率を表示し、ユーザーにカット済み動画を再生確認してもらう。
+カット前後の長さ・カット率を表示する。
+
+**カット後は必ず動画を再生してユーザーに確認してもらう。** 再生なしで次のステップに進んではいけない。
+
+```bash
+open public/video/元動画_cut.mp4
+```
 
 ### Phase 7: ユーザー確認 → 追加調整（必要に応じて）
 
@@ -205,7 +234,7 @@ ffprobe -v quiet -show_entries format=duration -of default=noprint_wrappers=1 pu
 - カット済み動画（`*_cut.mp4`）が `public/video/` に存在する
 - 元動画が保持されている
 - カット前後の長さ・カット率を把握している
-- ユーザーが再生確認でOKを出している
+- **カット後の動画を再生し、ユーザーがOKを出している**（再生せずに完了してはいけない）
 
 ## 完了後
 

@@ -192,7 +192,7 @@ step20-render          → 最終レンダリング（MP4書き出し）
 |---|---|---|---|---|---|---|
 | **normal** | M PLUS Rounded 1c | 84 | 紺 `#10458B` | 白フチ SVG strokeWidth:32 | SVG 2層 | なし |
 | **normal_emphasis** | M PLUS Rounded 1c | 84 | 紺 `#10458B` + 赤 `#CC3300` | 白フチ SVG strokeWidth:20 | SVG 2層 | se/強調/ |
-| **emphasis** | Shippori Mincho | 102 | 赤グラデ `#990000→#FF2222` | 金 `#FFFFCC→#FFD700` + 白グロー | CSS 2層 斜体 | se/ポジティブ/ |
+| **emphasis** | Shippori Mincho | 135 | 赤グラデ `#990000→#FF2222` | 金 `#FFFFCC→#FFD700` + 金グロー | CSS 2層 斜体 | se/ポジティブ/ |
 | **emphasis2** | Shippori Mincho | 135 | 金グラデ `#FFF438→#FFFFFF→#E99B00` | ダークゴールド `#624936` 縁 + 黒シャドウ + 白グロー | SVG 3層 斜体 | se/ポジティブ/ |
 | **emphasis_large** | M PLUS Rounded 1c | 150 | 赤 `#CC3300` | 白フチ SVG strokeWidth:20 | SVG 2層 | se/強調/ |
 | **negative** | Shippori Mincho | 96 | 白 | 黒グロー textShadow×3 | CSS 2層 斜体 | se/ネガティブ/ |
@@ -304,7 +304,8 @@ step20-render          → 最終レンダリング（MP4書き出し）
 
 ### CSS 2層構造テンプレートのスタイル
 ```typescript
-// emphasis: 赤グラデ文字 + 金縁取り + 白グロー（2層構造・斜体）
+// emphasis: 赤グラデ文字 + 金縁取り + 金グロー（2層構造・斜体）
+// 外側div: filter: "drop-shadow(0 0 1px rgba(255,215,0,0.8)) drop-shadow(0 0 2px rgba(255,215,0,0.6)) drop-shadow(0 0 3px rgba(255,215,0,0.4)) drop-shadow(0 0 4px rgba(255,215,0,0.3))"
 // layer1(背景): background: linear-gradient(to bottom, #FFFFCC, #FFD700)
 //   ★ドロップシャドウ: filter: "drop-shadow(0 0 8px rgba(255,255,255,0.7)) drop-shadow(0 0 20px rgba(0,0,0,0.2))"
 // layer2(前面): background: linear-gradient(to bottom, #990000 10%, #FF2222 90%)
@@ -334,6 +335,7 @@ step20-render          → 最終レンダリング（MP4書き出し）
 |---|---|
 | **normal** | `filter: "drop-shadow(0px 8px 6px rgba(0,0,0,0.2))"` |
 | **normal_emphasis / emphasis_large / third_party** | `filter: "drop-shadow(0px 4px 4px rgba(0,0,0,0.15))"` |
+| **emphasis (外側)** | `filter: "drop-shadow(0 0 1px rgba(255,215,0,0.8)) drop-shadow(0 0 2px rgba(255,215,0,0.6)) drop-shadow(0 0 3px rgba(255,215,0,0.4)) drop-shadow(0 0 4px rgba(255,215,0,0.3))"` (金グロー) |
 | **emphasis (背景層)** | `filter: "drop-shadow(0 0 8px rgba(255,255,255,0.7)) drop-shadow(0 0 20px rgba(0,0,0,0.2))"` |
 | **emphasis (前面層)** | `filter: "drop-shadow(0 -1px 1px rgba(255,255,255,0.5)) drop-shadow(1px 1px 2px rgba(0,0,0,0.3))"` |
 | **emphasis2** | `filter: "drop-shadow(0 0 10px white) drop-shadow(0 0 20px white) drop-shadow(0 0 35px white) drop-shadow(0 0 50px rgba(255,255,255,0.8))"` + SVG黒シャドウ層(14px, opacity 0.6) |
@@ -350,7 +352,7 @@ step20-render          → 最終レンダリング（MP4書き出し）
 | emphasis_large | 150 |
 | emphasis2 | 135 |
 | theme | 108 |
-| emphasis | 102 |
+| emphasis | 135 |
 | negative | 96 |
 | profile | 90 |
 | normal / normal_emphasis / third_party | 84 |
@@ -364,7 +366,7 @@ step20-render          → 最終レンダリング（MP4書き出し）
 | fontSize | 最大文字数 |
 |----------|-----------|
 | 84（標準） | **20文字** |
-| 102（強調） | **16文字** |
+| 135（強調） | **12文字** |
 | 120〜150（強調大） | **12文字** |
 
 - **制限を超える字幕は必ず分割する**
