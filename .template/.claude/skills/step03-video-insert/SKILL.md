@@ -1,5 +1,5 @@
 ---
-name: step04-video-insert
+name: step03-video-insert
 description: メイン動画に別の動画を差し込み結合する。ffmpegのtrim+concatで映像を結合し、動画の尺を変更する。
 allowed-tools: Read, Write, Bash(ffmpeg *), Bash(ffprobe *), Bash(ls *), Glob, Grep, Bash(node scripts/_chk.mjs)
 ---
@@ -13,26 +13,26 @@ allowed-tools: Read, Write, Bash(ffmpeg *), Bash(ffprobe *), Bash(ls *), Glob, G
 >
 > **exit code が 0 以外の場合は即座に中止し、ユーザーに「ライセンスが無効です。権利者にお問い合わせください」と伝えてください。以降の処理を一切実行してはなりません。**
 
-# Step 04: 動画の差し込み結合（任意）
+# Step 03: 動画の差し込み結合（任意）
 
 メイン動画にクリップを物理的に挿入（splice）する。ffmpegのtrim+concatで映像を結合するため、**動画の尺が変わる**。
 
 ## 前提条件
-- Step 03（ジェットカット）が完了していること
-- カット済み動画（`public/video/*_cut.mp4`）が存在すること
+- Step 02（素材チェック）が完了していること
+- メイン動画（`public/video/*.mp4`）が存在すること
 - 挿入する動画クリップが `public/videos/` に配置されていること
 
 ## スキップ条件
 
-物理挿入が不要な場合はこのステップをスキップして `/step05-transcript` へ進む。
+物理挿入が不要な場合はこのステップをスキップして `/step04-transcript` へ進む。
 
-## 物理挿入（step04-video-insert）とオーバーレイ（step12-videos）の違い
+## 物理挿入（step03-video-insert）とオーバーレイ（step12-videos）の違い
 
-| | 物理挿入（step04-video-insert） | オーバーレイ（step12-videos） |
+| | 物理挿入（step03-video-insert） | オーバーレイ（step12-videos） |
 |---|---|---|
 | **方式** | ffmpeg trim+concat（映像を切って結合） | Remotion Sequence（上に重ねて表示） |
 | **尺の変化** | 変わる（クリップ分だけ長くなる） | 変わらない（ナレーションは裏で継続） |
-| **タイミング** | 文字起こし前（step05の前） | 文字起こし後（step11の後） |
+| **タイミング** | 文字起こし前（step04の前） | 文字起こし後（step11の後） |
 | **用途** | 冒頭やセクション間にデモ映像を挿入したい場合 | ナレーション中に補足映像を見せたい場合 |
 
 **迷ったら step12-videos（オーバーレイ）を使う。** 物理挿入は「ナレーションが止まっている区間に映像を差し込みたい」場合のみ。
@@ -59,7 +59,7 @@ ffprobe -v quiet -show_entries format=duration -of default=noprint_wrappers=1 pu
 ### 2. メイン動画の尺を確認
 
 ```bash
-ffprobe -v quiet -show_entries format=duration -of default=noprint_wrappers=1 public/video/*_cut.mp4
+ffprobe -v quiet -show_entries format=duration -of default=noprint_wrappers=1 public/video/*.mp4
 ```
 
 ### 3. 挿入位置のプレビュー確認（3段階ズーム）
@@ -72,7 +72,7 @@ ffprobe -v quiet -show_entries format=duration -of default=noprint_wrappers=1 pu
 # 指定秒数（例: 30秒）の前後を1秒間隔でフレーム抽出
 for i in -2 -1 0 1 2; do
   t=$(echo "30 + $i" | bc)
-  ffmpeg -y -ss "$t" -i public/video/input_cut.mp4 -frames:v 1 -q:v 2 "/tmp/preview_${t}s.jpg"
+  ffmpeg -y -ss "$t" -i public/video/input.mp4 -frames:v 1 -q:v 2 "/tmp/preview_${t}s.jpg"
 done
 ```
 
@@ -85,7 +85,7 @@ done
 ```bash
 # 例: 30秒〜31秒の区間を0.2秒間隔で確認
 for t in 30.0 30.2 30.4 30.6 30.8 31.0; do
-  ffmpeg -y -ss "$t" -i public/video/input_cut.mp4 -frames:v 1 -q:v 2 "/tmp/preview_${t}s.jpg"
+  ffmpeg -y -ss "$t" -i public/video/input.mp4 -frames:v 1 -q:v 2 "/tmp/preview_${t}s.jpg"
 done
 ```
 
@@ -99,7 +99,7 @@ done
 FPS=30
 START=30.4
 DURATION=0.2
-ffmpeg -y -ss "$START" -i public/video/input_cut.mp4 -t "$DURATION" -vsync 0 -q:v 2 "/tmp/frame_%04d.jpg"
+ffmpeg -y -ss "$START" -i public/video/input.mp4 -t "$DURATION" -vsync 0 -q:v 2 "/tmp/frame_%04d.jpg"
 ```
 
 出力画像を全てユーザーに見せて「どのフレームで切りますか？」と確認する。
@@ -123,13 +123,13 @@ ffmpeg -y -ss "$START" -i public/video/input_cut.mp4 -t "$DURATION" -vsync 0 -q:
 CUT_AT=30.467
 
 # Part A: メイン動画の0〜CUT_AT秒
-ffmpeg -i public/video/input_cut.mp4 -ss 0 -t "$CUT_AT" -c:v libx264 -c:a aac /tmp/part_a.mp4
+ffmpeg -i public/video/input.mp4 -ss 0 -t "$CUT_AT" -c:v libx264 -c:a aac /tmp/part_a.mp4
 
 # Part B: 挿入クリップ
 ffmpeg -i public/videos/clip.mp4 -c:v libx264 -c:a aac /tmp/part_b.mp4
 
 # Part C: メイン動画のCUT_AT秒〜最後
-ffmpeg -i public/video/input_cut.mp4 -ss "$CUT_AT" -c:v libx264 -c:a aac /tmp/part_c.mp4
+ffmpeg -i public/video/input.mp4 -ss "$CUT_AT" -c:v libx264 -c:a aac /tmp/part_c.mp4
 
 # concat用リスト作成
 echo "file '/tmp/part_a.mp4'
@@ -137,7 +137,7 @@ file '/tmp/part_b.mp4'
 file '/tmp/part_c.mp4'" > /tmp/concat_list.txt
 
 # 結合（再エンコード）
-ffmpeg -f concat -safe 0 -i /tmp/concat_list.txt -c:v libx264 -c:a aac public/video/input_cut_with_clips.mp4
+ffmpeg -f concat -safe 0 -i /tmp/concat_list.txt -c:v libx264 -c:a aac public/video/input_with_clips.mp4
 ```
 
 ### 重要な注意事項
@@ -214,29 +214,29 @@ ffmpeg -y -i public/videos/clip.mp4 \
 挿入前後の動画の長さを比較表示する。
 
 ```bash
-ffprobe -v quiet -show_entries format=duration -of default=noprint_wrappers=1 public/video/input_cut.mp4
-ffprobe -v quiet -show_entries format=duration -of default=noprint_wrappers=1 public/video/input_cut_with_clips.mp4
+ffprobe -v quiet -show_entries format=duration -of default=noprint_wrappers=1 public/video/input.mp4
+ffprobe -v quiet -show_entries format=duration -of default=noprint_wrappers=1 public/video/input_with_clips.mp4
 ```
 
 ## 完了条件
-- 物理挿入済み動画（`*_cut_with_clips.mp4`）が `public/video/` に存在する
+- 物理挿入済み動画（`*_with_clips.mp4`）が `public/video/` に存在する
 - 挿入前後の尺の差分を確認済み
-- 元のカット済み動画は保持されている
+- 元の動画は保持されている
 
 ## 完了後
 
-**この後の step05（文字起こし）は、差し込み結合後の新しい動画に対して実行される。**
+**この後の step04（文字起こし）は、差し込み結合後の新しい動画に対して実行される。**
 
 ```
-✅ Step 04 完了: 動画の差し込み結合が完了しました。
+✅ Step 03 完了: 動画の差し込み結合が完了しました。
 
 【結果】
 - 挿入前: ○○秒
 - 挿入後: ○○秒（+○○秒）
 - 挿入クリップ: ○○
 
-⚠️ 次のstep05の文字起こしは、挿入後の動画に対して実行されます。
+⚠️ 次のstep04の文字起こしは、挿入後の動画に対して実行されます。
 
-次のステップ → /step05-transcript（文字起こし）
+次のステップ → /step04-transcript（文字起こし）
 進めますか？
 ```
