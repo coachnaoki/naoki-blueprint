@@ -365,11 +365,11 @@ claude --dangerously-skip-permissions</code></pre>
   <div class="phase">フェーズ1: 素材準備</div>
   <div class="step-row"><span class="step-cmd">/step01-context</span><span class="step-desc">動画の目的・ターゲットを整理</span></div>
   <div class="step-row"><span class="step-cmd">/step02-assets</span><span class="step-desc">素材の確認</span></div>
-  <div class="step-row"><span class="step-cmd">/step03-jumpcut</span><span class="step-desc">無音部分を自動カット</span></div>
-  <div class="step-row"><span class="step-cmd">/step04-video-insert</span><span class="step-desc">動画の差し込み結合 <span class="step-optional">（任意）</span></span></div>
-  <div class="step-row"><span class="step-cmd">/step05-transcript</span><span class="step-desc">Whisperで文字起こし</span></div>
-  <div class="step-row"><span class="step-cmd">/step06-retake-cut</span><span class="step-desc">言い直しカット（半自動）</span></div>
-  <div class="step-row"><span class="step-cmd">/step07-transcript-fix</span><span class="step-desc">台本と照合して誤変換を修正</span></div>
+  <div class="step-row"><span class="step-cmd">/step03-video-insert</span><span class="step-desc">動画の差し込み結合 <span class="step-optional">（任意）</span></span></div>
+  <div class="step-row"><span class="step-cmd">/step04-transcript</span><span class="step-desc">元動画をWhisperで文字起こし</span></div>
+  <div class="step-row"><span class="step-cmd">/step05-transcript-fix</span><span class="step-desc">台本と照合して誤変換を修正</span></div>
+  <div class="step-row"><span class="step-cmd">/step06-cut</span><span class="step-desc">無音＋言い直し一括カット（FFmpeg一発エンコード）</span></div>
+  <div class="step-row"><span class="step-cmd">/step07-transcript</span><span class="step-desc">カット後の再文字起こし＋修正再適用</span></div>
 
   <div class="arrow">↓</div>
 
