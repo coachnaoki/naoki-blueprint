@@ -21,6 +21,12 @@ const BLOCK_TEMPLATE_MAP = {
   "two-columns":   { selector: ".gap-8 > .flex-1",   countKey: "columns" },
   "steps":         { selector: ".flex-col.px-12 > div.rounded-2xl", countKey: "steps" },
   "closing":       { selector: ".grid > div",         countKey: "cards" },
+  "before-after":  { selector: ".gap-6.items-stretch > .flex-1", countKey: "_beforeAfter" },
+  "stats":         { selector: ".gap-8 > .flex-1",   countKey: "stats" },
+  "checklist":     { selector: ".flex-col.justify-start > div", countKey: "items" },
+  "timeline":      { selector: ".flex-col.justify-start > div", countKey: "events" },
+  "ranking":       { selector: ".flex-col.justify-start > div", countKey: "items" },
+  "versus":        { selector: ".gap-6.items-stretch > .flex-1", countKey: "_versus" },
 };
 
 async function detectBlockSplits(browser) {
@@ -34,6 +40,11 @@ async function detectBlockSplits(browser) {
         (s.cards && s.cards.length) ||
         (s.columns && s.columns.length) ||
         (s.steps && s.steps.length) ||
+        (s.stats && s.stats.length) ||
+        (s.items && s.items.length) ||
+        (s.events && s.events.length) ||
+        (s.before && s.after ? 2 : 0) ||
+        (s.left && s.right ? 2 : 0) ||
         0,
     }));
   });
@@ -68,6 +79,15 @@ async function capturePage(browser, url, outPath, blockConfig) {
         items.forEach((el, idx) => {
           if (idx >= visibleCount) el.style.visibility = "hidden";
         });
+        // 一部のアイテムが非表示の場合、親内のabsolute要素（矢印等）も非表示
+        if (visibleCount < items.length && items.length > 0) {
+          const parent = items[0].parentElement;
+          if (parent) {
+            parent.querySelectorAll(":scope > .absolute").forEach((el) => {
+              el.style.visibility = "hidden";
+            });
+          }
+        }
       },
       blockConfig.selector,
       blockConfig.visibleCount
