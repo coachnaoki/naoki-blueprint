@@ -32,6 +32,26 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash(node *), Bash(node scripts/_c
 | `steps` | 縦ステップリスト | title, steps[{label, icon, style, content, num}] |
 | `big-message` | 大メッセージ | title, icon, message |
 | `closing` | クロージング | title, icon, cards[{title, desc}] |
+| `before-after` | ビフォーアフター | title, before{label,icon,main,sub}, after{label,icon,main,sub} |
+| `stats` | 統計カード | title, stats[{icon,number,unit,desc}] |
+| `checklist` | チェックリスト | title, items[{text,check}] |
+| `timeline` | タイムライン | title, events[{icon,time,title,desc}] |
+| `ranking` | ランキング | title, items[{rank,title,desc}] |
+| `versus` | VS比較 | title, left{label,color,icon,main}, right{label,color,icon,main} |
+| `quote` | 引用・問いかけ | quote, source, sourceIcon, icon |
+| `highlight-box` | 強調メッセージ | title, icon, message |
+
+### 比較スライドの左右配置ルール（必須）
+
+**比較・対比スライドでは、左にネガティブ（課題・問題）、右にポジティブ（解決・理想）を配置する。**
+
+| テンプレート | 左側 | 右側 | 備考 |
+|---|---|---|---|
+| `two-columns` | columns[0] = ネガティブ（badgeColor: "dark"） | columns[1] = ポジティブ（badgeColor: "green"） | データ順で左右が決まる |
+| `before-after` | before = ネガティブ（白背景） | after = ポジティブ（黒背景） | 構造的に固定済み |
+| `versus` | left = ネガティブ（color: "gray"） | right = ポジティブ（color: "green"） | データ順で左右が決まる |
+
+**理由**: 左→右の視線の流れが「問題→解決」の改善ストーリーと一致し、視聴者が直感的に理解しやすい。
 
 ## やること
 
