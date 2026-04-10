@@ -46,7 +46,7 @@ step20-render          → 最終レンダリング（MP4書き出し）
 ```
 
 ### スライド生成システム
-- **テンプレート**: `aislides/slides.html` に15種類のHTMLテンプレート（title / three-cards / three-tactics / two-columns / steps / big-message / closing / quote / before-after / stats / checklist / timeline / ranking / versus / highlight-box）
+- **テンプレート**: `aislides/slides.html` に17種類のHTMLテンプレート（title / three-cards / three-tactics / two-columns / steps / big-message / closing / quote / before-after / stats / checklist / timeline / ranking / versus / highlight-box / agenda / section）
 - **キャプチャ**: `aislides/screenshot.js` でPuppeteerキャプチャ → `public/slides/` に出力
 - **デザイン**: ライムイエロー `#CCFF00` + ダーク `#121212`、Zen Kaku Gothic New フォント
 
