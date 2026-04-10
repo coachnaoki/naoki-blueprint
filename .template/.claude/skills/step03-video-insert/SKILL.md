@@ -149,8 +149,8 @@ ffmpeg -f concat -safe 0 -i /tmp/concat_list.txt -c:v libx264 -c:a aac public/vi
 **全パーツを同じエンコード設定で揃えること。** 設定が異なると結合時に映像・音声のズレや品質差が発生する。
 
 ```bash
-# 全パーツ共通の設定
--c:v libx264 -preset medium -crf 18 -r 30 -c:a aac -ar 48000 -ac 2
+# 全パーツ共通の設定（FPSは video-context.md を参照）
+-c:v libx264 -preset medium -crf 18 -r <FPS> -c:a aac -ar 48000 -ac 2
 ```
 
 | パラメータ | 値 | 理由 |
@@ -158,7 +158,7 @@ ffmpeg -f concat -safe 0 -i /tmp/concat_list.txt -c:v libx264 -c:a aac public/vi
 | `-c:v libx264` | H.264 | 互換性 |
 | `-preset medium` | 品質/速度バランス | |
 | `-crf 18` | 高品質 | |
-| `-r 30` | 30fps固定 | FPSの不一致を防ぐ |
+| `-r <FPS>` | video-context.md のFPS | FPSの不一致を防ぐ |
 | `-c:a aac` | AAC音声 | |
 | `-ar 48000` | サンプルレート統一 | |
 | `-ac 2` | ステレオ | |
@@ -209,7 +209,7 @@ ffmpeg -y -i public/videos/clip.mp4 \
 - 計測値の差分（`メインのmean_volume - クリップのmean_volume`）をそのまま `volume` フィルターに指定する
 - 倍速フィルターと組み合わせる場合: `-af "atempo=1.5,volume=-6dB"`
 
-### 6. 結果の確認
+### 5. 結果の確認
 
 挿入前後の動画の長さを比較表示する。
 
