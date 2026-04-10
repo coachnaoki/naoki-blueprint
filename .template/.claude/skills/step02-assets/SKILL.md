@@ -38,7 +38,7 @@ allowed-tools: Read, Glob, Grep, Bash(ls *), Bash(ffprobe *), Bash(node scripts/
 SEはフォルダ単位で管理し、再生時にフォルダ内からランダム選択する。
 以下のSEフォルダが `public/se/` 内に存在し、中に `.mp3` ファイルが入っているか確認する：
 
-- `se/強調/` — normal_emphasis / section / third_party / bullet_list / table / profile / line_cta / subscribe_cta 用
+- `se/強調/` — normal_emphasis / section / third_party / bullet_list / table / line_cta / subscribe_cta 用
 - `se/ポジティブ/` — emphasis / emphasis2 / theme 用
 - `se/ネガティブ/` — negative / negative2 / mascot 用
 

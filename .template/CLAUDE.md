@@ -204,7 +204,6 @@ step20-render          → 最終レンダリング（MP4書き出し）
 | **LINE誘導** | — | 66 | 白 | LINE緑 `#06C755` | 専用 | se/強調/ |
 | **チャンネル登録** | — | 72 | 白 | 赤ボタン `#EF4444` | 専用 | se/強調/ |
 | **今回のテーマ** | — | 108 | 白 | 赤ライン `#EF4444` | 専用 | se/ポジティブ/ |
-| **自己紹介** | — | 90 | 黒/赤 | 白カード + 赤ボーダー | 専用 | se/強調/ |
 | **見出し** | — | 54 | 白 | 緑〜ティール `#10B981→#059669` | 専用 | なし |
 
 ### フォントルール
@@ -268,8 +267,6 @@ step20-render          → 最終レンダリング（MP4書き出し）
 - **MascotTelop**: 代弁（マスコット吹き出し）
 - **LineCTA**: LINE誘導カード
 - **SubscribeCTA**: チャンネル登録ボタン
-- **ProfileCard**: 自己紹介名刺
-
 ### NG事項
 - **同位置・同時間帯の重複禁止**
 - **endFrameとstartFrameの接触禁止**: 1フレームずらす
@@ -362,7 +359,6 @@ step20-render          → 最終レンダリング（MP4書き出し）
 | emphasis / emphasis2 / section / negative2 | 122 |
 | theme | 108 |
 | negative | 96 |
-| profile | 90 |
 | normal / normal_emphasis / third_party | 84 |
 | mascot | 78 |
 | bullet_list / table / subscribe_cta | 72 |
@@ -456,91 +452,6 @@ const calcTextWidth = (text: string, fontSize: number) =>
 ### 表示タイミング
 - 「今日のテーマは」と言った直後のフレームから
 - 次のテロップ分の時間まで延長して表示（テーマの印象を強める）
-
----
-
-## 自己紹介名刺（ProfileCard）ルール
-
-### 基本原則
-**動画冒頭の自己紹介パートに必ず表示する。**
-
-### デザイン仕様
-- **位置**: left: 30〜50px, top: 50%（左側・垂直中央）
-- **背景**: 白（rgba(255, 255, 255, 0.95)）
-- **ボーダー**: 赤（#EF4444）、左側に太い縦ライン
-- **z-index**: 10
-
-### 内容（video-context.md から取得）
-
-`video-context.md` の「プロフィール」セクションから以下を読み取って表示する：
-
-| 行 | 内容 | fontSize | 色 |
-|----|------|----------|-----|
-| 名前行 | プロフィールの名前 | 56〜64 | 黒 or 赤 |
-| 肩書き大 | メインの肩書き | 36〜40 | 赤 `#EF4444` |
-| 肩書き小 | サブ肩書き（英語など） | 18〜22 | グレー |
-| 実績前置き | 導入テキスト | 24 | グレー |
-| 実績①〜④ | 実績リスト | 28 | 黒 |
-
-**video-context.md にプロフィールがない場合はユーザーに確認する。**
-
-### タイミング
-- 自己紹介の発話開始フレームから表示
-- 自己紹介パート終了+数フレーム後に非表示
-- transcript_words.jsonで正確なタイミングを取得すること
-
-### SE
-- 名刺表示タイミングに se/強調/ からランダム選択（volume: 0.35）
-
-### コンポーネントテンプレート
-```typescript
-const ProfileCard: React.FC = () => {
-  const frame = useCurrentFrame();
-  const startFrame = /*自己紹介開始フレーム*/;
-  const endFrame = /*自己紹介終了フレーム*/;
-  if (frame < startFrame || frame > endFrame) return null;
-  return (
-    <div style={{
-      position: "absolute", left: 40, top: "50%",
-      transform: "translateY(-50%)", zIndex: 10,
-      background: "rgba(255, 255, 255, 0.95)",
-      borderLeft: "8px solid #EF4444",
-      padding: "30px 40px",
-      display: "flex", flexDirection: "column",
-      gap: 8, whiteSpace: "nowrap",
-    }}>
-      <div style={{
-        fontSize: 60, fontWeight: 900,
-        fontFamily: "'M PLUS Rounded 1c', sans-serif",
-        color: "#111111",
-      }}>{/* video-context.mdの名前 */}</div>
-      <div style={{
-        fontSize: 38, fontWeight: 900,
-        fontFamily: "'M PLUS Rounded 1c', sans-serif",
-        color: "#EF4444",
-      }}>{/* video-context.mdの肩書き */}</div>
-      <div style={{
-        fontSize: 20, fontWeight: 400,
-        fontFamily: "'M PLUS Rounded 1c', sans-serif",
-        color: "#666666",
-      }}>{/* video-context.mdのサブ肩書き */}</div>
-      <div style={{
-        fontSize: 24, color: "#888888",
-        fontFamily: "'M PLUS Rounded 1c', sans-serif",
-        marginTop: 8,
-      }}>{/* video-context.mdの導入テキスト */}</div>
-      {/* video-context.mdの実績リスト */}
-      {["・実績1", "・実績2", "・実績3", "・実績4"].map((item, i) => (
-        <div key={i} style={{
-          fontSize: 28, fontWeight: 700,
-          fontFamily: "'M PLUS Rounded 1c', sans-serif",
-          color: "#111111",
-        }}>{item}</div>
-      ))}
-    </div>
-  );
-};
-```
 
 ---
 
@@ -654,7 +565,7 @@ const ProfileCard: React.FC = () => {
 | 背景画像・カバー画像 | 5 | 動画の上、字幕の下 |
 | 暗いオーバーレイ | 7 | 画像と字幕の間（任意） |
 | テロップ・字幕 | 10〜15 | 画像の上に表示 |
-| 最重要テロップ（ProfileCard等） | 20 | 他の全要素より上 |
+| 最重要テロップ | 20 | 他の全要素より上 |
 
 ### 必須ルール
 1. **画像を追加する際は必ずz-index: 5以下を指定**
