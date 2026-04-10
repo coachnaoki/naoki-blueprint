@@ -194,7 +194,7 @@ step20-render          → 最終レンダリング（MP4書き出し）
 | **normal_emphasis** | M PLUS Rounded 1c | 84 | 紺 `#10458B` + 赤 `#CC3300` | 白フチ SVG strokeWidth:20 | SVG 2層 | se/強調/ |
 | **emphasis** | Shippori Mincho | 122 | 赤グラデ `#990000→#FF2222` | 金 `#FFFFCC→#FFD700` + 金グロー | CSS 2層 斜体 | se/ポジティブ/ |
 | **emphasis2** | Shippori Mincho | 122 | 金グラデ `#FFF438→#FFFFFF→#E99B00` | ダークゴールド `#624936` 縁 + 白グロー + 暗影 | SVG 2層 斜体 | se/ポジティブ/ |
-| **emphasis_large** | M PLUS Rounded 1c | 122 | 赤 `#CC3300` | 白フチ SVG strokeWidth:20 | SVG 2層 | se/強調/ |
+| **section** | M PLUS Rounded 1c | 122 | 赤 `#CC3300` | 白フチ SVG strokeWidth:20 | SVG 2層 | se/強調/ |
 | **negative** | Shippori Mincho | 96 | 白 | 黒グロー textShadow×3 | CSS 2層 斜体 | se/ネガティブ/ |
 | **negative2** | Shippori Mincho | 122 | 白 | 黒縁取り `18px #000` + grayscale | CSS 1層 斜体 | se/ネガティブ/ |
 | **third_party** | M PLUS Rounded 1c | 84 | 白 | グレーフチ `#333` SVG strokeWidth:24 | SVG 2層 | se/強調/ |
@@ -211,14 +211,14 @@ step20-render          → 最終レンダリング（MP4書き出し）
 
 | フォント | 用途 |
 |---------|------|
-| `'M PLUS Rounded 1c', sans-serif` | 通常系・情報系（normal / normal_emphasis / emphasis_large / third_party） |
+| `'M PLUS Rounded 1c', sans-serif` | 通常系・情報系（normal / normal_emphasis / section / third_party） |
 | `'Shippori Mincho', serif` | 強調系・ネガティブ系（emphasis / emphasis2 / negative / negative2） |
 
 ### アニメーション設定
 
 | アニメーション | テンプレート | 時間 |
 |---|---|---|
-| slideUp（下から上・フェードイン） | emphasis / emphasis2 / emphasis_large / negative2 | 10フレーム |
+| slideUp（下から上・フェードイン） | emphasis / emphasis2 / section / negative2 | 10フレーム |
 | slideLeft（左からスライド・フェードイン） | negative / third_party | 10フレーム |
 | なし（即表示） | normal / normal_emphasis | — |
 
@@ -235,12 +235,12 @@ step20-render          → 最終レンダリング（MP4書き出し）
 | 用途 | カラー | 使用箇所 |
 |------|--------|----------|
 | **通常文字** | 紺 `#10458B` | normal / normal_emphasis |
-| **強調ワード・emphasis_large** | 赤 `#CC3300` | normal_emphasisの強調部分 / emphasis_large |
+| **強調ワード・section** | 赤 `#CC3300` | normal_emphasisの強調部分 / section |
 | **emphasis文字** | 赤グラデ `#990000→#FF2222` | emphasis |
 | **emphasis2文字** | 金グラデ `#FFF438→#FFFFFF→#E99B00` | emphasis2 |
 | **emphasis縁取り** | 金 `#FFFFCC→#FFD700` | emphasis背景層 |
 | **emphasis2縁取り** | ダークゴールド `#624936` stroke | emphasis2背景層 |
-| **SVG白フチ** | 白 `#FFFFFF` | normal / normal_emphasis / emphasis_large |
+| **SVG白フチ** | 白 `#FFFFFF` | normal / normal_emphasis / section |
 | **SVGグレーフチ** | グレー `#333333` | third_party |
 | **ネガティブ文字** | 白 | negative / negative2 |
 | **見出しバナー** | 薄グレー背景 `#F7F4F4` + 青紫文字 `#4B6AC6` | heading |
@@ -259,6 +259,7 @@ step20-render          → 最終レンダリング（MP4書き出し）
 - **NormalTelop**: 通常字幕
 - **EmphasisTelop**: 強調グラデーション1
 - **EmphasisTelop2**: 強調グラデーション2（サイズ大）
+- **SectionTelop**: セクション見出し（1つ目、2つ目...の章タイトル用）
 - **NegativeTelop**: ネガティブ1（アウトライン）
 - **NegativeTelop2**: ネガティブ2（モノクロ全画面）
 - **ThirdPartyTelop**: 第三者発言（引用符）
@@ -286,7 +287,7 @@ step20-render          → 最終レンダリング（MP4書き出し）
 - **z-index**: 10
 
 ### フォント（テンプレート別）
-- **M PLUS Rounded 1c**（丸ゴシック）: normal / normal_emphasis / emphasis_large / third_party
+- **M PLUS Rounded 1c**（丸ゴシック）: normal / normal_emphasis / section / third_party
 - **Shippori Mincho**（明朝）: emphasis / emphasis2 / negative / negative2
 
 ### SVG縁取り系テンプレートのスタイル
@@ -301,7 +302,7 @@ step20-render          → 最終レンダリング（MP4書き出し）
 // strokeWidth=20
 // ★ドロップシャドウ: filter: "drop-shadow(0px 4px 4px rgba(0,0,0,0.15))"
 
-// emphasis_large: 赤文字 + 白フチ（SVG 2層構造）
+// section: 赤文字 + 白フチ（SVG 2層構造）
 // fill="#CC3300", strokeWidth=20
 // ★ドロップシャドウ: filter: "drop-shadow(0px 4px 4px rgba(0,0,0,0.15))"
 
@@ -341,7 +342,7 @@ step20-render          → 最終レンダリング（MP4書き出し）
 | テンプレート | ドロップシャドウ |
 |---|---|
 | **normal** | `filter: "drop-shadow(0px 8px 6px rgba(0,0,0,0.2))"` |
-| **normal_emphasis / emphasis_large / third_party** | `filter: "drop-shadow(0px 4px 4px rgba(0,0,0,0.15))"` |
+| **normal_emphasis / section / third_party** | `filter: "drop-shadow(0px 4px 4px rgba(0,0,0,0.15))"` |
 | **emphasis (外側)** | `filter: "drop-shadow(0 0 1px rgba(255,215,0,0.8)) drop-shadow(0 0 2px rgba(255,215,0,0.6)) drop-shadow(0 0 3px rgba(255,215,0,0.4)) drop-shadow(0 0 4px rgba(255,215,0,0.3))"` (金グロー) |
 | **emphasis (背景層)** | `filter: "drop-shadow(0 0 8px rgba(255,255,255,0.7)) drop-shadow(0 0 20px rgba(0,0,0,0.2))"` |
 | **emphasis (前面層)** | `filter: "drop-shadow(0 -1px 1px rgba(255,255,255,0.5)) drop-shadow(1px 1px 2px rgba(0,0,0,0.3))"` |
@@ -358,7 +359,7 @@ step20-render          → 最終レンダリング（MP4書き出し）
 ### 文字サイズ基準（実装値）
 | テンプレート | fontSize |
 |-------------|----------|
-| emphasis / emphasis2 / emphasis_large / negative2 | 122 |
+| emphasis / emphasis2 / section / negative2 | 122 |
 | theme | 108 |
 | negative | 96 |
 | profile | 90 |
@@ -449,7 +450,7 @@ const calcTextWidth = (text: string, fontSize: number) =>
 
 ### 使用制限（必須）
 - **themeテンプレートは動画全体で1回のみ使用する（冒頭のテーマ紹介のみ）**
-- セクション見出し・章タイトルにはthemeを使わず、**emphasis_large** を使う
+- セクション見出し・章タイトルにはthemeを使わず、**section** を使う
 - **themeの次のテロップはキャンセルする**: themeのendFrameを次のテロップのendFrameまで延長し、次のテロップエントリを削除する（テーマを長く見せる）
 
 ### 表示タイミング
@@ -626,7 +627,7 @@ const ProfileCard: React.FC = () => {
 | 他者の発言・証言 | 第三者発言 | ThirdPartyTelop | 第三者発言.mp3 |
 | 発言そのまま表示 | ノーマル | NormalTelop | なし |
 | 動画全体のテーマ（冒頭1回のみ） | 今回のテーマ | ThemeTelop | se/ポジティブ/ |
-| 見出し・章タイトル | 強調サイズ大 | EmphasisTelop(large) | 強調.mp3 |
+| 見出し・章タイトル（1つ目、2つ目...） | セクション見出し | SectionTelop | 強調.mp3 |
 | リスト・ポイント列挙 | 箇条書き | BulletList | 箇条書き.mp3 |
 
 ---

@@ -109,7 +109,7 @@ npx tsc --noEmit
 | normal_emphasis | FONT_MPLUS | 84 | 20 | se/強調/ |
 | emphasis | FONT_SHIPPORI | 122 | 14 | se/ポジティブ/ |
 | emphasis2 | FONT_SHIPPORI | 122 | 14 | se/ポジティブ/ |
-| emphasis_large | FONT_MPLUS | 122 | 14 | se/強調/ |
+| section | FONT_MPLUS | 122 | 14 | se/強調/ |
 | negative | FONT_SHIPPORI | 96 | 16 | se/ネガティブ/ |
 | negative2 | FONT_SHIPPORI | 122 | 14 | se/ネガティブ/ |
 | third_party | FONT_MPLUS | 84 | 20 | se/強調/ |
