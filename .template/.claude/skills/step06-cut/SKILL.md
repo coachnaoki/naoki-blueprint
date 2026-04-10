@@ -23,6 +23,7 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash(ffmpeg *), Bash(ffprobe *), B
 - Step 04（文字起こし）でtranscript_words.jsonが存在すること
 - Step 05（台本照合）でtranscriptが修正済みであること
 - 元動画（カット前）が `public/video/` に存在すること
+- **元動画のファイル名は `video-context.md` の「動画ファイル」セクションを参照する**（step02で記録済み）
 
 ## やること
 
@@ -131,7 +132,9 @@ hidden_retakes = [w for w in words if len(w['word'].strip()) <= 2 and (w['end'] 
 合計: 3箇所（約6.9秒）
 ```
 
-ユーザーに承認を求める：
+**言い直し候補が0件の場合**: Phase 3をスキップし、無音カットのみでPhase 4に進む。ユーザーには「言い直しは検出されませんでした。無音カットのみ実行します」と伝える。
+
+**候補がある場合**、ユーザーに承認を求める：
 ```
 上記の候補をカットしますか？
 - 全部カット → 「ok」

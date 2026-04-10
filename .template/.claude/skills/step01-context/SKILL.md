@@ -49,6 +49,9 @@ allowed-tools: Read, Write, Glob, Grep, Bash(ls *), Bash(node scripts/_chk.mjs)
 
 ## 制作設定
 - FPS: （25 or 60）
+
+## 動画ファイル
+（step02で確認後に記録）
 ```
 
 ## 長尺動画の進め方（重要）
