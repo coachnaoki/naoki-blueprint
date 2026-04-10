@@ -49,15 +49,31 @@ ffprobe -v quiet -show_entries format=duration -of default=noprint_wrappers=1 pu
 
 以下をユーザーに質問する（デフォルト値で問題なければ「ok」でスキップ可）：
 
-1. **区間**: 動画全体（デフォルト）or 指定区間
+1. **区間**: 動画全体（デフォルト: startFrame=0, endFrame=durationInFrames）or 指定区間
 2. **音量**: デフォルト 0.12
-3. **フェードイン・フェードアウト**: デフォルト 各2秒（50フレーム）
+3. **フェードイン・フェードアウト**: デフォルト 各2秒（50フレーム @25fps）
+4. **エンドスクリーン用に別のBGMを入れるか？**（step18でエンドスクリーンを追加した場合）
 
-### 2. 台本のタイミング特定
+**指定区間の場合**: `transcript_words.json` で正確なフレームを特定する。
 
-`transcript_words.json` でユーザーが指定した区間の正確なフレームを特定する。
+### 4. BGMの長さチェック
 
-### 3. MainComposition.tsx にBGMを追加
+BGMの尺が動画の尺より短い場合、**ループ再生**が必要。Remotionの `<Audio>` は `loop` propsに対応していないため、`<Sequence>` を繰り返して実装する：
+
+```typescript
+// BGMが60秒、動画が180秒の場合 → 3回ループ
+const bgmDuration = 60 * fps; // BGMのフレーム数
+const loops = Math.ceil((endFrame - startFrame) / bgmDuration);
+{Array.from({ length: loops }, (_, i) => (
+  <Sequence key={i} from={startFrame + i * bgmDuration}
+    durationInFrames={Math.min(bgmDuration, endFrame - startFrame - i * bgmDuration)}
+    layout="none">
+    <Audio src={staticFile("bgm/bgm.mp3")} volume={/* ... */} />
+  </Sequence>
+))}
+```
+
+### 5. MainComposition.tsx にBGMを追加
 
 ```typescript
 import { Audio, interpolate, Sequence } from "remotion";
@@ -79,7 +95,24 @@ import { staticFile } from "remotion";
 </Sequence>
 ```
 
-### 4. TypeScriptコンパイル確認
+### 6. エンドスクリーン用BGM（任意）
+
+エンドスクリーンがある場合、本編BGMとは別のBGMを `originalLastFrame` 以降に配置できる。
+
+```typescript
+// ED用BGM（本編BGMとは別のSequence）
+<Sequence from={originalLastFrame} durationInFrames={endscreenDuration} layout="none">
+  <Audio
+    src={staticFile("bgm/ed_bgm.mp3")}
+    volume={(f) => interpolate(f, [0, fadeIn, endscreenDuration - fadeOut, endscreenDuration],
+      [0, edVolume, edVolume, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" })}
+  />
+</Sequence>
+```
+
+※ ED用BGMがない場合は本編BGMのendFrameをdurationInFramesまで延長する。
+
+### 7. TypeScriptコンパイル確認
 
 ```bash
 npx tsc --noEmit
