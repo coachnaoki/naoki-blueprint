@@ -43,7 +43,61 @@ ls -la public/images/background*
 
 ### 3. MainComposition.tsx にクロマキー処理を追加
 
-背景画像を動画の下に配置し、動画にクロマキーフィルターを適用する。
+Remotionでは CSS/Canvas ベースのクロマキーは使えないため、**ffmpegで事前に透過動画を生成する方式**を使う。
+
+#### Step 3-1: ffmpegでグリーンバックを透過に変換
+
+```bash
+ffmpeg -i public/video/<メイン動画>_cut.mp4 \
+  -vf "chromakey=0x00FF00:0.3:0.1" \
+  -c:v png -pix_fmt rgba \
+  public/video/<メイン動画>_cut_alpha.mov
+# ※ メイン動画のファイル名は video-context.md の「動画ファイル」セクションを参照
+```
+
+| パラメータ | 値 | 説明 |
+|-----------|-----|------|
+| `chromakey` の色 | `0x00FF00` | 標準的なグリーン。撮影環境に応じて調整 |
+| 類似度（similarity） | `0.3` | 0.01〜1.0。大きいほど広い範囲の緑を透過。デフォルト0.3で試す |
+| ブレンド（blend） | `0.1` | 境界のなめらかさ。0.0=くっきり、0.2=なめらか |
+
+**グリーンの色が合わない場合**: 動画フレームからスポイトで実際の緑色のHEXコードを取得し、`0x00FF00` を差し替える。
+
+#### Step 3-2: MainComposition.tsx に背景+透過動画を配置
+
+```typescript
+// 背景画像（最背面）
+<Img
+  src={staticFile("images/background.jpg")}
+  style={{
+    position: "absolute", top: 0, left: 0,
+    width: 1920, height: 1080,
+    objectFit: "cover", zIndex: 0,
+  }}
+/>
+
+// 透過動画（背景の上に重ねる）
+<OffthreadVideo
+  src={staticFile("video/input_cut_alpha.mov")}
+  style={{
+    position: "absolute", top: 0, left: 0,
+    width: 1920, height: 1080,
+    objectFit: "cover", zIndex: 1,
+  }}
+  transparent
+/>
+```
+
+⚠️ `transparent` propが必要。これがないとアルファチャンネルが無視される。
+
+#### Step 3-3: 透過がうまくいかない場合の調整
+
+| 問題 | 対処 |
+|------|------|
+| 緑が残る | similarity を 0.4〜0.5 に上げる |
+| 人物の端が透けすぎる | similarity を 0.2 に下げる / blend を 0.15 に上げる |
+| 髪の毛の縁が緑がかる | blend を 0.05 に下げる |
+| そもそも緑が透過されない | `chromakey` の色コードを撮影時の実際の緑に合わせる |
 
 ### 4. 確認用スクショ
 

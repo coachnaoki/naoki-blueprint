@@ -43,7 +43,23 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash(npx tsc *), Bash(npx remotion
 
 - **Sequence必須**: コンポジション途中から再生する動画は必ず `<Sequence from={startFrame}>` でラップする
 - **z-index**: 5以下（テロップの下）
-- **全画面動画の表示中は見出しバナーとワイプを非表示にする**
+- **全画面動画の表示中は見出しバナーとワイプを非表示にする**（実装方法は下記参照）
+
+### HeadingBanner・ワイプの非表示実装
+
+全画面動画が表示されている間、HeadingBannerとワイプを非表示にする。
+
+```typescript
+// MainComposition.tsx に全画面動画の区間を定義
+const fullscreenVideoRanges = [
+  { start: /* startFrame */, end: /* startFrame + duration */ },
+  // 動画クリップごとに追加
+];
+const isFullscreenVideo = fullscreenVideoRanges.some(r => frame >= r.start && frame <= r.end);
+
+// HeadingBanner / ワイプ内
+if (isFullscreenVideo) return null;
+```
 
 ### 音声あり
 ```typescript
