@@ -41,6 +41,14 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash(node *), Bash(node scripts/_c
 | `quote` | 引用・問いかけ | quote, source, sourceIcon, icon |
 | `highlight-box` | 強調メッセージ | title, icon, message |
 
+### プロパティの型ルール（必須）
+
+| プロパティ | 正しい値 | NG例 | 説明 |
+|---|---|---|---|
+| `titleUnderline` | 下線を引きたい**キーワード文字列**（例: `"3ステップ"`） | `true` / `false` | booleanではなく文字列を渡す |
+| `badgeIconColor` | `"red"` または省略 | `"#ff4444"` / `"blue"` | カスタム色コードは不可 |
+| `titleHighlight` | title内の**一部分の文字列**（例: `"ボレー"`） | titleと同じ全文 | titleと同一にしない |
+
 ### 比較スライドの左右配置ルール（必須）
 
 **比較・対比スライドでは、左にネガティブ（課題・問題）、右にポジティブ（解決・理想）を配置する。**
@@ -52,6 +60,16 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash(node *), Bash(node scripts/_c
 | `versus` | left = ネガティブ（color: "gray"） | right = ポジティブ（color: "green"） | データ順で左右が決まる |
 
 **理由**: 左→右の視線の流れが「問題→解決」の改善ストーリーと一致し、視聴者が直感的に理解しやすい。
+
+## 動画スライドモード（必須）
+
+naoki-blueprintのスライドは**動画内に表示されるスライド**。右上にワイプ（話者の丸窓）、下部200pxに字幕が入るため、これらの領域にコンテンツを置かない。
+
+| ルール | 対応 |
+|---|---|
+| 右上ワイプ領域を空ける | `catchphrase: ""` （空文字）にする |
+| 下部200pxを字幕用に空ける | `big-message` は `panel` プロパティを省略、`two-columns` は `sub` を省略 |
+| ステップ数の制限 | `steps` は2つまでが基本（3つ以上は自動compactモードになるが下部が圧迫される） |
 
 ## やること
 
@@ -71,7 +89,7 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash(node *), Bash(node scripts/_c
 **スライドにしない場面：**
 - 体験談・エピソード（話者の表情が大事）
 - 感情的な訴え・CTA
-- 自己紹介（ProfileCardで十分）
+- 自己紹介（テロップ・画像等で対応）
 - 短い補足・つなぎの発言
 
 ### 1. 台本の確認
@@ -84,14 +102,24 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash(node *), Bash(node scripts/_c
 
 台本の各スライドに最適なテンプレートを選ぶ：
 
-| 台本の内容 | 推奨テンプレート |
+| 伝えたいこと | 推奨テンプレート |
 |---|---|
 | タイトル・章の始まり | `title` |
 | 3つのポイント・コツ | `three-cards` または `three-tactics` |
-| 比較・対比 | `two-columns` |
-| 手順・ステップ | `steps` |
-| 警告・重要メッセージ | `big-message` |
+| 比較・対比 | `two-columns` / `versus` / `before-after` |
+| 手順・ステップ | `steps` / `timeline` |
+| 衝撃的データ・数字 | `big-message` / `stats` |
+| 警告・重要メッセージ | `big-message` / `highlight-box` |
 | まとめ・締めくくり | `closing` |
+| チェックポイント | `checklist` |
+| ランキング・順位 | `ranking` |
+| 問いかけ・引用 | `quote` |
+
+#### ストーリー構成の基本フロー
+表紙（title）→ 問題提起（quote / big-message）→ 分析（stats / two-columns）→ 解決策（three-cards / steps）→ 根拠（stats / before-after）→ 結論（highlight-box）→ まとめ（closing）
+
+#### 2枚連続で同じテンプレートを使わない
+視覚的な変化をつけるため、**同じテンプレートを連続して使わない**。例えば `three-cards` → `three-cards` ではなく、`three-cards` → `steps` → `three-cards` のように間に別のテンプレートを挟む。
 
 ### 3. SLIDE_SCRIPT の生成
 
@@ -142,9 +170,21 @@ open aislides/slides.html
 
 ユーザーに確認してもらい、修正があれば対応する。
 
+## 品質チェックリスト（生成後に必ず確認）
+
+- [ ] `titleHighlight` が `title` と同じ全文になっていないか（一部分だけを指定する）
+- [ ] 改行禁止パターン（助詞の前で改行、単語途中で改行）に違反していないか
+- [ ] 2枚連続で同じテンプレートを使っていないか
+- [ ] 動画モードで下部200pxにコンテンツ（panel / sub）がはみ出していないか
+- [ ] `catchphrase` が空文字 `""` になっているか（右上ワイプ領域を空けるため）
+- [ ] ハイライトに `px-2` 等のパディングが付いていないか
+- [ ] プレースホルダー（LAYOUT, PHOTO等）が残っていないか
+- [ ] `titleUnderline` にboolean（true/false）を使っていないか
+
 ## 完了条件
 - `aislides/slides.html` の SLIDE_SCRIPT が台本の内容で更新されている
 - テキスト記述ルールに準拠している
+- 品質チェックリストを全項目クリアしている
 - ユーザーが内容を確認済み
 
 ## 完了後

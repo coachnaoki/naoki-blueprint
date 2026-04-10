@@ -71,6 +71,21 @@ step13のスライド候補選定と同様に、ユーザーに確認する:
 | theme テロップ | 表示 |
 | その他のテロップ | **非表示** |
 
+### 非表示の実装方法
+
+TelopRenderer呼び出し時に `bulletListVisible` フラグをチェックし、対象外のテロップを非表示にする。
+
+```typescript
+// TelopRenderer内
+const bulletListVisible = frame >= bulletStart && frame <= bulletEnd;
+
+if (bulletListVisible &&
+    telop.template !== "bullet_list" &&
+    telop.template !== "theme") {
+  return null; // 非表示
+}
+```
+
 ---
 
 ## CTA（LINE誘導・チャンネル登録）
@@ -135,7 +150,7 @@ style={{
 ### 非表示条件
 
 以下の条件のいずれかに該当するフレームでは非表示にする:
-- CTAシーン（LINE誘導・チャンネル登録）表示中
+- CTAシーン（LINE誘導・チャンネル登録）表示中（※必須ではなく「非表示にしてもよい」。CTAのデザインと相性が悪い場合のみ非表示にする）
 - **全画面コンテンツ表示中**:
   - 全画面スライド
   - 全画面画像
@@ -175,6 +190,15 @@ const slideOut = interpolate(frame, [endFrame - 10, endFrame], [0, 100], {
   extrapolateLeft: "clamp", extrapolateRight: "clamp",
 });
 ```
+
+### 次のテロップのキャンセル（必須）
+
+**themeの次のテロップはキャンセルして、themeの表示時間を延長する。**
+
+1. themeの `endFrame` を、次のテロップの `endFrame` まで延長する
+2. 次のテロップエントリを `telopData.ts` から削除する
+
+**理由**: テーマを長く見せることで、動画全体のテーマが視聴者の印象に残りやすくなる。themeが短すぎると印象が弱くなる。
 
 ### SE
 - `se/ポジティブ/` からランダム選択（startFrameをシードにした疑似乱数）
