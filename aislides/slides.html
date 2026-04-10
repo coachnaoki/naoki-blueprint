@@ -66,7 +66,148 @@
 // =============================================================
 
 const SLIDE_SCRIPT = [
-  // ここに台本のスライドデータを記述する
+
+  // ---- 1. title ----
+  {
+    type: "title",
+    icon: "fa-trophy",
+    title: "ダブルスで勝つための",
+    titleHighlight: "前衛の教科書",
+    subtitle: "知識と戦術で相手を圧倒する方法"
+  },
+
+  // ---- 2. big-message（衝撃データ） ----
+  {
+    type: "big-message",
+    label: "DATA",
+    title: "プロのダブルス",
+    titleUnderline: "ダブルス",
+    icon: "fa-baseball-ball",
+    badgeIcon: "fa-chart-bar",
+    message: "実は平均<span style='background:#CCFF00'>3〜4球</span>で\nラリーが終わっている"
+  },
+
+  // ---- 3. two-columns（プロ vs アマチュア） ----
+  {
+    type: "two-columns",
+    title: "プロとアマチュアの違い",
+    titleHighlight: "違い",
+    catchphrase: "",
+    columns: [
+      {
+        badge: "プロ",
+        badgeColor: "green",
+        borderColor: "green",
+        icon: "fa-bolt",
+        mainSize: "text-5xl",
+        main: "前衛が仕留めて\n短いラリーで終了"
+      },
+      {
+        badge: "アマチュア",
+        badgeColor: "dark",
+        borderColor: "dark",
+        icon: "fa-sync-alt",
+        mainSize: "text-5xl",
+        main: "前衛が機能せず\nストローク合戦に"
+      }
+    ]
+  },
+
+  // ---- 4. three-cards（3つの悩み） ----
+  {
+    type: "three-cards",
+    title: "前衛の3つの悩み",
+    titleHighlight: "3つの悩み",
+    cards: [
+      {
+        icon: "fa-shield-alt",
+        title: "ストレートが怖い",
+        lines: ["抜かれるのが", "怖くて動けない"]
+      },
+      {
+        icon: "fa-hand-paper",
+        title: "ボレーが浮く",
+        lines: ["触っても", "逆襲されてしまう"]
+      },
+      {
+        icon: "fa-user",
+        title: "お地蔵さん",
+        lines: ["ただ立っている", "だけになっている"]
+      }
+    ]
+  },
+
+  // ---- 5. highlight-box（安心メッセージ） ----
+  {
+    type: "highlight-box",
+    label: "POINT",
+    icon: "fa-lightbulb",
+    title: "運動神経の問題ではない",
+    titleUnderline: "問題ではない",
+    message: "正しい<span style='background:#CCFF00'>知識</span>を知らないだけ",
+    sub: "今日の動画で前衛の基本を\n完全に理解できます"
+  },
+
+  // ---- 6. three-tactics（今日学ぶ3つ） ----
+  {
+    type: "three-tactics",
+    title: "今日学ぶ3つのスキル",
+    titleHighlight: "3つのスキル",
+    catchphrase: "",
+    cards: [
+      {
+        role: "ポジショニング",
+        icon: "fa-map-marker-alt",
+        main: "抜かれない\n立ち位置の基本",
+        sub: "守りの土台"
+      },
+      {
+        role: "タイミング",
+        icon: "fa-running",
+        main: "バレずに入れる\n動き方と判断",
+        sub: "攻めの起点"
+      },
+      {
+        role: "プレイスメント",
+        icon: "fa-bullseye",
+        main: "触ったら確実に\nポイントにする",
+        sub: "仕留める技術",
+        dark: true
+      }
+    ]
+  },
+
+  // ---- 7. before-after（意識改革） ----
+  {
+    type: "before-after",
+    title: "この動画を見た後の変化",
+    titleHighlight: "変化",
+    before: {
+      label: "BEFORE",
+      icon: "fa-frown",
+      main: "ただ立っているだけの\nお地蔵さん前衛",
+      sub: "受け身の前衛"
+    },
+    after: {
+      label: "AFTER",
+      icon: "fa-grin-stars",
+      main: "知識と戦術で\n相手を圧倒する前衛",
+      sub: "大人のダブルス"
+    }
+  },
+
+  // ---- 8. closing（まとめ） ----
+  {
+    type: "closing",
+    icon: "fa-baseball-ball",
+    title: "それでは解説スタート",
+    cards: [
+      { title: "ポジショニング", desc: "抜かれない<br>立ち位置の基本" },
+      { title: "タイミング", desc: "バレずに入れる<br>動き方と判断" },
+      { title: "プレイスメント", desc: "確実にポイントにする<br>配球の技術" }
+    ]
+  }
+
 ];
 // =============================================================
 // ★ 台本ここまで ★
