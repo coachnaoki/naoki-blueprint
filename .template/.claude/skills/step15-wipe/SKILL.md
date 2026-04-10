@@ -24,7 +24,7 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash(ffmpeg *), Bash(npx remotion 
 
 ## ワイプの基本仕様
 
-- **サイズ**: 325×325px、円形（borderRadius: 50%）
+- **サイズ**: 325×325px、円形（borderRadius: 50%）— 280pxだと `objectPosition` + `scale` の組み合わせが極端な場合にフレーム端が灰色の角として露出するため、325pxに設定
 - **位置**: 右上（top: 30px, right: 30px）
 - **z-index**: 8（スライドの上、テロップの下）
 - **boxShadow**: `0 4px 20px rgba(0,0,0,0.3)`
@@ -62,7 +62,8 @@ npx remotion still MainVideo --frame=<スライド表示中のフレーム> --ou
 カット済み動画から1フレームを画像として抽出する。
 
 ```bash
-ffmpeg -ss 5 -i public/video/input_cut.mp4 -frames:v 1 -q:v 2 /tmp/wipe_frame.jpg
+ffmpeg -ss 5 -i public/video/<メイン動画>_cut.mp4 -frames:v 1 -q:v 2 /tmp/wipe_frame.jpg
+# ※ メイン動画のファイル名は video-context.md の「動画ファイル」セクションを参照
 ```
 
 ### 2. ピクセルグリッド画像の生成
@@ -132,7 +133,8 @@ const translateY = Math.round(162.5 - faceY * coverScale);
 
 ```typescript
 <OffthreadVideo
-  src={staticFile("video/input_cut.mp4")}
+  muted  // 必須: ベース動画と音声が二重になるのを防ぐ
+  src={staticFile("video/input_cut.mp4")}  // video-context.md参照
   style={{
     width: "100%",
     height: "100%",

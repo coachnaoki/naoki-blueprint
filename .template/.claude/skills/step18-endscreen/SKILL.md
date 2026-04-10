@@ -29,13 +29,15 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash(npx tsc *), Bash(ls *), Bash(
 2. **画像か動画か？**
 3. **表示秒数**（画像の場合デフォルト: 10秒 / 動画の場合はクリップの尺に合わせる）
 
+**素材がない場合**: このステップをスキップして次へ進む。「エンドスクリーンは後から追加できます。素材が用意できたら `/step18-endscreen` を再実行してください」と伝える。
+
 ---
 
 ## やること
 
 ### 1. Root.tsx のフレーム数を延長
 
-`video-context.md` からFPSを確認し、エンドスクリーン秒数分のフレームを加算する。
+`Root.tsx` の現在の `durationInFrames` を `originalLastFrame` として記録する。`video-context.md` からFPSを確認し、エンドスクリーン秒数分のフレームを加算する。
 
 ```typescript
 // 元のフレーム数 + エンドスクリーン秒数 × FPS
@@ -112,6 +114,15 @@ ffprobe -v quiet -show_entries format=duration -of default=noprint_wrappers=1 pu
 | HeadingBanner | 非表示 |
 | ワイプ | 非表示 |
 | テロップ（全種類） | 非表示 |
+
+**実装方法**: 各コンポーネントの表示条件に `frame < originalLastFrame` を追加する。
+
+```typescript
+// HeadingBanner / ワイプ / TelopRenderer 内
+if (frame >= originalLastFrame) return null; // エンドスクリーン中は非表示
+```
+
+`originalLastFrame` は定数として `MainComposition.tsx` の先頭で定義するか、propsで渡す。
 
 ※ ED用BGMは step19-bgm で設定する。このステップでは音声は扱わない。
 
