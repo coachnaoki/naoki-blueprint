@@ -27,6 +27,7 @@ const BLOCK_TEMPLATE_MAP = {
   "timeline":      { selector: ".flex-col.justify-start > div", countKey: "events" },
   "ranking":       { selector: ".flex-col.justify-start > div", countKey: "items" },
   "versus":        { selector: ".gap-6.items-stretch > .flex-1", countKey: "_versus" },
+  "agenda":        { selector: ".flex-col.justify-center > div", countKey: "items" },
 };
 
 async function detectBlockSplits(browser) {
