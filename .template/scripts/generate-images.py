@@ -5,8 +5,12 @@ Gemini API を使って動画用画像を一括生成するスクリプト
 セットアップ:
 1. Google AI Studio (https://aistudio.google.com/apikey) でAPIキーを取得
 2. pip install google-genai Pillow
-3. Keychainにキーを保存: security add-generic-password -a $USER -s gemini_api_key -w
-4. `export-gemini` を実行してから本スクリプトを起動
+3. APIキーを渡す方法は3通り（どれか1つ）:
+   A. プロジェクト直下に `.env` を作成して `GEMINI_API_KEY=xxx` と書く（Mac/Win共通・推奨）
+   B. 環境変数を直接設定
+      - Mac/Linux: `export GEMINI_API_KEY=xxx`
+      - Windows (PowerShell): `$env:GEMINI_API_KEY="xxx"`
+   C. Mac Keychain 連携（Naoki本人向け）: `export-gemini` 関数を使用
 """
 import time
 import os
@@ -19,8 +23,29 @@ except ImportError:
     print("  pip install google-genai Pillow")
     exit(1)
 
+
 # ============================================================
-# 設定: APIキーは環境変数から読み込む（`export-gemini` で事前にロード）
+# .env ファイルがあれば読み込む（クロスプラットフォーム対応）
+# ============================================================
+def _load_env_file() -> None:
+    env_path = os.path.join(os.path.dirname(__file__), "..", ".env")
+    if not os.path.exists(env_path):
+        return
+    with open(env_path, encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if not line or line.startswith("#") or "=" not in line:
+                continue
+            key, _, value = line.partition("=")
+            key = key.strip()
+            value = value.strip().strip('"').strip("'")
+            os.environ.setdefault(key, value)
+
+
+_load_env_file()
+
+# ============================================================
+# 設定: APIキーは環境変数から読み込む
 # ============================================================
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
 MODEL = ""  # step16実行時にAIが最新モデルを設定する
@@ -77,9 +102,13 @@ def main():
         return
 
     if not GEMINI_API_KEY:
-        print("GEMINI_API_KEY が環境変数にありません。")
-        print("`export-gemini` を実行してから再度お試しください。")
-        print("（初回: security add-generic-password -a $USER -s gemini_api_key -w）")
+        print("GEMINI_API_KEY が設定されていません。以下のどれかで設定してください:")
+        print("  A. プロジェクト直下に .env を作成:")
+        print("     GEMINI_API_KEY=your-api-key-here")
+        print("  B. 環境変数を直接設定:")
+        print("     Mac/Linux: export GEMINI_API_KEY=xxx")
+        print("     Windows (PowerShell): $env:GEMINI_API_KEY=\"xxx\"")
+        print("  取得先: https://aistudio.google.com/apikey")
         return
 
     client = genai.Client(api_key=GEMINI_API_KEY)
