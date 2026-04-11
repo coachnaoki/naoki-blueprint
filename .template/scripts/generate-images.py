@@ -5,7 +5,8 @@ Gemini API を使って動画用画像を一括生成するスクリプト
 セットアップ:
 1. Google AI Studio (https://aistudio.google.com/apikey) でAPIキーを取得
 2. pip install google-genai Pillow
-3. 以下の GEMINI_API_KEY を更新
+3. Keychainにキーを保存: security add-generic-password -a $USER -s gemini_api_key -w
+4. `export-gemini` を実行してから本スクリプトを起動
 """
 import time
 import os
@@ -19,9 +20,9 @@ except ImportError:
     exit(1)
 
 # ============================================================
-# 設定: ここを自分の環境に合わせて変更する
+# 設定: APIキーは環境変数から読み込む（`export-gemini` で事前にロード）
 # ============================================================
-GEMINI_API_KEY = "your-api-key"
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
 MODEL = ""  # step16実行時にAIが最新モデルを設定する
 
 OUTPUT_DIR = os.path.join(os.path.dirname(__file__), "..", "public", "images", "generated")
@@ -75,9 +76,10 @@ def main():
         print("MODEL が設定されていません。/step16-images を実行してください。")
         return
 
-    if GEMINI_API_KEY == "your-api-key":
-        print("GEMINI_API_KEY を設定してください。")
-        print("取得先: https://aistudio.google.com/apikey")
+    if not GEMINI_API_KEY:
+        print("GEMINI_API_KEY が環境変数にありません。")
+        print("`export-gemini` を実行してから再度お試しください。")
+        print("（初回: security add-generic-password -a $USER -s gemini_api_key -w）")
         return
 
     client = genai.Client(api_key=GEMINI_API_KEY)
