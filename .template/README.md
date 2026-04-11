@@ -113,28 +113,7 @@ public/se/
 └── エンドカード.mp3
 ```
 
-### 6. Gemini API キー設定（画像生成を使う場合のみ）
-
-step16 で画像を AI 生成する場合は、Gemini API キーが必要です（使わないならスキップ可）。
-
-1. https://aistudio.google.com/apikey でキーを取得
-2. プロジェクト直下に `.env` ファイルを新規作成（`.gitignore` で除外済）
-3. 以下の1行を書いて保存：
-   ```
-   GEMINI_API_KEY=取得したキーをここに貼り付け
-   ```
-
-**他の渡し方（`.env` を使わない場合）**
-
-| OS | コマンド |
-|---|---|
-| Mac/Linux | `export GEMINI_API_KEY=xxx` |
-| Windows (PowerShell) | `$env:GEMINI_API_KEY="xxx"` |
-| Windows (cmd) | `set GEMINI_API_KEY=xxx` |
-
-> この場合は Claude Code を起動する前に毎回実行してください。
-
-### 7. 動画制作を開始！
+### 6. 動画制作を開始！
 
 Claude Code を起動して、最初のコマンドを実行：
 
@@ -143,6 +122,9 @@ Claude Code を起動して、最初のコマンドを実行：
 ```
 
 あとはスキルの指示に従って順番に進めるだけです。
+
+> **Gemini APIキー（画像生成用）について**
+> `/step16-images` を実行するタイミングで、Claude Code が自動でキーの設定を案内します。事前準備は不要です。キーの取得先: https://aistudio.google.com/apikey
 
 ---
 

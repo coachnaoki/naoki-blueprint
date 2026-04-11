@@ -65,22 +65,51 @@ allowed-tools: Read, Write, Edit, Glob, Grep, WebSearch, WebFetch, Bash(npx tsc 
 Gemini API で場面に合った画像を自動生成し、**感情ベース**で挿入する。
 
 ### 前提
-- Gemini API キーを取得済み（https://aistudio.google.com/apikey）
 - `pip install google-genai Pillow` 済み
-- APIキーは以下のどれかで設定済み（どれか1つでOK）:
-  - **A. `.env` ファイル（Mac/Windows共通・配布先推奨）**
-    プロジェクト直下に `.env` を作り、以下の1行を書く（`.env` はgit除外済）:
-    ```
-    GEMINI_API_KEY=取得したキーをここに
-    ```
-  - **B. 環境変数を直接指定**
-    - Mac/Linux: `export GEMINI_API_KEY=xxx`
-    - Windows (PowerShell): `$env:GEMINI_API_KEY="xxx"`
-    - Windows (cmd): `set GEMINI_API_KEY=xxx`
-  - **C. Mac Keychain連携（Naoki本人向け）**
-    `~/.zshrc` の `export-gemini` 関数を実行してロード
 
-### 0. 最新モデルの設定（必須）
+### 0-A. Gemini APIキー設定（初回のみ・自動セットアップ）
+
+**作業開始前に、必ずAPIキーが設定されているかチェックする。** 設定されていなければユーザーと対話して自動で `.env` を作成する。
+
+#### 手順
+
+1. **既存設定のチェック**
+   Bashで以下を実行：
+   ```bash
+   if [ -f .env ] && grep -q "^GEMINI_API_KEY=." .env; then
+     echo "OK: .env に GEMINI_API_KEY が設定済み"
+   elif [ -n "$GEMINI_API_KEY" ]; then
+     echo "OK: 環境変数 GEMINI_API_KEY が設定済み"
+   else
+     echo "NG: 未設定"
+   fi
+   ```
+
+2. **未設定なら、ユーザーに以下をそのまま聞く**（コピペ可）:
+   > Gemini APIキーがまだ設定されていません。以下の手順でキーを取得して、このチャットに貼り付けてください。
+   >
+   > **キーの取得方法:**
+   > 1. https://aistudio.google.com/apikey を開く
+   > 2. Googleアカウントでログイン
+   > 3. 「Create API key」をクリック
+   > 4. 表示されたキー（`AIza...` で始まる長い文字列）をコピー
+   >
+   > コピーしたキーをそのままこのチャットに貼り付けてください。僕が `.env` ファイルを自動で作成します。
+
+3. **キーを受け取ったら、`.env` ファイルを自動作成**
+   Writeツールで `.env` を作成：
+   ```
+   GEMINI_API_KEY=ユーザーから受け取ったキー
+   ```
+   作成後、ユーザーに「✅ `.env` を作成しました。これで画像生成が使えます」と報告する。
+
+4. **キーの形式チェック（簡易）**
+   - `AIza` で始まらない / 30文字未満 → 「キーの形式が正しくない可能性があります。もう一度確認してください」と返す
+   - それ以外 → OK とみなして次へ
+
+> **なぜ自動化するのか:** `.env` ファイルは先頭ドットのため Finder/Explorer で見えにくく、手動作成でつまずく人が多い。Claude Code が肩代わりすることで、ユーザーは「キーをコピペするだけ」で済む。
+
+### 0-B. 最新モデルの設定（必須）
 
 `scripts/generate-images.py` の `MODEL` が空の場合、最新の画像生成モデルを設定する。
 
