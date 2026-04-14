@@ -195,8 +195,8 @@ claude --dangerously-skip-permissions
     ↓
 【フェーズ4: BGM・冒頭連結・出力】
 /step18-bgm             BGM挿入
-/step19-opening         冒頭にハイライト+OP連結（任意・Remotion Series）
-/step20-render          MP4書き出し → 完成！
+/step19-opening         OP連結＋本編レンダリング（1回目）
+/step20-highlight-final 本編からハイライト自動抽出＋最終レンダリング → 完成！
 ```
 
 ---
