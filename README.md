@@ -154,7 +154,7 @@ claude --dangerously-skip-permissions
 /step01-context
 ```
 
-あとはAIの指示に従って、`/step02` → `/step03` → … と順番に進めるだけ！
+あとはAIの指示に従って、`/step02-assets` → `/step03-transcript` → … と順番に進めるだけ！
 
 ---
 
@@ -163,30 +163,30 @@ claude --dangerously-skip-permissions
 ```
 【フェーズ1: 素材準備】
 /step01-context         動画の目的・ターゲットを整理
-/step02-assets          素材の確認
-/step03-jumpcut         無音部分を自動カット
-/step04-video-insert    動画の差し込み結合（任意）
-/step05-transcript      Whisperで文字起こし
-/step06-retake-cut      言い直しカット（半自動）
-/step07-transcript-fix  台本と照合して誤変換を修正
+/step02-assets          素材確認＆役割確定（本編/物理挿入/オーバーレイ/OP/ハイライト）
+/step03-transcript      本編をWhisperで文字起こし
+/step04-transcript-fix  台本と照合して誤変換を修正
+/step05-cut             無音＋言い直し一括カット（FFmpeg一発エンコード）
+/step06-transcript      カット後の再文字起こし＋修正再適用
     ↓
 【フェーズ2: 動画構築】
-/step08-template        テンプレート設定（フォント・サイズ・色・SE）
-/step09-telop           テロップデータ作成
-/step10-composition     コンポジション統合（動画の骨格が完成）
+/step07-template        テンプレート設定（フォント・サイズ・色・SE）
+/step08-telop           テロップデータ作成
+/step09-composition     コンポジション統合（動画の骨格が完成）
     ↓
 【フェーズ3: 素材・演出挿入】
-/step11-greenback       グリーンバック背景置換（任意）
-/step12-videos          デモ動画の重ね表示（任意）
-/step13-slides-gen      台本からスライドHTML生成（任意）
-/step14-slides          スライドキャプチャ＋タイムライン（任意）
-/step15-wipe            ワイプ位置調整（任意）
-/step16-images          画像挿入（感情ベース + AI画像生成）（任意）
-/step17-special-components  箇条書き・見出し・CTA（任意）
-/step18-endscreen       エンドスクリーン追加（任意）
+/step10-greenback       グリーンバック背景置換（任意）
+/step11-videos          デモ動画挿入（物理挿入=Series分割 / オーバーレイ=上に重ね）（任意）
+/step12-slides-gen      台本からスライドHTML生成（任意）
+/step13-slides          スライドキャプチャ＋タイムライン（任意）
+/step14-wipe            ワイプ位置調整（任意）
+/step15-images          画像挿入（感情ベース + AI画像生成）（任意）
+/step16-special-components  箇条書き・見出し・CTA（任意）
+/step17-endscreen       エンドスクリーン追加（任意）
     ↓
-【フェーズ4: BGM + 出力】
-/step19-bgm             BGM挿入
+【フェーズ4: BGM・冒頭連結・出力】
+/step18-bgm             BGM挿入
+/step19-opening         冒頭にハイライト+OP連結（任意・Remotion Series）
 /step20-render          MP4書き出し → 完成！
 ```
 
@@ -201,7 +201,11 @@ naoki-blueprint/                 ← ダウンロードしたフォルダ
 │   ├── .claude/skills/          ← 20個のAIスキル + catchup + remotion-best-practices
 │   ├── CLAUDE.md                ← AIの行動ルール
 │   ├── scripts/validateLicense.mjs  ← ライセンス認証スクリプト
-│   ├── public/video/            ← 撮影動画を入れる
+│   ├── public/main/             ← 本編動画を入れる
+│   ├── public/inserts/          ← 物理挿入動画（任意）
+│   ├── public/overlays/         ← オーバーレイ動画（任意）
+│   ├── public/opening/          ← OP動画（任意）
+│   ├── public/highlight/        ← 冒頭ハイライト動画（任意）
 │   ├── public/bgm/              ← BGMを入れる
 │   ├── public/se/               ← SE素材を入れる
 │   ├── public/script/           ← ナレーション台本を入れる
@@ -234,7 +238,7 @@ npm install
 ```
 
 ### Q: スライドなしの動画も作れる？
-はい。step13〜15をスキップすれば、スライドなしの動画として制作できます。
+はい。step12〜14をスキップすれば、スライドなしの動画として制作できます。
 
 ### Q: プレビューの見方は？
 ```bash
