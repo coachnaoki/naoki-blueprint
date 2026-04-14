@@ -327,9 +327,14 @@ cp -r .template projects/ai-seminar-recap</code></pre>
 
   <div class="folder-tree">
   <pre><code>public/
-├── video/          <span class="comment">← 撮影した動画（MP4）をここに入れる</span>
-├── bgm/            <span class="comment">← BGM（MP3）をここに入れる</span>
-├── se/             <span class="comment">← SE（効果音）を入れる</span>
+├── main/           <span class="comment">← 本編動画（MP4）をここに入れる ★必須</span>
+├── inserts/        <span class="comment">← 物理挿入動画（ナレーションを止めて挟むクリップ・任意）</span>
+├── overlays/       <span class="comment">← オーバーレイ動画（ナレーション中に上に被せるクリップ・任意）</span>
+├── opening/        <span class="comment">← OP動画（冒頭連結・任意）</span>
+├── highlight/      <span class="comment">← 冒頭ハイライト動画（本編切り抜き・任意）</span>
+├── images/         <span class="comment">← 挿入画像（任意）</span>
+├── bgm/            <span class="comment">← BGM（MP3）をここに入れる ★必須</span>
+├── se/             <span class="comment">← SE（効果音）を入れる ★必須</span>
 │   ├── 強調/       <span class="comment">← 通常の強調・箇条書き・表など</span>
 │   ├── ポジティブ/  <span class="comment">← 前向き・成功・インパクト系</span>
 │   └── ネガティブ/  <span class="comment">← 警告・失敗・ツッコミ系</span>
@@ -340,7 +345,11 @@ cp -r .template projects/ai-seminar-recap</code></pre>
 
   <table>
     <tr><th>素材</th><th>必須？</th><th>説明</th></tr>
-    <tr><td>撮影した動画</td><td><strong>必須</strong></td><td>あなたが撮影したMP4ファイルを <code>video/</code> に入れる</td></tr>
+    <tr><td>本編動画</td><td><strong>必須</strong></td><td>撮影したMP4ファイルを <code>main/</code> に入れる</td></tr>
+    <tr><td>物理挿入動画</td><td>任意</td><td>ナレーションを止めて挟むクリップを <code>inserts/</code> に入れる</td></tr>
+    <tr><td>オーバーレイ動画</td><td>任意</td><td>ナレーション中に上に被せる補足映像を <code>overlays/</code> に入れる</td></tr>
+    <tr><td>OP動画</td><td>任意</td><td>冒頭のタイトル・ロゴ映像を <code>opening/</code> に入れる</td></tr>
+    <tr><td>ハイライト動画</td><td>任意</td><td>完成後の切り抜きベスト映像を <code>highlight/</code> に入れる</td></tr>
     <tr><td>BGM</td><td><strong>必須</strong></td><td>フリーBGMサイト等からダウンロードしたMP3を <code>bgm/</code> に入れる</td></tr>
     <tr><td>SE（効果音）</td><td><strong>必須</strong></td><td>フリーSEサイト等からMP3をダウンロードして <code>se/</code> に入れる</td></tr>
     <tr><td>ナレーション台本</td><td>推奨</td><td>話した内容のテキストを <code>script/</code> に入れる（文字起こしの精度UP）</td></tr>
