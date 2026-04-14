@@ -19,29 +19,29 @@
 ```
 --- 素材準備 ---
 step01-context         → 動画コンテキスト整理（ターゲット・趣旨・FPS）
-step02-assets          → 素材確認（動画・BGM・SE・画像）
-step03-video-insert    → 動画の差し込み結合（任意・ffmpeg trim+concat）
-step04-transcript      → 文字起こし（元動画にWhisperでタイムスタンプ化）
-step05-transcript-fix  → 文字起こし修正（台本と照合して誤変換修正）
-step06-cut             → 無音＋言い直し一括カット（FFmpeg一発エンコード）
-step07-transcript      → カット後の再文字起こし＋修正再適用
+step02-assets          → 素材確認＆役割確定（本編/物理挿入/オーバーレイ/OP/ハイライト、文字起こし順序）
+step03-transcript      → 文字起こし（本編にWhisperでタイムスタンプ化）
+step04-transcript-fix  → 文字起こし修正（台本と照合して誤変換修正）
+step05-cut             → 無音＋言い直し一括カット（FFmpeg一発エンコード）
+step06-transcript      → カット後の再文字起こし＋修正再適用
 --- 動画構築 ---
-step08-template        → テンプレート設定（templateConfig.ts）
-step09-telop           → テロップデータ作成（telopData.ts）
-step10-composition     → コンポジション構築・登録（MainComposition.tsx + Root.tsx）
+step07-template        → テンプレート設定（templateConfig.ts）
+step08-telop           → テロップデータ作成（telopData.ts）
+step09-composition     → コンポジション構築・登録（MainComposition.tsx + Root.tsx）
 --- 素材挿入 ---
-step11-greenback       → グリーンバック背景置換（任意）
-step12-videos          → デモ動画の重ね表示（オーバーレイ）
+step10-greenback       → グリーンバック背景置換（任意）
+step11-videos          → デモ動画挿入（物理挿入=Series分割 / オーバーレイ=上に重ね）
 --- スライドを入れる場合は以下を実行 ---
-step13-slides-gen      → 台本→HTMLスライド生成（aislidesテンプレート）（任意）
-step14-slides          → スライドキャプチャ＋タイムライン（Puppeteer + slideTimeline.ts）（任意）
-step15-wipe            → ワイプ位置調整（任意・スライドがある場合）
+step12-slides-gen      → 台本→HTMLスライド生成（aislidesテンプレート）（任意）
+step13-slides          → スライドキャプチャ＋タイムライン（Puppeteer + slideTimeline.ts）（任意）
+step14-wipe            → ワイプ位置調整（任意・スライドがある場合）
 --- 画像・特殊コンポーネント ---
-step16-images          → イメージ画像挿入（感情ベース配置）
-step17-special-components → 箇条書き・CTA・見出しバナー・テーマ実装
-step18-endscreen       → エンドスクリーン（おすすめ動画カード）
---- BGM・出力 ---
-step19-bgm             → BGM挿入（区間指定・フェードイン/アウト）
+step15-images          → イメージ画像挿入（感情ベース配置）
+step16-special-components → 箇条書き・CTA・見出しバナー・テーマ実装
+step17-endscreen       → エンドスクリーン（おすすめ動画カード）
+--- BGM・冒頭連結・出力 ---
+step18-bgm             → BGM挿入（区間指定・フェードイン/アウト）
+step19-opening         → 冒頭にハイライト+OP連結（任意・Remotion <Series>）
 step20-render          → 最終レンダリング（MP4書き出し）
 ```
 
@@ -51,11 +51,11 @@ step20-render          → 最終レンダリング（MP4書き出し）
 - **デザイン**: ライムイエロー `#CCFF00` + ダーク `#121212`、Zen Kaku Gothic New フォント
 
 ### ワークフローの5フェーズ
-1. **素材準備**（step01〜07）: コンテキスト → 素材確認 → 動画差し込み（任意） → 文字起こし → 台本照合修正 → 無音＋言い直し一括カット → カット後再文字起こし
-2. **動画構築**（step08〜10）: テンプレート設定 → テロップ → コンポジション構築・登録（※ここでRemotion Studio起動、以降開きっぱなし）
-3. **素材挿入**（step11〜15）: グリーンバック → 動画クリップ → スライド生成・キャプチャ+タイムライン（任意） → ワイプ調整
-4. **画像・特殊コンポーネント**（step16〜18）: イメージ画像 → 箇条書き/CTA/見出しバナー/テーマ → エンドスクリーン
-5. **BGM・出力**（step19〜20）: BGM挿入 → レンダリング
+1. **素材準備**（step01〜06）: コンテキスト → 素材確認＆役割確定 → 文字起こし → 台本照合修正 → 無音＋言い直し一括カット → カット後再文字起こし
+2. **動画構築**（step07〜09）: テンプレート設定 → テロップ → コンポジション構築・登録（※ここでRemotion Studio起動、以降開きっぱなし）
+3. **素材挿入**（step10〜14）: グリーンバック → 動画挿入（物理/オーバーレイ） → スライド生成・キャプチャ+タイムライン（任意） → ワイプ調整
+4. **画像・特殊コンポーネント**（step15〜17）: イメージ画像 → 箇条書き/CTA/見出しバナー/テーマ → エンドスクリーン
+5. **BGM・冒頭連結・出力**（step18〜20）: BGM挿入 → ハイライト+OP連結（任意） → レンダリング
 
 ---
 
@@ -605,7 +605,7 @@ const calcTextWidth = (text: string, fontSize: number) =>
   }}>
     <OffthreadVideo
       muted
-      src={staticFile("video/input_cut.mp4")}
+      src={staticFile("main/input_cut.mp4")}
       style={{
         width: "100%", height: "100%",
         objectFit: "cover",
@@ -714,12 +714,12 @@ style={{ top: 373 }}  // 固定値
 ```typescript
 // NG: Sequenceなし（静止画になる）
 {frame >= 14850 && frame <= 14994 && (
-  <OffthreadVideo src={staticFile("videos/sample.mp4")} />
+  <OffthreadVideo src={staticFile("overlays/sample.mp4")} />
 )}
 
 // OK: Sequenceでラップ（正常に再生される）
 <Sequence from={14850} durationInFrames={145} layout="none">
-  <OffthreadVideo src={staticFile("videos/sample.mp4")} />
+  <OffthreadVideo src={staticFile("overlays/sample.mp4")} />
 </Sequence>
 ```
 
