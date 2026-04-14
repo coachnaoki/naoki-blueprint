@@ -1,8 +1,8 @@
 ---
 name: step19-opening
-description: 冒頭にハイライト動画とOP動画を連結する。Remotion <Series>で本編前に差し込むためタイムスタンプに影響なし。
+description: 冒頭にハイライト動画とOP動画を連結する。本編レンダリング済みMP4からフレーム範囲で自動抽出も可能。Remotion <Series>で本編前に差し込むためタイムスタンプに影響なし。
 argument-hint: [なし]
-allowed-tools: Read, Write, Edit, Glob, Grep, Bash(npx tsc *), Bash(ls *), Bash(ffprobe *), Bash(node scripts/_chk.mjs)
+allowed-tools: Read, Write, Edit, Glob, Grep, Bash(npx tsc *), Bash(ls *), Bash(ffprobe *), Bash(ffmpeg *), Bash(mkdir *), Bash(node scripts/_chk.mjs)
 ---
 
 <!-- LICENSE_GUARD: DO NOT REMOVE -->
@@ -46,9 +46,76 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash(npx tsc *), Bash(ls *), Bash(
 ## ユーザーに確認すること
 
 1. **ハイライトの有無**（`public/highlight/` 内のクリップ）
+   - 既に手動配置済み → そのまま使う
+   - **まだない + 本編レンダリング済み** → 「本編output動画から指定フレーム範囲を自動抽出する」方式を提案（下記「ハイライト自動抽出」参照）
+   - 不要（OPだけでよい）→ スキップ
 2. **OPの有無**（`public/opening/` 内のクリップ）
 3. **順序確認**: 「ハイライト → OP → 本編」でよいか（反転希望があれば受ける）
 4. **音声**: それぞれ音声ありか、BGMだけ鳴らしたいかを確認
+
+---
+
+## ハイライト自動抽出（任意・本編レンダリング後）
+
+本編を一度 `/step20-render` で書き出した後、その完成動画から「フレーム◯〜◯」を切り抜いてハイライト化する機能。
+
+### 前提
+- `public/output/*.mp4` に本編のレンダリング済みMP4がある
+- `video-context.md` のFPSが確定している
+
+### ユーザーに聞くこと
+
+1. **抽出元の動画**: `public/output/` 内の最新MP4（複数ある場合は選択）
+2. **開始フレーム**（fromFrame）: どこから切り抜くか
+3. **終了フレーム**（toFrame）: どこまで切り抜くか
+4. **出力ファイル名**: デフォルト `highlight_YYYYMMDD_HHMM.mp4`（指定なければ自動）
+
+> フレーム → 秒変換は `startSec = fromFrame / fps`, `durationSec = (toFrame - fromFrame) / fps`
+
+### 抽出コマンド
+
+```bash
+mkdir -p public/highlight
+
+# 例: fps=30, fromFrame=1500, toFrame=2400
+# startSec = 50.000, durationSec = 30.000
+ffmpeg -ss 50.000 -i public/output/main.mp4 \
+  -t 30.000 \
+  -c:v libx264 -preset medium -crf 18 \
+  -c:a aac -b:a 192k -ar 48000 -ac 2 \
+  -pix_fmt yuv420p \
+  public/highlight/highlight_20260414_1530.mp4
+```
+
+**ポイント**:
+- `-ss` は `-i` の前に置く（高速シーク）
+- 再エンコードする（`-c copy` だとキーフレーム境界でズレる）
+- `crf 18` で視認差が出ない高品質
+- 音声も含めて抽出（BGMだけにしたい場合はRemotion側で `muted` 指定）
+
+### 抽出後の確認
+
+```bash
+ffprobe -v quiet -show_entries format=duration -of default=noprint_wrappers=1 public/highlight/highlight_*.mp4
+```
+
+秒数 × FPS で `HIGHLIGHT_DURATION`（フレーム数）を計算し、下記のRoot.tsx連結フローに渡す。
+
+### 複数ハイライトを繋ぐ場合
+
+複数範囲を1本のハイライトにまとめたい場合は、それぞれ抽出してから concat:
+
+```bash
+# 各クリップを抽出
+ffmpeg -ss 50 -i public/output/main.mp4 -t 10 -c:v libx264 -crf 18 -c:a aac /tmp/clip1.mp4
+ffmpeg -ss 180 -i public/output/main.mp4 -t 8 -c:v libx264 -crf 18 -c:a aac /tmp/clip2.mp4
+
+# concat用リスト作成
+printf "file '/tmp/clip1.mp4'\nfile '/tmp/clip2.mp4'\n" > /tmp/concat.txt
+
+# 結合
+ffmpeg -f concat -safe 0 -i /tmp/concat.txt -c copy public/highlight/highlight_combined.mp4
+```
 
 ## 実装例（Root.tsx）
 
@@ -123,6 +190,15 @@ Step11で本編を分割する `<Series>` を組んでいる場合、Step19の `
 ```
 
 ## やること
+
+### 0. ハイライト自動抽出（任意）
+
+`public/highlight/` が空 かつ `public/output/*.mp4` が存在する場合、ユーザーに以下を提案:
+
+> 「本編のレンダリング済み動画からフレーム範囲を指定してハイライトを自動抽出できます。使いますか？」
+
+YESなら上記「ハイライト自動抽出」セクションのフローを実行。
+NOなら手動で `public/highlight/` に配置してもらう or ハイライトなしで進む。
 
 ### 1. 素材の確認
 
