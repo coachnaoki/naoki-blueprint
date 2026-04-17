@@ -147,7 +147,7 @@ step15-final           → レンダリング
 | **代弁** | se/ネガティブ/ | 視聴者目線の発言・共感演出 |
 | **今回のテーマ** | se/ポジティブ/ | 冒頭のテーマ紹介 |
 | **LINE誘導** | se/強調/ | LINE登録CTA |
-| **チャンネル登録** | se/強調/ | チャンネル登録CTA |
+| **フォロー誘導** | se/強調/ | フォロー誘導CTA（ショート動画用） |
 | **通常テロップ** | （SEなし） | 発言そのまま |
 
 ### 第三者発言のSEタイミングルール
@@ -198,7 +198,7 @@ step15-final           → レンダリング
 | **表** | — | 72 | 黒/赤 | 白パネル + 赤タイトル `#EF4444` | 専用 | se/強調/ |
 | **代弁** | — | 78 | 黒 | 白吹き出し | 専用 | se/ネガティブ/ |
 | **LINE誘導** | — | 66 | 白 | LINE緑 `#06C755` | 専用 | se/強調/ |
-| **チャンネル登録** | — | 72 | 白 | 赤ボタン `#EF4444` | 専用 | se/強調/ |
+| **フォロー誘導** | — | 72 | 白 | 赤ボタン `#EF4444` | 専用 | se/強調/ |
 | **今回のテーマ** | — | 108 | 白 | 赤ライン `#EF4444` | 専用 | se/ポジティブ/ |
 | **見出し** | — | 54 | 白 | 緑〜ティール `#10B981→#059669` | 専用 | なし |
 
@@ -206,8 +206,9 @@ step15-final           → レンダリング
 
 | フォント | 用途 |
 |---------|------|
-| `'M PLUS Rounded 1c', sans-serif` | 通常系・情報系（normal / normal_emphasis / section / third_party） |
+| `'M PLUS Rounded 1c', sans-serif` | 通常系・情報系（normal / normal_emphasis / section / third_party / line_cta / follow_cta） |
 | `'Shippori Mincho', serif` | 強調系・ネガティブ系（emphasis / emphasis2 / negative / negative2） |
+| `'Noto Sans JP', sans-serif` | 専用コンポーネント（bullet_list / theme） |
 
 ### アニメーション設定
 
@@ -240,7 +241,7 @@ step15-final           → レンダリング
 | **ネガティブ文字** | 白 | negative / negative2 |
 | **見出しバナー** | 薄グレー背景 `#F7F4F4` + 青紫文字 `#4B6AC6` | heading |
 | **箇条書きボックス** | 青 `#2563EB` | bullet_list |
-| **CTA赤** | 赤 `#EF4444` | テーマライン / 表タイトル / プロフィールボーダー |
+| **CTA赤** | 赤 `#EF4444` | follow_cta（フォロー誘導）/ 表タイトル / テーマライン |
 | **LINE** | 緑 `#06C755` | line_cta |
 
 #### 絶対禁止
@@ -262,7 +263,7 @@ step15-final           → レンダリング
 - **TableComponent**: 表（白パネル）
 - **MascotTelop**: 代弁（マスコット吹き出し）
 - **LineCTA**: LINE誘導カード
-- **SubscribeCTA**: チャンネル登録ボタン
+- **FollowCTA**: フォロー誘導ボタン（旧SubscribeCTA・ショート動画用）
 ### NG事項
 - **同位置・同時間帯の重複禁止**
 - **endFrameとstartFrameの接触禁止**: 1フレームずらす
@@ -362,7 +363,7 @@ step15-final           → レンダリング
 | negative | 96 |
 | normal / normal_emphasis / third_party | 84 |
 | mascot | 78 |
-| bullet_list / table / subscribe_cta | 72 |
+| bullet_list / table / follow_cta | 72 |
 | line_cta | 66 |
 | heading | 54 |
 
@@ -377,7 +378,7 @@ step15-final           → レンダリング
 | 108 | theme | **9文字** |
 | 96 | negative | **11文字** |
 | 78 | mascot | **13文字** |
-| 72 | bullet_list / table / subscribe_cta | **14文字** |
+| 72 | bullet_list / table / follow_cta | **14文字** |
 | 66 | line_cta | **16文字** |
 | 54 | heading | **19文字** |
 

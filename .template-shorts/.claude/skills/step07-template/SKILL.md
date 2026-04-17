@@ -68,9 +68,9 @@ export interface TemplateConfig {
 
 export const templateConfig: Record<TemplateName, TemplateConfig> = { ... };
 
-// 見出しバナー設定（MainComposition.tsx で参照）
+// 見出しバナー設定（MainComposition.tsx で参照）— ショート動画は54pxで縦動画幅に収める
 export const headingBannerConfig = {
-  fontSize: 64,
+  fontSize: 54,
   backgroundColor: "#F7F4F4",
   color: "#4B6AC6",
   fontFamily: '"Hiragino Kaku Gothic ProN", "Meiryo", sans-serif',
@@ -101,22 +101,24 @@ npx tsc --noEmit
 | FONT_SHIPPORI | `'Shippori Mincho', serif` | 強調系・ネガティブ系（感情・インパクト重視） |
 | FONT_NOTO | `'Noto Sans JP', sans-serif` | 箇条書き・テーマ系（テーマカラー統一） |
 
-## テンプレート一覧（実装ベース）
+## テンプレート一覧（実装ベース・ショート動画用）
+
+縦動画は横幅1080pxのため、横動画版より文字数制限を厳しくする。
 
 | テンプレート名 | fontFamily | fontSize | maxChars | SEフォルダ |
 |---------------|-----------|----------|----------|-----------|
-| normal | FONT_MPLUS | 84 | 20 | null |
-| normal_emphasis | FONT_MPLUS | 84 | 20 | se/強調/ |
-| emphasis | FONT_SHIPPORI | 122 | 14 | se/ポジティブ/ |
-| emphasis2 | FONT_SHIPPORI | 122 | 14 | se/ポジティブ/ |
-| section | FONT_MPLUS | 122 | 14 | se/強調/ |
-| negative | FONT_SHIPPORI | 96 | 16 | se/ネガティブ/ |
-| negative2 | FONT_SHIPPORI | 122 | 14 | se/ネガティブ/ |
-| third_party | FONT_MPLUS | 84 | 20 | se/強調/ |
-| bullet_list | FONT_NOTO | 76 | 22 | se/強調/ |
-| line_cta | FONT_MPLUS | 99 | 16 | se/強調/ |
-| subscribe_cta | FONT_MPLUS | 72 | 22 | se/強調/ |
-| theme | FONT_MPLUS | 108 | 14 | se/ポジティブ/ |
+| normal | FONT_MPLUS | 84 | 12 | null |
+| normal_emphasis | FONT_MPLUS | 84 | 12 | se/強調/ |
+| emphasis | FONT_SHIPPORI | 122 | 8 | se/ポジティブ/ |
+| emphasis2 | FONT_SHIPPORI | 122 | 8 | se/ポジティブ/ |
+| section | FONT_MPLUS | 122 | 8 | se/強調/ |
+| negative | FONT_SHIPPORI | 96 | 11 | se/ネガティブ/ |
+| negative2 | FONT_SHIPPORI | 122 | 8 | se/ネガティブ/ |
+| third_party | FONT_MPLUS | 84 | 12 | se/強調/ |
+| bullet_list | FONT_NOTO | 72 | 14 | se/強調/ |
+| line_cta | FONT_MPLUS | 66 | 16 | se/強調/ |
+| follow_cta | FONT_MPLUS | 72 | 14 | se/強調/ |
+| theme | FONT_NOTO | 108 | 9 | se/ポジティブ/ |
 
 ## 完了条件
 - `src/templateConfig.ts` が存在する

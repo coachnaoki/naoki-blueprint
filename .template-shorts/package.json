@@ -1,7 +1,7 @@
 {
-  "name": "naoki-video",
+  "name": "naoki-shorts-video",
   "version": "1.0.0",
-  "description": "Remotion動画制作テンプレート",
+  "description": "Remotion ショート動画制作テンプレート（1080×1920・縦動画）",
   "repository": {},
   "license": "UNLICENSED",
   "private": true,
