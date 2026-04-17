@@ -350,7 +350,7 @@ ffmpeg -ss 5 -i public/main/<動画名>_cut.mp4 -frames:v 1 -q:v 2 /tmp/speaker_
 python3.12 scripts/detect_face_center.py /tmp/speaker_check.jpg
 ```
 
-顔が2つ以上検出されること、`--side` で対象話者が正しく取れることを確認する。
+**必ず `count: 2` 以上であることを確認する。** 1人しか検出されない場合、`--side` 判定により全フレームでアイコンが表示されない。別の秒数でフレームを再取得するか、`--score 0.3` でしきい値を下げて再試行する。
 
 #### 2. スクリプト実行
 
@@ -369,12 +369,17 @@ python3.12 scripts/render_speaker_icon.py public/images/<アイコン>.png --sid
 | `--down-shift` | 0.125 | 下方向シフト(サイズ比) |
 | `--right-shift` | 0.125 | 右方向シフト(サイズ比) |
 | `--detect-every` | 3 | 何フレームごとに顔検出 |
+| `--video` | 自動検出 | 入力動画パス（省略時は `public/main/` 内の `_cut.mp4` を使用） |
 
 スクリプトは以下を自動で行う:
-1. 元動画を `*_backup.mp4` にバックアップ
+1. 元動画を `*_backup.mp4` にバックアップ（**初回のみ。2回目以降は元のバックアップを保持するため何度でもやり直し可能**）
 2. 全フレームを処理してアイコンを焼き込み
 3. 音声をバックアップから結合
 4. 元のファイル名で上書き
+
+**処理時間の目安:** 10分の動画で約5〜15分。全フレームを処理するため時間がかかる。
+
+**顔検出失敗時の挙動:** 顔が検出されないフレームではアイコンは前回の位置に留まる（消えない）。TypeScript変更なし、`npx tsc` チェック不要。
 
 #### 3. 確認
 
@@ -392,6 +397,7 @@ python3.12 scripts/render_speaker_icon.py public/images/<アイコン>.png --sid
 
 ## 完了後
 
+### A/B の場合
 ```
 ✅ Step 16 完了: イメージ画像を挿入しました。
 
@@ -405,5 +411,19 @@ python3.12 scripts/render_speaker_icon.py public/images/<アイコン>.png --sid
 
 確認してほしいポイントがあれば教えてね！
 → 調整したい: フレーム範囲やマッチング修正
+→ OK: 次のステップ → /step16-special-components（特殊コンポーネント）
+```
+
+### C（話者アイコン）の場合
+```
+✅ Step 16 完了: 話者アイコンを焼き込みました。
+
+【設定】
+- 対象話者: {left/right}
+- アイコン: {ファイル名}（{size}px）
+- バックアップ: public/main/<動画名>_cut_backup.mp4
+
+確認してほしいポイントがあれば教えてね！
+→ 位置がずれている: バックアップから復元して --down-shift / --right-shift を調整
 → OK: 次のステップ → /step16-special-components（特殊コンポーネント）
 ```
