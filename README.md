@@ -94,7 +94,16 @@ cd ..
 
 動画1本ごとに専用のプロジェクトフォルダを作ります。テンプレートをコピーするだけでOK。
 
+**作る動画の種類によってテンプレートが2つあります。**
+
+| 動画の種類 | テンプレート | 解像度 | ステップ数 |
+|---|---|---|---|
+| YouTube横動画（10〜20分） | `.template/` | 1920×1080 | 20ステップ |
+| ショート動画（30〜60秒） | `.template-shorts/` | 1080×1920 | 15ステップ |
+
 **プロジェクト名は自由に決めてください。** 動画の内容がわかる名前がおすすめです。
+
+### YouTube横動画を作る場合
 
 ```bash
 mkdir -p projects
@@ -103,11 +112,19 @@ cd projects/あなたのプロジェクト名
 npm install
 ```
 
+### ショート動画を作る場合
+
+```bash
+mkdir -p projects
+cp -r .template-shorts projects/あなたのプロジェクト名
+cd projects/あなたのプロジェクト名
+npm install
+```
+
 例：
 ```bash
-cp -r .template projects/tennis-serve-tips
-cp -r .template projects/cooking-pasta
-cp -r .template projects/ai-seminar-recap
+cp -r .template projects/tennis-serve-tips           # 横動画
+cp -r .template-shorts projects/tennis-shorts-day1   # ショート動画
 ```
 
 > **なぜ `projects/` に作るの？**

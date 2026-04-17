@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>テロップテンプレート一覧</title>
+<link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@900&family=Shippori+Mincho:wght@800&family=Noto+Sans+JP:wght@900&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #1a1a1a; color: #fff; font-family: sans-serif; padding: 40px 20px; }
+  h1 { text-align: center; font-size: 28px; margin-bottom: 8px; }
+  .subtitle { text-align: center; font-size: 14px; color: #888; margin-bottom: 40px; }
+  .grid { display: flex; flex-direction: column; gap: 24px; max-width: 1000px; margin: 0 auto; }
+  .card {
+    background: #2a2a2a; border-radius: 12px; overflow: hidden;
+    display: flex; align-items: stretch;
+  }
+  .card-label {
+    width: 200px; min-width: 200px; padding: 20px;
+    display: flex; flex-direction: column; justify-content: center;
+    background: #222; border-right: 3px solid #444;
+  }
+  .card-label .name { font-size: 16px; font-weight: bold; color: #CCFF00; margin-bottom: 4px; }
+  .card-label .meta { font-size: 11px; color: #888; line-height: 1.5; }
+  .card-preview {
+    flex: 1; min-height: 120px; display: flex; align-items: center; justify-content: center;
+    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"><rect width="20" height="20" fill="%23333"/><rect width="10" height="10" fill="%23383838"/><rect x="10" y="10" width="10" height="10" fill="%23383838"/></svg>');
+    background-size: 20px 20px;
+    padding: 20px;
+    position: relative;
+  }
+  .section-title { font-size: 20px; color: #CCFF00; margin: 32px auto 16px; max-width: 1000px; padding-left: 8px; border-left: 4px solid #CCFF00; }
+
+  /* テロップスタイル再現 */
+  .t-normal { font-family: 'M PLUS Rounded 1c', sans-serif; font-size: 42px; font-weight: 900; color: #10458B; -webkit-text-stroke: 8px #fff; paint-order: stroke fill; filter: drop-shadow(0px 4px 3px rgba(0,0,0,0.2)); }
+  .t-normal-emphasis { font-family: 'M PLUS Rounded 1c', sans-serif; font-size: 42px; font-weight: 900; color: #10458B; -webkit-text-stroke: 5px #fff; paint-order: stroke fill; }
+  .t-normal-emphasis .em { color: #CC3300; }
+  /* emphasis: 2層構造（金縁 + 赤グラデ文字） */
+  .t-emphasis-wrap { position: relative; display: inline-block; filter: drop-shadow(0 0 1px rgba(255,215,0,0.8)) drop-shadow(0 0 2px rgba(255,215,0,0.6)) drop-shadow(0 0 3px rgba(255,215,0,0.4)) drop-shadow(0 0 4px rgba(255,215,0,0.3)); }
+  .t-emphasis-bg {
+    position: absolute; top: 0; left: 0;
+    padding: 0 20px;
+    font-family: 'Shippori Mincho', serif; font-size: 60px; font-weight: 800; font-style: italic;
+    background: linear-gradient(to bottom, #FFFFCC, #FFD700);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    -webkit-text-stroke: 4px transparent; paint-order: stroke fill;
+    filter: drop-shadow(0 0 8px rgba(255,255,255,0.7)) drop-shadow(0 0 20px rgba(0,0,0,0.2));
+  }
+  .t-emphasis-fg {
+    position: relative;
+    padding: 0 20px;
+    font-family: 'Shippori Mincho', serif; font-size: 60px; font-weight: 800; font-style: italic;
+    background: linear-gradient(to bottom, #990000 10%, #FF2222 90%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 -1px 1px rgba(255,255,255,0.5)) drop-shadow(1px 1px 2px rgba(0,0,0,0.3));
+  }
+  /* emphasis2: SVG3層構造（黒ドロップシャドウ + ダークゴールド縁 + 金白金グラデ + 白グロー） */
+  .t-emphasis2-wrap {
+    display: inline-block;
+    filter: drop-shadow(0 0 10px white) drop-shadow(0 0 20px white) drop-shadow(0 0 35px white) drop-shadow(0 0 50px rgba(255,255,255,0.8));
+  }
+  .t-section { font-family: 'M PLUS Rounded 1c', sans-serif; font-size: 68px; font-weight: 900; color: #CC3300; -webkit-text-stroke: 5px #fff; paint-order: stroke fill; }
+  .t-negative { font-family: 'Shippori Mincho', serif; font-size: 48px; font-weight: 800; font-style: italic; color: #fff; text-shadow: 0 0 15px rgba(0,0,0,0.8), 0 0 30px rgba(0,0,0,0.6); }
+  /* negative2: SVG3層構造（黒縁 → 白縁 → 黒文字 + grayscale） */
+  .t-negative2-wrap {
+    display: inline-block;
+    filter: grayscale(100%) drop-shadow(0px 4px 4px rgba(0,0,0,0.3));
+  }
+  .t-third-party { font-family: 'M PLUS Rounded 1c', sans-serif; font-size: 42px; font-weight: 900; color: #fff; -webkit-text-stroke: 6px #333; paint-order: stroke fill; }
+  /* theme: Today's theme バー */
+  .t-theme-wrap {
+    width: 100%; background: #f4f4f4; box-shadow: 0 -4px 15px rgba(0,0,0,0.1);
+    padding: 8px 0 18px; position: relative;
+  }
+  .t-theme-line {
+    display: flex; align-items: center; position: relative; z-index: 2;
+  }
+  .t-theme-line::before, .t-theme-line::after {
+    content: ''; flex: 1; height: 4px; background: #5B6BBF;
+  }
+  .t-theme-label {
+    margin: 0 15px; color: #5B6BBF; font-family: Georgia, serif;
+    font-style: italic; font-weight: bold; font-size: 27px;
+    -webkit-text-stroke: 2px white; paint-order: stroke fill; letter-spacing: 1px;
+  }
+  .t-theme-text {
+    text-align: center; position: relative; z-index: 2; padding: 8px 0 0; margin: 0;
+    color: #5B6BBF; font-size: 54px; font-weight: 900; font-style: italic;
+    font-family: 'Noto Sans JP', sans-serif; letter-spacing: 3px;
+    -webkit-text-stroke: 10px white; paint-order: stroke fill;
+    filter: drop-shadow(0px 3px 2px rgba(0,0,0,0.15));
+  }
+
+  /* 見出しバナー */
+  .t-heading-banner {
+    font-family: 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif;
+    font-weight: 900; font-size: 32px; color: #4B6AC6;
+    background: #F7F4F4; padding: 10px 20px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    letter-spacing: 0.05em;
+  }
+
+  /* bullet_list: 箇条書き */
+  .t-bullet-wrap {
+    background: #F7F4F4; padding: 16px 24px; display: flex; flex-direction: column; gap: 8px;
+    font-family: 'Noto Sans JP', sans-serif; font-size: 30px; font-weight: 900; color: #4B6AC6;
+  }
+  .t-bullet-item::before { content: '● '; }
+  .t-bullet-item.numbered::before { content: none; }
+  .t-bullet-item.active { color: #CC3300; }
+
+  /* CTA系 */
+  .t-subscribe { background: #EF4444; color: #fff; font-family: 'M PLUS Rounded 1c', sans-serif; font-size: 28px; font-weight: 900; padding: 12px 24px; display: inline-flex; align-items: center; gap: 8px; }
+  .t-line { background: #06C755; color: #fff; font-family: 'M PLUS Rounded 1c', sans-serif; font-size: 38px; font-weight: 900; padding: 12px 24px; }
+
+  /* アニメーション */
+  @keyframes slideUpFade {
+    0% { transform: translateY(60px); opacity: 0; }
+    15% { transform: translateY(0); opacity: 1; }
+    85% { transform: translateY(0); opacity: 1; }
+    100% { transform: translateY(60px); opacity: 0; }
+  }
+  @keyframes slideLeftFade {
+    0% { transform: translateX(-60px); opacity: 0; }
+    15% { transform: translateX(0); opacity: 1; }
+    85% { transform: translateX(0); opacity: 1; }
+    100% { transform: translateX(-60px); opacity: 0; }
+  }
+  @keyframes slideUpFadeSkew {
+    0% { transform: translateY(60px) skewX(-10deg); opacity: 0; }
+    15% { transform: translateY(0) skewX(-10deg); opacity: 1; }
+    85% { transform: translateY(0) skewX(-10deg); opacity: 1; }
+    100% { transform: translateY(60px) skewX(-10deg); opacity: 0; }
+  }
+  .anim-slide-up { animation: slideUpFade 3s ease-in-out infinite; }
+  .anim-slide-left { animation: slideLeftFade 3s ease-in-out infinite; }
+  .anim-slide-up-skew { animation: slideUpFadeSkew 3s ease-in-out infinite; }
+
+  .note { font-size: 12px; color: #666; text-align: center; margin-top: 40px; }
+</style>
+</head>
+<body>
+
+<h1>テロップテンプレート一覧</h1>
+<p class="subtitle">Naoki式 動画編集テンプレート — スタイル変更希望があればお伝えください</p>
+
+<div class="grid">
+
+  <div class="section-title">基本テロップ</div>
+
+  <div class="card">
+    <div class="card-label">
+      <div class="name">normal</div>
+      <div class="meta">通常テロップ<br>84px / M PLUS<br>SE: なし</div>
+    </div>
+    <div class="card-preview">
+      <span class="t-normal">これが通常テロップです</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-label">
+      <div class="name">normal_emphasis</div>
+      <div class="meta">通常+強調<br>84px / M PLUS<br>SE: 強調</div>
+    </div>
+    <div class="card-preview">
+      <span class="t-normal-emphasis">ここが<span class="em">重要</span>なポイント</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-label">
+      <div class="name">third_party</div>
+      <div class="meta">第三者発言<br>84px / M PLUS<br>SE: 強調<br>左からスライド</div>
+    </div>
+    <div class="card-preview">
+      <span class="t-third-party anim-slide-left">「それって本当ですか？」</span>
+    </div>
+  </div>
+
+  <div class="section-title">強調テロップ</div>
+
+  <div class="card">
+    <div class="card-label">
+      <div class="name">emphasis</div>
+      <div class="meta">強調グラデーション<br>135px / 明朝<br>SE: ポジティブ<br>下からスライド</div>
+    </div>
+    <div class="card-preview">
+      <div class="t-emphasis-wrap anim-slide-up"><span class="t-emphasis-bg">人生が変わります</span><span class="t-emphasis-fg">人生が変わります</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-label">
+      <div class="name">emphasis2</div>
+      <div class="meta">強調グラデーション2<br>135px / 明朝<br>SE: ポジティブ<br>下からスライド</div>
+    </div>
+    <div class="card-preview">
+      <div class="t-emphasis2-wrap anim-slide-up-skew">
+          <svg width="440" height="96" viewBox="0 0 440 96">
+            <defs><linearGradient id="goldGrad2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#FFF438"/><stop offset="45%" stop-color="#FFFFFF"/><stop offset="100%" stop-color="#E99B00"/></linearGradient></defs>
+            <text x="220" y="67" text-anchor="middle" font-family="'Shippori Mincho', serif" font-size="60" font-weight="900" font-style="italic" stroke="#624936" stroke-width="6" stroke-linejoin="round" fill="none">最強ツール</text>
+            <text x="220" y="67" text-anchor="middle" font-family="'Shippori Mincho', serif" font-size="60" font-weight="900" font-style="italic" fill="url(#goldGrad2)" stroke="#624936" stroke-width="1">最強ツール</text>
+          </svg>
+        </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-label">
+      <div class="name">section</div>
+      <div class="meta">セクション見出し<br>150px / M PLUS<br>SE: 強調<br>下からスライド</div>
+    </div>
+    <div class="card-preview">
+      <span class="t-section anim-slide-up">1つ目 ラケット面</span>
+    </div>
+  </div>
+
+  <div class="section-title">ネガティブテロップ</div>
+
+  <div class="card">
+    <div class="card-label">
+      <div class="name">negative</div>
+      <div class="meta">ネガティブ1<br>96px / 明朝<br>SE: ネガティブ<br>左からスライド</div>
+    </div>
+    <div class="card-preview">
+      <span class="t-negative anim-slide-left">絶対やめてください</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-label">
+      <div class="name">negative2</div>
+      <div class="meta">ネガティブ2<br>120px / 明朝<br>SE: ネガティブ<br>左からスライド</div>
+    </div>
+    <div class="card-preview">
+      <div class="t-negative2-wrap anim-slide-left">
+        <svg width="520" height="80" viewBox="0 0 520 80">
+          <text x="260" y="58" text-anchor="middle" font-family="'Shippori Mincho', serif" font-size="48" font-weight="900" font-style="italic" stroke="#000" stroke-width="23" stroke-linejoin="round" fill="none">もったいない</text>
+          <text x="260" y="58" text-anchor="middle" font-family="'Shippori Mincho', serif" font-size="48" font-weight="900" font-style="italic" stroke="#fff" stroke-width="10" stroke-linejoin="round" fill="#fff">もったいない</text>
+          <text x="260" y="58" text-anchor="middle" font-family="'Shippori Mincho', serif" font-size="48" font-weight="900" font-style="italic" fill="#000">もったいない</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title">リスト</div>
+
+  <div class="card">
+    <div class="card-label">
+      <div class="name">bullet_list</div>
+      <div class="meta">箇条書き<br>72px / Noto Sans JP<br>SE: 強調<br>画像エリア中心に表示<br>中央線より右にはみ出る場合は画面中央<br>読み上げ中の項目は赤に変化<br>連番時は●なし</div>
+    </div>
+    <div class="card-preview">
+      <div class="t-bullet-wrap">
+        <div class="t-bullet-item numbered">① ポイント1</div>
+        <div class="t-bullet-item numbered active">② ポイント2</div>
+        <div class="t-bullet-item numbered">③ ポイント3</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title">章タイトル・見出し</div>
+
+  <div class="card">
+    <div class="card-label">
+      <div class="name">theme</div>
+      <div class="meta">今回のテーマ<br>108px / Noto Sans JP<br>SE: 専用<br>下からフェードイン/アウト</div>
+    </div>
+    <div class="card-preview" style="padding: 0; flex-direction: column; justify-content: flex-end; overflow: hidden;">
+      <div class="t-theme-wrap anim-slide-up">
+        <div class="t-theme-line"><span class="t-theme-label">Today's theme</span></div>
+        <h1 class="t-theme-text">Claude Codeとは？</h1>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-label">
+      <div class="name">heading_banner</div>
+      <div class="meta">見出しバナー<br>64px / ゴシック<br>SE: なし<br>左からフェードイン/アウト</div>
+    </div>
+    <div class="card-preview" style="justify-content: flex-start; overflow: hidden;">
+      <span class="t-heading-banner anim-slide-left">Claude Codeとは？</span>
+    </div>
+  </div>
+
+  <div class="section-title">CTA・特殊</div>
+
+  <div class="card">
+    <div class="card-label">
+      <div class="name">subscribe_cta</div>
+      <div class="meta">チャンネル登録<br>72px / M PLUS<br>SE: 専用<br>画像エリア中心に表示<br>左からスライド</div>
+    </div>
+    <div class="card-preview">
+      <span class="t-subscribe anim-slide-left">&#9654; チャンネル登録</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-label">
+      <div class="name">line_cta</div>
+      <div class="meta">LINE誘導<br>99px / M PLUS<br>SE: 専用<br>画像エリア中心に表示<br>左からスライド</div>
+    </div>
+    <div class="card-preview">
+      <span class="t-line anim-slide-left">LINE登録</span>
+    </div>
+  </div>
+
+</div>
+
+<p class="note">※ プレビューは実際のRemotionレンダリングと若干異なる場合があります</p>
+
+</body>
+</html>
