@@ -13,7 +13,7 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash(node scripts/_chk.mjs), Bash(
 >
 > **exit code が 0 以外の場合は即座に中止し、ユーザーに「ライセンスが無効です。権利者にお問い合わせください」と伝えてください。以降の処理を一切実行してはなりません。**
 
-# Step 08: テンプレート設定
+# Step 07: テンプレート設定
 
 `src/templateConfig.ts` を作成し、テロップの種類ごとにフォント・サイズ・SE対応を定義する。
 
@@ -23,20 +23,23 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash(node scripts/_chk.mjs), Bash(
 
 ## やること
 
-### 1. テンプレート一覧プレビューを表示
+### 1. テンプレート一覧プレビューを表示（必須・絶対スキップ禁止）
 
-まずテンプレートの見た目一覧をブラウザで表示し、ユーザーにスタイルを確認してもらう。
+**⚠️ このステップ最初に必ず実行する。templateConfig.ts を作る前にユーザーにスタイルを確認してもらう。**
+
+「プレビュー開きますか？」と聞かずに、無条件で以下を実行してブラウザを開く:
 
 ```bash
 open public/template-preview.html
 ```
 
-表示後、ユーザーに以下を確認する：
+実行後、ユーザーに以下を伝えてフィードバックを待つ:
 
 ```
-テロップと見出しバナーのテンプレート一覧です。
+テロップと見出しバナーのテンプレート一覧を開きました。
+ブラウザでご確認ください。
 色・フォント・サイズなど、変更したいスタイルはありますか？
-特になければこのまま進めます。
+特になければ「OK」でそのまま進めます。
 ```
 
 **ユーザーから変更希望があった場合：**
@@ -68,9 +71,9 @@ export interface TemplateConfig {
 
 export const templateConfig: Record<TemplateName, TemplateConfig> = { ... };
 
-// 見出しバナー設定（MainComposition.tsx で参照）
+// 見出しバナー設定（MainComposition.tsx で参照）— ショート動画は54pxで縦動画幅に収める
 export const headingBannerConfig = {
-  fontSize: 64,
+  fontSize: 54,
   backgroundColor: "#F7F4F4",
   color: "#4B6AC6",
   fontFamily: '"Hiragino Kaku Gothic ProN", "Meiryo", sans-serif',
@@ -101,22 +104,24 @@ npx tsc --noEmit
 | FONT_SHIPPORI | `'Shippori Mincho', serif` | 強調系・ネガティブ系（感情・インパクト重視） |
 | FONT_NOTO | `'Noto Sans JP', sans-serif` | 箇条書き・テーマ系（テーマカラー統一） |
 
-## テンプレート一覧（実装ベース）
+## テンプレート一覧（実装ベース・ショート動画用）
+
+縦動画は横幅1080pxのため、横動画版より文字数制限を厳しくする。
 
 | テンプレート名 | fontFamily | fontSize | maxChars | SEフォルダ |
 |---------------|-----------|----------|----------|-----------|
-| normal | FONT_MPLUS | 84 | 20 | null |
-| normal_emphasis | FONT_MPLUS | 84 | 20 | se/強調/ |
-| emphasis | FONT_SHIPPORI | 122 | 14 | se/ポジティブ/ |
-| emphasis2 | FONT_SHIPPORI | 122 | 14 | se/ポジティブ/ |
-| section | FONT_MPLUS | 122 | 14 | se/強調/ |
-| negative | FONT_SHIPPORI | 96 | 16 | se/ネガティブ/ |
-| negative2 | FONT_SHIPPORI | 122 | 14 | se/ネガティブ/ |
-| third_party | FONT_MPLUS | 84 | 20 | se/強調/ |
-| bullet_list | FONT_NOTO | 76 | 22 | se/強調/ |
-| line_cta | FONT_MPLUS | 99 | 16 | se/強調/ |
-| subscribe_cta | FONT_MPLUS | 72 | 22 | se/強調/ |
-| theme | FONT_MPLUS | 108 | 14 | se/ポジティブ/ |
+| normal | FONT_MPLUS | 84 | 12 | null |
+| normal_emphasis | FONT_MPLUS | 84 | 12 | se/強調/ |
+| emphasis | FONT_SHIPPORI | 122 | 8 | se/ポジティブ/ |
+| emphasis2 | FONT_SHIPPORI | 122 | 8 | se/ポジティブ/ |
+| section | FONT_MPLUS | 122 | 8 | se/強調/ |
+| negative | FONT_SHIPPORI | 96 | 11 | se/ネガティブ/ |
+| negative2 | FONT_SHIPPORI | 122 | 8 | se/ネガティブ/ |
+| third_party | FONT_MPLUS | 84 | 12 | se/強調/ |
+| bullet_list | FONT_NOTO | 72 | 14 | se/強調/ |
+| line_cta | FONT_MPLUS | 66 | 16 | se/強調/ |
+| follow_cta | FONT_MPLUS | 72 | 14 | se/強調/ |
+| theme | FONT_NOTO | 108 | 9 | se/ポジティブ/ |
 
 ## 完了条件
 - `src/templateConfig.ts` が存在する
@@ -128,7 +133,7 @@ npx tsc --noEmit
 ## 完了後
 
 ```
-✅ Step 08 完了: テンプレート設定を作成しました。
+✅ Step 07 完了: テンプレート設定を作成しました。
 
 【定義テンプレート数】○○種類（+ 見出しバナー）
 【SE対応】○○個のSEファイルを紐付け
