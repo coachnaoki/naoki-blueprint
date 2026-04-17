@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Naoki式 AI動画編集 作業会スライド</title>
+<link rel="stylesheet" href="css/style.css" />
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+</head>
+<body>
+
+<div class="sidebar-hover-zone" id="sidebarHoverZone"></div>
+<nav class="sidebar" id="sidebar">
+  <h3>Agenda</h3>
+  <ul id="sidebarList"></ul>
+</nav>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<div class="top-right-ui">
+  <span class="page-counter" id="pageCounter">01 / 26</span>
+  <button class="presenter-btn" id="presenterBtn"
+          title="発表者ビュー (P)" aria-label="発表者ビュー">▶</button>
+</div>
+
+<div id="stage">
+  <div class="canvas" id="canvas"></div>
+</div>
+
+<script src="js/slides.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
