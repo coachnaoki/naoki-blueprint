@@ -1,6 +1,6 @@
 ---
 name: step12-images
-description: イメージ画像を感情ベースで動画に挿入する。画像生成（Gemini API）にも対応。感情が動く瞬間に配置。全画面表示・左側挿入・話者アイコン（対談動画用）に対応。
+description: イメージ画像をショート動画に挿入する。画像生成（Gemini API）にも対応。全画面表示と話者アイコン（対談動画用）に対応。
 argument-hint: [挿入位置の秒数やキーワード（省略時はtranscriptから判断）]
 allowed-tools: Read, Write, Edit, Glob, Grep, WebSearch, WebFetch, Bash(npx tsc *), Bash(npx remotion still *), Bash(rm *), Bash(ls *), Bash(python3 *), Bash(python3.12 *), Bash(ffmpeg *), Bash(cp *), Bash(node scripts/_chk.mjs)
 ---

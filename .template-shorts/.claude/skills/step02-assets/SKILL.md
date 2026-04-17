@@ -25,11 +25,9 @@ allowed-tools: Read, Glob, Grep, Bash(ls *), Bash(ffprobe *), Bash(mkdir *), Bas
 
 | フォルダ | 用途 | 必須 |
 |------|------|------|
-| `public/main/` | **本編動画**（ナレーション付き。文字起こし対象） | ✅ |
+| `public/main/` | **本編動画**（ナレーション付き・**縦動画必須 1080×1920**） | ✅ |
 | `public/inserts/` | **物理挿入動画**（本編の間に挟み込む。Series分割でタイムスタンプ影響なし） | 任意 |
 | `public/overlays/` | **オーバーレイ動画**（本編の上に時間幅で被せる補足映像） | 任意 |
-| `public/opening/` | **OP動画**（冒頭に連結） | 任意 |
-| `public/highlight/` | **ハイライト動画**（本編の切り抜き。冒頭に連結） | 任意 |
 | `public/bgm/` | BGM（`bgm.mp3`） | ✅ |
 | `public/se/` | 効果音（`強調/` `ポジティブ/` `ネガティブ/` 内に `.mp3`） | ✅ |
 | `public/images/` | 挿入画像 | 任意 |
@@ -50,41 +48,33 @@ SEはフォルダ単位で管理し、再生時にフォルダ内からランダ
 各フォルダ内の `.mp4` を一覧表示し、`ffprobe` で解像度・FPS・長さを取得する。
 
 ```bash
-for dir in main inserts overlays opening highlight; do
+for dir in main inserts overlays; do
   [ -d "public/$dir" ] && ls public/$dir/*.mp4 2>/dev/null
 done
 # 各ファイルに対して
 ffprobe -v quiet -show_entries format=duration:stream=width,height,r_frame_rate -of default=noprint_wrappers=1 <file>
 ```
 
+**重要:** すべての動画は **縦動画（1080×1920）** であることを確認する。横動画が混じっていたら警告する。
+
 ### 4. 複数動画の役割確認（必須）
 
-`public/main/` に複数の動画がある、または `inserts/` `overlays/` `opening/` `highlight/` のどれかに動画がある場合、**必ず**ユーザーに役割を確認する。
+`public/main/` に複数の動画がある、または `inserts/` `overlays/` のどれかに動画がある場合、**必ず**ユーザーに役割を確認する。
 
 #### 確認項目
 
 **本編が複数ある場合（main/ に複数ファイル）**
 - 文字起こしの**順序**を指定してもらう（ナレーションを連続した時系列として扱うため）
-- 例: `main/part1.mp4` → `main/part2.mp4` → `main/part3.mp4`
+- 例: `main/part1.mp4` → `main/part2.mp4`
 
 **物理挿入動画がある場合（inserts/）**
 - どのクリップを、本編のどのあたり（秒数 or 話題）に挟むか
 - 挿入位置の確定は Step11-videos（Series分割）で行う — このステップでは**役割だけ確認**
-- ⚠️ Step11で `<Series>` 分割方式で挿入するため、**本編のワードタイムスタンプには影響しない**
 
 **オーバーレイ動画がある場合（overlays/）**
 - どのクリップを、どの時間幅で、本編の上に被せるか
 - ナレーションは裏で継続する想定
 - 詳細設定は Step11-videos で行う
-
-**OP動画がある場合（opening/）**
-- 冒頭に連結する映像（タイトルロゴ・プロダクト紹介など）
-- Step19-opening で `<Series>` で冒頭に連結
-
-**ハイライト動画がある場合（highlight/）**
-- 完全に編集済みの切り抜き映像（数秒〜十数秒）
-- 冒頭に Opening の**前**に連結（ハイライト → OP → 本編 の順）
-- Step19-opening で処理
 
 ### 5. video-context.md への記録
 
@@ -95,8 +85,6 @@ ffprobe -v quiet -show_entries format=duration:stream=width,height,r_frame_rate 
 - 本編: main/part1.mp4, main/part2.mp4（文字起こし順: part1 → part2）
 - 物理挿入: inserts/demo.mp4（〜30秒あたりに挟む予定）
 - オーバーレイ: overlays/clip1.mp4（1分30秒〜1分45秒に被せる予定）
-- OP: opening/op.mp4（冒頭連結）
-- ハイライト: highlight/best.mp4（冒頭連結・OPの前）
 ```
 
 ### 6. 不足素材の報告
@@ -115,7 +103,7 @@ ffprobe -v quiet -show_entries format=duration:stream=width,height,r_frame_rate 
 ✅ Step 02 完了: 素材チェック & 役割確定が完了しました。
 
 【素材】
-- 本編: main/xxx.mp4（1920x1080, 30fps, ○○秒）
+- 本編: main/xxx.mp4（1080x1920, 30fps, ○○秒）
 - 物理挿入: inserts/xxx.mp4（あれば）
 - オーバーレイ: overlays/xxx.mp4（あれば）
 - OP: opening/xxx.mp4（あれば）
