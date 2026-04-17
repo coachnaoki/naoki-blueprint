@@ -33,7 +33,7 @@ Step 06でカット済みの動画に対してWhisperで再文字起こしを実
 ```bash
 /opt/homebrew/bin/python3.12 -c "
 import json, mlx_whisper
-result = mlx_whisper.transcribe('public/main/<メイン動画>_cut.mp4', word_timestamps=True, path_or_hf_repo='mlx-community/whisper-small-mlx')
+result = mlx_whisper.transcribe('public/main/<メイン動画>_cut.mp4', word_timestamps=True, path_or_hf_repo='mlx-community/whisper-large-v3-mlx')
 # ※ メイン動画のファイル名は video-context.md の「動画ファイル」セクションを参照
 words = [{'word': w['word'].strip(), 'start': round(w['start'],3), 'end': round(w['end'],3)} for seg in result['segments'] for w in seg.get('words',[])]
 with open('public/transcript_words.json','w',encoding='utf-8') as f:

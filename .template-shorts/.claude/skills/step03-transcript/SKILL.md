@@ -40,7 +40,7 @@ allowed-tools: Read, Write, Glob, Grep, Bash(ls *), Bash(wc *), Bash(node *), Ba
 ```bash
 /opt/homebrew/bin/python3.12 -c "
 import json, mlx_whisper
-result = mlx_whisper.transcribe('public/main/対象動画.mp4', word_timestamps=True, path_or_hf_repo='mlx-community/whisper-small-mlx')
+result = mlx_whisper.transcribe('public/main/対象動画.mp4', word_timestamps=True, path_or_hf_repo='mlx-community/whisper-large-v3-mlx')
 words = [{'word': w['word'].strip(), 'start': round(w['start'],3), 'end': round(w['end'],3)} for seg in result['segments'] for w in seg.get('words',[])]
 data = {'language': result.get('language','ja'), 'words': words}
 # 作業用（step04で修正される）
