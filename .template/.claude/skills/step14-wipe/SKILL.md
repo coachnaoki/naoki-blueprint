@@ -117,8 +117,8 @@ await browser.close();
 ユーザーが指定した座標（faceX, faceY）から、objectPositionとtransformの初期値を計算する。
 
 ```javascript
-// scale = 3.0（デフォルト・顔をしっかり大きく見せる）
-const scale = 3.0;
+// scale = 1.5（デフォルト）
+const scale = 1.5;
 
 // objectPosition X の計算
 const coverScale = 325 / 1080;                    // = 0.3009
