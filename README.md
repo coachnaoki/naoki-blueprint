@@ -33,6 +33,9 @@ brew install python@3.12
 
 # Whisper（Apple Silicon 向けの高速な文字起こしAI）
 /opt/homebrew/bin/python3.12 -m pip install mlx-whisper
+
+# OpenCV（ワイプの顔位置自動検出に使う）
+/opt/homebrew/bin/python3.12 -m pip install opencv-python
 ```
 
 > **注意**: mlx-whisper は Python 3.12 でのみ動作します（3.13以降では動きません）。
@@ -48,6 +51,9 @@ brew install python@3.12
 
 # Whisper（Windows版の文字起こしAI）
 pip install openai-whisper
+
+# OpenCV（ワイプの顔位置自動検出に使う）
+pip install opencv-python
 ```
 
 > GPU(CUDA)対応PCをお持ちの方は、以下も追加でインストールすると文字起こしが高速になります：

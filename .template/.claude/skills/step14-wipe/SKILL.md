@@ -1,7 +1,7 @@
 ---
 name: step14-wipe
 description: スライド表示中のワイプ（丸い小窓）の位置を調整する。話者の顔が円の中心に来るようobjectPositionとtransformを計算・微調整する。
-allowed-tools: Read, Write, Edit, Glob, Grep, Bash(ffmpeg *), Bash(npx remotion still *), Bash(node *), Bash(rm *), Bash(ls *), Bash(node scripts/_chk.mjs)
+allowed-tools: Read, Write, Edit, Glob, Grep, Bash(ffmpeg *), Bash(npx remotion still *), Bash(node *), Bash(python3.12 *), Bash(rm *), Bash(ls *), Bash(node scripts/_chk.mjs)
 ---
 
 <!-- LICENSE_GUARD: DO NOT REMOVE -->
@@ -59,19 +59,37 @@ npx remotion still MainVideo --frame=<スライド表示中のフレーム> --ou
 
 ### 1. 動画フレームの取得
 
-カット済み動画から1フレームを画像として抽出する。
+カット済み動画から1フレームを画像として抽出する。話者の顔がはっきり映っている秒数を選ぶ（デフォルトは5秒）。
 
 ```bash
 ffmpeg -ss 5 -i public/main/<メイン動画>_cut.mp4 -frames:v 1 -q:v 2 /tmp/wipe_frame.jpg
 # ※ メイン動画のファイル名は video-context.md の「動画ファイル」セクションを参照
 ```
 
-### 2. ピクセルグリッド画像の生成
+### 2. YuNet で顔中心を自動検出
 
-Puppeteerで50px刻みのグリッドを重ねた画像を生成し、ユーザーに座標を読み取ってもらう。
+`scripts/detect_face_center.py` を実行して話者の顔の中心座標を取得する。
+
+```bash
+python3.12 scripts/detect_face_center.py /tmp/wipe_frame.jpg
+# 複数人映っている場合（対談動画等）は --side で指定
+# python3.12 scripts/detect_face_center.py /tmp/wipe_frame.jpg --side left
+# python3.12 scripts/detect_face_center.py /tmp/wipe_frame.jpg --side right
+```
+
+出力例:
+```json
+{"x": 1378, "y": 445, "w": 165, "h": 198, "score": 0.91, "count": 2, "frame_size": [1920, 1080]}
+```
+
+`x` と `y` が顔の中心座標（faceX, faceY として使用）。
+
+#### 検出失敗時のフォールバック
+- `"error": "no face detected"` が返ったら別の秒数のフレームで再試行
+- それでも失敗する場合のみ、旧手法（グリッド目視）にフォールバック:
 
 ```javascript
-// grid-overlay.mjs
+// grid-overlay.mjs（フォールバック用）
 import puppeteer from "puppeteer";
 const browser = await puppeteer.launch();
 const page = await browser.newPage();
@@ -92,17 +110,9 @@ await page.setContent(`
 await page.screenshot({ path: "/tmp/wipe_grid.png" });
 await browser.close();
 ```
+グリッド画像を見せて「顔の中心はどこ？」と聞く（例: X:1300, Y:450）。
 
-### 3. ユーザーに顔の中心座標を聞く
-
-グリッド画像を見せて、話者の**顔の中心**のおおよそのピクセル座標を聞く。
-
-```
-この画像で、話者の顔の中心はどのあたりですか？
-例: X:1300, Y:450
-```
-
-### 4. 初期値の計算
+### 3. 初期値の計算
 
 ユーザーが指定した座標（faceX, faceY）から、objectPositionとtransformの初期値を計算する。
 
@@ -127,7 +137,7 @@ const translateY = Math.round(162.5 - faceY * coverScale);
 - `objectPosition: "{objX}% 0%"`
 - `transform: "scale({scale}) translateY({translateY}px)"`
 
-### 5. MainComposition.tsx に反映
+### 4. MainComposition.tsx に反映
 
 ワイプ内の `<OffthreadVideo>` のスタイルを更新する。
 
@@ -145,7 +155,7 @@ const translateY = Math.round(162.5 - faceY * coverScale);
 />
 ```
 
-### 6. スクリーンショットで確認
+### 5. スクリーンショットで確認
 
 スライドが表示されているフレームでスクリーンショットを撮り、ワイプの位置を確認する。
 
@@ -153,9 +163,9 @@ const translateY = Math.round(162.5 - faceY * coverScale);
 npx remotion still MainComposition --frame=<スライド表示中のフレーム> --output=/tmp/wipe_check.png
 ```
 
-### 7. 方向ループ（最大2-3回）
+### 6. 方向ループ（必要時のみ）
 
-ユーザーにワイプ内の顔の位置を確認してもらい、微調整する。
+YuNet自動検出を使った場合は1発で合うことが多い。微調整が必要な時だけユーザーに確認。
 
 ```
 ワイプの位置を確認してください。
