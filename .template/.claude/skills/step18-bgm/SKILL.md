@@ -44,7 +44,7 @@ ffprobe -v quiet -show_entries format=duration -of default=noprint_wrappers=1 pu
 以下をユーザーに質問する（デフォルト値で問題なければ「ok」でスキップ可）：
 
 1. **区間**: 動画全体（デフォルト: startFrame=0, endFrame=durationInFrames）or 指定区間
-2. **音量**: デフォルト 0.12
+2. **音量**: デフォルト 0.03（声・SE を邪魔しないよう控えめ）
 3. **フェードイン・フェードアウト**: デフォルト 各2秒（50フレーム @25fps）
 4. **エンドスクリーン用に別のBGMを入れるか？**（step18でエンドスクリーンを追加した場合）
 
@@ -120,7 +120,7 @@ npx tsc --noEmit
 【設定】
 - ファイル: public/bgm/bgm.mp3
 - 区間: f{N}〜f{N}（○○秒〜○○秒）
-- 音量: 0.12
+- 音量: 0.03
 - フェードイン: 2秒 / フェードアウト: 2秒
 
 他にもBGMを挿入しますか？（別の区間に別のBGMなど）
