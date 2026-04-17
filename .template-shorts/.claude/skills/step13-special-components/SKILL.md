@@ -49,7 +49,7 @@ BulletList・CTA（LINE誘導/フォロー誘導）・HeadingBanner・ThemeTelop
 | fontWeight | 900 |
 | 現在の項目の色 | 赤 `#CC3300` |
 | その他の項目の色 | 青 `#4B6AC6` |
-| 位置 | 画面中央（left: 540, top: 960, transform: translate(-50%, -50%)） |
+| 位置 | 下から1/4（left: 540, top: 1440, transform: translate(-50%, -50%)） |
 | zIndex | 10 |
 
 ### 表示ルール
@@ -91,7 +91,7 @@ if (bulletListVisible &&
 
 | プロパティ | 値 |
 |-----------|-----|
-| 位置 | 画面中央（left: 540, top: 960, transform: translate(-50%, -50%)） |
+| 位置 | 下から1/4（left: 540, top: 1440, transform: translate(-50%, -50%)） |
 | 背景色 | LINE緑 `#06C755` |
 | 文字色 | 白 |
 | fontSize | 99 |
@@ -102,7 +102,7 @@ if (bulletListVisible &&
 
 | プロパティ | 値 |
 |-----------|-----|
-| 位置 | 画面中央（left: 540, top: 960, transform: translate(-50%, -50%)） |
+| 位置 | 下から1/4（left: 540, top: 1440, transform: translate(-50%, -50%)） |
 | 背景色 | 赤 `#EF4444` |
 | 文字色 | 白 |
 | fontSize | 72 |

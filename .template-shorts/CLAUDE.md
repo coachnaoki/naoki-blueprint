@@ -277,12 +277,13 @@ step15-final           → レンダリング
 - **角**: 四角（borderRadius禁止）
 - **折り返し**: なし（whiteSpace: "nowrap" 必須）
 - **fontWeight**: 900
-- **位置**: 全テンプレート共通で画面中央（`top: "50%", left: "50%", transform: "translate(-50%, -50%)"`）
+- **位置**: 全テンプレート共通で**下から1/4の位置**（`top: "75%", left: "50%", transform: "translate(-50%, -50%)"`）— 1920×0.75 = 1440px地点
 - **z-index**: 10
 
 ### ショート動画の安全領域（参考）
 - 上部 0〜350px: ヘッダーUI（プロフィール表示等）
-- 中央 350〜1500px: テロップ配置エリア（推奨）
+- 中央 350〜1400px: 顔・主要被写体エリア
+- **下から1/4 (1440px付近): テロップ配置位置（推奨）**
 - 下部 1500〜1920px: コメント・いいねボタンUI（避ける）
 
 ### フォント（テンプレート別）
@@ -420,7 +421,7 @@ const calcTextWidth = (text: string, fontSize: number) =>
 
 ## 通常テロップ（normal）デザインルール
 
-- **位置**: 画面中央（top: "50%", left: "50%", transform: "translate(-50%, -50%)"）
+- **位置**: 下から1/4の位置（top: "75%", left: "50%", transform: "translate(-50%, -50%)"）
 - **構造**: SVG 2層（stroke層 + fill層）で丸い縁取り
 - **文字**: 紺 `#10458B`、fontSize: 84、fontWeight: 900
 - **フォント**: `'M PLUS Rounded 1c', sans-serif`
