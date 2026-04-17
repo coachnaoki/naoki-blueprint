@@ -322,7 +322,7 @@ step15-final           → レンダリング
 // emphasis2: SVG2層構造 + 白グロー + 暗影（斜体・立体感）
 // 外側div: filter: "drop-shadow(0 0 10px white) drop-shadow(0 0 20px white) drop-shadow(0 0 35px white) drop-shadow(0 0 50px rgba(255,255,255,0.8)) drop-shadow(0 3px 6px rgba(0,0,0,0.3)) drop-shadow(0 6px 12px rgba(0,0,0,0.15))"
 // 層1(背面): stroke="#624936" strokeWidth=6（ダークゴールド縁取り）+ SVGフィルターで下方向の暗影
-// 層2(前面): fill="url(#goldGrad)" stroke="#624936" strokeWidth=1（金→白→金グラデーション #FFF438→#FFFFFF→#E99B00）+ SVGフィルターで上方向のハイライト
+// 層2(前面): fill="url(#goldGrad)" stroke="#624936" strokeWidth=1（金→白→金グラデーション #FFF438→#FFFFFF→#E99B00）+ SVGフィルターで上方向の光沢
 
 // negative: 白文字 + 黒グロー（2層構造・斜体）
 // layer1(背景): color: white + textShadow 3重(15px,30px,45px)
@@ -347,7 +347,7 @@ step15-final           → レンダリング
 | **emphasis (前面層)** | `filter: "drop-shadow(0 -1px 1px rgba(255,255,255,0.5)) drop-shadow(1px 1px 2px rgba(0,0,0,0.3))"` |
 | **emphasis2 (外側)** | `filter: "drop-shadow(0 0 10px white) drop-shadow(0 0 20px white) drop-shadow(0 0 35px white) drop-shadow(0 0 50px rgba(255,255,255,0.8)) drop-shadow(0 3px 6px rgba(0,0,0,0.3)) drop-shadow(0 6px 12px rgba(0,0,0,0.15))"` |
 | **emphasis2 (背景層)** | SVGフィルター: `feGaussianBlur stdDeviation=3` + `feOffset dy=3` + `floodColor rgba(0,0,0,0.25)`（下方向の暗影） |
-| **emphasis2 (前面層)** | SVGフィルター: `feGaussianBlur stdDeviation=1` + `feOffset dy=-1` + `floodColor rgba(255,255,255,0.5)`（上方向のハイライト） |
+| **emphasis2 (前面層)** | SVGフィルター: `feGaussianBlur stdDeviation=1` + `feOffset dy=-1` + `floodColor rgba(255,255,255,0.5)`（上方向の光沢） |
 | **negative** | textShadow 3重で代替（既に黒グローがある） |
 | **negative2** | WebkitTextStroke で代替（既に黒縁取りがある） |
 
