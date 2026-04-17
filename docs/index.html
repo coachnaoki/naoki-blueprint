@@ -237,7 +237,7 @@
 
 <div class="header">
   <h1>Naoki式 丸投げビジネス動画編集テンプレート</h1>
-  <p>Claude Code を使って、撮影した動画から YouTube 向け動画を自動制作するツールキット</p>
+  <p>Claude Code を使って、撮影した動画から YouTube 横動画（全20ステップ）/ ショート動画（全14ステップ）を自動制作するツールキット</p>
 </div>
 
 <!-- Step 0 -->
@@ -263,7 +263,7 @@ brew install ffmpeg
 brew install python@3.12
 
 <span class="comment"># Whisper（Apple Silicon 向けの高速な文字起こしAI）</span>
-/opt/homebrew/bin/python3.12 -m pip install mlx-whisper</code></pre>
+pip3.12 install mlx-whisper</code></pre>
 
   <div class="warning"><strong>注意:</strong> mlx-whisper は Python 3.12 でのみ動作します（3.13以降では動きません）。</div>
 
@@ -273,12 +273,16 @@ brew install python@3.12
 
 <span class="comment"># Python 3.12</span>
 <span class="comment"># https://www.python.org/downloads/release/python-3129/ からインストール</span>
+<span class="comment"># （インストーラーで「Add Python to PATH」にチェック）</span>
 
-<span class="comment"># Whisper（Windows版の文字起こしAI）</span>
-pip install openai-whisper</code></pre>
+<span class="comment"># Whisper（Windows/Linux 向けの高速な文字起こしAI）</span>
+pip install faster-whisper</code></pre>
 
-  <div class="note"><strong>GPU(CUDA)対応PCをお持ちの方へ:</strong> 以下も追加でインストールすると文字起こしが高速になります：
-  <pre><code>pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121</code></pre></div>
+  <h3>Linux (Ubuntu/Debian) の場合</h3>
+  <pre><code>sudo apt install nodejs npm python3.12 python3-pip ffmpeg
+pip install faster-whisper</code></pre>
+
+  <div class="note"><strong>Whisperモデルの自動切替:</strong> macOSは <code>mlx-whisper</code>（Apple Silicon最適化で高速）、Windows/Linuxは <code>faster-whisper</code> を使用。精度は同等（どちらもlarge-v3モデル）。<code>scripts/transcribe.mjs</code> が自動で切り替えます。</div>
 </div>
 
 <!-- Step 1 -->
@@ -303,21 +307,37 @@ cd ..</code></pre>
 <!-- Step 3 -->
 <div class="card">
   <h2><span class="step-number">3</span> プロジェクトフォルダを作成</h2>
-  <p>動画1本ごとに専用のプロジェクトフォルダを作ります。テンプレートをコピーするだけでOK。</p>
-  <p><strong>プロジェクト名は自由に決めてください。</strong> 動画の内容がわかる名前がおすすめです。</p>
-  <pre><code>mkdir -p projects
+  <p>動画1本ごとに専用のプロジェクトフォルダを作ります。<strong>作る動画の種類によってテンプレートが2つあります。</strong></p>
+
+  <table>
+    <tr><th>動画の種類</th><th>テンプレート</th><th>解像度</th><th>ステップ数</th></tr>
+    <tr><td>YouTube横動画（10〜20分）</td><td><code>.template/</code></td><td>1920×1080</td><td>20ステップ</td></tr>
+    <tr><td>ショート動画（30〜60秒）</td><td><code>.template-shorts/</code></td><td>1080×1920</td><td>14ステップ</td></tr>
+  </table>
+
+  <h3>Mac / Linux の場合</h3>
+  <pre><code><span class="comment"># YouTube横動画</span>
+mkdir -p projects
 cp -r .template projects/<span class="highlight">あなたのプロジェクト名</span>
 cd projects/<span class="highlight">あなたのプロジェクト名</span>
-npm install</code></pre>
+npm install
 
-  <p>例：</p>
-  <pre><code>cp -r .template projects/tennis-serve-tips
-cp -r .template projects/cooking-pasta
-cp -r .template projects/ai-seminar-recap</code></pre>
+<span class="comment"># ショート動画</span>
+cp -r .template-shorts projects/<span class="highlight">あなたのプロジェクト名</span></code></pre>
+
+  <h3>Windows (PowerShell) の場合</h3>
+  <pre><code><span class="comment"># YouTube横動画</span>
+New-Item -ItemType Directory -Force projects
+Copy-Item -Recurse .template projects/<span class="highlight">あなたのプロジェクト名</span>
+cd projects/<span class="highlight">あなたのプロジェクト名</span>
+npm install
+
+<span class="comment"># ショート動画</span>
+Copy-Item -Recurse .template-shorts projects/<span class="highlight">あなたのプロジェクト名</span></code></pre>
 
   <div class="note"><strong>なぜ projects/ に作るの？</strong><br>テンプレートやツール類はリポジトリ直下に残るので、2本目・3本目を作るときも同じ手順でコピーするだけ。</div>
 
-  <div class="note"><strong>2本目以降はもっと簡単！</strong><br><code>./新規作成.sh</code> を実行するだけでプロジェクトが作れます。</div>
+  <div class="note"><strong>Mac/Linux なら2本目以降はもっと簡単！</strong><br><code>./新規作成.sh</code> を実行するだけでプロジェクトが作れます。</div>
 </div>
 
 <!-- Step 4 -->
@@ -369,7 +389,7 @@ claude --dangerously-skip-permissions</code></pre>
 
 <!-- Workflow -->
 <div class="workflow-card">
-  <h2>ワークフロー全体像（全20ステップ）</h2>
+  <h2>ワークフロー全体像 ― YouTube横動画（全20ステップ）</h2>
 
   <div class="phase">フェーズ1: 素材準備</div>
   <div class="step-row"><span class="step-cmd">/step01-context</span><span class="step-desc">動画の目的・ターゲットを整理</span></div>
@@ -406,14 +426,50 @@ claude --dangerously-skip-permissions</code></pre>
   <div class="step-row"><span class="step-cmd">/step20-highlight-final</span><span class="step-desc">本編MP4からハイライト自動抽出＋最終レンダリング → 完成！</span></div>
 </div>
 
+<!-- Workflow: ショート動画 -->
+<div class="workflow-card">
+  <h2>ワークフロー全体像 ― ショート動画（全14ステップ・縦1080×1920）</h2>
+
+  <div class="phase">フェーズ1: 素材準備</div>
+  <div class="step-row"><span class="step-cmd">/step01-context</span><span class="step-desc">動画コンテキスト整理（縦動画指定）</span></div>
+  <div class="step-row"><span class="step-cmd">/step02-assets</span><span class="step-desc">素材確認＆役割確定</span></div>
+  <div class="step-row"><span class="step-cmd">/step03-transcript</span><span class="step-desc">本編をWhisperで文字起こし（large-v3固定）</span></div>
+  <div class="step-row"><span class="step-cmd">/step04-transcript-fix</span><span class="step-desc">台本と照合して誤変換を修正</span></div>
+  <div class="step-row"><span class="step-cmd">/step05-cut</span><span class="step-desc">無音＋言い直し一括カット</span></div>
+  <div class="step-row"><span class="step-cmd">/step06-transcript</span><span class="step-desc">カット後の再文字起こし＋修正再適用</span></div>
+
+  <div class="arrow">↓</div>
+
+  <div class="phase">フェーズ2: 動画構築</div>
+  <div class="step-row"><span class="step-cmd">/step07-template</span><span class="step-desc">テンプレート設定（8種のテロップ）</span></div>
+  <div class="step-row"><span class="step-cmd">/step08-telop</span><span class="step-desc">テロップデータ作成（台本一字一句）</span></div>
+  <div class="step-row"><span class="step-cmd">/step09-composition</span><span class="step-desc">コンポジション構築（1080×1920）</span></div>
+
+  <div class="arrow">↓</div>
+
+  <div class="phase">フェーズ3: 素材挿入</div>
+  <div class="step-row"><span class="step-cmd">/step10-greenback</span><span class="step-desc">グリーンバック背景置換 <span class="step-optional">（任意）</span></span></div>
+  <div class="step-row"><span class="step-cmd">/step11-videos</span><span class="step-desc">デモ動画挿入 <span class="step-optional">（任意）</span></span></div>
+  <div class="step-row"><span class="step-cmd">/step12-images</span><span class="step-desc">画像挿入（AI生成・話者アイコン） <span class="step-optional">（任意）</span></span></div>
+
+  <div class="arrow">↓</div>
+
+  <div class="phase">フェーズ4: BGM・出力</div>
+  <div class="step-row"><span class="step-cmd">/step13-bgm</span><span class="step-desc">BGM挿入（音量0.03推奨）</span></div>
+  <div class="step-row"><span class="step-cmd">/step14-final</span><span class="step-desc">最終レンダリング（1080×1920 MP4）→ 完成！</span></div>
+</div>
+
 <!-- Folder structure -->
 <div class="card">
   <h2>フォルダ構成</h2>
   <div class="folder-tree">
   <pre><code>naoki-blueprint/                 <span class="comment">← ダウンロードしたフォルダ</span>
 ├── README.md                    <span class="comment">← ガイド</span>
-├── .template/           <span class="comment">← テンプレート（コピー元・編集しない）</span>
+├── .template/           <span class="comment">← YouTube横動画テンプレート（編集しない）</span>
 │   ├── .claude/skills/          <span class="comment">← 20個のAIスキル</span>
+│   └── ...
+├── .template-shorts/    <span class="comment">← ショート動画テンプレート（編集しない）</span>
+│   ├── .claude/skills/          <span class="comment">← 14個のAIスキル</span>
 │   ├── CLAUDE.md                <span class="comment">← AIの行動ルール</span>
 │   ├── scripts/validateLicense.mjs  <span class="comment">← ライセンス認証</span>
 │   ├── public/main/             <span class="comment">← 本編動画を入れる</span>
@@ -463,11 +519,11 @@ claude --dangerously-skip-permissions</code></pre>
 
   <div class="faq-q">Q: Whisper がエラーになる</div>
   <p><strong>Mac（Apple Silicon）の場合：</strong></p>
-  <pre><code>/opt/homebrew/bin/python3.12 --version   <span class="comment"># Python 3.12.x が出ればOK</span>
-/opt/homebrew/bin/python3.12 -c "import mlx_whisper; print('OK')"</code></pre>
-  <p><strong>Windowsの場合：</strong></p>
+  <pre><code>python3.12 --version   <span class="comment"># Python 3.12.x が出ればOK</span>
+python3.12 -c "import mlx_whisper; print('OK')"</code></pre>
+  <p><strong>Windows / Linuxの場合：</strong></p>
   <pre><code>python3.12 --version
-python3.12 -c "import whisper; print('OK')"</code></pre>
+python3.12 -c "from faster_whisper import WhisperModel; print('OK')"</code></pre>
 
   <hr>
 
@@ -481,7 +537,7 @@ python3.12 -c "import whisper; print('OK')"</code></pre>
   <hr>
 
   <div class="faq-q">Q: Windows でも使える？</div>
-  <p>はい。Step 0 で <code>openai-whisper</code> をインストールすれば動作します。GPU(CUDA)対応PCならPyTorch CUDA版をインストールするとさらに高速です。</p>
+  <p>はい。Step 0 で <code>faster-whisper</code> をインストールすれば動作します。<code>scripts/transcribe.mjs</code> が自動でOSを判定し、Macなら <code>mlx-whisper</code>、Windows/Linuxなら <code>faster-whisper</code> を使い分けます。GPU(CUDA)対応PCならさらに高速に動作します。</p>
 </div>
 
 <!-- License -->
