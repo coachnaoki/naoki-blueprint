@@ -1,8 +1,8 @@
 ---
 name: step15-images
-description: イメージ画像を感情ベースで動画に挿入する。画像生成（Gemini API）にも対応。感情が動く瞬間に配置。全画面表示と左側挿入に対応。
+description: イメージ画像を感情ベースで動画に挿入する。画像生成（Gemini API）にも対応。感情が動く瞬間に配置。全画面表示・左側挿入・話者アイコン（対談動画用）に対応。
 argument-hint: [挿入位置の秒数やキーワード（省略時はtranscriptから判断）]
-allowed-tools: Read, Write, Edit, Glob, Grep, WebSearch, WebFetch, Bash(npx tsc *), Bash(npx remotion still *), Bash(rm *), Bash(ls *), Bash(python3 *), Bash(node scripts/_chk.mjs)
+allowed-tools: Read, Write, Edit, Glob, Grep, WebSearch, WebFetch, Bash(npx tsc *), Bash(npx remotion still *), Bash(rm *), Bash(ls *), Bash(python3 *), Bash(python3.12 *), Bash(ffmpeg *), Bash(cp *), Bash(node scripts/_chk.mjs)
 ---
 
 <!-- LICENSE_GUARD: DO NOT REMOVE -->
@@ -29,6 +29,7 @@ allowed-tools: Read, Write, Edit, Glob, Grep, WebSearch, WebFetch, Bash(npx tsc 
 
 1. **画像を自分で用意する** → [A. 手動画像挿入](#a-手動画像挿入) へ
 2. **AIで画像を生成する** → [B. AI画像生成 + 挿入](#b-ai画像生成--挿入) へ
+3. **対談動画の話者にアイコンを載せたい** → [C. 話者アイコン](#c-話者アイコン対談動画用) へ
 
 ---
 
@@ -319,6 +320,73 @@ if (fullscreenImageRanges.some(r => frame >= r.start && frame <= r.end)) {
 |---|---|
 | テロップのendFrameが画像のstartFrameを超えている | テロップのendFrameを画像startFrame - 1 に短縮 |
 | 画像の上にテロップが重なり読みにくい | z-indexで解決（画像5以下、テロップ10以上）。それでもダメなら画像endFrameを短縮 |
+
+---
+
+## C. 話者アイコン（対談動画用）
+
+対談動画で、指定の話者の顔にアイコン画像を追従させて焼き込む。YuNet顔検出で自動追従し、滑らかに移動する。
+
+**対談動画専用。通常の1人撮影動画では使わない。**
+
+### 前提
+- `pip install opencv-python Pillow` 済み（README.md 参照）
+- `models/face_detection_yunet_2023mar.onnx` が存在すること
+- カット済み動画 (`public/main/*_cut.mp4`) が存在すること
+
+### ユーザーに確認すること（必須）
+
+1. **どちらの話者にアイコンを載せるか**: `left`（画面左）or `right`（画面右）
+2. **アイコン画像のパス**: `public/images/` に配置してもらう
+3. **アイコンサイズ**: デフォルト 440px（変更したい場合のみ聞く）
+4. **位置微調整が必要か**: デフォルトのオフセットで問題なければスキップ
+
+### やること
+
+#### 1. フレーム抽出で顔検出を確認
+
+```bash
+ffmpeg -ss 5 -i public/main/<動画名>_cut.mp4 -frames:v 1 -q:v 2 /tmp/speaker_check.jpg
+python3.12 scripts/detect_face_center.py /tmp/speaker_check.jpg
+```
+
+顔が2つ以上検出されること、`--side` で対象話者が正しく取れることを確認する。
+
+#### 2. スクリプト実行
+
+```bash
+python3.12 scripts/render_speaker_icon.py public/images/<アイコン>.png --side right
+```
+
+**主要オプション:**
+
+| オプション | デフォルト | 説明 |
+|---|---|---|
+| `--side` | （必須） | left / right |
+| `--size` | 440 | アイコンサイズ(px) |
+| `--smooth` | 0.06 | 追従の滑らかさ(0.01=遅い, 0.2=速い) |
+| `--head-offset` | 0.35 | 顔中心→頭中心への補正比率 |
+| `--down-shift` | 0.125 | 下方向シフト(サイズ比) |
+| `--right-shift` | 0.125 | 右方向シフト(サイズ比) |
+| `--detect-every` | 3 | 何フレームごとに顔検出 |
+
+スクリプトは以下を自動で行う:
+1. 元動画を `*_backup.mp4` にバックアップ
+2. 全フレームを処理してアイコンを焼き込み
+3. 音声をバックアップから結合
+4. 元のファイル名で上書き
+
+#### 3. 確認
+
+Remotion Studio で対談動画を再生し、アイコンの位置・動きを確認する。
+
+#### やり直したい場合
+
+バックアップから復元して再実行:
+```bash
+cp public/main/<動画名>_cut_backup.mp4 public/main/<動画名>_cut.mp4
+python3.12 scripts/render_speaker_icon.py public/images/<アイコン>.png --side right --size 330
+```
 
 ---
 
