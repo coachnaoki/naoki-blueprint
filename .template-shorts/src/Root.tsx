@@ -1,5 +1,4 @@
 import "./index.css";
-import { Composition } from "remotion";
 
 // step09-composition でメインコンポジションを作成した後、
 // ここにインポートとCompositionを追加してください。
