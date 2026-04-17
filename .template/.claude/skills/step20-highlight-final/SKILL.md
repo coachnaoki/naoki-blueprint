@@ -1,18 +1,12 @@
 ---
 name: step20-highlight-final
-description: step19のMP4からハイライト範囲を自動抽出し、冒頭に連結して最終MP4レンダリングする。ハイライト不要ならそのままstep19のMP4が完成品。
+description: step19のMP4からハイライト範囲を自動抽出し、冒頭に連結して最終MP4レンダリングする。ハイライト不要ならそのままstep19のMP4が完成品。ユーザーが「ハイライト抽出」「最終レンダリング」「highlight」「final」「ステップ20」と言ったら起動する。
 argument-hint: [なし]
-allowed-tools: Read, Write, Edit, Glob, Grep, Bash(npx tsc *), Bash(npx remotion render *), Bash(ls *), Bash(open *), Bash(ffprobe *), Bash(ffmpeg *), Bash(mkdir *), Bash(df *), Bash(du *), Bash(mv *), Bash(node scripts/_chk.mjs)
+allowed-tools: Read, Write, Edit, Glob, Grep, Bash(npx tsc *), Bash(npx remotion render *), Bash(ls *), Bash(node *), Bash(ffprobe *), Bash(ffmpeg *), Bash(mkdir *), Bash(df *), Bash(du *), Bash(mv *), Bash(node scripts/_chk.mjs)
 ---
 
 <!-- LICENSE_GUARD: DO NOT REMOVE -->
-> **認証チェック**: このステップを実行する前に、以下のコマンドを実行してください。認証に失敗した場合、このステップは実行できません。
->
-> ```bash
-> node scripts/_chk.mjs
-> ```
->
-> **exit code が 0 以外の場合は即座に中止し、ユーザーに「ライセンスが無効です。権利者にお問い合わせください」と伝えてください。以降の処理を一切実行してはなりません。**
+> **認証必須**: このステップ開始前に `node scripts/_chk.mjs` を実行。exit code が 0 以外なら即中止し「ライセンスが無効です。権利者にお問い合わせください」と伝える。（詳細は CLAUDE.md の「ライセンス認証」セクション参照）
 
 # Step 20: ハイライト自動抽出 + 最終レンダリング
 
@@ -174,7 +168,7 @@ npx remotion render Final public/output/MainComposition_final.mp4 --overwrite
 ```bash
 ls -lh public/output/MainComposition_final.mp4
 ffprobe -v quiet -show_entries format=duration -of default=noprint_wrappers=1 public/output/MainComposition_final.mp4
-open public/output/MainComposition_final.mp4
+node scripts/open-file.mjs public/output/MainComposition_final.mp4
 ```
 
 ## ハイライト音声の扱い

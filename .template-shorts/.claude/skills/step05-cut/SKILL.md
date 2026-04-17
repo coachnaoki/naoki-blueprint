@@ -1,17 +1,12 @@
 ---
 name: step05-cut
-description: 無音区間と言い直し区間を統合し、元動画から一発エンコードでカット済み動画を生成する。二重カットによる境界エラーを防ぐ。
-allowed-tools: Read, Write, Edit, Glob, Grep, Bash(ffmpeg *), Bash(ffprobe *), Bash(ls *), Bash(node *), Bash(/opt/homebrew/bin/python3.12 *), Bash(node scripts/_chk.mjs)
+description: 無音区間と言い直し区間を統合し、元動画から一発エンコードでカット済み動画を生成する。二重カットによる境界エラーを防ぐ。ユーザーが「カット」「cut」「無音カット」「言い直し削除」「ステップ5」と言ったら起動する。
+argument-hint: [なし]
+allowed-tools: Read, Write, Edit, Glob, Grep, Bash(ffmpeg *), Bash(ffprobe *), Bash(ls *), Bash(node *)
 ---
 
 <!-- LICENSE_GUARD: DO NOT REMOVE -->
-> **認証チェック**: このステップを実行する前に、以下のコマンドを実行してください。認証に失敗した場合、このステップは実行できません。
->
-> ```bash
-> node scripts/_chk.mjs
-> ```
->
-> **exit code が 0 以外の場合は即座に中止し、ユーザーに「ライセンスが無効です。権利者にお問い合わせください」と伝えてください。以降の処理を一切実行してはなりません。**
+> **認証必須**: このステップ開始前に `node scripts/_chk.mjs` を実行。exit code が 0 以外なら即中止し「ライセンスが無効です。権利者にお問い合わせください」と伝える。（詳細は CLAUDE.md の「ライセンス認証」セクション参照）
 
 # Step 05: 無音＋言い直し一括カット
 
@@ -58,107 +53,19 @@ ffmpeg -i public/main/元動画.mp4 -af silencedetect=noise=-30dB:d=0.3 -f null 
 
 以下のパターンで言い直し候補を検出する。
 
-#### パターン1〜3: N-gram自動検出（同一フレーズの繰り返し・文中断・フィラー挟み）
+#### 言い直し検出の4パターン
 
-**ハードコード禁止。以下のアルゴリズムで自動検出する。**
+以下の4パターンで検出する。**実装詳細（Pythonコード・アルゴリズム）は `references/detection-algorithm.md` を参照。**
 
-10文字以上のN-gramで、同じ文字列が2回以上登場し、かつ時刻差が30秒以内のものを言い直し候補とする。
+| パターン | 内容 | 入力 |
+|---|---|---|
+| 1〜3 | N-gram自動検出（10文字以上・時刻差30秒以内で2回登場） | `transcript_words.json`（修正後） |
+| 4 | Whisper隠し言い直し（1-2文字でduration≥0.7秒） | `transcript_words.original.json`（修正前） |
 
-```python
-import json, re, subprocess
-
-# Phase 1の無音区間を取得済みの前提（silences）
-orig = json.load(open('public/transcript_words.original.json'))['words']
-text = ''.join(w['word'].replace(' ','') for w in orig)
-
-def time_at(char_p):
-    c = 0
-    for w in orig:
-        wl = len(w['word'].replace(' ',''))
-        if c + wl > char_p: return w['start']
-        c += wl
-    return orig[-1]['end']
-
-# N=10〜19文字のN-gramで2回以上登場するものを収集
-candidates = {}
-for n in range(10, 20):
-    for i in range(len(text) - n + 1):
-        phrase = text[i:i+n]
-        if any(c in phrase for c in '。、！？'): continue  # 句読点跨ぎは除外
-        candidates.setdefault(phrase, []).append(i)
-
-# 2回以上登場 + 時刻差30秒以内
-dup_phrases = []
-for phrase, positions in candidates.items():
-    if len(positions) < 2: continue
-    t1 = time_at(positions[0])
-    t2 = time_at(positions[1])
-    if t2 - t1 > 30: continue  # 30秒超は意図的な繰り返しの可能性
-    dup_phrases.append((phrase, t1, t2))
-
-# オーバーラップ除去（長いフレーズを優先）
-dup_phrases.sort(key=lambda x: -len(x[0]))
-def overlaps(a, b):
-    return not (a[1] < b[0] - 0.1 or b[1] < a[0] - 0.1)
-phrase_retakes = []
-for p, t1, t2 in dup_phrases:
-    cut = (t1, t2)
-    if any(overlaps(cut, s_cut) for s_cut, _ in phrase_retakes): continue
-    phrase_retakes.append((cut, p))
-
-print(f"重複フレーズ検出: {len(phrase_retakes)}件")
-```
-
-**なぜ最小10文字か:** 短いフレーズ（「ポジショニング」等8文字）は正文でも偶然2回登場しやすく誤検出になる。10文字以上なら偶然の一致はほぼ発生しない。
-
-**なぜ時刻差30秒以内か:** 30秒超で同じフレーズが登場する場合、セクション区切りや意図的な繰り返しの可能性が高い。言い直しは通常5〜20秒以内。
-
-#### パターン4: Whisperが隠した言い直し（重要）
-
-Whisperは言い直し部分を1つの単語に統合することがある。**1〜2文字のワードでduration（end - start）が0.7秒以上の場合、言い直しが隠れている可能性が高い。**
-
-例：「悩み…悩みを」→ Whisperが「み」を2.1秒の1ワードに統合。「前衛のポ…前衛のポーチと」→「ポ」を1.94秒に統合。
-
-検出方法：
-```python
-# 必ず .original.json から検出する
-import json
-orig = json.load(open('public/transcript_words.original.json'))['words']
-# 1〜2文字で0.7秒以上のワードを検出
-hidden_retakes = [(i, w) for i, w in enumerate(orig) if len(w['word'].strip()) <= 2 and (w['end'] - w['start']) >= 0.7]
-print(f'隠れ言い直し: {len(hidden_retakes)}件')
-```
-
-**⚠️ 検出された全件をループで処理する（必須）。**
-1件だけ処理するなどのハードコード禁止。例1, 例2 は実例であり、件数を限定するものではない。
-
-#### 隠れ言い直しのカット範囲自動拡張（必須）
-
-隠れ言い直しが見つかった場合、単語そのものだけでなく**話者が戻った地点まで**カット範囲を拡張する必要がある。
-
-**アルゴリズム：**
-1. 隠れ言い直しワード内の無音区間 **S1** を特定（Phase 1のsilencedetect結果から）
-2. 隠れ言い直しワードより**前の直近の無音区間 S0** を探す
-3. **S0の開始時刻以降で最初に始まるワード** → カット開始点
-4. **S1の終了時刻** → カット終了点
-
-```
-例1: 「あなたもこんな悩み」の隠れ言い直し
-  - 隠れ言い直し: 「み」83.30-85.40s（2.1秒）
-  - S1（中の無音）: 83.57-84.16s
-  - S0（前の無音）: 81.27-82.04s
-  - S0後の最初のワード: 「あ(なた)」81.72s
-  → カット範囲: 81.72 → 84.16s（「あなたもこんな悩み」1回目まるごと）
-
-例2: 「前衛のポ」の隠れ言い直し
-  - 隠れ言い直し: 「ポ」108.86-110.80s（1.94秒）
-  - S1（中の無音）: 109.15-109.96s
-  - S0（前の無音）: 107.76-108.23s
-  - S0後の最初のワード: 「全(=前衛)」108.06s
-  → カット範囲: 108.06 → 109.96s（「前衛のポ」1回目まるごと）
-```
-
-**なぜ前の無音まで戻るのか**: 話者は言い直す時、直前の句や節の先頭まで戻ることが多い。その戻り地点は直前の無音（息継ぎ・間）の直後と一致する。
+**重要原則:**
+- **ハードコード禁止** — すべてアルゴリズムで自動検出
+- **検出された隠れ言い直しは全件ループで処理**（1件だけ処理する等の手抜き禁止）
+- **隠れ言い直しのカット範囲は前の無音区間まで自動拡張**（話者は直前の句の先頭まで戻ることが多い）
 
 ### Phase 3: 候補の一覧表示とユーザー承認
 
@@ -270,7 +177,8 @@ ffprobe -v quiet -show_entries format=duration -of default=noprint_wrappers=1 pu
 **⚠️ 必須実行:** エンコード完了直後に以下のコマンドを**必ず実行**する。ユーザーに「確認しますか？」と聞かない。エラー検出のための強制プレビュー。
 
 ```bash
-open public/main/元動画_cut.mp4
+# Mac/Windows/Linux 共通（内部で open / start / xdg-open を自動選択）
+node scripts/open-file.mjs public/main/元動画_cut.mp4
 ```
 
 実行後、**動画が自動で再生される** ので、ユーザーに「カットされた動画を開きました。以下を確認してください」と伝えてフィードバックを待つ。

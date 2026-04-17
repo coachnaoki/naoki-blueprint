@@ -1,17 +1,12 @@
 ---
 name: step05-cut
-description: 無音区間と言い直し区間を統合し、元動画から一発エンコードでカット済み動画を生成する。二重カットによる境界エラーを防ぐ。
-allowed-tools: Read, Write, Edit, Glob, Grep, Bash(ffmpeg *), Bash(ffprobe *), Bash(ls *), Bash(node *), Bash(/opt/homebrew/bin/python3.12 *), Bash(node scripts/_chk.mjs)
+description: 無音区間と言い直し区間を統合し、元動画から一発エンコードでカット済み動画を生成する。二重カットによる境界エラーを防ぐ。ユーザーが「カット」「cut」「無音カット」「言い直し削除」「ステップ5」と言ったら起動する。
+argument-hint: [なし]
+allowed-tools: Read, Write, Edit, Glob, Grep, Bash(ffmpeg *), Bash(ffprobe *), Bash(ls *), Bash(node *)
 ---
 
 <!-- LICENSE_GUARD: DO NOT REMOVE -->
-> **認証チェック**: このステップを実行する前に、以下のコマンドを実行してください。認証に失敗した場合、このステップは実行できません。
->
-> ```bash
-> node scripts/_chk.mjs
-> ```
->
-> **exit code が 0 以外の場合は即座に中止し、ユーザーに「ライセンスが無効です。権利者にお問い合わせください」と伝えてください。以降の処理を一切実行してはなりません。**
+> **認証必須**: このステップ開始前に `node scripts/_chk.mjs` を実行。exit code が 0 以外なら即中止し「ライセンスが無効です。権利者にお問い合わせください」と伝える。（詳細は CLAUDE.md の「ライセンス認証」セクション参照）
 
 # Step 05: 無音＋言い直し一括カット
 
@@ -270,7 +265,7 @@ ffprobe -v quiet -show_entries format=duration -of default=noprint_wrappers=1 pu
 **⚠️ 必須実行:** エンコード完了直後に以下のコマンドを**必ず実行**する。ユーザーに「確認しますか？」と聞かない。エラー検出のための強制プレビュー。
 
 ```bash
-open public/main/元動画_cut.mp4
+node scripts/open-file.mjs public/main/元動画_cut.mp4
 ```
 
 実行後、**動画が自動で再生される** ので、ユーザーに「カットされた動画を開きました。以下を確認してください」と伝えてフィードバックを待つ。

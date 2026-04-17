@@ -1,17 +1,12 @@
 ---
 name: step07-template
-description: テロップのテンプレート設定（templateConfig.ts）を作成する。フォント・サイズ・SE対応を定義する。
-allowed-tools: Read, Write, Edit, Glob, Grep, Bash(node scripts/_chk.mjs), Bash(npx tsc --noEmit), Bash(open public/template-preview.html)
+description: テロップのテンプレート設定（templateConfig.ts）を作成する。フォント・サイズ・SE対応を定義する。ユーザーが「テンプレート」「template」「templateConfig」「ステップ7」と言ったら起動する。
+argument-hint: [なし]
+allowed-tools: Read, Write, Edit, Glob, Grep, Bash(node scripts/_chk.mjs), Bash(npx tsc --noEmit), Bash(node *)
 ---
 
 <!-- LICENSE_GUARD: DO NOT REMOVE -->
-> **認証チェック**: このステップを実行する前に、以下のコマンドを実行してください。認証に失敗した場合、このステップは実行できません。
->
-> ```bash
-> node scripts/_chk.mjs
-> ```
->
-> **exit code が 0 以外の場合は即座に中止し、ユーザーに「ライセンスが無効です。権利者にお問い合わせください」と伝えてください。以降の処理を一切実行してはなりません。**
+> **認証必須**: このステップ開始前に `node scripts/_chk.mjs` を実行。exit code が 0 以外なら即中止し「ライセンスが無効です。権利者にお問い合わせください」と伝える。（詳細は CLAUDE.md の「ライセンス認証」セクション参照）
 
 # Step 07: テンプレート設定
 
@@ -30,7 +25,7 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash(node scripts/_chk.mjs), Bash(
 「プレビュー開きますか？」と聞かずに、無条件で以下を実行してブラウザを開く:
 
 ```bash
-open public/template-preview.html
+node scripts/open-file.mjs public/template-preview.html
 ```
 
 実行後、ユーザーに以下を伝えてフィードバックを待つ:

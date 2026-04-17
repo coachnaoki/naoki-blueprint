@@ -1,17 +1,12 @@
 ---
 name: step07-template
-description: テロップのテンプレート設定（templateConfig.ts）を作成する。フォント・サイズ・SE対応を定義する。
-allowed-tools: Read, Write, Edit, Glob, Grep, Bash(node scripts/_chk.mjs), Bash(npx tsc --noEmit), Bash(open public/template-preview.html)
+description: テロップのテンプレート設定（templateConfig.ts）を作成する。フォント・サイズ・SE対応を定義する。ユーザーが「テンプレート」「template」「templateConfig」「ステップ7」と言ったら起動する。
+argument-hint: [なし]
+allowed-tools: Read, Write, Edit, Glob, Grep, Bash(node *), Bash(npx tsc --noEmit)
 ---
 
 <!-- LICENSE_GUARD: DO NOT REMOVE -->
-> **認証チェック**: このステップを実行する前に、以下のコマンドを実行してください。認証に失敗した場合、このステップは実行できません。
->
-> ```bash
-> node scripts/_chk.mjs
-> ```
->
-> **exit code が 0 以外の場合は即座に中止し、ユーザーに「ライセンスが無効です。権利者にお問い合わせください」と伝えてください。以降の処理を一切実行してはなりません。**
+> **認証必須**: このステップ開始前に `node scripts/_chk.mjs` を実行。exit code が 0 以外なら即中止し「ライセンスが無効です。権利者にお問い合わせください」と伝える。（詳細は CLAUDE.md の「ライセンス認証」セクション参照）
 
 # Step 07: テンプレート設定
 
@@ -30,13 +25,13 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash(node scripts/_chk.mjs), Bash(
 「プレビュー開きますか？」と聞かずに、無条件で以下を実行してブラウザを開く:
 
 ```bash
-open public/template-preview.html
+node scripts/open-file.mjs public/template-preview.html
 ```
 
 実行後、ユーザーに以下を伝えてフィードバックを待つ:
 
 ```
-テロップと見出しバナーのテンプレート一覧を開きました。
+テロップのテンプレート一覧を開きました。
 ブラウザでご確認ください。
 色・フォント・サイズなど、変更したいスタイルはありますか？
 特になければ「OK」でそのまま進めます。
@@ -70,15 +65,11 @@ export interface TemplateConfig {
 }
 
 export const templateConfig: Record<TemplateName, TemplateConfig> = { ... };
-
-// 見出しバナー設定（MainComposition.tsx で参照）— ショート動画は54pxで縦動画幅に収める
-export const headingBannerConfig = {
-  fontSize: 54,
-  backgroundColor: "#F7F4F4",
-  color: "#4B6AC6",
-  fontFamily: '"Hiragino Kaku Gothic ProN", "Meiryo", sans-serif',
-};
 ```
+
+**ショート動画では使わないコンポーネント（定義しない）:**
+- `bullet_list` / `follow_cta` / `line_cta` / `theme` / `headingBannerConfig`
+- 縦動画は情報密度が詰まりすぎるため、テロップ8種（normal / normal_emphasis / emphasis / emphasis2 / section / negative / negative2 / third_party）のみに絞る
 
 **SEはフォルダ指定（個別ファイル名ではない）。** 再生時にフォルダ内のファイルからランダムに選択する：
 - startFrameをシードにした疑似乱数で選択（毎回同じ結果を保証）
@@ -100,11 +91,10 @@ npx tsc --noEmit
 
 | フォント定数 | フォント名 | 用途 |
 |-------------|-----------|------|
-| FONT_MPLUS | `'M PLUS Rounded 1c', sans-serif` | 通常系・情報系・CTA系（丸ゴシック・読みやすさ重視） |
+| FONT_MPLUS | `'M PLUS Rounded 1c', sans-serif` | 通常系・情報系（丸ゴシック・読みやすさ重視） |
 | FONT_SHIPPORI | `'Shippori Mincho', serif` | 強調系・ネガティブ系（感情・インパクト重視） |
-| FONT_NOTO | `'Noto Sans JP', sans-serif` | 箇条書き・テーマ系（テーマカラー統一） |
 
-## テンプレート一覧（実装ベース・ショート動画用）
+## テンプレート一覧（実装ベース・ショート動画用・8種）
 
 縦動画は横幅1080pxのため、横動画版より文字数制限を厳しくする。
 
@@ -118,14 +108,10 @@ npx tsc --noEmit
 | negative | FONT_SHIPPORI | 96 | 11 | se/ネガティブ/ |
 | negative2 | FONT_SHIPPORI | 122 | 8 | se/ネガティブ/ |
 | third_party | FONT_MPLUS | 84 | 12 | se/強調/ |
-| bullet_list | FONT_NOTO | 72 | 14 | se/強調/ |
-| line_cta | FONT_MPLUS | 66 | 16 | se/強調/ |
-| follow_cta | FONT_MPLUS | 72 | 14 | se/強調/ |
-| theme | FONT_NOTO | 108 | 9 | se/ポジティブ/ |
 
 ## 完了条件
 - `src/templateConfig.ts` が存在する
-- 全テンプレートの型・設定が定義されている（`headingBannerConfig` 含む）
+- 上記8種類の型・設定が定義されている
 - SE フォルダとの整合性が取れている
 - TypeScript ビルドが通る
 - ユーザーがテンプレート一覧を確認し、スタイルに合意している
@@ -135,7 +121,7 @@ npx tsc --noEmit
 ```
 ✅ Step 07 完了: テンプレート設定を作成しました。
 
-【定義テンプレート数】○○種類（+ 見出しバナー）
+【定義テンプレート数】8種類
 【SE対応】○○個のSEファイルを紐付け
 【スタイル変更】あり / なし
 

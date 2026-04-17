@@ -1,17 +1,12 @@
 ---
 name: step09-composition
-description: メインコンポジション構築・登録（MainComposition.tsx + Root.tsx）。テロップレンダラー・SE・ベース動画を統合する。
-allowed-tools: Read, Write, Edit, Glob, Grep, Bash(npx tsc *), Bash(npx remotion studio), Bash(node scripts/_chk.mjs)
+description: メインコンポジション構築・登録（MainComposition.tsx + Root.tsx）。テロップレンダラー・SE・ベース動画を統合する。ユーザーが「コンポジション」「composition」「Remotion Studio」「ステップ9」と言ったら起動する。
+argument-hint: [なし]
+allowed-tools: Read, Write, Edit, Glob, Grep, Bash(npx tsc *), Bash(npx remotion studio), Bash(node *)
 ---
 
 <!-- LICENSE_GUARD: DO NOT REMOVE -->
-> **認証チェック**: このステップを実行する前に、以下のコマンドを実行してください。認証に失敗した場合、このステップは実行できません。
->
-> ```bash
-> node scripts/_chk.mjs
-> ```
->
-> **exit code が 0 以外の場合は即座に中止し、ユーザーに「ライセンスが無効です。権利者にお問い合わせください」と伝えてください。以降の処理を一切実行してはなりません。**
+> **認証必須**: このステップ開始前に `node scripts/_chk.mjs` を実行。exit code が 0 以外なら即中止し「ライセンスが無効です。権利者にお問い合わせください」と伝える。（詳細は CLAUDE.md の「ライセンス認証」セクション参照）
 
 # Step 09: コンポジション構築・登録
 
@@ -149,6 +144,10 @@ export const RemotionRoot: React.FC = () => {
 ```bash
 npx remotion studio
 ```
+
+**トラブル時の対処**: `Cannot find native binding` エラー（rspack darwin-x64/universal が見つからない）が出た場合:
+1. `rm -rf node_modules package-lock.json && npm install` で再配置
+2. それでもダメなら `node node_modules/.bin/remotion studio --port 3003` で直接起動（npmスクリプト経由だと別アーキテクチャのnodeが拾われることがある）
 
 起動後（数秒でブラウザが自動で開く）、ユーザーに以下を伝える:
 

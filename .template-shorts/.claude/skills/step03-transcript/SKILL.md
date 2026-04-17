@@ -1,17 +1,12 @@
 ---
 name: step03-transcript
-description: 元動画（カット前）にWhisperで文字起こしを実行し、transcript_words.jsonを生成・解析する。発話タイミング・文の区切り・総秒数を把握する。
-allowed-tools: Read, Write, Glob, Grep, Bash(ls *), Bash(wc *), Bash(node *), Bash(/opt/homebrew/bin/python3.12 *), Bash(node scripts/_chk.mjs)
+description: 元動画（カット前）にWhisperで文字起こしを実行し、transcript_words.jsonを生成・解析する。発話タイミング・文の区切り・総秒数を把握する。ユーザーが「文字起こし」「transcript」「ステップ3」「step03」と言ったら起動する。
+argument-hint: [なし]
+allowed-tools: Read, Write, Glob, Grep, Bash(ls *), Bash(wc *), Bash(node *)
 ---
 
 <!-- LICENSE_GUARD: DO NOT REMOVE -->
-> **認証チェック**: このステップを実行する前に、以下のコマンドを実行してください。認証に失敗した場合、このステップは実行できません。
->
-> ```bash
-> node scripts/_chk.mjs
-> ```
->
-> **exit code が 0 以外の場合は即座に中止し、ユーザーに「ライセンスが無効です。権利者にお問い合わせください」と伝えてください。以降の処理を一切実行してはなりません。**
+> **認証必須**: このステップ開始前に `node scripts/_chk.mjs` を実行。exit code が 0 以外なら即中止し「ライセンスが無効です。権利者にお問い合わせください」と伝える。（詳細は CLAUDE.md の「ライセンス認証」セクション参照）
 
 # Step 03: 文字起こし＋トランスクリプト解析（カット前の元動画）
 
@@ -22,7 +17,10 @@ allowed-tools: Read, Write, Glob, Grep, Bash(ls *), Bash(wc *), Bash(node *), Ba
 ## 前提条件
 - Step 02（素材チェック）が完了していること
 - 本編動画が `public/main/` に存在すること
-- Whisper環境: `/opt/homebrew/bin/python3.12` + `mlx-whisper`（**python3.14では動かない、必ず3.12を使用**）
+- **Whisper環境（OS別）**:
+  - **macOS (Apple Silicon)**: Python 3.12 + `mlx-whisper` — `brew install python@3.12 && pip3.12 install mlx-whisper`
+  - **Windows / Linux**: Python 3.12 + `faster-whisper` — `pip install faster-whisper`
+  - ⚠️ **Python 3.14では動かない、必ず3.12を使用**
 
 ## やること
 
@@ -38,23 +36,17 @@ allowed-tools: Read, Write, Glob, Grep, Bash(ls *), Bash(wc *), Bash(node *), Ba
 `.original.json` はstep05の言い直し検出に使う（step04の修正で隠れ言い直しが消えるのを防ぐため）。
 
 ```bash
-/opt/homebrew/bin/python3.12 -c "
-import json, mlx_whisper
-result = mlx_whisper.transcribe('public/main/対象動画.mp4', word_timestamps=True, path_or_hf_repo='mlx-community/whisper-large-v3-mlx')
-words = [{'word': w['word'].strip(), 'start': round(w['start'],3), 'end': round(w['end'],3)} for seg in result['segments'] for w in seg.get('words',[])]
-data = {'language': result.get('language','ja'), 'words': words}
-# 作業用（step04で修正される）
-with open('public/transcript_words.json','w',encoding='utf-8') as f:
-    json.dump(data, f, ensure_ascii=False, indent=2)
-# バックアップ（step05の隠れ言い直し検出用・絶対に編集しない）
-with open('public/transcript_words.original.json','w',encoding='utf-8') as f:
-    json.dump(data, f, ensure_ascii=False, indent=2)
-print(f'{len(words)}語')
-"
+# 共通ラッパー（Mac: mlx-whisper / Windows・Linux: faster-whisper を自動判定）
+node scripts/transcribe.mjs public/main/対象動画.mp4
 ```
 
+内部で以下を実行:
+- macOS: `mlx-community/whisper-large-v3-mlx` モデルで mlx-whisper
+- Windows/Linux: `faster-whisper` ライブラリで同等のlarge-v3モデル
+- 両方とも word-level timestamp 付き
+
 **重要**: 
-- mlx-whisperは `/opt/homebrew/lib/python3.12/site-packages/mlx_whisper` にインストール済み。新たにインストール・重複インストールしないこと。
+- **Whisperモデル固定**: large-v3 を必ず使う。small / turbo / v2 等に勝手に変更禁止（タイムスタンプ精度が落ちて台本照合・テロップ位置がズレる）。
 - **`transcript_words.original.json` は step04・step06 で絶対に編集しない**。step05の隠れ言い直し検出のため、Whisper原文のままで保持する必要がある。
 
 ### 2. トランスクリプト読み込み

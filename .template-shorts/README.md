@@ -10,7 +10,42 @@ Claude Code のスキルシステムで、撮影済み縦動画から **YouTube 
 4. 全画面画像・話者アイコンの自動挿入
 5. Remotion で 1080×1920 縦動画を最終レンダリング
 
-全 15 ステップを `/step01-context` 〜 `/step15-final` のスラッシュコマンドで順番に進めるだけで動画が完成します。
+全 14 ステップを `/step01-context` 〜 `/step14-final` のスラッシュコマンドで順番に進めるだけで動画が完成します。
+
+---
+
+## 必要な環境
+
+**共通**:
+- Node.js 20以上（npm同梱）
+- Python 3.12（**3.14では動きません**）
+- FFmpeg（ffmpeg / ffprobe コマンド）
+
+**macOS (Apple Silicon推奨)**:
+```bash
+# Homebrewで一括インストール
+brew install node python@3.12 ffmpeg
+pip3.12 install mlx-whisper
+npm install
+```
+
+**Windows**:
+```powershell
+# Node.js: https://nodejs.org/
+# Python 3.12: https://www.python.org/downloads/ (インストール時「Add to PATH」にチェック)
+# FFmpeg: https://www.gyan.dev/ffmpeg/builds/ からダウンロードしてPATHに追加
+pip install faster-whisper
+npm install
+```
+
+**Linux (Ubuntu/Debian)**:
+```bash
+sudo apt install nodejs npm python3.12 python3-pip ffmpeg
+pip install faster-whisper
+npm install
+```
+
+> **Whisperモデル**: macOSは `mlx-whisper` (Apple Silicon最適化で高速)、Windows/Linuxは `faster-whisper` を使用。精度は同等（どちらもlarge-v3モデル）。`scripts/transcribe.mjs` が自動で切り替えます。
 
 ---
 
@@ -29,7 +64,7 @@ Claude Code のスキルシステムで、撮影済み縦動画から **YouTube 
 
 ---
 
-## ワークフロー（全15ステップ）
+## ワークフロー（全14ステップ）
 
 ```
 【素材準備フェーズ】
@@ -49,11 +84,10 @@ Claude Code のスキルシステムで、撮影済み縦動画から **YouTube 
 /step10-greenback       → グリーンバック背景置換（任意）
 /step11-videos          → デモ動画挿入
 /step12-images          → 画像挿入（全画面・AI生成・話者アイコン）
-/step13-special         → 箇条書き・CTA・見出しバナー
 
 【BGM・出力フェーズ】
-/step14-bgm             → BGM 挿入
-/step15-final           → 最終レンダリング
+/step13-bgm             → BGM 挿入
+/step14-final           → 最終レンダリング
 ```
 
 ---
@@ -62,7 +96,7 @@ Claude Code のスキルシステムで、撮影済み縦動画から **YouTube 
 
 ```
 .template-shorts/
-├── .claude/skills/     ← Claude Code スキル（15ステップ + catchup + remotion-best-practices）
+├── .claude/skills/     ← Claude Code スキル（14ステップ + catchup + remotion-best-practices）
 ├── CLAUDE.md           ← AI の行動ルール（編集不要）
 ├── video-context.md    ← 動画の設定（step01 で作成）
 ├── public/

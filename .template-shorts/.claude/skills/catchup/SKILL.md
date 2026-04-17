@@ -45,25 +45,24 @@ allowed-tools: Read, Glob, Grep, Bash(ls *), Bash(npx tsc *), Bash(node scripts/
 3. TypeScript ビルドチェック（`npx tsc --noEmit`）
 4. 結果を要約して表示する
 
-## 判定基準（全15ステップ）
+## 判定基準（全14ステップ）
 
 | ステップ | 完了条件 |
 |---------|---------|
 | 01 context | `video-context.md` が存在する |
 | 02 assets | メイン動画が `public/main/`・BGMが `public/bgm/`・SEが `public/se/` に存在する |
-| 03 transcript | `public/transcript_words.json` が存在する |
+| 03 transcript | `public/transcript_words.json` + `public/transcript_words.original.json` が存在する |
 | 04 transcript-fix | 修正履歴ファイル or transcript_words.json の更新時刻が新しい |
 | 05 cut | `public/main/*_cut.mp4` が存在する |
 | 06 transcript（再） | カット後のtranscript_words.jsonが存在する |
-| 07 template | `src/templateConfig.ts` が存在 |
+| 07 template | `src/templateConfig.ts` が存在（8種のテンプレ定義） |
 | 08 telop | `src/telopData.ts` が存在し、エントリがある |
 | 09 composition | `src/MainComposition.tsx` 存在 + Root.tsxに登録あり |
 | 10 greenback | （任意・スキップ可） |
 | 11 videos | （任意・MainCompositionに動画クリップがある） |
 | 12 images | （任意・MainCompositionに `<Img>` がある） |
-| 13 special | BulletList / CTA / HeadingBanner などが実装されている |
-| 14 bgm | MainCompositionに `<Audio src="bgm/...">` がある |
-| 15 final | `public/output/*.mp4` が存在する |
+| 13 bgm | MainCompositionに `<Audio src="bgm/...">` がある |
+| 14 final | `public/output/*.mp4` が存在する |
 
 ## 出力フォーマット
 

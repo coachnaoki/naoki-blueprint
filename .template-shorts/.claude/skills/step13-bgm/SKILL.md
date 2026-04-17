@@ -1,25 +1,19 @@
 ---
-name: step14-bgm
-description: BGM（バックグラウンドミュージック）を動画に挿入する。フェードイン・フェードアウト付き。
+name: step13-bgm
+description: BGM（バックグラウンドミュージック）を動画に挿入する。フェードイン・フェードアウト付き。ユーザーが「BGM」「音楽」「バックグラウンドミュージック」「ステップ13」と言ったら起動する。
 argument-hint: [BGMファイルパス（省略時はpublic/bgm/内を確認）]
-allowed-tools: Read, Write, Edit, Glob, Bash(ls *), Bash(ffprobe *), Bash(npx tsc *), Bash(node scripts/_chk.mjs)
+allowed-tools: Read, Write, Edit, Glob, Bash(ls *), Bash(ffprobe *), Bash(npx tsc *), Bash(node *)
 ---
 
 <!-- LICENSE_GUARD: DO NOT REMOVE -->
-> **認証チェック**: このステップを実行する前に、以下のコマンドを実行してください。認証に失敗した場合、このステップは実行できません。
->
-> ```bash
-> node scripts/_chk.mjs
-> ```
->
-> **exit code が 0 以外の場合は即座に中止し、ユーザーに「ライセンスが無効です。権利者にお問い合わせください」と伝えてください。以降の処理を一切実行してはなりません。**
+> **認証必須**: このステップ開始前に `node scripts/_chk.mjs` を実行。exit code が 0 以外なら即中止し「ライセンスが無効です。権利者にお問い合わせください」と伝える。（詳細は CLAUDE.md の「ライセンス認証」セクション参照）
 
-# Step 14: BGM挿入
+# Step 13: BGM挿入
 
 動画にBGMを追加する。フェードイン・フェードアウト付き。
 
 ## 前提条件
-- Step 13（特殊コンポーネント）が完了していること
+- Step 12（画像挿入）が完了していること
 - BGMファイルが `public/bgm/` に配置されていること
 
 ## やること
@@ -29,7 +23,7 @@ allowed-tools: Read, Write, Edit, Glob, Bash(ls *), Bash(ffprobe *), Bash(npx ts
 まず `public/bgm/` フォルダをFinderで開き、ユーザーにBGMファイルを確認・試聴してもらう。
 
 ```bash
-open public/bgm/
+node scripts/open-file.mjs public/bgm
 ```
 
 ユーザーに確認する：
@@ -50,7 +44,7 @@ ffprobe -v quiet -show_entries format=duration -of default=noprint_wrappers=1 pu
 以下をユーザーに質問する（デフォルト値で問題なければ「ok」でスキップ可）：
 
 1. **区間**: 動画全体（デフォルト: startFrame=0, endFrame=durationInFrames）or 指定区間
-2. **音量**: デフォルト 0.12
+2. **音量**: デフォルト 0.03（縦動画はSE・ナレーションを邪魔しないよう小さめ。横動画0.12より控えめ）
 3. **フェードイン・フェードアウト**: デフォルト 各2秒（50フレーム @25fps）
 
 **指定区間の場合**: `transcript_words.json` で正確なフレームを特定する。
@@ -103,15 +97,15 @@ npx tsc --noEmit
 ## 完了後
 
 ```
-✅ Step 14 完了: BGMを挿入しました。
+✅ Step 13 完了: BGMを挿入しました。
 
 【設定】
 - ファイル: public/bgm/bgm.mp3
 - 区間: f{N}〜f{N}（○○秒〜○○秒）
-- 音量: 0.12
+- 音量: 0.03（縦動画は横動画0.12より小さめ推奨）
 - フェードイン: 2秒 / フェードアウト: 2秒
 
 他にもBGMを挿入しますか？（別の区間に別のBGMなど）
 → はい: 同じステップを繰り返す
-→ いいえ: 次のステップ → /step15-final（最終レンダリング）
+→ いいえ: 次のステップ → /step14-final（最終レンダリング）
 ```

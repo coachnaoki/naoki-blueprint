@@ -1,18 +1,12 @@
 ---
 name: step13-slides
-description: HTMLスライドをPuppeteerでキャプチャ＋ブロック分割し、スライドタイムライン（slideTimeline.ts）を作成する。
+description: HTMLスライドをPuppeteerでキャプチャ＋ブロック分割し、スライドタイムライン（slideTimeline.ts）を作成する。ユーザーが「スライドキャプチャ」「Puppeteer」「slideTimeline」「ステップ13」と言ったら起動する。
 argument-hint: [HTMLファイルパス]
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash(node *), Bash(ls *), Bash(mkdir *), Bash(npx tsc *), Bash(node scripts/_chk.mjs)
 ---
 
 <!-- LICENSE_GUARD: DO NOT REMOVE -->
-> **認証チェック**: このステップを実行する前に、以下のコマンドを実行してください。認証に失敗した場合、このステップは実行できません。
->
-> ```bash
-> node scripts/_chk.mjs
-> ```
->
-> **exit code が 0 以外の場合は即座に中止し、ユーザーに「ライセンスが無効です。権利者にお問い合わせください」と伝えてください。以降の処理を一切実行してはなりません。**
+> **認証必須**: このステップ開始前に `node scripts/_chk.mjs` を実行。exit code が 0 以外なら即中止し「ライセンスが無効です。権利者にお問い合わせください」と伝える。（詳細は CLAUDE.md の「ライセンス認証」セクション参照）
 
 # Step 14: スライドキャプチャ＋タイムライン
 

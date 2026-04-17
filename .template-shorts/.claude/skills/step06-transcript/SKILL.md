@@ -1,17 +1,12 @@
 ---
 name: step06-transcript
 description: カット済み動画にWhisperで再文字起こしを実行し、step05の修正リストを再適用する。カット後の正確なタイムスタンプでtranscript_words.jsonを確定する。
-allowed-tools: Read, Write, Edit, Glob, Grep, Bash(ls *), Bash(wc *), Bash(node *), Bash(/opt/homebrew/bin/python3.12 *), Bash(node scripts/_chk.mjs)
+argument-hint: [なし]
+allowed-tools: Read, Write, Edit, Glob, Grep, Bash(ls *), Bash(wc *), Bash(node *)
 ---
 
 <!-- LICENSE_GUARD: DO NOT REMOVE -->
-> **認証チェック**: このステップを実行する前に、以下のコマンドを実行してください。認証に失敗した場合、このステップは実行できません。
->
-> ```bash
-> node scripts/_chk.mjs
-> ```
->
-> **exit code が 0 以外の場合は即座に中止し、ユーザーに「ライセンスが無効です。権利者にお問い合わせください」と伝えてください。以降の処理を一切実行してはなりません。**
+> **認証必須**: このステップ開始前に `node scripts/_chk.mjs` を実行。exit code が 0 以外なら即中止し「ライセンスが無効です。権利者にお問い合わせください」と伝える。（詳細は CLAUDE.md の「ライセンス認証」セクション参照）
 
 # Step 06: カット後の再文字起こし＋修正再適用
 
@@ -22,7 +17,9 @@ Step 06でカット済みの動画に対してWhisperで再文字起こしを実
 ## 前提条件
 - Step 05（一括カット）が完了し、カット済み動画（`*_cut.mp4`）が存在すること
 - Step 05で作成した修正リスト（`transcript-fixes.json`）が存在すること
-- Whisper環境: `/opt/homebrew/bin/python3.12` + `mlx-whisper`（**python3.14では動かない、必ず3.12を使用**）
+- Whisper環境（step03と同じ・README参照）:
+  - macOS: Python 3.12 + `mlx-whisper`
+  - Windows/Linux: Python 3.12 + `faster-whisper`
 
 ## やること
 
@@ -30,17 +27,15 @@ Step 06でカット済みの動画に対してWhisperで再文字起こしを実
 
 カット済み動画に対してWhisperを実行する。
 
+**Whisperモデル固定**: large-v3 を必ず使う（small/turbo/v2 は禁止・タイムスタンプ精度が落ちる）。
+
 ```bash
-/opt/homebrew/bin/python3.12 -c "
-import json, mlx_whisper
-result = mlx_whisper.transcribe('public/main/<メイン動画>_cut.mp4', word_timestamps=True, path_or_hf_repo='mlx-community/whisper-large-v3-mlx')
-# ※ メイン動画のファイル名は video-context.md の「動画ファイル」セクションを参照
-words = [{'word': w['word'].strip(), 'start': round(w['start'],3), 'end': round(w['end'],3)} for seg in result['segments'] for w in seg.get('words',[])]
-with open('public/transcript_words.json','w',encoding='utf-8') as f:
-    json.dump({'language': result.get('language','ja'), 'words': words}, f, ensure_ascii=False, indent=2)
-print(f'{len(words)}語')
-"
+# 共通ラッパー（Mac: mlx-whisper / Windows・Linux: faster-whisper）
+# --no-backup で original.json を上書きしない（step03のバックアップを維持）
+node scripts/transcribe.mjs public/main/<メイン動画>_cut.mp4 --no-backup
 ```
+
+※ メイン動画のファイル名は `video-context.md` の「動画ファイル」セクションを参照
 
 ### 2. 修正リストの再適用
 
