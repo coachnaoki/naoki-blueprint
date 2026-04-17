@@ -595,7 +595,7 @@ function slide23SecondVideo() {
 
 // 24. Xへ投稿（2日間共通）
 function slide24Post() {
-  return `<section class="slide" data-section="post" data-anim-fixed
+  return `<section class="slide anim-fade-up" data-section="post"
     data-notes="感想や成果物はぜひXにシェアしてください。QRに投稿本文があらかじめセットされているので、スマホで読み取ればそのまま投稿できます。投稿いただいた内容はこちらで拡散させていただきます。">
     ${ph(24, 'Share on X')}
     <div class="slide-content" style="align-items:center;text-align:center">
