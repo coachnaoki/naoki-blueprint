@@ -50,25 +50,68 @@ ffmpeg -i public/main/元動画.mp4 -af silencedetect=noise=-30dB:d=0.3 -f null 
 
 ### Phase 2: 言い直し区間の検出
 
-修正済みtranscript_words.jsonを解析し、以下のパターンで言い直し候補を検出する。
+**⚠️ 検出データの選択（重要）:**
+- **隠れ言い直し検出（パターン4）→ `public/transcript_words.original.json` を使う**（Whisper原文・修正前）
+  - step04の修正で複数ワードが1ワードに統合されると、隠れ言い直しが消えるため
+- **重複フレーズ検出（パターン1〜3）→ `public/transcript_words.json` を使う**（修正後）
+  - 修正後の正しい日本語で重複を検出する方が精度が高い
 
-#### パターン1: 同一フレーズの繰り返し
-連続する2〜5単語が、3秒以内に再度出現する場合、前の方を言い直しと判定する。
+以下のパターンで言い直し候補を検出する。
 
-例：「テニスのグリップは、テニスのグリップは大きく分けて」
-→ 1回目の「テニスのグリップは」をカット
+#### パターン1〜3: N-gram自動検出（同一フレーズの繰り返し・文中断・フィラー挟み）
 
-#### パターン2: 文の途中での中断＋再開
-文が途中で切れ、直後に同じ文頭から再開している場合。
+**ハードコード禁止。以下のアルゴリズムで自動検出する。**
 
-例：「ポイントはですね、えー、ポイントは3つあります」
-→ 「ポイントはですね、えー、」をカット
+10文字以上のN-gramで、同じ文字列が2回以上登場し、かつ時刻差が30秒以内のものを言い直し候補とする。
 
-#### パターン3: フィラー＋同一語の繰り返し
-「えー」「あのー」「まあ」などのフィラーを挟んで、直前と同じ単語・フレーズを繰り返している場合。
+```python
+import json, re, subprocess
 
-例：「このショットを、えー、このショットを打つ時は」
-→ 「このショットを、えー、」をカット
+# Phase 1の無音区間を取得済みの前提（silences）
+orig = json.load(open('public/transcript_words.original.json'))['words']
+text = ''.join(w['word'].replace(' ','') for w in orig)
+
+def time_at(char_p):
+    c = 0
+    for w in orig:
+        wl = len(w['word'].replace(' ',''))
+        if c + wl > char_p: return w['start']
+        c += wl
+    return orig[-1]['end']
+
+# N=10〜19文字のN-gramで2回以上登場するものを収集
+candidates = {}
+for n in range(10, 20):
+    for i in range(len(text) - n + 1):
+        phrase = text[i:i+n]
+        if any(c in phrase for c in '。、！？'): continue  # 句読点跨ぎは除外
+        candidates.setdefault(phrase, []).append(i)
+
+# 2回以上登場 + 時刻差30秒以内
+dup_phrases = []
+for phrase, positions in candidates.items():
+    if len(positions) < 2: continue
+    t1 = time_at(positions[0])
+    t2 = time_at(positions[1])
+    if t2 - t1 > 30: continue  # 30秒超は意図的な繰り返しの可能性
+    dup_phrases.append((phrase, t1, t2))
+
+# オーバーラップ除去（長いフレーズを優先）
+dup_phrases.sort(key=lambda x: -len(x[0]))
+def overlaps(a, b):
+    return not (a[1] < b[0] - 0.1 or b[1] < a[0] - 0.1)
+phrase_retakes = []
+for p, t1, t2 in dup_phrases:
+    cut = (t1, t2)
+    if any(overlaps(cut, s_cut) for s_cut, _ in phrase_retakes): continue
+    phrase_retakes.append((cut, p))
+
+print(f"重複フレーズ検出: {len(phrase_retakes)}件")
+```
+
+**なぜ最小10文字か:** 短いフレーズ（「ポジショニング」等8文字）は正文でも偶然2回登場しやすく誤検出になる。10文字以上なら偶然の一致はほぼ発生しない。
+
+**なぜ時刻差30秒以内か:** 30秒超で同じフレーズが登場する場合、セクション区切りや意図的な繰り返しの可能性が高い。言い直しは通常5〜20秒以内。
 
 #### パターン4: Whisperが隠した言い直し（重要）
 
@@ -78,9 +121,16 @@ Whisperは言い直し部分を1つの単語に統合することがある。**1
 
 検出方法：
 ```python
+# 必ず .original.json から検出する
+import json
+orig = json.load(open('public/transcript_words.original.json'))['words']
 # 1〜2文字で0.7秒以上のワードを検出
-hidden_retakes = [w for w in words if len(w['word'].strip()) <= 2 and (w['end'] - w['start']) >= 0.7]
+hidden_retakes = [(i, w) for i, w in enumerate(orig) if len(w['word'].strip()) <= 2 and (w['end'] - w['start']) >= 0.7]
+print(f'隠れ言い直し: {len(hidden_retakes)}件')
 ```
+
+**⚠️ 検出された全件をループで処理する（必須）。**
+1件だけ処理するなどのハードコード禁止。例1, 例2 は実例であり、件数を限定するものではない。
 
 #### 隠れ言い直しのカット範囲自動拡張（必須）
 
@@ -221,17 +271,30 @@ ffprobe -v quiet -show_entries format=duration -of default=noprint_wrappers=1 pu
 open public/main/元動画_cut.mp4
 ```
 
-### Phase 7: ユーザー確認 → 追加調整（必要に応じて）
+### Phase 7: ユーザー確認 → 追加調整（必須）
 
-ユーザーが再生確認した結果、以下のフィードバックがあれば対応する：
+動画確認時、必ず以下をユーザーに聞く:
+```
+カット動画を確認してください。以下をチェックしてほしい:
+1. 言い直しが全部カットされているか（例: 同じフレーズが2回話されてないか）
+2. 語尾が切れていないか
+3. 無駄なフレーム（数フレームの残骸）がないか
+
+問題があれば「〇分〇秒で〜」の形式で教えてください。
+```
+
+ユーザーのフィードバックに応じて対応：
 
 | フィードバック | 対応 |
 |--------------|------|
+| 「〇秒で言い直しがある」 | 該当箇所をretake_cutsに追加して再エンコード |
 | 「語尾が切れている」 | 該当セグメントのend時間を+0.1〜0.3秒延長して再エンコード |
 | 「無駄なフレームが残っている」 | 該当のキープセグメントの境界を調整して再エンコード |
-| 「まだ言い直しが残っている」 | 追加の言い直し区間をretake_cutsに追加して再エンコード |
 
 **再エンコードは常に元動画から行う。** カット済み動画を再カットしてはいけない。
+
+**なぜユーザー確認が必須か:**
+Whisperの出力・silencedetectでは検出しきれないパターンがある（例: 句の長さが閾値ギリギリの隠れ言い直し、意味的な重複）。ユーザーの耳で確認するフェーズを必ず入れる。
 
 ## 完了条件
 - カット済み動画（`*_cut.mp4`）が `public/main/` に存在する

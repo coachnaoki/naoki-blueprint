@@ -13,7 +13,7 @@ allowed-tools: Read, Write, Glob, Grep, Bash(ls *), Bash(wc *), Bash(node *), Ba
 >
 > **exit code が 0 以外の場合は即座に中止し、ユーザーに「ライセンスが無効です。権利者にお問い合わせください」と伝えてください。以降の処理を一切実行してはなりません。**
 
-# Step 04: 文字起こし＋トランスクリプト解析（カット前の元動画）
+# Step 03: 文字起こし＋トランスクリプト解析（カット前の元動画）
 
 **元動画（カット前）** にWhisperで文字起こしを実行し、`public/transcript_words.json` を生成・解析する。
 
@@ -34,18 +34,28 @@ allowed-tools: Read, Write, Glob, Grep, Bash(ls *), Bash(wc *), Bash(node *), Ba
 
 ### 1. Whisperで文字起こし実行
 
+**transcript_words.json と transcript_words.original.json を同時に作成する。**
+`.original.json` はstep05の言い直し検出に使う（step04の修正で隠れ言い直しが消えるのを防ぐため）。
+
 ```bash
 /opt/homebrew/bin/python3.12 -c "
 import json, mlx_whisper
 result = mlx_whisper.transcribe('public/main/対象動画.mp4', word_timestamps=True, path_or_hf_repo='mlx-community/whisper-small-mlx')
 words = [{'word': w['word'].strip(), 'start': round(w['start'],3), 'end': round(w['end'],3)} for seg in result['segments'] for w in seg.get('words',[])]
+data = {'language': result.get('language','ja'), 'words': words}
+# 作業用（step04で修正される）
 with open('public/transcript_words.json','w',encoding='utf-8') as f:
-    json.dump({'language': result.get('language','ja'), 'words': words}, f, ensure_ascii=False, indent=2)
+    json.dump(data, f, ensure_ascii=False, indent=2)
+# バックアップ（step05の隠れ言い直し検出用・絶対に編集しない）
+with open('public/transcript_words.original.json','w',encoding='utf-8') as f:
+    json.dump(data, f, ensure_ascii=False, indent=2)
 print(f'{len(words)}語')
 "
 ```
 
-**重要**: mlx-whisperは `/opt/homebrew/lib/python3.12/site-packages/mlx_whisper` にインストール済み。新たにインストール・重複インストールしないこと。
+**重要**: 
+- mlx-whisperは `/opt/homebrew/lib/python3.12/site-packages/mlx_whisper` にインストール済み。新たにインストール・重複インストールしないこと。
+- **`transcript_words.original.json` は step04・step06 で絶対に編集しない**。step05の隠れ言い直し検出のため、Whisper原文のままで保持する必要がある。
 
 ### 2. トランスクリプト読み込み
 
@@ -98,7 +108,7 @@ print(f'{len(words)}語')
 ## 完了後
 
 ```
-✅ Step 04 完了: トランスクリプト解析が完了しました。
+✅ Step 03 完了: トランスクリプト解析が完了しました。
 
 【概要】
 - 総ワード数: ○○語

@@ -17,7 +17,10 @@ allowed-tools: Read, Edit, Write, Glob, Grep, Bash(node *), Bash(node scripts/_c
 
 ユーザーから提供された台本（ナレーション原稿）と `transcript_words.json` を照合し、Whisperの誤変換・誤字を修正する。
 
-> **重要**: このステップはカット前の元動画のtranscriptを修正する。修正後のtranscriptは次のstep06（一括カット）で言い直し検出に使われるため、**ここで正確に修正しておくことが極めて重要**。
+> **重要**: このステップはカット前の元動画のtranscriptを修正する。修正後のtranscriptはテロップ生成（step08）で使われる。
+
+> **⚠️ 絶対に編集しないファイル: `public/transcript_words.original.json`**
+> これはWhisper原文のバックアップで、step05の隠れ言い直し検出のために保持される。step04では `public/transcript_words.json` のみ編集すること。
 
 ## 前提条件
 - Step 03（文字起こし）が完了していること
