@@ -610,7 +610,7 @@ const calcTextWidth = (text: string, fontSize: number) =>
         width: "100%", height: "100%",
         objectFit: "cover",
         objectPosition: "50% 0%",
-        transform: "scale(1.5)",
+        transform: "scale(3.0)",
       }}
     />
   </div>
@@ -628,7 +628,8 @@ objectPositionの数値は直感と合わないため、以下の手順で合わ
 
 #### Step 2: 初期値計算
 ```javascript
-// divサイズは325px
+// divサイズは325px、scaleは3.0（顔をしっかり大きく見せる）
+const scale = 3.0;
 const coverScale = 325 / 1080;           // = 0.3009
 const renderedW = 1920 * coverScale;      // = 577.8
 const overflowX = renderedW - 325;        // = 252.8
