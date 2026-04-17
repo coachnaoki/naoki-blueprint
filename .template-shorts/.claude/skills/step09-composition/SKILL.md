@@ -140,13 +140,23 @@ export const RemotionRoot: React.FC = () => {
 - `fps` は `video-context.md` の制作設定に記載されたFPSを使用する
 - `durationInFrames` は `video-context.md` の総フレーム数を使用する
 
-### 4. Remotion Studio を起動
+### 4. Remotion Studio を起動（必須・絶対スキップ禁止）
+
+**⚠️ MainComposition.tsx と Root.tsx の作成後、無条件で Remotion Studio を起動する。**
+
+「起動しますか？」と聞かずに、以下を**バックグラウンド実行**で起動:
 
 ```bash
 npx remotion studio
 ```
 
-**ユーザーに「Remotion Studio を開きました。以降のステップでも使うので、開いたままにしておいてください」と伝える。**
+起動後（数秒でブラウザが自動で開く）、ユーザーに以下を伝える:
+
+```
+Remotion Studio を起動しました。
+ブラウザが自動で開きます（http://localhost:3000）。
+以降のステップ（画像挿入・BGM・CTA等）でも使うので、開いたままにしておいてください。
+```
 
 ### 5. TypeScript ビルドチェック
 
