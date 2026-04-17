@@ -14,12 +14,12 @@ allowed-tools: Read, Write, Edit, Glob, Bash(ls *), Bash(ffprobe *), Bash(npx ts
 >
 > **exit code が 0 以外の場合は即座に中止し、ユーザーに「ライセンスが無効です。権利者にお問い合わせください」と伝えてください。以降の処理を一切実行してはなりません。**
 
-# Step 19: BGM挿入
+# Step 14: BGM挿入
 
 動画にBGMを追加する。フェードイン・フェードアウト付き。
 
 ## 前提条件
-- Step 18（エンドスクリーン）が完了またはスキップ済み
+- Step 13（特殊コンポーネント）が完了していること
 - BGMファイルが `public/bgm/` に配置されていること
 
 ## やること
@@ -52,7 +52,6 @@ ffprobe -v quiet -show_entries format=duration -of default=noprint_wrappers=1 pu
 1. **区間**: 動画全体（デフォルト: startFrame=0, endFrame=durationInFrames）or 指定区間
 2. **音量**: デフォルト 0.12
 3. **フェードイン・フェードアウト**: デフォルト 各2秒（50フレーム @25fps）
-4. **エンドスクリーン用に別のBGMを入れるか？**（step18でエンドスクリーンを追加した場合）
 
 **指定区間の場合**: `transcript_words.json` で正確なフレームを特定する。
 
@@ -95,24 +94,7 @@ import { staticFile } from "remotion";
 </Sequence>
 ```
 
-### 6. エンドスクリーン用BGM（任意）
-
-エンドスクリーンがある場合、本編BGMとは別のBGMを `originalLastFrame` 以降に配置できる。
-
-```typescript
-// ED用BGM（本編BGMとは別のSequence）
-<Sequence from={originalLastFrame} durationInFrames={endscreenDuration} layout="none">
-  <Audio
-    src={staticFile("bgm/ed_bgm.mp3")}
-    volume={(f) => interpolate(f, [0, fadeIn, endscreenDuration - fadeOut, endscreenDuration],
-      [0, edVolume, edVolume, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" })}
-  />
-</Sequence>
-```
-
-※ ED用BGMがない場合は本編BGMのendFrameをdurationInFramesまで延長する。
-
-### 7. TypeScriptコンパイル確認
+### 6. TypeScriptコンパイル確認
 
 ```bash
 npx tsc --noEmit
@@ -121,7 +103,7 @@ npx tsc --noEmit
 ## 完了後
 
 ```
-✅ Step 19 完了: BGMを挿入しました。
+✅ Step 14 完了: BGMを挿入しました。
 
 【設定】
 - ファイル: public/bgm/bgm.mp3
@@ -131,5 +113,5 @@ npx tsc --noEmit
 
 他にもBGMを挿入しますか？（別の区間に別のBGMなど）
 → はい: 同じステップを繰り返す
-→ いいえ: → /step19-opening（OP連結＋本編レンダリング1回目）
+→ いいえ: 次のステップ → /step15-final（最終レンダリング）
 ```

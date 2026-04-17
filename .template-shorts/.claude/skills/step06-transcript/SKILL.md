@@ -13,14 +13,14 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash(ls *), Bash(wc *), Bash(node 
 >
 > **exit code が 0 以外の場合は即座に中止し、ユーザーに「ライセンスが無効です。権利者にお問い合わせください」と伝えてください。以降の処理を一切実行してはなりません。**
 
-# Step 07: カット後の再文字起こし＋修正再適用
+# Step 06: カット後の再文字起こし＋修正再適用
 
 Step 06でカット済みの動画に対してWhisperで再文字起こしを実行し、Step 05で作成した修正リストを再適用する。
 
 > **なぜ再文字起こしが必要か**: Step 06のカットで動画の尺が変わるため、Step 04のtranscript_words.jsonのタイムスタンプはカット後の動画と一致しない。カット済み動画に対して改めてWhisperを実行し、正確なタイムスタンプを取得する必要がある。
 
 ## 前提条件
-- Step 06（一括カット）が完了し、カット済み動画（`*_cut.mp4`）が存在すること
+- Step 05（一括カット）が完了し、カット済み動画（`*_cut.mp4`）が存在すること
 - Step 05で作成した修正リスト（`transcript-fixes.json`）が存在すること
 - Whisper環境: `/opt/homebrew/bin/python3.12` + `mlx-whisper`（**python3.14では動かない、必ず3.12を使用**）
 
@@ -178,7 +178,7 @@ rm -f fix-transcript.js transcript-fixes.json
 ## 完了後
 
 ```
-✅ Step 07 完了: カット後の再文字起こし＋修正が完了しました。
+✅ Step 06 完了: カット後の再文字起こし＋修正が完了しました。
 
 【概要】
 - 総ワード数: ○○語

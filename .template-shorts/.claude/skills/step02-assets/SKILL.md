@@ -15,7 +15,7 @@ allowed-tools: Read, Glob, Grep, Bash(ls *), Bash(ffprobe *), Bash(mkdir *), Bas
 
 # Step 02: 素材チェック & 役割確定
 
-動画制作に必要な素材を確認し、複数動画がある場合は役割（本編 / 物理挿入 / オーバーレイ / OP / ハイライト）と文字起こし順序を確定する。
+動画制作に必要な素材を確認し、複数動画がある場合は役割（本編 / 物理挿入 / オーバーレイ）と文字起こし順序を確定する。
 
 ## やること
 
@@ -106,8 +106,6 @@ ffprobe -v quiet -show_entries format=duration:stream=width,height,r_frame_rate 
 - 本編: main/xxx.mp4（1080x1920, 30fps, ○○秒）
 - 物理挿入: inserts/xxx.mp4（あれば）
 - オーバーレイ: overlays/xxx.mp4（あれば）
-- OP: opening/xxx.mp4（あれば）
-- ハイライト: highlight/xxx.mp4（あれば）
 - BGM: ✅ / SE: ✅（○○個）
 - 不足: （あれば記載）
 

@@ -1,6 +1,6 @@
 ---
 name: step13-special-components
-description: BulletList・CTA（LINE/チャンネル登録）・HeadingBanner・ThemeTelopをMainComposition.tsxに実装する。他の視覚要素（スライド・画像・動画クリップ）が確定した後に行う。
+description: BulletList・CTA（LINE/フォロー誘導）・HeadingBanner・ThemeTelopをMainComposition.tsxに実装する。他の視覚要素（画像・動画クリップ）が確定した後に行う。
 argument-hint: [実装するコンポーネント名（省略時は全て実装）]
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash(npx tsc *), Bash(node scripts/_chk.mjs)
 ---
@@ -14,19 +14,19 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash(npx tsc *), Bash(node scripts
 >
 > **exit code が 0 以外の場合は即座に中止し、ユーザーに「ライセンスが無効です。権利者にお問い合わせください」と伝えてください。以降の処理を一切実行してはなりません。**
 
-# Step 17: 特殊コンポーネント実装
+# Step 13: 特殊コンポーネント実装
 
-BulletList・CTA（LINE誘導/チャンネル登録）・HeadingBanner・ThemeTelopをMainComposition.tsxに実装する。
+BulletList・CTA（LINE誘導/フォロー誘導）・HeadingBanner・ThemeTelopをMainComposition.tsxに実装する。
 
 ## 前提条件
-- Step 16（画像挿入）が完了していること
+- Step 12（画像挿入）が完了していること
 
 ## なぜこのタイミングか？
 
-これらのコンポーネントは、他のすべての視覚要素（スライド・画像・動画クリップ）の配置が確定してから実装する必要がある。理由:
-- **BulletList**: 表示中はスライド・ワイプ・動画クリップを非表示にする必要があるため、それらのフレーム範囲が確定していないと条件を書けない
-- **HeadingBanner**: 全画面コンテンツ（スライド・画像・動画クリップ）表示中は非表示にするため、全画面要素の一覧が必要
-- **CTA**: 画像エリア中央に配置するため、画像の配置が確定していないと位置が決まらない
+これらのコンポーネントは、他のすべての視覚要素（画像・動画クリップ）の配置が確定してから実装する必要がある。理由:
+- **BulletList**: 表示中は動画クリップを非表示にする必要があるため、それらのフレーム範囲が確定していないと条件を書けない
+- **HeadingBanner**: 全画面コンテンツ（画像・動画クリップ）表示中は非表示にするため、全画面要素の一覧が必要
+- **CTA**: 画面中央に配置するため、他要素と重ならないことを確認してから決定
 - **ThemeTelop**: 他の要素と重複しないことを確認してから配置する
 
 ---
@@ -35,7 +35,7 @@ BulletList・CTA（LINE誘導/チャンネル登録）・HeadingBanner・ThemeTe
 
 ### ユーザーに確認すること
 
-step13のスライド候補選定と同様に、ユーザーに確認する:
+ユーザーに以下を確認する:
 1. **BulletListを使う箇所があるか？**
 2. **ある場合、どの発話区間に入れるか？**（ユーザー指定 or AIが提案）
 
@@ -85,7 +85,7 @@ if (bulletListVisible &&
 
 ---
 
-## CTA（LINE誘導・チャンネル登録）
+## CTA（LINE誘導・フォロー誘導）
 
 ### LINE CTA
 
@@ -217,16 +217,16 @@ npx tsc --noEmit
 ## 完了後
 
 ```
-Step 17 完了: 特殊コンポーネントを実装しました。
+Step 13 完了: 特殊コンポーネントを実装しました。
 
 【実装一覧】
 - BulletList: f{N}〜f{N}（○箇所）
 - LINE CTA: f{N}〜f{N}
-- Subscribe CTA: f{N}〜f{N}
+- Follow CTA: f{N}〜f{N}
 - HeadingBanner: f{N}〜f{N}（全画面非表示条件: ○箇所）
 - ThemeTelop: f{N}〜f{N}（1回のみ）
 
 確認してほしいポイントがあれば教えてね！
 → 調整したい: フレーム範囲やデザイン修正
-→ OK: 次のステップ → /step17-endscreen（エンドスクリーン）
+→ OK: 次のステップ → /step14-bgm（BGM挿入）
 ```

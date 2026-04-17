@@ -13,7 +13,7 @@ allowed-tools: Read, Glob, Grep, Bash(ls *), Bash(npx tsc *), Bash(node scripts/
 >
 > **exit code が 0 以外の場合は即座に中止し、ユーザーに「ライセンスが無効です。権利者にお問い合わせください」と伝えてください。以降の処理を一切実行してはなりません。**
 
-# キャッチアップ: 現在の制作状況を把握する
+# キャッチアップ: 現在の制作状況を把握する（ショート動画版）
 
 既存のソースコードと設定ファイルをすべて読み込み、現在どこまで作業が進んでいるか把握する。
 
@@ -26,21 +26,17 @@ allowed-tools: Read, Glob, Grep, Bash(ls *), Bash(npx tsc *), Bash(node scripts/
 ### ソースコード
 3. `src/templateConfig.ts` — テンプレート設定
 4. `src/telopData.ts` — テロップデータ
-5. `src/slideTimeline.ts` — スライドタイムライン
-6. `src/MainComposition.tsx` — メインコンポジション（または他のメインコンポーネント）
-7. `src/Root.tsx` — コンポジション登録
+5. `src/MainComposition.tsx` — メインコンポジション
+6. `src/Root.tsx` — コンポジション登録
 
 ### アセット確認
-8. `public/slides/` — スライドPNG一覧
-9. `public/se/` — SEファイル一覧
-10. `public/main/` — 本編動画
-11. `public/inserts/` — 物理挿入動画（Step11で本編分割して挟む）
-12. `public/overlays/` — オーバーレイ動画（Step11で本編の上に重ねる）
-13. `public/opening/` — OP動画（Step19で冒頭連結）
-14. `public/highlight/` — ハイライト動画（Step19で冒頭連結）
-15. `public/images/` — 挿入画像
-16. `public/bgm/` — BGMファイル一覧
-17. `public/script/` — 台本ファイル一覧
+7. `public/main/` — 本編動画
+8. `public/inserts/` — 物理挿入動画（Step11で本編分割して挟む）
+9. `public/overlays/` — オーバーレイ動画（Step11で本編の上に重ねる）
+10. `public/images/` — 挿入画像
+11. `public/se/` — SEファイル一覧
+12. `public/bgm/` — BGMファイル一覧
+13. `public/script/` — 台本ファイル一覧
 
 ## やること
 
@@ -49,26 +45,30 @@ allowed-tools: Read, Glob, Grep, Bash(ls *), Bash(npx tsc *), Bash(node scripts/
 3. TypeScript ビルドチェック（`npx tsc --noEmit`）
 4. 結果を要約して表示する
 
-## 判定基準
+## 判定基準（全15ステップ）
 
 | ステップ | 完了条件 |
 |---------|---------|
 | 01 context | `video-context.md` が存在する |
 | 02 assets | メイン動画が `public/main/`・BGMが `public/bgm/`・SEが `public/se/` に存在する |
-| 03 slides | `public/slides/slide-*.png` が存在する |
-| 04 transcript | `public/transcript_words.json` が存在する |
-| 05 template | `src/templateConfig.ts` が存在し、型が定義されている |
-| 06 telop | `src/telopData.ts` が存在し、エントリがある |
-| 07 timeline | `src/slideTimeline.ts` が存在し、エントリがある |
-| 08 composition | メインコンポーネント（.tsx）が存在する |
-| 09 register | `src/Root.tsx` にメインコンポジションが登録されている |
-| 10 preview | （手動確認のため自動判定不可） |
-| 11 render | `public/output/*.mp4` が存在する |
+| 03 transcript | `public/transcript_words.json` が存在する |
+| 04 transcript-fix | 修正履歴ファイル or transcript_words.json の更新時刻が新しい |
+| 05 cut | `public/main/*_cut.mp4` が存在する |
+| 06 transcript（再） | カット後のtranscript_words.jsonが存在する |
+| 07 template | `src/templateConfig.ts` が存在 |
+| 08 telop | `src/telopData.ts` が存在し、エントリがある |
+| 09 composition | `src/MainComposition.tsx` 存在 + Root.tsxに登録あり |
+| 10 greenback | （任意・スキップ可） |
+| 11 videos | （任意・MainCompositionに動画クリップがある） |
+| 12 images | （任意・MainCompositionに `<Img>` がある） |
+| 13 special | BulletList / CTA / HeadingBanner などが実装されている |
+| 14 bgm | MainCompositionに `<Audio src="bgm/...">` がある |
+| 15 final | `public/output/*.mp4` が存在する |
 
 ## 出力フォーマット
 
 ```
-📋 制作状況キャッチアップ
+📋 制作状況キャッチアップ（ショート動画 1080×1920）
 
 | # | ステップ | 状態 |
 |---|---------|------|
@@ -81,7 +81,7 @@ allowed-tools: Read, Glob, Grep, Bash(ls *), Bash(npx tsc *), Bash(node scripts/
 
 【コード概要】
 - テロップ数: ○○個
-- スライド数: ○○枚
-- テンプレート数: ○○種類
+- 画像挿入: ○○枚
+- 動画クリップ: ○○本
 - 動画長: ○○秒（○○フレーム）
 ```
