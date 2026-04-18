@@ -16,7 +16,7 @@ allowed-tools: Read, Write, Glob, Grep, Bash(ls *), Bash(wc *), Bash(node *)
 
 ## 前提条件
 - Step 02（素材チェック）が完了していること
-- 本編動画が `public/main/` に存在すること
+- 本編動画が `public/videos/main/` に存在すること
 - **Whisper環境（OS別）**:
   - **macOS (Apple Silicon)**: Python 3.12 + `mlx-whisper` — `brew install python@3.12 && pip3.12 install mlx-whisper`
   - **Windows / Linux**: Python 3.12 + `faster-whisper` — `pip install faster-whisper`
@@ -26,7 +26,7 @@ allowed-tools: Read, Write, Glob, Grep, Bash(ls *), Bash(wc *), Bash(node *)
 
 ### 0. 対象動画の特定
 
-`public/main/` 内の `.mp4` を対象にする。複数ある場合はStep02で確定した順序に従って**連結前の各ファイル個別に**文字起こしする（物理挿入は Step11 の `<Series>` で行うため、ここでは本編の各パートを独立して扱う）。
+`public/videos/main/` 内の `.mp4` を対象にする。複数ある場合はStep02で確定した順序に従って**連結前の各ファイル個別に**文字起こしする（物理挿入は Step11 の `<Series>` で行うため、ここでは本編の各パートを独立して扱う）。
 
 **`*_cut.mp4` は使わない。** カット前の動画に対して文字起こしを行う。
 
@@ -37,7 +37,7 @@ allowed-tools: Read, Write, Glob, Grep, Bash(ls *), Bash(wc *), Bash(node *)
 
 ```bash
 # 共通ラッパー（Mac: mlx-whisper / Windows・Linux: faster-whisper を自動判定）
-node scripts/transcribe.mjs public/main/対象動画.mp4
+node scripts/transcribe.mjs public/videos/main/対象動画.mp4
 ```
 
 内部で以下を実行:

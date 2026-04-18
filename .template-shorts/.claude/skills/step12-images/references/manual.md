@@ -1,6 +1,6 @@
 # A. 手動画像挿入
 
-画像ファイルが `public/images/` に配置されている前提。
+画像ファイルが `public/images/inserts/`（横挿入）または `public/images/overlays/`（全画面）に配置されている前提。
 
 ## ユーザーに確認すること（必須）
 
@@ -14,7 +14,7 @@
 
 ## やること
 
-1. `public/images/` で画像素材を確認（Win/Mac/Linux: `node scripts/open-file.mjs public/images`）
+1. `public/images/inserts/`（横挿入）または `public/images/overlays/`（全画面）で画像素材を確認（Win/Mac/Linux: `node scripts/open-file.mjs public/images`）
 2. `transcript_words.json` でユーザーが指定した区間の正確なフレームを特定
 3. MainComposition.tsx に追加（全画面1080×1920）
 4. テロップとの重複チェック（z-index確認）

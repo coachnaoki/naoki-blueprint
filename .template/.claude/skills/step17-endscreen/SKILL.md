@@ -19,7 +19,7 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash(npx tsc *), Bash(ls *), Bash(
 
 ## ユーザーに確認すること（必須）
 
-1. **エンドスクリーン素材はあるか？**（画像: `public/images/endscreen.png` / 動画: `public/overlays/endscreen.mp4` 等）
+1. **エンドスクリーン素材はあるか？**（画像: `public/images/overlays/endscreen.png` / 動画: `public/videos/overlays/endscreen.mp4` 等）
 2. **画像か動画か？**
 3. **表示秒数**（画像の場合デフォルト: 10秒 / 動画の場合はクリップの尺に合わせる）
 
@@ -47,7 +47,7 @@ durationInFrames={元のフレーム数 + 250}
 {/* エンドスクリーン画像（元の最終フレーム以降） */}
 {frame >= originalLastFrame && (
   <Img
-    src={staticFile("images/endscreen.png")}
+    src={staticFile("images/overlays/endscreen.png")}
     style={{
       position: "absolute",
       top: 0,
@@ -67,7 +67,7 @@ durationInFrames={元のフレーム数 + 250}
 {/* エンドスクリーン動画（元の最終フレーム以降） */}
 <Sequence from={originalLastFrame} durationInFrames={endscreenDurationInFrames} layout="none">
   <OffthreadVideo
-    src={staticFile("overlays/endscreen.mp4")}
+    src={staticFile("videos/overlays/endscreen.mp4")}
     style={{
       position: "absolute",
       top: 0,
@@ -87,7 +87,7 @@ durationInFrames={元のフレーム数 + 250}
 
 ```bash
 # エンドスクリーン動画の尺を確認
-ffprobe -v quiet -show_entries format=duration -of default=noprint_wrappers=1 public/overlays/endscreen.mp4
+ffprobe -v quiet -show_entries format=duration -of default=noprint_wrappers=1 public/videos/overlays/endscreen.mp4
 ```
 
 `endscreenDurationInFrames = Math.ceil(動画の尺(秒) × FPS)`
@@ -136,7 +136,7 @@ npx tsc --noEmit
 Step 18 完了: エンドスクリーンを追加しました。
 
 【設定】
-- 素材: public/images/endscreen.png（または動画）
+- 素材: public/images/overlays/endscreen.png（または動画）
 - 表示秒数: ○秒（○フレーム）
 - 元のフレーム数: {N} → 延長後: {N}
 - zIndex: 20（最前面）

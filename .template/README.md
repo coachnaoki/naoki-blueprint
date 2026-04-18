@@ -81,7 +81,7 @@ npm install
 
 | 素材 | 形式 | 配置場所 |
 |------|------|----------|
-| 撮影した動画 | MP4 | `public/main/` |
+| 撮影した動画 | MP4 | `public/videos/main/` |
 | BGM | MP3 | `public/bgm/bgm.mp3` |
 | ナレーション台本 | テキスト | `public/script/` または `/step01-context` で `video-context.md` に記入 |
 
@@ -113,8 +113,8 @@ node scripts/validateLicense.mjs NK-XXXX-XXXX-XXXX
 ### 4. 素材を配置
 
 ```bash
-# 撮影した動画を public/main/ に配置
-cp /path/to/your-video.mp4 public/main/
+# 撮影した動画を public/videos/main/ に配置
+cp /path/to/your-video.mp4 public/videos/main/
 
 # BGM を配置
 cp /path/to/bgm.mp3 public/bgm/bgm.mp3

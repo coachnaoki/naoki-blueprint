@@ -30,7 +30,7 @@ Step 06でカット済みの動画に対してWhisperで再文字起こしを実
 ```bash
 # 共通ラッパー（Mac: mlx-whisper / Windows・Linux: faster-whisper）
 # --no-backup で original.json を上書きしない（step03のバックアップを維持）
-node scripts/transcribe.mjs public/main/<メイン動画>_cut.mp4 --no-backup
+node scripts/transcribe.mjs public/videos/main/<メイン動画>_cut.mp4 --no-backup
 ```
 
 ※ メイン動画のファイル名は `video-context.md` の「動画ファイル」セクションを参照

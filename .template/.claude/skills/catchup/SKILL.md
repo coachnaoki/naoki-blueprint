@@ -33,12 +33,12 @@ allowed-tools: Read, Glob, Grep, Bash(ls *), Bash(npx tsc *), Bash(node scripts/
 ### アセット確認
 8. `public/slides/` — スライドPNG一覧
 9. `public/se/` — SEファイル一覧
-10. `public/main/` — 本編動画
-11. `public/inserts/` — 物理挿入動画（Step11で本編分割して挟む）
-12. `public/overlays/` — オーバーレイ動画（Step11で本編の上に重ねる）
-13. `public/opening/` — OP動画（Step19で冒頭連結）
-14. `public/highlight/` — ハイライト動画（Step19で冒頭連結）
-15. `public/images/` — 挿入画像
+10. `public/videos/main/` — 本編動画
+11. `public/videos/inserts/` — 物理挿入動画（Step11で本編分割して挟む）
+12. `public/videos/overlays/` — オーバーレイ動画（Step11で本編の上に重ねる）
+13. `public/videos/opening/` — OP動画（Step19で冒頭連結）
+14. `public/videos/highlight/` — ハイライト動画（Step19で冒頭連結）
+15. `public/images/inserts/` `public/images/overlays/` — 挿入画像
 16. `public/bgm/` — BGMファイル一覧
 17. `public/script/` — 台本ファイル一覧
 
@@ -54,7 +54,7 @@ allowed-tools: Read, Glob, Grep, Bash(ls *), Bash(npx tsc *), Bash(node scripts/
 | ステップ | 完了条件 |
 |---------|---------|
 | 01 context | `video-context.md` が存在する |
-| 02 assets | メイン動画が `public/main/`・BGMが `public/bgm/`・SEが `public/se/` に存在する |
+| 02 assets | メイン動画が `public/videos/main/`・BGMが `public/bgm/`・SEが `public/se/` に存在する |
 | 03 slides | `public/slides/slide-*.png` が存在する |
 | 04 transcript | `public/transcript_words.json` が存在する |
 | 05 template | `src/templateConfig.ts` が存在し、型が定義されている |

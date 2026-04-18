@@ -605,7 +605,7 @@ const calcTextWidth = (text: string, fontSize: number) =>
   }}>
     <OffthreadVideo
       muted
-      src={staticFile("main/input_cut.mp4")}
+      src={staticFile("videos/main/input_cut.mp4")}
       style={{
         width: "100%", height: "100%",
         objectFit: "cover",
@@ -714,12 +714,12 @@ style={{ top: 373 }}  // 固定値
 ```typescript
 // NG: Sequenceなし（静止画になる）
 {frame >= 14850 && frame <= 14994 && (
-  <OffthreadVideo src={staticFile("overlays/sample.mp4")} />
+  <OffthreadVideo src={staticFile("videos/overlays/sample.mp4")} />
 )}
 
 // OK: Sequenceでラップ（正常に再生される）
 <Sequence from={14850} durationInFrames={145} layout="none">
-  <OffthreadVideo src={staticFile("overlays/sample.mp4")} />
+  <OffthreadVideo src={staticFile("videos/overlays/sample.mp4")} />
 </Sequence>
 ```
 

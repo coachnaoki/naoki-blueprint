@@ -606,12 +606,12 @@ style={{ top: 373 }}  // 固定値
 ```typescript
 // NG: Sequenceなし（静止画になる）
 {frame >= 14850 && frame <= 14994 && (
-  <OffthreadVideo src={staticFile("overlays/sample.mp4")} />
+  <OffthreadVideo src={staticFile("videos/overlays/sample.mp4")} />
 )}
 
 // OK: Sequenceでラップ（正常に再生される）
 <Sequence from={14850} durationInFrames={145} layout="none">
-  <OffthreadVideo src={staticFile("overlays/sample.mp4")} />
+  <OffthreadVideo src={staticFile("videos/overlays/sample.mp4")} />
 </Sequence>
 ```
 

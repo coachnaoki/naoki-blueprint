@@ -22,7 +22,7 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash(npx tsc *), Bash(npx remotion
 
 ```
 [Series]
-  ├─ 1. OP（public/opening/*.mp4）※あれば
+  ├─ 1. OP（public/videos/opening/*.mp4）※あれば
   └─ 2. 本編（MainComposition）
 ```
 
@@ -31,7 +31,7 @@ OP動画が無ければSeries連結はスキップして、本編そのままレ
 ## 前提条件
 
 - Step 18（BGM挿入）が完了していること
-- `public/opening/*.mp4` があればOP連結、なければスキップ
+- `public/videos/opening/*.mp4` があればOP連結、なければスキップ
 - TypeScript ビルドが通ること
 - ディスク容量500MB以上の空き
 
@@ -46,8 +46,8 @@ OP動画が無ければSeries連結はスキップして、本編そのままレ
 ### 1. OP素材の確認
 
 ```bash
-ls -la public/opening/ 2>/dev/null
-ffprobe -v quiet -show_entries format=duration -of default=noprint_wrappers=1 public/opening/*.mp4 2>/dev/null
+ls -la public/videos/opening/ 2>/dev/null
+ffprobe -v quiet -show_entries format=duration -of default=noprint_wrappers=1 public/videos/opening/*.mp4 2>/dev/null
 ```
 
 OPファイルがなければSeries連結はスキップ。そのままstep3へ。

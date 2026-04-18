@@ -68,7 +68,7 @@ allowed-tools: Read, Write, Edit, Glob, Grep, WebSearch, WebFetch, Bash(npx tsc 
 ### 全画面: ズーム（zoom）
 ```typescript
 {frame >= startFrame && frame <= endFrame && (
-  <Img src={staticFile("images/example.jpg")} style={{
+  <Img src={staticFile("images/overlays/example.jpg")} style={{
     position: "absolute", width: 1080, height: 1920,
     objectFit: "cover", zIndex: 5,
     transform: `scale(${interpolate(frame, [startFrame, endFrame], [1.0, 1.15], {
@@ -132,7 +132,7 @@ transform: `scale(1.15) translateX(${interpolate(frame, [startFrame, endFrame], 
 【設定】
 - 対象話者: {left/right}
 - アイコン: {ファイル名}（{size}px）
-- バックアップ: public/main/<動画名>_cut_backup.mp4
+- バックアップ: public/videos/main/<動画名>_cut_backup.mp4
 
 → OK: 次のステップ → /step13-bgm（BGM挿入）
 ```

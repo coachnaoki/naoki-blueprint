@@ -3,7 +3,7 @@
 使い方:
   python3.12 scripts/render_speaker_icon.py <アイコン画像> --side left|right [options]
 
-出力: public/main/input_cut.mp4 を上書き（元ファイルは input_cut_backup.mp4 に保存）
+出力: public/videos/main/input_cut.mp4 を上書き（元ファイルは input_cut_backup.mp4 に保存）
 """
 import sys
 import os
@@ -44,7 +44,7 @@ def main():
     ap.add_argument("--detect-every", type=int, default=3,
                     help="何フレームごとに顔検出するか")
     ap.add_argument("--video", default=None,
-                    help="入力動画パス(省略時はpublic/main/の_cut.mp4を自動検出)")
+                    help="入力動画パス(省略時はpublic/videos/main/の_cut.mp4を自動検出)")
     args = ap.parse_args()
 
     if args.video:
@@ -52,7 +52,7 @@ def main():
     else:
         cuts = [f for f in os.listdir(VIDEO_DIR) if f.endswith("_cut.mp4")]
         if not cuts:
-            print("Error: public/main/ に _cut.mp4 が見つかりません")
+            print("Error: public/videos/main/ に _cut.mp4 が見つかりません")
             sys.exit(1)
         video_path = os.path.join(VIDEO_DIR, cuts[0])
 

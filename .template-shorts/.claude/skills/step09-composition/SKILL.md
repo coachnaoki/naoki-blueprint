@@ -24,7 +24,7 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash(npx tsc *), Bash(npx remotion
 MainComposition.tsx は以下の3つのレンダリングシステムで構成する：
 
 #### A. ベース動画
-- カット済み動画（`public/main/*_cut.mp4`）を `OffthreadVideo` で全画面表示
+- カット済み動画（`public/videos/main/*_cut.mp4`）を `OffthreadVideo` で全画面表示
 - `objectFit: "cover"` で画面全体に表示
 
 #### B. テロップレンダラー

@@ -17,7 +17,7 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash(ffmpeg *), Bash(ffprobe *), B
 ## 前提条件
 - Step 04（文字起こし）でtranscript_words.jsonが存在すること
 - Step 05（台本照合）でtranscriptが修正済みであること
-- 元動画（カット前）が `public/main/` に存在すること
+- 元動画（カット前）が `public/videos/main/` に存在すること
 - **元動画のファイル名は `video-context.md` の「動画ファイル」セクションを参照する**（step02で記録済み）
 
 ## やること
@@ -27,7 +27,7 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash(ffmpeg *), Bash(ffprobe *), B
 FFmpegの `silencedetect` フィルターで無音区間を検出する。
 
 ```bash
-ffmpeg -i public/main/元動画.mp4 -af silencedetect=noise=-30dB:d=0.3 -f null - 2>&1 | grep "silence_"
+ffmpeg -i public/videos/main/元動画.mp4 -af silencedetect=noise=-30dB:d=0.3 -f null - 2>&1 | grep "silence_"
 ```
 
 パラメータ：
@@ -232,7 +232,7 @@ keeps = [(max(0, s - 0.075), min(total_duration, e + 0.075)) for s, e in keeps]
 # キープセグメントからfilter_complexを生成
 # 例: keeps = [(0, 5.2), (7.8, 15.3), (18.1, 30.0)]
 
-ffmpeg -y -i public/main/元動画.mp4 -filter_complex \
+ffmpeg -y -i public/videos/main/元動画.mp4 -filter_complex \
   "[0:v]trim=start=0:end=5.2,setpts=PTS-STARTPTS[v0]; \
    [0:a]atrim=start=0:end=5.2,asetpts=PTS-STARTPTS[a0]; \
    [0:v]trim=start=7.8:end=15.3,setpts=PTS-STARTPTS[v1]; \
@@ -243,7 +243,7 @@ ffmpeg -y -i public/main/元動画.mp4 -filter_complex \
   -map "[outv]" -map "[outa]" \
   -c:v libx264 -preset medium -crf 18 \
   -c:a aac -ar 48000 -ac 2 \
-  public/main/元動画_cut.mp4
+  public/videos/main/元動画_cut.mp4
 ```
 
 > **重要: concatの入力順序**
@@ -254,8 +254,8 @@ ffmpeg -y -i public/main/元動画.mp4 -filter_complex \
 
 ```bash
 # カット前後の尺を比較
-ffprobe -v quiet -show_entries format=duration -of default=noprint_wrappers=1 public/main/元動画.mp4
-ffprobe -v quiet -show_entries format=duration -of default=noprint_wrappers=1 public/main/元動画_cut.mp4
+ffprobe -v quiet -show_entries format=duration -of default=noprint_wrappers=1 public/videos/main/元動画.mp4
+ffprobe -v quiet -show_entries format=duration -of default=noprint_wrappers=1 public/videos/main/元動画_cut.mp4
 ```
 
 カット前後の長さ・カット率を表示する。
@@ -265,7 +265,7 @@ ffprobe -v quiet -show_entries format=duration -of default=noprint_wrappers=1 pu
 **⚠️ 必須実行:** エンコード完了直後に以下のコマンドを**必ず実行**する。ユーザーに「確認しますか？」と聞かない。エラー検出のための強制プレビュー。
 
 ```bash
-node scripts/open-file.mjs public/main/元動画_cut.mp4
+node scripts/open-file.mjs public/videos/main/元動画_cut.mp4
 ```
 
 実行後、**動画が自動で再生される** ので、ユーザーに「カットされた動画を開きました。以下を確認してください」と伝えてフィードバックを待つ。
@@ -296,7 +296,7 @@ node scripts/open-file.mjs public/main/元動画_cut.mp4
 Whisperの出力・silencedetectでは検出しきれないパターンがある（例: 句の長さが閾値ギリギリの隠れ言い直し、意味的な重複）。ユーザーの耳で確認するフェーズを必ず入れる。
 
 ## 完了条件
-- カット済み動画（`*_cut.mp4`）が `public/main/` に存在する
+- カット済み動画（`*_cut.mp4`）が `public/videos/main/` に存在する
 - 元動画が保持されている
 - カット前後の長さ・カット率を把握している
 - **カット後の動画を再生し、ユーザーがOKを出している**（再生せずに完了してはいけない）

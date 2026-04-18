@@ -5,8 +5,8 @@ scripts/__pycache__/
 
 # 完成動画・カット動画・バックアップは個人素材なのでコミット禁止
 public/output/*.mp4
-public/main/*_cut.mp4
-public/main/*_backup.mp4
+public/videos/main/*_cut.mp4
+public/videos/main/*_backup.mp4
 
 # 文字起こし・修正履歴
 public/transcript_words.json

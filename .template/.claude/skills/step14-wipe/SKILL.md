@@ -57,7 +57,7 @@ npx remotion still MainVideo --frame=<スライド表示中のフレーム> --ou
 カット済み動画から1フレームを画像として抽出する。話者の顔がはっきり映っている秒数を選ぶ（デフォルトは5秒）。
 
 ```bash
-ffmpeg -ss 5 -i public/main/<メイン動画>_cut.mp4 -frames:v 1 -q:v 2 /tmp/wipe_frame.jpg
+ffmpeg -ss 5 -i public/videos/main/<メイン動画>_cut.mp4 -frames:v 1 -q:v 2 /tmp/wipe_frame.jpg
 # ※ メイン動画のファイル名は video-context.md の「動画ファイル」セクションを参照
 ```
 
@@ -139,7 +139,7 @@ const translateY = Math.round(162.5 - faceY * coverScale);
 ```typescript
 <OffthreadVideo
   muted  // 必須: ベース動画と音声が二重になるのを防ぐ
-  src={staticFile("main/input_cut.mp4")}  // video-context.md参照
+  src={staticFile("videos/main/input_cut.mp4")}  // video-context.md参照
   style={{
     width: "100%",
     height: "100%",

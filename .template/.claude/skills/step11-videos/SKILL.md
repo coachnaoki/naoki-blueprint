@@ -14,14 +14,14 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash(npx tsc *), Bash(npx remotion
 
 ## 前提条件
 - Step 10（グリーンバック）が完了またはスキップ済み
-- クリップが `public/inserts/`（物理挿入）または `public/overlays/`（オーバーレイ）に配置されていること
+- クリップが `public/videos/inserts/`（物理挿入）または `public/videos/overlays/`（オーバーレイ）に配置されていること
 
 ## 方式の選択
 
 | | **物理挿入**（Series分割） | **オーバーレイ**（上に重ね） |
 |---|---|---|
 | **用途** | ナレーションが止まっている区間にデモ映像を挟む | ナレーション中に補足映像を被せる |
-| **フォルダ** | `public/inserts/` | `public/overlays/` |
+| **フォルダ** | `public/videos/inserts/` | `public/videos/overlays/` |
 | **方式** | Remotion `<Series>` で本編を分割し間に挟む | `<Sequence from>` で上に重ねる |
 | **尺の変化** | 伸びる（クリップ分だけ） | 変わらない |
 | **ワードタイムスタンプ** | 影響なし（本編Composition内の時間軸は変わらない） | 影響なし |
@@ -70,7 +70,7 @@ if (isFullscreenVideo) return null;
 ```typescript
 <Sequence from={startFrame} durationInFrames={duration} layout="none">
   <OffthreadVideo
-    src={staticFile("overlays/demo.mp4")}
+    src={staticFile("videos/overlays/demo.mp4")}
     style={{
       position: "absolute", width: 1920, height: 1080,
       objectFit: "cover", zIndex: 5,
@@ -83,7 +83,7 @@ if (isFullscreenVideo) return null;
 ```typescript
 <Sequence from={startFrame} durationInFrames={duration} layout="none">
   <OffthreadVideo
-    src={staticFile("overlays/demo.mp4")}
+    src={staticFile("videos/overlays/demo.mp4")}
     volume={0}
     style={{
       position: "absolute", width: 1920, height: 1080,
@@ -202,8 +202,8 @@ export const MainComposition: React.FC<Props> = ({ fromFrame = 0, toFrame }) => 
 ### 1. クリップの確認
 
 ```bash
-ls -la public/inserts/ public/overlays/ 2>/dev/null
-ffprobe -v quiet -show_entries format=duration -of default=noprint_wrappers=1 public/inserts/*.mp4 public/overlays/*.mp4 2>/dev/null
+ls -la public/videos/inserts/ public/videos/overlays/ 2>/dev/null
+ffprobe -v quiet -show_entries format=duration -of default=noprint_wrappers=1 public/videos/inserts/*.mp4 public/videos/overlays/*.mp4 2>/dev/null
 ```
 
 ### 2. 方式・位置・時間幅をユーザーと確定

@@ -1,7 +1,7 @@
 ---
 name: step10-greenback
 description: グリーンバック動画の背景を画像に置換する。クロマキー処理で緑色を透過し、背景画像を合成する。ユーザーが「グリーンバック」「クロマキー」「背景置換」「greenback」「ステップ10」と言ったら起動する。
-argument-hint: [背景画像パス（省略時はpublic/images/内を確認）]
+argument-hint: [背景画像パス（省略時はpublic/images/overlays/内を確認）]
 allowed-tools: Read, Write, Edit, Glob, Bash(ls *), Bash(ffmpeg *), Bash(npx tsc *), Bash(node *)
 ---
 
@@ -15,7 +15,7 @@ allowed-tools: Read, Write, Edit, Glob, Bash(ls *), Bash(ffmpeg *), Bash(npx tsc
 ## 前提条件
 - Step 09（コンポジション構築・登録）が完了していること
 - 元動画がグリーンバックで撮影されていること
-- 背景画像が `public/images/` に配置されていること
+- 背景画像が `public/images/overlays/` に配置されていること
 
 ## スキップ条件
 - グリーンバック撮影でない場合はスキップ → step11-videos へ
@@ -26,13 +26,13 @@ allowed-tools: Read, Write, Edit, Glob, Bash(ls *), Bash(ffmpeg *), Bash(npx tsc
 
 元動画のフレームを取得して確認する：
 ```bash
-ffmpeg -i public/main/input_cut.mp4 -ss 5 -frames:v 1 -update 1 -q:v 2 /tmp/greenback_check.jpg
+ffmpeg -i public/videos/main/input_cut.mp4 -ss 5 -frames:v 1 -update 1 -q:v 2 /tmp/greenback_check.jpg
 ```
 
 ### 2. 背景画像の確認
 
 ```bash
-ls -la public/images/background*
+ls -la public/images/overlays/background*
 ```
 
 ### 3. MainComposition.tsx にクロマキー処理を追加
@@ -42,10 +42,10 @@ Remotionでは CSS/Canvas ベースのクロマキーは使えないため、**f
 #### Step 3-1: ffmpegでグリーンバックを透過に変換
 
 ```bash
-ffmpeg -i public/main/<メイン動画>_cut.mp4 \
+ffmpeg -i public/videos/main/<メイン動画>_cut.mp4 \
   -vf "chromakey=0x00FF00:0.3:0.1" \
   -c:v png -pix_fmt rgba \
-  public/main/<メイン動画>_cut_alpha.mov
+  public/videos/main/<メイン動画>_cut_alpha.mov
 # ※ メイン動画のファイル名は video-context.md の「動画ファイル」セクションを参照
 ```
 
@@ -62,7 +62,7 @@ ffmpeg -i public/main/<メイン動画>_cut.mp4 \
 ```typescript
 // 背景画像（最背面）
 <Img
-  src={staticFile("images/background.jpg")}
+  src={staticFile("images/overlays/background.jpg")}
   style={{
     position: "absolute", top: 0, left: 0,
     width: 1080, height: 1920,
@@ -72,7 +72,7 @@ ffmpeg -i public/main/<メイン動画>_cut.mp4 \
 
 // 透過動画（背景の上に重ねる）
 <OffthreadVideo
-  src={staticFile("main/input_cut_alpha.mov")}
+  src={staticFile("videos/main/input_cut_alpha.mov")}
   style={{
     position: "absolute", top: 0, left: 0,
     width: 1080, height: 1920,
@@ -116,7 +116,7 @@ npx tsc --noEmit
 ✅ Step 10 完了: グリーンバック背景を置換しました。
 
 【設定】
-- 背景画像: public/images/background.jpg
+- 背景画像: public/images/overlays/background.jpg
 
 次のステップ → /step11-videos（デモ動画の重ね表示）
 進めますか？

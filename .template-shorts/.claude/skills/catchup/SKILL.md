@@ -30,10 +30,10 @@ allowed-tools: Read, Glob, Grep, Bash(ls *), Bash(npx tsc *), Bash(node scripts/
 6. `src/Root.tsx` — コンポジション登録
 
 ### アセット確認
-7. `public/main/` — 本編動画
-8. `public/inserts/` — 物理挿入動画（Step11で本編分割して挟む）
-9. `public/overlays/` — オーバーレイ動画（Step11で本編の上に重ねる）
-10. `public/images/` — 挿入画像
+7. `public/videos/main/` — 本編動画
+8. `public/videos/inserts/` — 物理挿入動画（Step11で本編分割して挟む）
+9. `public/videos/overlays/` — オーバーレイ動画（Step11で本編の上に重ねる）
+10. `public/images/inserts/` `public/images/overlays/` — 挿入画像
 11. `public/se/` — SEファイル一覧
 12. `public/bgm/` — BGMファイル一覧
 13. `public/script/` — 台本ファイル一覧
@@ -50,10 +50,10 @@ allowed-tools: Read, Glob, Grep, Bash(ls *), Bash(npx tsc *), Bash(node scripts/
 | ステップ | 完了条件 |
 |---------|---------|
 | 01 context | `video-context.md` が存在する |
-| 02 assets | メイン動画が `public/main/`・BGMが `public/bgm/`・SEが `public/se/` に存在する |
+| 02 assets | メイン動画が `public/videos/main/`・BGMが `public/bgm/`・SEが `public/se/` に存在する |
 | 03 transcript | `public/transcript_words.json` + `public/transcript_words.original.json` が存在する |
 | 04 transcript-fix | 修正履歴ファイル or transcript_words.json の更新時刻が新しい |
-| 05 cut | `public/main/*_cut.mp4` が存在する |
+| 05 cut | `public/videos/main/*_cut.mp4` が存在する |
 | 06 transcript（再） | カット後のtranscript_words.jsonが存在する |
 | 07 template | `src/templateConfig.ts` が存在（8種のテンプレ定義） |
 | 08 telop | `src/telopData.ts` が存在し、エントリがある |

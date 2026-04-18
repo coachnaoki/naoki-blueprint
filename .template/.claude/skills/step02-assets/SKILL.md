@@ -20,14 +20,15 @@ allowed-tools: Read, Glob, Grep, Bash(ls *), Bash(ffprobe *), Bash(mkdir *), Bas
 
 | フォルダ | 用途 | 必須 |
 |------|------|------|
-| `public/main/` | **本編動画**（ナレーション付き。文字起こし対象） | ✅ |
-| `public/inserts/` | **物理挿入動画**（本編の間に挟み込む。Series分割でタイムスタンプ影響なし） | 任意 |
-| `public/overlays/` | **オーバーレイ動画**（本編の上に時間幅で被せる補足映像） | 任意 |
-| `public/opening/` | **OP動画**（冒頭に連結） | 任意 |
-| `public/highlight/` | **ハイライト動画**（本編の切り抜き。冒頭に連結） | 任意 |
+| `public/videos/main/` | **本編動画**（ナレーション付き。文字起こし対象） | ✅ |
+| `public/videos/inserts/` | **物理挿入動画**（本編の間に挟み込む。Series分割でタイムスタンプ影響なし） | 任意 |
+| `public/videos/overlays/` | **オーバーレイ動画**（本編の上に時間幅で被せる補足映像） | 任意 |
+| `public/videos/opening/` | **OP動画**（冒頭に連結） | 任意 |
+| `public/videos/highlight/` | **ハイライト動画**（本編の切り抜き。冒頭に連結） | 任意 |
 | `public/bgm/` | BGM（`bgm.mp3`） | ✅ |
 | `public/se/` | 効果音（`強調/` `ポジティブ/` `ネガティブ/` 内に `.mp3`） | ✅ |
-| `public/images/` | 挿入画像 | 任意 |
+| `public/images/inserts/` | 横に表示する画像（720×405・固定位置） | 任意 |
+| `public/images/overlays/` | 全画面表示画像（アニメーション付き） | 任意 |
 | `public/script/` | 台本テキスト | 任意 |
 | `public/transcript_words.json` | 文字起こし出力（Step03で生成） | - |
 
@@ -46,7 +47,7 @@ SEはフォルダ単位で管理し、再生時にフォルダ内からランダ
 
 ```bash
 for dir in main inserts overlays opening highlight; do
-  [ -d "public/$dir" ] && ls public/$dir/*.mp4 2>/dev/null
+  [ -d "public/videos/$dir" ] && ls public/videos/$dir/*.mp4 2>/dev/null
 done
 # 各ファイルに対して
 ffprobe -v quiet -show_entries format=duration:stream=width,height,r_frame_rate -of default=noprint_wrappers=1 <file>
@@ -54,7 +55,7 @@ ffprobe -v quiet -show_entries format=duration:stream=width,height,r_frame_rate 
 
 ### 4. 複数動画の役割確認（必須）
 
-`public/main/` に複数の動画がある、または `inserts/` `overlays/` `opening/` `highlight/` のどれかに動画がある場合、**必ず**ユーザーに役割を確認する。
+`public/videos/main/` に複数の動画がある、または `inserts/` `overlays/` `opening/` `highlight/` のどれかに動画がある場合、**必ず**ユーザーに役割を確認する。
 
 #### 確認項目
 
