@@ -3,7 +3,7 @@
 // For executives & video creators
 // ================================================
 
-const T = 26;
+const T = 25;
 
 function ph(num, tag) {
   return `<div class="page-header">
@@ -76,7 +76,7 @@ function slide03Features() {
 function slide04MacSetup() {
   return `<section class="slide" data-section="setup"
     data-notes="Mac の方はこのコマンドを順に貼り付けてください。Homebrew を使います。Apple Silicon なら mlx-whisper が爆速で動きます。">
-    ${ph(4, 'Setup / macOS')}
+    ${ph(5, 'Setup / macOS')}
     <div class="slide-content">
       <h2>Mac セットアップ</h2>
       <div class="code">
@@ -97,7 +97,7 @@ pip3.12 install opencv-python</div>
 function slide05WinSetup() {
   return `<section class="slide" data-section="setup"
     data-notes="Windowsの方はCursorを使ってインストールします。Pythonインストール時は必ず Add Python to PATH にチェックを入れてください。">
-    ${ph(5, 'Setup / Windows')}
+    ${ph(6, 'Setup / Windows')}
     <div class="slide-content">
       <h2>Windows セットアップ</h2>
       <p class="lead mb-24">Cursor のターミナルから順番に実行します。</p>
@@ -119,7 +119,7 @@ pip install opencv-python</div>
 function slide06Delivery() {
   return `<section class="slide" data-section="template"
     data-notes="テンプレートはライセンスID制ですが、自動発行になりました。配布されたterms.htmlから同意書を送るだけで即ライセンスIDが発行されます。1台のPCに紐付くため、PC変更時はXのDMで連絡してください。">
-    ${ph(6, 'Get the template')}
+    ${ph(4, 'Get the template')}
     <div class="slide-content">
       <h2>テンプレートの<span class="g-primary">受け取り方</span></h2>
       <ol class="ordered">
@@ -136,14 +136,17 @@ function slide06Delivery() {
   </section>`;
 }
 
-// 07. Cursor で Claude Code 起動（新規）
+// 07. リポジトリ取得 → Claude Code 起動（統合）
 function slide07ClaudeStart() {
   return `<section class="slide" data-section="template"
-    data-notes="Cursorのターミナルで、naoki-blueprintを置きたいフォルダに移動してから、Claude Codeを起動します。Mac/Windowsでコマンドが違うので注意してください。既にClaude Codeを起動済みの人は、Ctrl+Cを2回押して終了してから実行してください。">
-    ${ph(7, 'Start Claude Code')}
+    data-notes="フォルダ移動して、リポジトリをcloneして、Claude Codeを起動するまでを一連の流れで実行します。すでにClaude Code起動中の人は、ターミナルでCtrl+Cを2回押して終了してから始めてください。">
+    ${ph(7, 'Clone & Start')}
     <div class="slide-content">
-      <h2>Cursor で <span class="g-primary">Claude Code 起動</span></h2>
-      <p class="lead mb-24">保存先フォルダに移動してから、Claude Code を起動します（例: デスクトップ上の <code>Cursor</code> フォルダ）</p>
+      <h2>リポジトリ取得 → <span class="g-primary">Claude Code 起動</span></h2>
+      <div class="card card--hot mb-24">
+        <div class="card-body">⚠ すでに Claude Code 起動中の方は <strong style="color:#fff">Ctrl+C</strong>（Macは <strong style="color:#fff">Control+C</strong>）を <strong style="color:#fff">2回押して</strong>終了してから実行</div>
+      </div>
+      <p>保存先フォルダに移動（例: デスクトップ上の <code>Cursor</code> フォルダ）:</p>
       <div class="grid-2">
         <div>
           <div class="pill pill--primary mb-16">macOS</div>
@@ -154,34 +157,10 @@ function slide07ClaudeStart() {
           <div class="code">cd ~\\Desktop\\Cursor</div>
         </div>
       </div>
-      <p class="mt-32">そのフォルダで Claude Code を起動（Mac / Windows 共通）:</p>
-      <div class="code">claude --dangerously-skip-permissions</div>
-      <div class="card card--hot mt-32">
-        <div class="card-title">⚠ すでに Claude Code 起動中の方</div>
-        <div class="card-body">ターミナルで <strong>Ctrl+C</strong>（Mac は <strong>Control+C</strong>）を <strong>2回押して</strong>終了してから実行してください</div>
-      </div>
-    </div>
-  </section>`;
-}
-
-// 08. リポジトリをダウンロード
-function slide08Clone() {
-  return `<section class="slide" data-section="template"
-    data-notes="activate.htmlの手順通りにCursorのターミナルでgit cloneします。Claude Code起動中でもターミナルから実行可能です。">
-    ${ph(8, 'Clone repo')}
-    <div class="slide-content">
-      <h2>リポジトリをダウンロード</h2>
+      <p class="mt-32">続けてリポジトリ取得 → Claude Code 起動（Mac / Windows 共通）:</p>
       <div class="code">git clone https://github.com/coachnaoki/naoki-blueprint.git
-cd naoki-blueprint</div>
-      <p class="lead mt-32">フォルダ構成:</p>
-      <div class="code mt-16">
-naoki-blueprint/
-├── .template/           <span class="cmt">YouTube 横動画テンプレ（20ステップ）</span>
-├── .template-shorts/    <span class="cmt">ショート動画テンプレ（14ステップ）</span>
-├── aislides/            <span class="cmt">スライド生成システム</span>
-├── scripts/             <span class="cmt">ライセンス認証など</span>
-├── 新規作成.sh          <span class="cmt">プロジェクト作成スクリプト</span>
-└── projects/            <span class="cmt">あなたの動画プロジェクト置き場</span></div>
+cd naoki-blueprint
+claude --dangerously-skip-permissions</div>
     </div>
   </section>`;
 }
@@ -190,7 +169,7 @@ naoki-blueprint/
 function slide09License() {
   return `<section class="slide" data-section="template"
     data-notes="activate.htmlに表示されているライセンスIDで認証します。成功したら.licenseファイルが生成されて、以降は自動認証です。">
-    ${ph(9, 'License')}
+    ${ph(8, 'License')}
     <div class="slide-content">
       <h2>ライセンス認証</h2>
       <p class="lead mb-24">activate.html のライセンスIDを貼り付けて認証:</p>
@@ -215,7 +194,7 @@ cd ..</div>
 function slide10TypeProject() {
   return `<section class="slide" data-section="start"
     data-notes="プロジェクト作成は新規作成.shスクリプト1コマンドで自動化されています。実行するとプロジェクト名と動画タイプを聞かれるので答えるだけ。フォルダ作成・npm installまで自動です。">
-    ${ph(10, 'Create project')}
+    ${ph(9, 'Create project')}
     <div class="slide-content">
       <h2>動画タイプを選んで<span class="g-primary">プロジェクト作成</span></h2>
       <p class="lead mb-24">naoki-blueprint フォルダで 1コマンド実行:</p>
@@ -243,7 +222,7 @@ function slide10TypeProject() {
 function slide11Assets() {
   return `<section class="slide" data-section="start"
     data-notes="プロジェクトフォルダの中の public フォルダに、素材をドラッグアンドドロップで入れます。動画系は videos の下、画像系は images の下。必須はメイン動画、BGM、SE の3つです。">
-    ${ph(11, 'Project start')}
+    ${ph(10, 'Project start')}
     <div class="slide-content">
       <h2>素材を <code>public/</code> に配置</h2>
       <div class="code mt-16">
@@ -272,7 +251,7 @@ public/
 function slide12Start() {
   return `<section class="slide" data-section="start"
     data-notes="素材を配置したらプロジェクトフォルダに移動して最初のスラッシュコマンドを打つだけ。Claude Codeは既に起動済みなのでclaudeコマンドは不要。あとはAIが次のコマンドを案内してくれます。">
-    ${ph(12, 'Start work')}
+    ${ph(11, 'Start work')}
     <div class="slide-content">
       <h2>作業<span class="g-primary">スタート。</span></h2>
       <div class="code">cd projects/<span class="hi">2026-04-19</span>
@@ -290,7 +269,7 @@ function slide12Start() {
 function slide13WorkflowLong() {
   return `<section class="slide" data-section="workflow"
     data-notes="横動画版は全20ステップ。4つのフェーズに分かれています。全部通しても3時間程度で1本完成します。">
-    ${ph(13, 'Workflow / Long')}
+    ${ph(12, 'Workflow / Long')}
     <div class="slide-content">
       <h2 style="margin-bottom:32px">横動画ワークフロー<span class="g-primary"> 20</span><span style="color:var(--ink-600);font-size:48px">　steps</span></h2>
       <div class="grid-3" style="gap:48px">
@@ -333,7 +312,7 @@ function slide13WorkflowLong() {
 function slide14WorkflowShort() {
   return `<section class="slide" data-section="workflow"
     data-notes="ショート動画版は14ステップ。縦動画は情報密度が詰まりすぎるので、スライドもワイプも削っています。1本60秒の動画を1時間で作れます。">
-    ${ph(14, 'Workflow / Shorts')}
+    ${ph(13, 'Workflow / Shorts')}
     <div class="slide-content">
       <h2>ショート動画ワークフロー<span class="g-warm"> 14</span><span style="color:var(--ink-600);font-size:48px">　steps</span></h2>
       <div class="grid-2" style="gap:64px">
@@ -368,7 +347,7 @@ function slide14WorkflowShort() {
 function slide15Phase1() {
   return `<section class="slide" data-section="workflow"
     data-notes="フェーズ1は素材準備。文字起こしから無音カットまでです。ここで元動画の尺が40分くらいに縮みます。">
-    ${ph(15, 'Phase 1')}
+    ${ph(14, 'Phase 1')}
     <div class="slide-content">
       <h2>Phase 1　<span class="g-primary">素材準備</span>　step01〜06</h2>
       <div class="grid-2">
@@ -397,7 +376,7 @@ function slide15Phase1() {
 function slide16Phase2() {
   return `<section class="slide" data-section="workflow"
     data-notes="フェーズ2は動画の骨格を作ります。テンプレート設定でフォントや色を決めて、テロップデータを作成、最後にコンポジションで組み上げます。ここでRemotion Studioが起動して、ブラウザで完成形のプレビューができます。">
-    ${ph(16, 'Phase 2')}
+    ${ph(15, 'Phase 2')}
     <div class="slide-content">
       <h2>Phase 2　<span class="g-primary">動画構築</span>　step07〜09</h2>
       <div class="grid-3">
@@ -426,7 +405,7 @@ function slide16Phase2() {
 function slide17Phase3() {
   return `<section class="slide" data-section="workflow"
     data-notes="フェーズ3は素材挿入。任意のステップが多いので、必要な演出だけ使ってください。">
-    ${ph(17, 'Phase 3')}
+    ${ph(16, 'Phase 3')}
     <div class="slide-content">
       <h2>Phase 3　<span class="g-primary">素材挿入</span>　任意</h2>
       <div class="grid-2">
@@ -455,7 +434,7 @@ function slide17Phase3() {
 function slide18Phase4() {
   return `<section class="slide" data-section="workflow"
     data-notes="最後のフェーズ。BGMを入れてレンダリングして完成です。">
-    ${ph(18, 'Phase 4')}
+    ${ph(17, 'Phase 4')}
     <div class="slide-content">
       <h2>Phase 4　<span class="g-primary">BGM・出力</span></h2>
       <div class="grid-2">
@@ -477,7 +456,7 @@ function slide18Phase4() {
 function slide19Telop() {
   return `<section class="slide" data-section="rules"
     data-notes="テロップは全部で8種類。発言の内容や感情に応じて、AIが自動で判定してくれます。">
-    ${ph(19, 'Telop / 8 styles')}
+    ${ph(18, 'Telop / 8 styles')}
     <div class="slide-content">
       <h2>テロップ<span class="g-primary">8デザイン</span></h2>
       <table>
@@ -501,7 +480,7 @@ function slide19Telop() {
 function slide20SE() {
   return `<section class="slide" data-section="rules"
     data-notes="SEは3つのフォルダに分けて管理します。テロップのテンプレに応じて、フォルダの中からランダムに選ばれます。">
-    ${ph(20, 'SE rules')}
+    ${ph(19, 'SE rules')}
     <div class="slide-content">
       <h2>SE 配置ルール</h2>
       <div class="grid-3">
@@ -535,7 +514,7 @@ function slide20SE() {
 function slide21Whisper() {
   return `<section class="slide" data-section="rules"
     data-notes="Whisperは OS によって中身が違います。Mac は mlx-whisper、Windows は faster-whisper。両方とも large-v3 なので精度は同じです。自動で判別してくれます。">
-    ${ph(21, 'Whisper')}
+    ${ph(20, 'Whisper')}
     <div class="slide-content">
       <h2>Whisper の仕組み　<span class="g-primary">自動切替</span></h2>
       <div class="grid-2">
@@ -559,7 +538,7 @@ function slide21Whisper() {
 function slide22ShortNotes() {
   return `<section class="slide" data-section="rules"
     data-notes="ショート動画を作る人への注意点です。縦動画は横幅が狭いので、文字数制限が厳しめ。テロップは1行に収まるよう短く分割してください。">
-    ${ph(22, 'Shorts notes')}
+    ${ph(21, 'Shorts notes')}
     <div class="slide-content">
       <h2>ショート動画　特有の注意点</h2>
       <div class="grid-3">
@@ -584,7 +563,7 @@ function slide22ShortNotes() {
 function slide23SecondVideo() {
   return `<section class="slide" data-section="advanced"
     data-notes="2本目以降はもっと簡単です。ライセンス認証はもう終わっているので、コマンドを1つ打つだけ。新規作成.shでプロジェクト作成から起動まで自動です。">
-    ${ph(23, 'For next videos')}
+    ${ph(22, 'For next videos')}
     <div class="slide-content">
       <h2>2本目以降は、<span class="g-primary">1コマンド。</span></h2>
       <p class="lead mb-24">ライセンス認証は初回のみ。以降は Cursor のターミナルで1コマンド。</p>
@@ -606,7 +585,7 @@ function slide23SecondVideo() {
 function slide24Post() {
   return `<section class="slide anim-fade-up" data-section="post"
     data-notes="感想や成果物はぜひXにシェアしてください。QRに投稿本文があらかじめセットされているので、スマホで読み取ればそのまま投稿できます。投稿いただいた内容はこちらで拡散させていただきます。">
-    ${ph(24, 'Share on X')}
+    ${ph(23, 'Share on X')}
     <div class="slide-content" style="align-items:center;text-align:center">
       <h2 style="font-size:96px;text-align:center;margin-bottom:24px">今日の成果を<span class="g-warm">投稿しましょう！</span></h2>
       <p class="lead" style="text-align:center;margin-bottom:56px">QRを読むだけで投稿画面が開きます。みんなで盛り上げよう。</p>
@@ -622,7 +601,7 @@ function slide24Post() {
 function slide25Support() {
   return `<section class="slide" data-section="closing"
     data-notes="この作業会が終わったあとも、Chatworkのグループで1ヶ月間サポートします。1ヶ月経過後は個別でご案内します。">
-    ${ph(25, 'Support')}
+    ${ph(24, 'Support')}
     <div class="slide-content" style="align-items:center;text-align:center">
       <h2 style="text-align:center">サポート窓口</h2>
       <div class="pill pill--primary" style="margin-bottom:40px">Chatwork グループ</div>
@@ -649,7 +628,7 @@ function slide26Closing() {
       <div class="hero-rule"></div>
       <p class="hero-subtitle">自動化で浮いた時間で、次のコンテンツを作ろう。<br/>また次の作業会で会いましょう。</p>
       <div class="hero-meta">Naoki  /  AI × Video Editing</div>
-      <div class="big-index">26</div>
+      <div class="big-index">25</div>
     </div>
   </section>`;
 }
@@ -657,8 +636,9 @@ function slide26Closing() {
 // === Register ===
 window.slideFactories = [
   slide01Cover, slide02Numbers, slide03Features,
+  slide06Delivery,
   slide04MacSetup, slide05WinSetup,
-  slide06Delivery, slide07ClaudeStart, slide08Clone,
+  slide07ClaudeStart,
   slide09License, slide10TypeProject, slide11Assets, slide12Start,
   slide13WorkflowLong, slide14WorkflowShort,
   slide15Phase1, slide16Phase2, slide17Phase3, slide18Phase4,
@@ -670,11 +650,10 @@ window.agendaItems = [
   { id: 'cover', label: '表紙' },
   { id: 'numbers', label: '時間・コストが変わる' },
   { id: 'features', label: '5つの自動化機能' },
+  { id: 'delivery', label: 'テンプレの受け取り方' },
   { id: 'mac-setup', label: 'Mac セットアップ' },
   { id: 'win-setup', label: 'Windows セットアップ' },
-  { id: 'delivery', label: 'テンプレの受け取り方' },
-  { id: 'claude-start', label: 'Claude Code 起動' },
-  { id: 'clone', label: 'リポジトリDL' },
+  { id: 'clone-start', label: 'リポジトリ取得 → 起動' },
   { id: 'license', label: 'ライセンス認証' },
   { id: 'type-project', label: '動画タイプ+プロジェクト作成' },
   { id: 'assets', label: '素材の配置' },
