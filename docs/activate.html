@@ -111,19 +111,73 @@
       padding: 4px 10px;
       letter-spacing: 0.1em;
     }
+    .code-wrap {
+      position: relative;
+      margin: 12px 0;
+    }
     .code {
       background: #050506;
       border-left: 3px solid #3b82f6;
       color: #e4e4e7;
-      padding: 18px 24px;
+      padding: 18px 56px 18px 24px;
       font-family: "SF Mono", Menlo, Consolas, monospace;
       font-size: 14px; line-height: 1.85;
       overflow-x: auto;
       white-space: pre;
-      margin: 12px 0;
+      margin: 0;
     }
     .code .cmt { color: #71717a; }
     .code .hi { color: #facc15; font-weight: 700; }
+    .code-copy {
+      position: absolute;
+      top: 10px; right: 10px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: #a1a1aa;
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 0.14em;
+      padding: 5px 12px;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.15s;
+    }
+    .code-copy:hover {
+      background: #3b82f6;
+      color: #fff;
+      border-color: transparent;
+    }
+    .code-copy.copied {
+      background: #16a34a;
+      color: #fff;
+      border-color: transparent;
+    }
+    .choice-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 12px; margin: 16px 0;
+    }
+    .choice-card {
+      background: #050506;
+      border: 1px solid #2d2d36;
+      padding: 20px 22px;
+    }
+    .choice-card .choice-num {
+      display: inline-block;
+      background: #3b82f6; color: #fff;
+      font-family: "SF Mono", monospace;
+      font-size: 12px; font-weight: 700;
+      padding: 3px 8px;
+      letter-spacing: 0.1em;
+      margin-bottom: 10px;
+    }
+    .choice-card.short .choice-num { background: #ec4899; }
+    .choice-card h3 {
+      font-size: 16px; color: #fff;
+      margin-bottom: 6px; font-weight: 700;
+    }
+    .choice-card p {
+      font-size: 13px; color: #71717a;
+      margin: 0; line-height: 1.6;
+    }
     section p { color: #a1a1aa; font-size: 15px; margin-bottom: 12px; }
     section a { color: #60a5fa; text-decoration: underline; }
 
@@ -211,14 +265,41 @@ cd ..</div>
     </section>
 
     <section class="step-section">
-      <h2><span class="num">04</span>プロジェクト作成 → 作業開始</h2>
-      <div class="code">./新規作成.sh</div>
-      <p>プロジェクト名を入力すると、フォルダ作成・npm install・Claude Code 起動まで自動。</p>
-      <p style="font-size:13px;color:#71717a">詳細なセットアップや初回手順は <a href="https://coachnaoki.github.io/naoki-blueprint/" target="_blank">公式ガイド</a> を参照。</p>
+      <h2><span class="num">04</span>動画タイプを選んでプロジェクト作成</h2>
+      <p>naoki-blueprint フォルダに戻って、<code>./新規作成.sh</code> を実行します:</p>
+      <div class="code">cd ../ <span class="cmt"># naoki-blueprint フォルダに戻る</span>
+./新規作成.sh</div>
+      <p>起動すると、以下を順に聞かれます:</p>
+      <ol style="color:#a1a1aa;font-size:15px;padding-left:24px;margin:12px 0 16px">
+        <li style="margin-bottom:6px">プロジェクト名（例: <code>tennis-serve</code>）</li>
+        <li>動画タイプ</li>
+      </ol>
+      <div class="choice-grid">
+        <div class="choice-card">
+          <span class="choice-num">1</span>
+          <h3>YouTube 横動画</h3>
+          <p>1920×1080 / 10〜20分<br>20ステップ / スライド・ワイプ・OP・ハイライト対応</p>
+        </div>
+        <div class="choice-card short">
+          <span class="choice-num">2</span>
+          <h3>ショート動画</h3>
+          <p>1080×1920 / 30〜60秒<br>14ステップ / テロップ8種に絞り情報密度を優先</p>
+        </div>
+      </div>
+      <p style="font-size:13px;color:#71717a">フォルダ作成・<code>npm install</code> まで自動。完了後に案内されるコマンドで Claude Code を起動してください。</p>
     </section>
 
     <section class="step-section">
-      <h2><span class="num">05</span>サポート</h2>
+      <h2><span class="num">05</span>作業開始</h2>
+      <div class="code">cd projects/<span class="hi">your-project-name</span>
+claude --dangerously-skip-permissions
+/step01-context</div>
+      <p>あとは AI が次のコマンドを案内してくれるので、質問に答えながら進めるだけ。</p>
+      <p style="font-size:13px;color:#71717a">詳細なセットアップや全ステップの説明は <a href="https://coachnaoki.github.io/naoki-blueprint/" target="_blank">公式ガイド</a> を参照。</p>
+    </section>
+
+    <section class="step-section">
+      <h2><span class="num">06</span>サポート</h2>
       <p>X で <strong>@ai_skill_naoki</strong> をフォロー・DM からサポートを受けられます。</p>
       <div class="cta">
         <a href="https://x.com/ai_skill_naoki" target="_blank" class="primary">Xでフォロー</a>
@@ -258,6 +339,7 @@ async function fetchLicense() {
       document.getElementById('userName').textContent = data.name || '';
       document.getElementById('licenseId').textContent = data.license_id;
       document.getElementById('licenseIdInCode').textContent = data.license_id;
+      setupCodeCopyButtons();
     } else {
       showError(data.error || 'ライセンスの取得に失敗しました');
     }
@@ -284,6 +366,30 @@ document.getElementById('copyBtn').addEventListener('click', () => {
     }, 2000);
   });
 });
+
+// コードブロックにコピーボタンを自動付与
+function setupCodeCopyButtons() {
+  document.querySelectorAll('.code').forEach(code => {
+    if (code.parentElement && code.parentElement.classList.contains('code-wrap')) return;
+    const wrap = document.createElement('div');
+    wrap.className = 'code-wrap';
+    code.parentNode.insertBefore(wrap, code);
+    wrap.appendChild(code);
+    const btn = document.createElement('button');
+    btn.className = 'code-copy';
+    btn.textContent = 'Copy';
+    btn.addEventListener('click', () => {
+      const text = code.innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        btn.textContent = '✓';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1500);
+      });
+    });
+    wrap.appendChild(btn);
+  });
+}
+
 </script>
 
 </body>
