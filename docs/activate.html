@@ -253,31 +253,53 @@
       </div>
     </section>
 
-    <!-- Step 01: Cursor & Claude Code -->
+    <!-- Step 01: 環境セットアップ -->
     <section class="step-section">
-      <h2><span class="num">01</span>Cursor で Claude Code を起動</h2>
+      <h2><span class="num">01</span>環境セットアップ（初回のみ）</h2>
+      <p>動画制作に必要な4ツールをインストールします。<strong style="color:#fff">すでに入っている方はスキップ</strong>してOK。</p>
+
+      <div class="os-label mac">macOS (Apple Silicon)</div>
+      <div class="code">brew install node python@3.12 ffmpeg
+pip3.12 install mlx-whisper opencv-python
+npm install -g @anthropic-ai/claude-code</div>
+
+      <div class="os-label win">Windows</div>
+      <p style="font-size:14px;color:#a1a1aa;margin:6px 0 4px">まずブラウザから事前準備:</p>
+      <ul style="color:#a1a1aa;font-size:14px;padding-left:24px;line-height:1.9;margin-bottom:12px">
+        <li>Node.js: <a href="https://nodejs.org/" target="_blank">nodejs.org</a></li>
+        <li>Python 3.12: <a href="https://www.python.org/downloads/" target="_blank">python.org</a>（<strong style="color:#fde68a">「Add Python to PATH」必須</strong>）</li>
+        <li>FFmpeg: <a href="https://www.gyan.dev/ffmpeg/builds/" target="_blank">gyan.dev/ffmpeg</a>（PATHに追加）</li>
+      </ul>
+      <p style="font-size:14px;color:#a1a1aa;margin:6px 0 4px">その後 PowerShell で:</p>
+      <div class="code">pip install faster-whisper opencv-python
+npm install -g @anthropic-ai/claude-code</div>
+
+      <div style="background:#2a1b05;border:1px solid #78350f;border-left:3px solid #f59e0b;padding:14px 18px;margin:14px 0 0;font-size:14px;color:#fde68a;">
+        ⚠ Python は <strong>3.12 限定</strong>。3.14 では mlx-whisper が動きません。
+      </div>
+    </section>
+
+    <!-- Step 02: フォルダ移動 → Clone → Claude Code 起動（統合） -->
+    <section class="step-section">
+      <h2><span class="num">02</span>リポジトリ取得 → Claude Code 起動</h2>
       <p><strong id="userName" style="color:#fff"></strong> さん、準備を始めましょう。</p>
       <div style="background:#2a1b05;border:1px solid #78350f;border-left:3px solid #f59e0b;padding:14px 18px;margin:14px 0;font-size:14px;color:#fde68a;">
-        ⚠ 既に Claude Code を開いている方は、ターミナル上で <strong>Ctrl+C</strong>（Macは <strong>Control+C</strong>）を<strong>2回押して</strong>終了してから進めてください。
+        ⚠ 既に Claude Code を開いている方は、ターミナル上で <strong>Ctrl+C</strong>（Mac は <strong>Control+C</strong>）を <strong>2回押して</strong>終了してから進めてください。
       </div>
-      <p>Cursor のターミナルで、naoki-blueprint を置きたいフォルダに移動します（例: デスクトップ上の <code>Cursor</code> フォルダ）:</p>
 
+      <p>Cursor のターミナルで、naoki-blueprint を置きたいフォルダに移動（例: デスクトップ上の <code>Cursor</code> フォルダ）:</p>
       <div class="os-label mac">macOS</div>
       <div class="code">cd ~/Desktop/Cursor</div>
-
       <div class="os-label win">Windows (PowerShell)</div>
       <div class="code">cd ~\Desktop\Cursor</div>
 
-      <p style="margin-top:20px">そのフォルダで Claude Code を起動します（Mac / Windows 共通）:</p>
-      <div class="code">claude --dangerously-skip-permissions</div>
-      <p style="font-size:13px;color:#71717a">起動後は Claude に「この手順を進めて」と伝えるだけでも、自分で以下を順にターミナルで打っても OK。</p>
-    </section>
-
-    <!-- Step 02: Install -->
-    <section class="step-section">
-      <h2><span class="num">02</span>リポジトリをダウンロード</h2>
+      <p style="margin-top:20px">そのフォルダでリポジトリをダウンロード（Mac / Windows 共通）:</p>
       <div class="code">git clone https://github.com/coachnaoki/naoki-blueprint.git
 cd naoki-blueprint</div>
+
+      <p style="margin-top:20px">続けて Claude Code を起動:</p>
+      <div class="code">claude --dangerously-skip-permissions</div>
+      <p style="font-size:13px;color:#71717a">起動後は Claude に「この手順を進めて」と伝えるだけでも、自分で以下を順にターミナルで打っても OK。</p>
     </section>
 
     <section class="step-section">
