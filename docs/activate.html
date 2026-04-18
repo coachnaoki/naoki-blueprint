@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ライセンス発行 | Naoki's Blueprint</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", "Helvetica Neue", sans-serif;
+      background: #0a0a0c;
+      color: #e4e4e7;
+      line-height: 1.75;
+      letter-spacing: 0.02em;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      padding: 60px 20px;
+    }
+    .wrap {
+      max-width: 760px;
+      margin: 0 auto;
+    }
+    .brand-tag {
+      font-size: 12px; letter-spacing: 0.32em;
+      color: #60a5fa; text-transform: uppercase;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    h1 {
+      font-size: 40px; font-weight: 800;
+      color: #fff; letter-spacing: -0.01em;
+      margin-bottom: 8px;
+    }
+    .lead {
+      color: #a1a1aa; font-size: 16px;
+      margin-bottom: 48px;
+    }
+    .loading {
+      text-align: center; padding: 80px 20px;
+      color: #71717a; font-size: 14px;
+    }
+    .spinner {
+      display: inline-block;
+      width: 20px; height: 20px;
+      border: 2px solid #3b3b45;
+      border-top-color: #60a5fa;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      vertical-align: middle;
+      margin-right: 10px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* 成功パネル */
+    .license-panel {
+      background: #1c1c22;
+      border: 1px solid #2d2d36;
+      padding: 40px 44px;
+      margin-bottom: 24px;
+      position: relative;
+    }
+    .license-panel::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, #3b82f6, #8b5cf6, #ec4899);
+    }
+    .license-label {
+      font-size: 11px; letter-spacing: 0.28em;
+      color: #71717a; font-weight: 700;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+    .license-id {
+      font-family: "SF Mono", Menlo, Consolas, monospace;
+      font-size: 36px; font-weight: 700;
+      color: #fff;
+      letter-spacing: 0.08em;
+      margin-bottom: 16px;
+      word-break: break-all;
+    }
+    .copy-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: #3b82f6; color: #fff;
+      border: none; padding: 10px 20px;
+      font-size: 13px; font-weight: 700;
+      letter-spacing: 0.12em; cursor: pointer;
+      transition: background 0.15s;
+      font-family: inherit;
+    }
+    .copy-btn:hover { background: #2563eb; }
+    .copy-btn.copied { background: #16a34a; }
+
+    /* 手順セクション */
+    section.step-section {
+      background: #111114;
+      border: 1px solid #26262e;
+      padding: 36px 40px;
+      margin-bottom: 20px;
+    }
+    section.step-section h2 {
+      font-size: 22px; font-weight: 700;
+      color: #fff;
+      margin-bottom: 20px;
+      display: flex; align-items: center; gap: 14px;
+    }
+    section.step-section h2 .num {
+      font-family: "SF Mono", monospace;
+      font-size: 14px; font-weight: 700;
+      background: #3b82f6; color: #fff;
+      padding: 4px 10px;
+      letter-spacing: 0.1em;
+    }
+    .code {
+      background: #050506;
+      border-left: 3px solid #3b82f6;
+      color: #e4e4e7;
+      padding: 18px 24px;
+      font-family: "SF Mono", Menlo, Consolas, monospace;
+      font-size: 14px; line-height: 1.85;
+      overflow-x: auto;
+      white-space: pre;
+      margin: 12px 0;
+    }
+    .code .cmt { color: #71717a; }
+    .code .hi { color: #facc15; font-weight: 700; }
+    section p { color: #a1a1aa; font-size: 15px; margin-bottom: 12px; }
+    section a { color: #60a5fa; text-decoration: underline; }
+
+    /* エラー */
+    .error-panel {
+      background: #2a1517;
+      border: 1px solid #7f1d1d;
+      padding: 32px 40px;
+      color: #fca5a5;
+      text-align: center;
+    }
+    .error-panel h2 {
+      color: #ef4444; font-size: 22px;
+      margin-bottom: 10px;
+    }
+
+    /* CTA */
+    .cta {
+      display: flex; gap: 12px; margin-top: 24px;
+      flex-wrap: wrap;
+    }
+    .cta a {
+      background: #26262e; color: #fff;
+      padding: 12px 22px;
+      text-decoration: none;
+      font-size: 14px; font-weight: 700;
+      letter-spacing: 0.1em;
+      border: 1px solid #3a3a45;
+      transition: background 0.15s;
+    }
+    .cta a:hover { background: #353541; }
+    .cta a.primary { background: #3b82f6; border-color: transparent; }
+    .cta a.primary:hover { background: #2563eb; }
+
+    .footer {
+      margin-top: 48px;
+      padding-top: 24px;
+      border-top: 1px solid #26262e;
+      color: #52525b; font-size: 12px; letter-spacing: 0.1em;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="brand-tag">Naoki's Blueprint / License</div>
+  <h1>ライセンス発行</h1>
+  <p class="lead">あなた専用のライセンスIDとインストール手順です。</p>
+
+  <div id="loading" class="loading">
+    <span class="spinner"></span>読み込み中...
+  </div>
+
+  <div id="result" style="display:none">
+    <!-- License ID -->
+    <div class="license-panel">
+      <div class="license-label">Your License ID</div>
+      <div class="license-id" id="licenseId">NK-XXXX-XXXX-XXXX</div>
+      <button class="copy-btn" id="copyBtn">📋 ライセンスIDをコピー</button>
+    </div>
+
+    <!-- Welcome -->
+    <section class="step-section">
+      <h2><span class="num">01</span>ようこそ</h2>
+      <p><strong id="userName" style="color:#fff"></strong> さん、お待たせしました。<br>
+      以下の手順でテンプレートをセットアップしてください。</p>
+    </section>
+
+    <!-- Install -->
+    <section class="step-section">
+      <h2><span class="num">02</span>リポジトリをダウンロード</h2>
+      <p>Cursor のターミナルで任意のフォルダに移動して実行:</p>
+      <div class="code">git clone https://github.com/coachnaoki/naoki-blueprint.git
+cd naoki-blueprint</div>
+    </section>
+
+    <section class="step-section">
+      <h2><span class="num">03</span>ライセンス認証</h2>
+      <p>テンプレートフォルダ内で認証します。あなたのライセンスIDを貼り付け:</p>
+      <div class="code">cd .template
+node scripts/validateLicense.mjs <span class="hi" id="licenseIdInCode">NK-XXXX-XXXX-XXXX</span>
+cd ..</div>
+      <p style="font-size:13px;color:#71717a">✅ 認証成功で <code>.license</code> ファイルが生成され、以降は自動認証されます。PCは1台に紐付きます。</p>
+    </section>
+
+    <section class="step-section">
+      <h2><span class="num">04</span>プロジェクト作成 → 作業開始</h2>
+      <div class="code">./新規作成.sh</div>
+      <p>プロジェクト名を入力すると、フォルダ作成・npm install・Claude Code 起動まで自動。</p>
+      <p style="font-size:13px;color:#71717a">詳細なセットアップや初回手順は <a href="https://coachnaoki.github.io/naoki-blueprint/" target="_blank">公式ガイド</a> を参照。</p>
+    </section>
+
+    <section class="step-section">
+      <h2><span class="num">05</span>サポート</h2>
+      <p>X で <strong>@ai_skill_naoki</strong> をフォロー・DM からサポートを受けられます。</p>
+      <div class="cta">
+        <a href="https://x.com/ai_skill_naoki" target="_blank" class="primary">Xでフォロー</a>
+        <a href="https://coachnaoki.github.io/naoki-blueprint/" target="_blank">公式ガイド</a>
+      </div>
+    </section>
+
+    <div class="footer">
+      このページのURLはブックマーク推奨。いつでもライセンスIDを再表示できます。
+    </div>
+  </div>
+
+  <div id="error" style="display:none" class="error-panel">
+    <h2>⚠ エラー</h2>
+    <p id="errorMsg"></p>
+  </div>
+</div>
+
+<script>
+const API_URL = "https://script.google.com/macros/s/AKfycbz50xJ-uVfTMgHI4e0FTFa7b21q3S4oMftfI2SidWJPSbC_bhKYkmqFOj_RG0FWYkQe/exec";
+const params = new URLSearchParams(window.location.search);
+const token = params.get('t');
+
+if (!token) {
+  showError('トークンが指定されていません。同意書の完了画面から開き直してください。');
+} else {
+  fetchLicense();
+}
+
+async function fetchLicense() {
+  try {
+    const res = await fetch(API_URL + "?action=get&t=" + encodeURIComponent(token));
+    const data = await res.json();
+    if (data.success) {
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('result').style.display = 'block';
+      document.getElementById('userName').textContent = data.name || '';
+      document.getElementById('licenseId').textContent = data.license_id;
+      document.getElementById('licenseIdInCode').textContent = data.license_id;
+    } else {
+      showError(data.error || 'ライセンスの取得に失敗しました');
+    }
+  } catch (e) {
+    showError('通信エラーが発生しました。しばらくしてから再度お試しください。');
+  }
+}
+
+function showError(msg) {
+  document.getElementById('loading').style.display = 'none';
+  document.getElementById('error').style.display = 'block';
+  document.getElementById('errorMsg').textContent = msg;
+}
+
+document.getElementById('copyBtn').addEventListener('click', () => {
+  const id = document.getElementById('licenseId').textContent;
+  navigator.clipboard.writeText(id).then(() => {
+    const b = document.getElementById('copyBtn');
+    b.textContent = '✓ コピー済み';
+    b.classList.add('copied');
+    setTimeout(() => {
+      b.textContent = '📋 ライセンスIDをコピー';
+      b.classList.remove('copied');
+    }, 2000);
+  });
+});
+</script>
+
+</body>
+</html>

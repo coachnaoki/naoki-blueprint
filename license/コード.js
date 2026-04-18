@@ -11,7 +11,8 @@ const SHEET_NAME = "ライセンス";
 // ?action=activate&id=XXXX&fp=YYYY  → 初回アクティベーション
 // ?action=verify&id=XXXX&fp=YYYY    → 起動時検証
 // ?action=issue&name=XXX&email=YYY  → ライセンス発行
-// ?action=sign&name=XXX&email=YYY   → 署名受付
+// ?action=sign&name=XXX&xId=@naoki  → 署名受付 + license_id + token 自動発行
+// ?action=get&t=TOKEN               → token でライセンスID取得（activate.html用）
 // =====================================================
 function doGet(e) {
   const action = (e.parameter.action || "").trim();
@@ -35,9 +36,13 @@ function doGet(e) {
     case "sign":
       result = recordSignature({
         name: (e.parameter.name || "").trim(),
+        xId: (e.parameter.xId || "").trim(),
         email: (e.parameter.email || "").trim(),
         address: (e.parameter.address || "").trim()
       });
+      break;
+    case "get":
+      result = getLicenseByToken((e.parameter.t || e.parameter.token || "").trim());
       break;
     default:
       result = { valid: false, error: "unknown action" };
@@ -74,7 +79,8 @@ function doPost(e) {
 }
 
 // =====================================================
-// 署名を記録
+// 署名を記録 + ライセンスID/トークンを自動発行
+// C列は「xId（互換: メアド）」、K列は token
 // =====================================================
 function recordSignature(data) {
   const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
@@ -82,19 +88,84 @@ function recordSignature(data) {
   if (!sheet) return { success: false, error: "シートが見つかりません" };
 
   const name = (data.name || "").trim();
-  const email = (data.email || "").trim();
+  const xId = (data.xId || data.email || "").trim(); // 互換: email を xId として受ける
 
   if (!name) return { success: false, error: "氏名が入力されていません" };
-  if (!email) return { success: false, error: "メールアドレスが入力されていません" };
+  if (!xId) return { success: false, error: "XアカウントIDが入力されていません" };
 
-  // ライセンスシートに新しい行を追加（B:name, C:email, D:signed_at）
+  // 重複チェック: 同じxIdなら既存の license_id + token を返す
+  const all = sheet.getDataRange().getValues();
+  for (let i = 1; i < all.length; i++) {
+    if (String(all[i][2]).trim() === xId) {
+      const existedLicense = String(all[i][0] || "").trim();
+      const existedToken = String(all[i][10] || "").trim();
+      if (existedLicense && existedToken) {
+        return {
+          success: true,
+          name: String(all[i][1]).trim(),
+          license_id: existedLicense,
+          token: existedToken,
+          activateUrl: "https://coachnaoki.github.io/naoki-blueprint/activate.html?t=" + encodeURIComponent(existedToken),
+          existed: true
+        };
+      }
+    }
+  }
+
+  // 新規発行（自動 active）
+  const licenseId = generateLicenseId();
+  const token = generateToken();
   const newRow = sheet.getLastRow() + 1;
-  sheet.getRange(newRow, 2).setValue(name);       // B列: name
-  sheet.getRange(newRow, 3).setValue(email);       // C列: email
-  sheet.getRange(newRow, 4).setValue(new Date());  // D列: signed_at
-  sheet.getRange(newRow, 9).insertCheckboxes().setValue(false);  // I列: チェックボックス
+  sheet.getRange(newRow, 1).setValue(licenseId);       // A: license_id
+  sheet.getRange(newRow, 2).setValue(name);            // B: name
+  sheet.getRange(newRow, 3).setValue(xId);             // C: xId
+  sheet.getRange(newRow, 4).setValue(new Date());      // D: signed_at
+  sheet.getRange(newRow, 5).setValue("active");        // E: status
+  sheet.getRange(newRow, 9).insertCheckboxes().setValue(false); // I: チェックボックス（手動操作用・使わなくてもOK）
+  sheet.getRange(newRow, 11).setValue(token);          // K: token
 
-  return { success: true, name: name };
+  return {
+    success: true,
+    name: name,
+    license_id: licenseId,
+    token: token,
+    activateUrl: "https://coachnaoki.github.io/naoki-blueprint/activate.html?t=" + encodeURIComponent(token)
+  };
+}
+
+// =====================================================
+// トークン生成（URL-safe 32byte）
+// =====================================================
+function generateToken() {
+  const bytes = [];
+  for (let i = 0; i < 32; i++) bytes.push(Math.floor(Math.random() * 256));
+  return Utilities.base64EncodeWebSafe(bytes).replace(/=+$/, '');
+}
+
+// =====================================================
+// トークンでライセンスIDを取得（activate.html 用）
+// =====================================================
+function getLicenseByToken(token) {
+  if (!token) return { success: false, error: "トークンが必要です" };
+
+  const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  const sheet = ss.getSheetByName(SHEET_NAME);
+  if (!sheet) return { success: false, error: "シートが見つかりません" };
+
+  const data = sheet.getDataRange().getValues();
+  for (let i = 1; i < data.length; i++) {
+    if (String(data[i][10] || "").trim() === token) {
+      const status = String(data[i][4] || "").trim().toLowerCase();
+      if (status !== "active") return { success: false, error: "このライセンスは無効です" };
+      return {
+        success: true,
+        name: String(data[i][1] || "").trim(),
+        xId: String(data[i][2] || "").trim(),
+        license_id: String(data[i][0] || "").trim()
+      };
+    }
+  }
+  return { success: false, error: "トークンが無効です" };
 }
 
 // =====================================================
