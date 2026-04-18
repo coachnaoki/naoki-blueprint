@@ -314,10 +314,31 @@ cd ..</div>
     </section>
 
     <section class="step-section">
-      <h2><span class="num">05</span>作業開始</h2>
-      <p>プロジェクトフォルダに移動してから <code>/step01-context</code> で作業開始:</p>
-      <div class="code">cd projects/<span class="hi today-date">2026-04-19</span>
-/step01-context</div>
+      <h2><span class="num">05</span>素材配置 → 作業開始</h2>
+      <p>プロジェクトフォルダに移動:</p>
+      <div class="code">cd projects/<span class="hi today-date">2026-04-19</span></div>
+
+      <p style="margin-top:24px">素材を <code>public/</code> フォルダに配置します（Finder / エクスプローラーからドラッグ＆ドロップでOK）:</p>
+      <div class="code">public/
+├── videos/             <span class="cmt">動画素材</span>
+│   ├── main/           <span class="cmt">本編動画 </span><span class="str">★必須</span>
+│   ├── inserts/        <span class="cmt">物理挿入動画（任意）</span>
+│   ├── overlays/       <span class="cmt">オーバーレイ動画（任意）</span>
+│   ├── opening/        <span class="cmt">OP動画（横動画のみ・任意）</span>
+│   └── highlight/      <span class="cmt">ハイライト動画（横動画のみ・任意）</span>
+├── images/             <span class="cmt">画像素材</span>
+│   ├── inserts/        <span class="cmt">物理挿入画像（任意）</span>
+│   └── overlays/       <span class="cmt">オーバーレイ画像（任意）</span>
+├── bgm/                <span class="cmt">BGM（MP3）</span> <span class="str">★必須</span>
+├── se/                 <span class="cmt">SE効果音</span> <span class="str">★必須</span>
+│   ├── 強調/
+│   ├── ポジティブ/
+│   └── ネガティブ/
+├── script/             <span class="cmt">ナレーション台本（推奨）</span>
+└── output/             <span class="cmt">完成動画の出力先</span></div>
+
+      <p style="margin-top:24px">素材を置いたら、Claude Code で作業開始:</p>
+      <div class="code">/step01-context</div>
       <p>あとは AI が次のコマンドを案内してくれるので、質問に答えながら進めるだけ。</p>
     </section>
 
