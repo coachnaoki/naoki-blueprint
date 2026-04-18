@@ -136,16 +136,42 @@ function slide06Delivery() {
   </section>`;
 }
 
-// 07. Clone
-function slide07Clone() {
+// 07. Cursor で Claude Code 起動（新規）
+function slide07ClaudeStart() {
   return `<section class="slide" data-section="template"
-    data-notes="activate.htmlの手順通りにCursorのターミナルでgit cloneします。任意のフォルダに移動してからコマンドを叩いてください。">
-    ${ph(7, 'Get the template')}
+    data-notes="Cursorのターミナルで、naoki-blueprintを置きたいフォルダに移動してから、Claude Codeを起動します。Mac/Windowsでコマンドが違うので注意してください。既にClaude Codeを起動済みの人は、Ctrl+Cを2回押して終了してから実行してください。">
+    ${ph(7, 'Start Claude Code')}
+    <div class="slide-content">
+      <h2>Cursor で <span class="g-primary">Claude Code 起動</span></h2>
+      <p class="lead mb-24">保存先フォルダに移動してから、Claude Code を起動します（例: デスクトップ上の <code>Cursor</code> フォルダ）</p>
+      <div class="grid-2">
+        <div>
+          <div class="pill pill--primary mb-16">macOS</div>
+          <div class="code">cd ~/Desktop/Cursor</div>
+        </div>
+        <div>
+          <div class="pill pill--hot mb-16">Windows (PowerShell)</div>
+          <div class="code">cd ~\\Desktop\\Cursor</div>
+        </div>
+      </div>
+      <p class="mt-32">そのフォルダで Claude Code を起動（Mac / Windows 共通）:</p>
+      <div class="code">claude --dangerously-skip-permissions</div>
+      <div class="card card--hot mt-32">
+        <div class="card-title">⚠ すでに Claude Code 起動中の方</div>
+        <div class="card-body">ターミナルで <strong>Ctrl+C</strong>（Mac は <strong>Control+C</strong>）を <strong>2回押して</strong>終了してから実行してください</div>
+      </div>
+    </div>
+  </section>`;
+}
+
+// 08. リポジトリをダウンロード
+function slide08Clone() {
+  return `<section class="slide" data-section="template"
+    data-notes="activate.htmlの手順通りにCursorのターミナルでgit cloneします。Claude Code起動中でもターミナルから実行可能です。">
+    ${ph(8, 'Clone repo')}
     <div class="slide-content">
       <h2>リポジトリをダウンロード</h2>
-      <div class="code">
-<span class="cmt"># Cursor のターミナルで、任意のフォルダに移動してから実行</span>
-git clone https://github.com/coachnaoki/naoki-blueprint.git
+      <div class="code">git clone https://github.com/coachnaoki/naoki-blueprint.git
 cd naoki-blueprint</div>
       <p class="lead mt-32">フォルダ構成:</p>
       <div class="code mt-16">
@@ -160,73 +186,54 @@ naoki-blueprint/
   </section>`;
 }
 
-// 08. ライセンス認証
-function slide08License() {
+// 09. ライセンス認証
+function slide09License() {
   return `<section class="slide" data-section="template"
-    data-notes="受け取ったライセンスIDで認証します。XXXX を自分のIDに置き換えてください。成功したら .license ファイルが生成されて、以降は自動認証です。">
-    ${ph(8, 'Get the template')}
+    data-notes="activate.htmlに表示されているライセンスIDで認証します。成功したら.licenseファイルが生成されて、以降は自動認証です。">
+    ${ph(9, 'License')}
     <div class="slide-content">
       <h2>ライセンス認証</h2>
-      <div class="code">
-<span class="cmt"># テンプレートフォルダに入って認証</span>
-cd .template
+      <p class="lead mb-24">activate.html のライセンスIDを貼り付けて認証:</p>
+      <div class="code">cd .template
 node scripts/validateLicense.mjs <span class="hi">NK-XXXX-XXXX-XXXX</span>
 cd ..</div>
       <div class="grid-2 mt-48">
         <div class="card card--accent">
           <div class="card-title">認証成功時</div>
-          <div class="card-body">「✅ 認証済み」と表示、<code>.license</code> が生成。以降は自動認証</div>
+          <div class="card-body">「✅ 認証済み」と表示、<code>.license</code> が生成。以降は自動認証・1台PCに紐付き</div>
         </div>
         <div class="card card--hot">
           <div class="card-title">エラー時</div>
-          <div class="card-body">IDの入力ミス / 別PCで認証済み / 期限切れ のいずれか。権利者に連絡</div>
+          <div class="card-body">IDの入力ミス / 別PCで認証済み のいずれか。X DM で権利者に連絡</div>
         </div>
       </div>
     </div>
   </section>`;
 }
 
-// 09. 2種類のテンプレート選択
-function slide09TwoTemplates() {
+// 10. 動画タイプ選択 + プロジェクト作成（統合）
+function slide10TypeProject() {
   return `<section class="slide" data-section="start"
-    data-notes="naoki-blueprint には横動画用とショート動画用、2種類のテンプレートがあります。どちらも同じライセンスで認証済みになります。">
-    ${ph(9, 'Choose template')}
+    data-notes="プロジェクト作成は新規作成.shスクリプト1コマンドで自動化されています。実行するとプロジェクト名と動画タイプを聞かれるので答えるだけ。フォルダ作成・npm installまで自動です。">
+    ${ph(10, 'Create project')}
     <div class="slide-content">
-      <h2>作る動画を<span class="g-primary">選ぶ</span></h2>
+      <h2>動画タイプを選んで<span class="g-primary">プロジェクト作成</span></h2>
+      <p class="lead mb-24">naoki-blueprint フォルダで 1コマンド実行:</p>
+      <div class="code">./新規作成.sh</div>
+      <p class="mt-24">起動すると順番に2つ聞かれます:</p>
+      <ol class="ordered" style="margin-top:12px;margin-bottom:24px">
+        <li><span class="bold text-white">プロジェクト名</span>（例: <code>2026-04-19</code> など日付でOK）</li>
+        <li><span class="bold text-white">動画タイプ</span>（1 or 2 を入力）</li>
+      </ol>
       <div class="grid-2">
         <div class="card card--accent">
-          <div class="pill pill--primary mb-16">YouTube 横動画</div>
-          <div class="card-title">.template/</div>
-          <div class="card-body">解像度　1920×1080<br/>尺　10〜20分<br/>ステップ数　<span class="bold text-blue">20</span><br/>スライド・ワイプ・OP・ハイライト対応</div>
+          <div class="pill pill--primary mb-16">1. YouTube 横動画</div>
+          <div class="card-body">1920×1080 / 10〜20分<br/>20ステップ / スライド・ワイプ・OP・ハイライト対応</div>
         </div>
         <div class="card card--hot">
-          <div class="pill pill--hot mb-16">ショート動画</div>
-          <div class="card-title">.template-shorts/</div>
-          <div class="card-body">解像度　1080×1920<br/>尺　30〜60秒<br/>ステップ数　<span class="bold text-pink">14</span><br/>情報密度を優先、テロップ8種に絞る</div>
+          <div class="pill pill--hot mb-16">2. ショート動画</div>
+          <div class="card-body">1080×1920 / 30〜60秒<br/>14ステップ / テロップ8種に絞り情報密度を優先</div>
         </div>
-      </div>
-      <p class="lead mt-48">今回の作業会では <span class="hl">どちらを選んでもOK</span>。</p>
-    </div>
-  </section>`;
-}
-
-// 10. プロジェクトフォルダ作成（新規作成.sh）
-function slide10Project() {
-  return `<section class="slide" data-section="start"
-    data-notes="プロジェクト作成は新規作成.shスクリプト1コマンドで自動化されています。プロジェクト名と動画タイプを聞かれるので答えるだけ。フォルダ作成・npm installまで自動です。">
-    ${ph(10, 'Project start')}
-    <div class="slide-content">
-      <h2><span class="g-primary">1コマンド</span>でプロジェクト作成</h2>
-      <p class="lead mb-24">Mac / Windows 共通（Cursor のターミナル）</p>
-      <div class="code">./新規作成.sh</div>
-      <p class="mt-32">起動すると順番に2つ聞かれます:</p>
-      <ol class="ordered" style="margin-top:12px">
-        <li><span class="bold text-white">プロジェクト名</span>（例: <code>2026-04-19</code> など日付でもOK）</li>
-        <li><span class="bold text-white">動画タイプ</span>（1: 横動画 / 2: ショート動画）</li>
-      </ol>
-      <div class="card card--accent mt-32">
-        <div class="card-title">フォルダ作成 → <code>npm install</code> まで自動</div>
-        <div class="card-body">完了後、Claude Code 起動コマンドを案内してくれる</div>
       </div>
     </div>
   </section>`;
@@ -264,17 +271,13 @@ public/
 // 12. 作業開始
 function slide12Start() {
   return `<section class="slide" data-section="start"
-    data-notes="ここから実作業に入ります。Cursor内でClaude Codeを起動して、スラッシュコマンドで最初のステップを打ちます。あとはAIが指示を出してくれるので、質問に答えていくだけです。">
-    ${ph(12, 'Project start')}
+    data-notes="素材を配置したらプロジェクトフォルダに移動して最初のスラッシュコマンドを打つだけ。Claude Codeは既に起動済みなのでclaudeコマンドは不要。あとはAIが次のコマンドを案内してくれます。">
+    ${ph(12, 'Start work')}
     <div class="slide-content">
       <h2>作業<span class="g-primary">スタート。</span></h2>
-      <div class="code">
-<span class="cmt"># プロジェクトフォルダ内で Claude Code を起動</span>
-claude --dangerously-skip-permissions
-
-<span class="cmt"># 起動後、最初のコマンド</span>
+      <div class="code">cd projects/<span class="hi">2026-04-19</span>
 /step01-context</div>
-      <p class="lead mt-48">あとは AI が次のコマンドを案内してくれます。<br/>質問に答えながら <code>/step02-assets</code> → <code>/step03-transcript</code> と進めるだけ。</p>
+      <p class="lead mt-32">あとは AI が次のコマンドを案内してくれます。<br/>質問に答えながら <code>/step02-assets</code> → <code>/step03-transcript</code> と進めるだけ。</p>
       <div class="card card--accent mt-32">
         <div class="card-title">中断しても大丈夫</div>
         <div class="card-body"><code>/catchup</code> で現在の進捗を確認、どのステップから再開するか AI が教えてくれる</div>
@@ -655,8 +658,8 @@ function slide26Closing() {
 window.slideFactories = [
   slide01Cover, slide02Numbers, slide03Features,
   slide04MacSetup, slide05WinSetup,
-  slide06Delivery, slide07Clone, slide08License,
-  slide09TwoTemplates, slide10Project, slide11Assets, slide12Start,
+  slide06Delivery, slide07ClaudeStart, slide08Clone,
+  slide09License, slide10TypeProject, slide11Assets, slide12Start,
   slide13WorkflowLong, slide14WorkflowShort,
   slide15Phase1, slide16Phase2, slide17Phase3, slide18Phase4,
   slide19Telop, slide20SE, slide21Whisper, slide22ShortNotes,
@@ -670,10 +673,10 @@ window.agendaItems = [
   { id: 'mac-setup', label: 'Mac セットアップ' },
   { id: 'win-setup', label: 'Windows セットアップ' },
   { id: 'delivery', label: 'テンプレの受け取り方' },
+  { id: 'claude-start', label: 'Claude Code 起動' },
   { id: 'clone', label: 'リポジトリDL' },
   { id: 'license', label: 'ライセンス認証' },
-  { id: 'two-templates', label: '2種類のテンプレ' },
-  { id: 'project', label: 'プロジェクト作成' },
+  { id: 'type-project', label: '動画タイプ+プロジェクト作成' },
   { id: 'assets', label: '素材の配置' },
   { id: 'start', label: '作業スタート' },
   { id: 'workflow-long', label: '横動画ワークフロー' },
