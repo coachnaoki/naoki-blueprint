@@ -178,6 +178,16 @@
       font-size: 13px; color: #71717a;
       margin: 0; line-height: 1.6;
     }
+    .os-label {
+      display: inline-block;
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 0.18em;
+      padding: 3px 10px;
+      text-transform: uppercase;
+      margin: 14px 0 6px;
+    }
+    .os-label.mac { background: #3b82f6; color: #fff; }
+    .os-label.win { background: #8b5cf6; color: #fff; }
     section p { color: #a1a1aa; font-size: 15px; margin-bottom: 12px; }
     section a { color: #60a5fa; text-decoration: underline; }
 
@@ -243,9 +253,15 @@
     <!-- Step 01: Cursor & Claude Code -->
     <section class="step-section">
       <h2><span class="num">01</span>Cursor で Claude Code を起動</h2>
-      <p><strong id="userName" style="color:#fff"></strong> さん、準備を始めましょう。Cursor のターミナルで、naoki-blueprint を置きたいフォルダに移動します（例: デスクトップ）:</p>
-      <div class="code">cd ~/Desktop   <span class="cmt"># Windows (PowerShell) は cd ~\Desktop</span></div>
-      <p>そのフォルダで Claude Code を起動します:</p>
+      <p><strong id="userName" style="color:#fff"></strong> さん、準備を始めましょう。Cursor のターミナルで、naoki-blueprint を置きたいフォルダに移動します（例: デスクトップ上の <code>Cursor</code> フォルダ）:</p>
+
+      <div class="os-label mac">macOS</div>
+      <div class="code">cd ~/Desktop/Cursor</div>
+
+      <div class="os-label win">Windows (PowerShell)</div>
+      <div class="code">cd ~\Desktop\Cursor</div>
+
+      <p style="margin-top:20px">そのフォルダで Claude Code を起動します（Mac / Windows 共通）:</p>
       <div class="code">claude --dangerously-skip-permissions</div>
       <p style="font-size:13px;color:#71717a">起動後は Claude に「この手順を進めて」と伝えるだけでも、自分で以下を順にターミナルで打っても OK。</p>
     </section>
