@@ -240,23 +240,16 @@
       <button class="copy-btn" id="copyBtn">📋 ライセンスIDをコピー</button>
     </div>
 
-    <!-- Welcome -->
-    <section class="step-section">
-      <h2><span class="num">01</span>ようこそ</h2>
-      <p><strong id="userName" style="color:#fff"></strong> さん、お待たせしました。<br>
-      以下の手順でテンプレートをセットアップしてください。</p>
-    </section>
-
     <!-- Install -->
     <section class="step-section">
-      <h2><span class="num">02</span>リポジトリをダウンロード</h2>
-      <p>Cursor のターミナルで任意のフォルダに移動して実行:</p>
+      <h2><span class="num">01</span>リポジトリをダウンロード</h2>
+      <p><strong id="userName" style="color:#fff"></strong> さん、Cursor のターミナルで任意のフォルダに移動して実行:</p>
       <div class="code">git clone https://github.com/coachnaoki/naoki-blueprint.git
 cd naoki-blueprint</div>
     </section>
 
     <section class="step-section">
-      <h2><span class="num">03</span>ライセンス認証</h2>
+      <h2><span class="num">02</span>ライセンス認証</h2>
       <p>テンプレートフォルダ内で認証します。あなたのライセンスIDを貼り付け:</p>
       <div class="code">cd .template
 node scripts/validateLicense.mjs <span class="hi" id="licenseIdInCode">NK-XXXX-XXXX-XXXX</span>
@@ -265,13 +258,12 @@ cd ..</div>
     </section>
 
     <section class="step-section">
-      <h2><span class="num">04</span>動画タイプを選んでプロジェクト作成</h2>
-      <p>naoki-blueprint フォルダに戻って、<code>./新規作成.sh</code> を実行します:</p>
-      <div class="code">cd ../ <span class="cmt"># naoki-blueprint フォルダに戻る</span>
-./新規作成.sh</div>
+      <h2><span class="num">03</span>動画タイプを選んでプロジェクト作成</h2>
+      <p>naoki-blueprint フォルダで <code>./新規作成.sh</code> を実行します:</p>
+      <div class="code">./新規作成.sh</div>
       <p>起動すると、以下を順に聞かれます:</p>
       <ol style="color:#a1a1aa;font-size:15px;padding-left:24px;margin:12px 0 16px">
-        <li style="margin-bottom:6px">プロジェクト名（例: <code>tennis-serve</code>）</li>
+        <li style="margin-bottom:6px">プロジェクト名（日付でOK。例: <code class="today-date">2026-04-19</code>）</li>
         <li>動画タイプ</li>
       </ol>
       <div class="choice-grid">
@@ -290,8 +282,8 @@ cd ..</div>
     </section>
 
     <section class="step-section">
-      <h2><span class="num">05</span>作業開始</h2>
-      <div class="code">cd projects/<span class="hi">your-project-name</span>
+      <h2><span class="num">04</span>作業開始</h2>
+      <div class="code">cd projects/<span class="hi today-date">2026-04-19</span>
 claude --dangerously-skip-permissions
 /step01-context</div>
       <p>あとは AI が次のコマンドを案内してくれるので、質問に答えながら進めるだけ。</p>
@@ -299,7 +291,7 @@ claude --dangerously-skip-permissions
     </section>
 
     <section class="step-section">
-      <h2><span class="num">06</span>サポート</h2>
+      <h2><span class="num">05</span>サポート</h2>
       <p>X で <strong>@ai_skill_naoki</strong> をフォロー・DM からサポートを受けられます。</p>
       <div class="cta">
         <a href="https://x.com/ai_skill_naoki" target="_blank" class="primary">Xでフォロー</a>
@@ -322,6 +314,15 @@ claude --dangerously-skip-permissions
 const API_URL = "https://script.google.com/macros/s/AKfycbz50xJ-uVfTMgHI4e0FTFa7b21q3S4oMftfI2SidWJPSbC_bhKYkmqFOj_RG0FWYkQe/exec";
 const params = new URLSearchParams(window.location.search);
 const token = params.get('t');
+
+// 今日の日付（プロジェクト名デフォルト）を全ての .today-date に反映
+(function setTodayDate() {
+  const d = new Date();
+  const str = d.getFullYear() + '-'
+            + String(d.getMonth()+1).padStart(2,'0') + '-'
+            + String(d.getDate()).padStart(2,'0');
+  document.querySelectorAll('.today-date').forEach(el => { el.textContent = str; });
+})();
 
 if (!token) {
   showError('トークンが指定されていません。同意書の完了画面から開き直してください。');
