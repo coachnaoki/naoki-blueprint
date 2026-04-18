@@ -115,19 +115,23 @@ pip install opencv-python</div>
   </section>`;
 }
 
-// 06. テンプレートの受け取り方
+// 06. テンプレートの受け取り方（自動発行フロー）
 function slide06Delivery() {
   return `<section class="slide" data-section="template"
-    data-notes="テンプレートは誰でも使えるわけではなく、ライセンスID制です。私から発行したIDが1台のPCに紐付きます。">
+    data-notes="テンプレートはライセンスID制ですが、自動発行になりました。配布されたterms.htmlから同意書を送るだけで即ライセンスIDが発行されます。1台のPCに紐付くため、PC変更時はXのDMで連絡してください。">
     ${ph(6, 'Get the template')}
     <div class="slide-content">
-      <h2>テンプレートの受け取り方</h2>
+      <h2>テンプレートの<span class="g-primary">受け取り方</span></h2>
       <ol class="ordered">
-        <li>権利者（Naoki）から <span class="bold text-white">ライセンスID</span>（<code>NK-XXXX-XXXX-XXXX</code>）を受け取る</li>
-        <li>GitHub リポジトリを <code>git clone</code> でダウンロード</li>
-        <li>ライセンスIDで認証し、<code>.license</code> ファイルが生成される</li>
-        <li>1台のPCに紐付くため、<span class="text-pink bold">PC変更時は権利者に連絡</span></li>
+        <li>配布された <code>terms.html</code> を開く（パスワードは <span class="hl">当日の日付 YYYYMMDD</span>）</li>
+        <li>同意書フォームに <span class="bold text-white">氏名 + XアカウントID</span> を入力 → 送信</li>
+        <li>その場で <span class="bold text-cyan">activate.html の専用URL</span> が表示される（ブックマーク推奨）</li>
+        <li>activate.html を開くと <span class="bold text-white">ライセンスID + インストール手順</span> が表示</li>
       </ol>
+      <div class="card card--accent mt-32">
+        <div class="card-title">完全自動・1台PC紐付け</div>
+        <div class="card-body">手動承認なし、即発行。<span class="text-pink bold">PC変更時は X DM で連絡</span></div>
+      </div>
     </div>
   </section>`;
 }
@@ -135,7 +139,7 @@ function slide06Delivery() {
 // 07. Clone
 function slide07Clone() {
   return `<section class="slide" data-section="template"
-    data-notes="ここで実際にダウンロードします。Cursorのターミナルでこのコマンドを打ってください。">
+    data-notes="activate.htmlの手順通りにCursorのターミナルでgit cloneします。任意のフォルダに移動してからコマンドを叩いてください。">
     ${ph(7, 'Get the template')}
     <div class="slide-content">
       <h2>リポジトリをダウンロード</h2>
@@ -143,13 +147,14 @@ function slide07Clone() {
 <span class="cmt"># Cursor のターミナルで、任意のフォルダに移動してから実行</span>
 git clone https://github.com/coachnaoki/naoki-blueprint.git
 cd naoki-blueprint</div>
-      <p class="lead mt-48">フォルダ構成:</p>
+      <p class="lead mt-32">フォルダ構成:</p>
       <div class="code mt-16">
 naoki-blueprint/
-├── .template/           <span class="cmt">YouTube 横動画（20ステップ）</span>
-├── .template-shorts/    <span class="cmt">ショート動画（14ステップ）</span>
+├── .template/           <span class="cmt">YouTube 横動画テンプレ（20ステップ）</span>
+├── .template-shorts/    <span class="cmt">ショート動画テンプレ（14ステップ）</span>
 ├── aislides/            <span class="cmt">スライド生成システム</span>
 ├── scripts/             <span class="cmt">ライセンス認証など</span>
+├── 新規作成.sh          <span class="cmt">プロジェクト作成スクリプト</span>
 └── projects/            <span class="cmt">あなたの動画プロジェクト置き場</span></div>
     </div>
   </section>`;
@@ -205,26 +210,24 @@ function slide09TwoTemplates() {
   </section>`;
 }
 
-// 10. プロジェクトフォルダ作成
+// 10. プロジェクトフォルダ作成（新規作成.sh）
 function slide10Project() {
   return `<section class="slide" data-section="start"
-    data-notes="テンプレートをそのまま使わず、必ずコピーしてprojectsフォルダの中に動画ごとのプロジェクトを作ります。MacもWindowsも今回はCursorのターミナルを使うので、コマンドは共通です。">
+    data-notes="プロジェクト作成は新規作成.shスクリプト1コマンドで自動化されています。プロジェクト名と動画タイプを聞かれるので答えるだけ。フォルダ作成・npm installまで自動です。">
     ${ph(10, 'Project start')}
     <div class="slide-content">
-      <h2>プロジェクトフォルダを作る</h2>
-      <p class="lead mb-24">Cursor のターミナルで実行（Mac / Windows 共通）</p>
-      <div class="code">
-mkdir -p projects
-
-<span class="cmt"># 横動画</span>
-cp -r .template projects/my-video
-
-<span class="cmt"># ショート動画</span>
-cp -r .template-shorts projects/my-short
-
-cd projects/my-video
-npm install</div>
-      <p class="mt-32">プロジェクト名は<span class="hl">内容が分かる名前</span>を推奨（tennis-serve / cooking-pasta など）</p>
+      <h2><span class="g-primary">1コマンド</span>でプロジェクト作成</h2>
+      <p class="lead mb-24">Mac / Windows 共通（Cursor のターミナル）</p>
+      <div class="code">./新規作成.sh</div>
+      <p class="mt-32">起動すると順番に2つ聞かれます:</p>
+      <ol class="ordered" style="margin-top:12px">
+        <li><span class="bold text-white">プロジェクト名</span>（例: <code>2026-04-19</code> など日付でもOK）</li>
+        <li><span class="bold text-white">動画タイプ</span>（1: 横動画 / 2: ショート動画）</li>
+      </ol>
+      <div class="card card--accent mt-32">
+        <div class="card-title">フォルダ作成 → <code>npm install</code> まで自動</div>
+        <div class="card-body">完了後、Claude Code 起動コマンドを案内してくれる</div>
+      </div>
     </div>
   </section>`;
 }
@@ -232,25 +235,28 @@ npm install</div>
 // 11. 素材の配置
 function slide11Assets() {
   return `<section class="slide" data-section="start"
-    data-notes="プロジェクトフォルダの中の public フォルダに、素材をドラッグアンドドロップで入れます。必須はメイン動画、BGM、SE の3つ。">
+    data-notes="プロジェクトフォルダの中の public フォルダに、素材をドラッグアンドドロップで入れます。動画系は videos の下、画像系は images の下。必須はメイン動画、BGM、SE の3つです。">
     ${ph(11, 'Project start')}
     <div class="slide-content">
       <h2>素材を <code>public/</code> に配置</h2>
       <div class="code mt-16">
 public/
-├── main/           <span class="cmt">本編動画（MP4） </span><span class="str">★必須</span>
-├── inserts/        <span class="cmt">物理挿入動画（任意）</span>
-├── overlays/       <span class="cmt">オーバーレイ動画（任意）</span>
-├── opening/        <span class="cmt">OP動画（横動画のみ・任意）</span>
-├── highlight/      <span class="cmt">ハイライト動画（横動画のみ・任意）</span>
-├── images/         <span class="cmt">挿入画像（任意）</span>
-├── bgm/            <span class="cmt">BGM（MP3） </span><span class="str">★必須</span>
-├── se/             <span class="cmt">SE効果音 </span><span class="str">★必須</span>
+├── videos/             <span class="cmt">動画素材</span>
+│   ├── main/           <span class="cmt">本編動画 </span><span class="str">★必須</span>
+│   ├── inserts/        <span class="cmt">物理挿入動画（任意）</span>
+│   ├── overlays/       <span class="cmt">オーバーレイ動画（任意）</span>
+│   ├── opening/        <span class="cmt">OP動画（横動画のみ・任意）</span>
+│   └── highlight/      <span class="cmt">ハイライト動画（自動生成・横動画のみ）</span>
+├── images/             <span class="cmt">画像素材</span>
+│   ├── inserts/        <span class="cmt">横に表示する画像 720×405（任意）</span>
+│   └── overlays/       <span class="cmt">全画面表示画像・アニメーション付き（任意）</span>
+├── bgm/                <span class="cmt">BGM（MP3） </span><span class="str">★必須</span>
+├── se/                 <span class="cmt">SE効果音 </span><span class="str">★必須</span>
 │   ├── 強調/
 │   ├── ポジティブ/
 │   └── ネガティブ/
-├── script/         <span class="cmt">ナレーション台本（推奨）</span>
-└── output/         <span class="cmt">完成動画の出力先</span></div>
+├── script/             <span class="cmt">ナレーション台本（推奨）</span>
+└── output/             <span class="cmt">完成動画の出力先</span></div>
     </div>
   </section>`;
 }
