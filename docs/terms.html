@@ -305,7 +305,7 @@
     <h3>第4条（ライセンス認証による管理）</h3>
     <p class="item">1. 本スキルファイルの利用には、権利者が発行するライセンスIDによる認証が必要です。</p>
     <p class="item">2. ライセンスIDは初回認証時に受講生のPCに紐付けられ、認証済みのPC以外では利用できません。</p>
-    <p class="item">3. 権利者は、発行したすべてのライセンスIDについて、受講生情報（氏名・XアカウントID）およびマシン紐付け情報の対応記録を保持します。</p>
+    <p class="item">3. 権利者は、発行したすべてのライセンスIDについて、受講生情報（氏名・Chatwork ID）およびマシン紐付け情報の対応記録を保持します。</p>
     <p class="item">4. 本スキルファイルが不正に流出・配布された場合、権利者はライセンスIDをもとに流出元の受講生を特定することができます。</p>
     <p class="item">5. 受講生は、ライセンス認証およびマシン紐付けによる管理が行われていることを了承した上で、本スキルファイルを受領するものとします。</p>
     <p class="item">6. PCの買い替え等により紐付けの解除が必要な場合は、権利者に申請することで再認証が可能です。</p>
@@ -316,7 +316,7 @@
     <p class="item">3. 当社は本プログラムの運営者であり、本スキルファイルの知的財産権を保有するものではありません。</p>
 
     <h3>第6条（個人情報の取り扱い）</h3>
-    <p class="item">1. 権利者は、本スキルファイルの配布管理のために受講生のXアカウントIDおよび氏名を取得・保持します。</p>
+    <p class="item">1. 権利者は、本スキルファイルの配布管理のために受講生のChatwork IDおよび氏名を取得・保持します。</p>
     <p class="item">2. 取得した個人情報は、以下の目的でのみ使用し、法令に基づく場合を除き第三者に開示しません。</p>
     <p class="item">　・本スキルファイルの配布およびライセンス管理</p>
     <p class="item">　・不正利用が発覚した場合の流出元の特定</p>
@@ -358,8 +358,8 @@
     </div>
 
     <div class="form-group">
-      <label>X アカウントID<span class="required">必須</span></label>
-      <input type="text" id="signEmail" placeholder="例: @ai_skill_naoki">
+      <label>Chatwork ID<span class="required">必須</span></label>
+      <input type="text" id="signEmail" placeholder="例: Coach_Naoki">
     </div>
 
     <div class="checkbox-group">
@@ -443,12 +443,11 @@ submitBtn.addEventListener("click", async () => {
   errorMsg.style.display = "none";
 
   try {
-    let xId = emailInput.value.trim();
-    if (!xId.startsWith('@')) xId = '@' + xId;
+    const chatworkId = emailInput.value.trim();
     const params = new URLSearchParams({
       action: "sign",
       name: nameInput.value.trim(),
-      xId: xId
+      xId: chatworkId
     });
     const res = await fetch(API_URL + "?" + params.toString());
     const data = await res.json();
