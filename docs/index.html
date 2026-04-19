@@ -502,57 +502,6 @@ bash アップデート.sh</code></pre>
   </div>
 </div>
 
-<!-- FAQ -->
-<div class="card">
-  <h2>よくある質問</h2>
-
-  <div class="faq-q">Q: Claude Code って何？どうやって使うの？</div>
-  <p>Anthropic が提供するAIコーディングツールです。ターミナルから <code>claude</code> コマンドで起動します。<br>
-  詳しくは → <a href="https://claude.ai/claude-code">claude.ai/claude-code</a></p>
-
-  <hr>
-
-  <div class="faq-q">Q: 2本目の動画を作りたい</div>
-  <p>テンプレートをもう一度コピーするだけ（ライセンス再認証は不要）：</p>
-  <pre><code>cd naoki-blueprint
-./新規作成.sh</code></pre>
-
-  <hr>
-
-  <div class="faq-q">Q: スライドなしの動画も作れる？</div>
-  <p>はい。step12〜14をスキップすれば、スライドなしの動画として制作できます。</p>
-
-  <hr>
-
-  <div class="faq-q">Q: プレビューの見方は？</div>
-  <pre><code>npm run dev</code></pre>
-  <p>でブラウザが開きます（http://localhost:3000）。</p>
-
-  <hr>
-
-  <div class="faq-q">Q: Whisper がエラーになる</div>
-  <p><strong>Mac（Apple Silicon）の場合：</strong></p>
-  <pre><code>python3.12 --version   <span class="comment"># Python 3.12.x が出ればOK</span>
-python3.12 -c "import mlx_whisper; print('OK')"</code></pre>
-  <p><strong>Windowsの場合：</strong></p>
-  <pre><code>python3.12 --version
-python3.12 -c "from faster_whisper import WhisperModel; print('OK')"</code></pre>
-
-  <hr>
-
-  <div class="faq-q">Q: ライセンスが認証できない</div>
-  <ul>
-    <li>ライセンスIDが正しいか確認してください（NK-XXXX-XXXX-XXXX形式）</li>
-    <li>有効期限が切れていないか権利者に確認してください</li>
-    <li>別のPCで認証済みの場合は、権利者にPC紐付け解除を依頼してください</li>
-  </ul>
-
-  <hr>
-
-  <div class="faq-q">Q: Windows でも使える？</div>
-  <p>はい。Step 0 で <code>faster-whisper</code> をインストールすれば動作します。<code>scripts/transcribe.mjs</code> が自動でOSを判定し、Macなら <code>mlx-whisper</code>、Windowsなら <code>faster-whisper</code> を使い分けます。GPU(CUDA)対応PCならさらに高速に動作します。</p>
-</div>
-
 <!-- Support -->
 <div class="card" style="border-left: 4px solid #22d3ee;">
   <h2>困ったとき / サポート</h2>
