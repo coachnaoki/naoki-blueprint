@@ -683,9 +683,37 @@ if (frame < startFrame || frame > endFrame) return null;
 ### AI画像生成のプロンプトルール
 
 - **英語で書く**（英語の方が品質が高い）
-- **末尾に必ず `no text no words no letters` を追加**（文字入り防止）
 - 発話の内容・感情・トーンに合わせる
 - **場面照合は厳格に**:「ギリOK」はNG → 明確にマッチしていなければ再生成
+- **末尾に必須NG文字列を必ず追加**（コピペ用）:
+  ```
+  no text, no words, no letters,
+  no real people, no celebrities, no public figures,
+  no children, no minors, no teenagers,
+  no logos, no brand names, no trademarks, no copyrighted characters,
+  no violence, no blood, no weapons, no explicit content,
+  no medical procedures, no religious symbols, no currency or IDs
+  ```
+
+### Google生成AI 利用ポリシー遵守（最優先・違反厳禁）
+
+Gemini APIで画像生成する際は、Google の Generative AI Prohibited Use Policy に従うこと。違反すると **APIキー無効化・Googleアカウント停止** につながる。
+
+**プロンプトに絶対含めないNG語:**
+- 実在の人物名・有名人名・公人名（フェデラー / マスク / Trump 等）
+- 未成年（child / kid / student / minor / teenager / school）→ 人物を出すなら必ず `adult` 明示
+- ブランド名・商標（Nike / Apple / Disney / YONEX 等）→ `unbranded` を使う
+- 著作権キャラ（Pikachu / Mario / アニメキャラ）
+- 暴力・流血・武器（blood / weapon / gun / fight）
+- 性的描写・露出（nude / sexy / erotic）
+- 医療診断・処方薬のクローズアップ
+- 政治家・宗教指導者・宗教シンボル
+- 通貨・身分証・パスポートのクローズアップ
+
+**安全な代替フレーズ（顔を出さずに人物を表現）:**
+`fictional adult character` / `back view` / `silhouette` / `from distance` / `hands only` / `unbranded clothing` / `no faces visible`
+
+**業種別の違反パターン・代替例・セルフチェックリストは `.claude/skills/step15-images/references/policy-compliance.md` を参照（必読）。**
 
 ---
 
