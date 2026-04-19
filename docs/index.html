@@ -273,12 +273,7 @@ npm install -g @anthropic-ai/claude-code</code></pre>
   <pre><code>pip install faster-whisper opencv-python
 npm install -g @anthropic-ai/claude-code</code></pre>
 
-  <h3>Linux (Ubuntu/Debian) の場合</h3>
-  <pre><code>sudo apt install nodejs npm python3.12 python3-pip ffmpeg
-pip install faster-whisper opencv-python
-npm install -g @anthropic-ai/claude-code</code></pre>
-
-  <div class="note"><strong>Whisperモデルの自動切替:</strong> macOSは <code>mlx-whisper</code>（Apple Silicon最適化で高速）、Windows/Linuxは <code>faster-whisper</code> を使用。精度は同等（どちらもlarge-v3モデル）。<code>scripts/transcribe.mjs</code> が自動で切り替えます。</div>
+  <div class="note"><strong>Whisperモデルの自動切替:</strong> macOSは <code>mlx-whisper</code>（Apple Silicon最適化で高速）、Windowsは <code>faster-whisper</code> を使用。精度は同等（どちらもlarge-v3モデル）。<code>scripts/transcribe.mjs</code> が自動で切り替えます。</div>
 
   <div class="note"><strong>OpenCV の用途:</strong> ワイプ（ピクチャーインピクチャー）の顔位置を自動検出するのに使います。</div>
 </div>
@@ -315,7 +310,7 @@ cd ..</code></pre>
 
   <p><strong>おすすめは自動スクリプト。</strong>プロジェクト名と動画タイプを選ぶだけでフォルダ作成と <code>npm install</code> まで自動で終わります。</p>
 
-  <h3>Mac / Linux の場合</h3>
+  <h3>Mac の場合</h3>
   <pre><code>./新規作成.sh</code></pre>
 
   <h3>Windows (PowerShell) の場合</h3>
@@ -390,7 +385,7 @@ claude --dangerously-skip-permissions</code></pre>
   <p>テンプレートやスキルが更新されたら、以下のコマンドで最新版に置き換えできます。<br>
   <strong>あなたが作った <code>projects/</code> と <code>.license</code> は安全です。</strong></p>
 
-  <h3>Mac / Linux の場合</h3>
+  <h3>Mac の場合</h3>
   <pre><code>cd ~/Desktop/Cursor/naoki-blueprint
 ./アップデート.sh</code></pre>
 
@@ -539,7 +534,7 @@ bash アップデート.sh</code></pre>
   <p><strong>Mac（Apple Silicon）の場合：</strong></p>
   <pre><code>python3.12 --version   <span class="comment"># Python 3.12.x が出ればOK</span>
 python3.12 -c "import mlx_whisper; print('OK')"</code></pre>
-  <p><strong>Windows / Linuxの場合：</strong></p>
+  <p><strong>Windowsの場合：</strong></p>
   <pre><code>python3.12 --version
 python3.12 -c "from faster_whisper import WhisperModel; print('OK')"</code></pre>
 
@@ -555,7 +550,7 @@ python3.12 -c "from faster_whisper import WhisperModel; print('OK')"</code></pre
   <hr>
 
   <div class="faq-q">Q: Windows でも使える？</div>
-  <p>はい。Step 0 で <code>faster-whisper</code> をインストールすれば動作します。<code>scripts/transcribe.mjs</code> が自動でOSを判定し、Macなら <code>mlx-whisper</code>、Windows/Linuxなら <code>faster-whisper</code> を使い分けます。GPU(CUDA)対応PCならさらに高速に動作します。</p>
+  <p>はい。Step 0 で <code>faster-whisper</code> をインストールすれば動作します。<code>scripts/transcribe.mjs</code> が自動でOSを判定し、Macなら <code>mlx-whisper</code>、Windowsなら <code>faster-whisper</code> を使い分けます。GPU(CUDA)対応PCならさらに高速に動作します。</p>
 </div>
 
 <!-- Support -->
