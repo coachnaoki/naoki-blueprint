@@ -126,6 +126,15 @@
       white-space: pre;
       margin: 0;
     }
+    /* 更新履歴セクションのライトテーマ用 */
+    #changelog-box code {
+      background: #eee;
+      color: #121212;
+      padding: 1px 6px;
+      border-radius: 3px;
+      font-family: "SF Mono", Menlo, Consolas, monospace;
+      font-size: 12px;
+    }
     .code .cmt { color: #71717a; }
     .code .hi { color: #facc15; font-weight: 700; }
     .code-copy {
@@ -375,42 +384,42 @@ bash アップデート.sh</div>
     <section class="step-section" style="border-left:3px solid #a78bfa">
       <h2><span class="num">📋</span>更新履歴</h2>
       <p>アップデートで追加された機能・改善の一覧です。<code>./アップデート.sh</code> または <code>./新規作成.sh</code> で最新版に自動同期されます。</p>
-      <div style="max-height:420px;overflow-y:auto;border:1px solid #27272a;border-radius:8px;padding:18px 22px;background:#0f0f12;margin-top:14px">
+      <div id="changelog-box" style="max-height:420px;overflow-y:auto;border:1px solid #e4e4e7;border-radius:8px;padding:18px 22px;background:#fafafa;margin-top:14px">
 
-        <h3 style="color:#fff;font-size:15px;margin-top:0;margin-bottom:8px">2026-04-21</h3>
-        <ul style="margin-left:18px;color:#a1a1aa;font-size:13px;line-height:1.8">
-          <li><strong style="color:#fff">🎯 ラウドネス正規化</strong>: 最終MP4を YouTube/TikTok/X 共通基準 <code>-14 LUFS</code> に自動で揃える。step20 / step14 に組込済み。</li>
-          <li><strong style="color:#fff">🎯 新規作成.sh が自動アップデート</strong>: 新規プロジェクト作成前に本体を最新版に自動同期。</li>
-          <li><strong style="color:#fff">🔧 step05-cut: word-boundary snap</strong>: カット境界を word 単位にスナップし、発話末尾 +150ms / 次発話 -50ms の非対称padding で「発話プツッ切れ」を防止。</li>
-          <li><strong style="color:#fff">🔧 SE音量基準</strong>: 0.1 → 0.06 に変更（BGMは 0.03）。</li>
+        <h3 style="color:#121212;font-size:15px;margin-top:0;margin-bottom:8px">2026-04-21</h3>
+        <ul style="margin-left:18px;color:#444;font-size:13px;line-height:1.8">
+          <li><strong style="color:#121212">🎯 ラウドネス正規化</strong>: 最終MP4を YouTube/TikTok/X 共通基準 <code>-14 LUFS</code> に自動で揃える。step20 / step14 に組込済み。</li>
+          <li><strong style="color:#121212">🎯 新規作成.sh が自動アップデート</strong>: 新規プロジェクト作成前に本体を最新版に自動同期。</li>
+          <li><strong style="color:#121212">🔧 step05-cut: word-boundary snap</strong>: カット境界を word 単位にスナップし、発話末尾 +150ms / 次発話 -50ms の非対称padding で「発話プツッ切れ」を防止。</li>
+          <li><strong style="color:#121212">🔧 SE音量基準</strong>: 0.1 → 0.06 に変更（BGMは 0.03）。</li>
         </ul>
 
-        <h3 style="color:#fff;font-size:15px;margin-top:18px;margin-bottom:8px">2026-04-20</h3>
-        <ul style="margin-left:18px;color:#a1a1aa;font-size:13px;line-height:1.8">
-          <li><strong style="color:#fff">✨ FPS を動画から自動検出</strong>（step02）: 動画タイプ固定FPSを撤廃、本編動画から自動取得。</li>
-          <li><strong style="color:#fff">✨ 尺の記載を削除</strong>: 解像度のみでシンプル化。</li>
-          <li><strong style="color:#fff">✨ Claude Code 起動を前倒し</strong>: Mac/Windows 分岐を削減。</li>
+        <h3 style="color:#121212;font-size:15px;margin-top:18px;margin-bottom:8px">2026-04-20</h3>
+        <ul style="margin-left:18px;color:#444;font-size:13px;line-height:1.8">
+          <li><strong style="color:#121212">✨ FPS を動画から自動検出</strong>（step02）: 動画タイプ固定FPSを撤廃、本編動画から自動取得。</li>
+          <li><strong style="color:#121212">✨ 尺の記載を削除</strong>: 解像度のみでシンプル化。</li>
+          <li><strong style="color:#121212">✨ Claude Code 起動を前倒し</strong>: Mac/Windows 分岐を削減。</li>
         </ul>
 
-        <h3 style="color:#fff;font-size:15px;margin-top:18px;margin-bottom:8px">2026-04-19</h3>
-        <ul style="margin-left:18px;color:#a1a1aa;font-size:13px;line-height:1.8">
-          <li><strong style="color:#fff">🎯 アップデート.sh 追加</strong>: 本体を最新版に同期するスクリプト。</li>
-          <li><strong style="color:#fff">🎯 プロジェクト更新.sh 追加</strong>: 既存 <code>projects/</code> を最新テンプレで一括同期（素材は保護）。</li>
-          <li><strong style="color:#fff">🎯 step10-greenback 素人対応</strong>: chromakey / rembg u2net / HSV despill + CoreML パイプライン。</li>
-          <li><strong style="color:#fff">🎯 自動ライセンス発行フロー</strong>: 同意書→自動発行→ブラウザ表示 UX を実装。</li>
-          <li><strong style="color:#fff">🔧 public/ フォルダ構造を再編</strong>: <code>videos/</code> と <code>images/</code> の2階層に。</li>
-          <li><strong style="color:#fff">🔧 新規作成.sh に動画タイプ選択</strong>: 横動画 / ショート動画 を選択可能に。</li>
-          <li><strong style="color:#fff">🔧 画像生成ポリシー遵守ルール</strong>（step15-images）。</li>
-          <li><strong style="color:#fff">📚 activate.html / workshop-slides / index.html 大幅改修</strong>。</li>
-          <li><strong style="color:#fff">📚 terms.html</strong>: サポート窓口を Chatwork ID ベースに。</li>
+        <h3 style="color:#121212;font-size:15px;margin-top:18px;margin-bottom:8px">2026-04-19</h3>
+        <ul style="margin-left:18px;color:#444;font-size:13px;line-height:1.8">
+          <li><strong style="color:#121212">🎯 アップデート.sh 追加</strong>: 本体を最新版に同期するスクリプト。</li>
+          <li><strong style="color:#121212">🎯 プロジェクト更新.sh 追加</strong>: 既存 <code>projects/</code> を最新テンプレで一括同期（素材は保護）。</li>
+          <li><strong style="color:#121212">🎯 step10-greenback 素人対応</strong>: chromakey / rembg u2net / HSV despill + CoreML パイプライン。</li>
+          <li><strong style="color:#121212">🎯 自動ライセンス発行フロー</strong>: 同意書→自動発行→ブラウザ表示 UX を実装。</li>
+          <li><strong style="color:#121212">🔧 public/ フォルダ構造を再編</strong>: <code>videos/</code> と <code>images/</code> の2階層に。</li>
+          <li><strong style="color:#121212">🔧 新規作成.sh に動画タイプ選択</strong>: 横動画 / ショート動画 を選択可能に。</li>
+          <li><strong style="color:#121212">🔧 画像生成ポリシー遵守ルール</strong>（step15-images）。</li>
+          <li><strong style="color:#121212">📚 activate.html / workshop-slides / index.html 大幅改修</strong>。</li>
+          <li><strong style="color:#121212">📚 terms.html</strong>: サポート窓口を Chatwork ID ベースに。</li>
         </ul>
 
-        <h3 style="color:#fff;font-size:15px;margin-top:18px;margin-bottom:8px">2026-04-18: 🎉 初回配布</h3>
-        <ul style="margin-left:18px;color:#a1a1aa;font-size:13px;line-height:1.8">
-          <li><strong style="color:#fff">🎯 Mac/Windows 両対応</strong>: OS自動判定で <code>mlx-whisper</code> / <code>faster-whisper</code> を使い分け。</li>
-          <li><strong style="color:#fff">🎯 スキル構造確立</strong>: 横動画20ステップ・ショート動画14ステップの2テンプレ体制。</li>
-          <li><strong style="color:#fff">🎯 workshop-slides</strong>: 配布者向け作業会スライド26枚を追加。</li>
-          <li><strong style="color:#fff">🎉 配布スタート</strong>: Chatwork 経由でライセンス配布開始。</li>
+        <h3 style="color:#121212;font-size:15px;margin-top:18px;margin-bottom:8px">2026-04-18: 🎉 初回配布</h3>
+        <ul style="margin-left:18px;color:#444;font-size:13px;line-height:1.8">
+          <li><strong style="color:#121212">🎯 Mac/Windows 両対応</strong>: OS自動判定で <code>mlx-whisper</code> / <code>faster-whisper</code> を使い分け。</li>
+          <li><strong style="color:#121212">🎯 スキル構造確立</strong>: 横動画20ステップ・ショート動画14ステップの2テンプレ体制。</li>
+          <li><strong style="color:#121212">🎯 workshop-slides</strong>: 配布者向け作業会スライド26枚を追加。</li>
+          <li><strong style="color:#121212">🎉 配布スタート</strong>: Chatwork 経由でライセンス配布開始。</li>
         </ul>
       </div>
       <p style="margin-top:14px;font-size:13px;color:#71717a">詳細な変更ログは <a href="https://github.com/coachnaoki/naoki-blueprint/blob/main/CHANGELOG.md" target="_blank" style="color:#60a5fa">CHANGELOG.md</a> を参照してください。</p>
