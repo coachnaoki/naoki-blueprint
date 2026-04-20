@@ -388,13 +388,15 @@ cd ..</code></pre>
 <!-- Update -->
 <div class="card" style="border-left: 4px solid #fbbf24;">
   <h2>アップデート（バージョンアップ）</h2>
-  <p>テンプレートやスキルが更新されたら、以下のコマンドで最新版に置き換えできます。<br>
-  <strong>あなたが作った <code>projects/</code> と <code>.license</code> は安全です。</strong></p>
+  <p><strong>新しい動画を作るときは何もしなくてOK。</strong><br>
+  <code>bash 新規作成.sh</code> を実行すると、本体を自動で最新版に同期してからプロジェクトを作ります。</p>
 
+  <p style="margin-top: 16px;"><strong>進行中のプロジェクトに最新テンプレを適用したい場合のみ</strong>、以下を実行してください:</p>
   <pre><code>cd ~/Desktop/Cursor/naoki-blueprint
-bash アップデート.sh</code></pre>
+bash プロジェクト更新.sh</code></pre>
+  <p style="font-size: 13px; color: #666; margin-top: 8px;"><code>projects/</code> 内の全プロジェクトを最新のスキル・スクリプトに同期します（素材・TSX・transcript は保護）。</p>
 
-  <div class="warning"><strong>⚠ 注意:</strong> アップデート中は Claude Code を <strong>Ctrl+C を2回</strong>押して終了してから実行してください。</div>
+  <div class="warning"><strong>⚠ 注意:</strong> 実行前に Claude Code を <strong>Ctrl+C を2回</strong>押して終了してください。</div>
 </div>
 
 <!-- Workflow -->
@@ -506,7 +508,7 @@ bash アップデート.sh</code></pre>
 <!-- Changelog -->
 <div class="card" id="changelog">
   <h2>更新履歴</h2>
-  <p>アップデートで追加された機能・改善をここで確認できます。最新版への更新は <code>./アップデート.sh</code> または新規作成時に自動で同期されます。</p>
+  <p>追加された機能・改善の一覧です。新しい動画を作るときは <code>bash 新規作成.sh</code> が自動で最新版を取得します。</p>
   <div class="changelog-scroll" style="max-height: 480px; overflow-y: auto; border: 1px solid #ddd; border-radius: 12px; padding: 32px 40px; background: #fff; margin-top: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
 
     <h3 style="font-size: 16px; margin-top: 0; margin-bottom: 12px; color: #121212; padding-left: 12px; border-left: 4px solid #CCFF00;">2026-04-21</h3>
