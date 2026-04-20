@@ -23,6 +23,7 @@ if [ -d ".git" ]; then
       git log --oneline HEAD..origin/main | head -5 | sed 's/^/     /'
       if git reset --hard origin/main >/dev/null 2>&1; then
         echo "  ✓ 最新版に更新しました: $(git log -1 --format='%h %s')"
+        echo "  📋 詳細は CHANGELOG.md を参照してください"
       else
         echo "  ⚠️  自動更新に失敗しました。手動で ./アップデート.sh を実行してください。"
       fi
