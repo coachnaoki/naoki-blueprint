@@ -2,7 +2,7 @@
 name: step14-final
 description: ショート動画の最終レンダリング。本編コンポジションを1080×1920のMP4に書き出して完成。ユーザーが「レンダリング」「書き出し」「出力」「最終」「render」「final」「ステップ14」と言ったら起動する。
 argument-hint: [なし]
-allowed-tools: Read, Write, Edit, Glob, Grep, Bash(npx tsc *), Bash(npx remotion render *), Bash(ls *), Bash(ffprobe *), Bash(mkdir *), Bash(df *), Bash(du *), Bash(node *)
+allowed-tools: Read, Write, Edit, Glob, Grep, Bash(npx tsc *), Bash(npx remotion render *), Bash(ls *), Bash(ffprobe *), Bash(mkdir *), Bash(df *), Bash(du *), Bash(node *), Bash(node scripts/loudnorm.mjs *)
 ---
 
 <!-- LICENSE_GUARD: DO NOT REMOVE -->
@@ -51,21 +51,32 @@ npx remotion render MainVideo public/output/<出力ファイル名>.mp4
 出力ファイル名の命名規則：`shorts-<トピック>-<日付>.mp4`
 例: `shorts-tennis-tips-20260417.mp4`
 
-### 4. 完成確認
+### 4. ラウドネス正規化（YouTube Shorts/TikTok/Reels 共通基準 -14 LUFS）
+
+最終MP4にラウドネス正規化を適用する。二段階loudnormで **-14 LUFS / -1 dBTP / LRA 11** に揃える。
+
+```bash
+node scripts/loudnorm.mjs public/output/<ファイル名>.mp4 public/output/<ファイル名>_normalized.mp4
+```
+
+`*_normalized.mp4` がアップロード用の完成品。各プラットフォームの normalization と一致するので、視聴時に音量が変動しない。
+
+### 5. 完成確認
 
 ```bash
 ls -la public/output/
-ffprobe -v quiet -show_entries format=duration,size:stream=width,height,r_frame_rate -of default=noprint_wrappers=1 public/output/<ファイル名>.mp4
+ffprobe -v quiet -show_entries format=duration,size:stream=width,height,r_frame_rate -of default=noprint_wrappers=1 public/output/<ファイル名>_normalized.mp4
 ```
 
 確認項目:
 - **解像度**: 1080×1920（縦）
 - **fps**: video-context.md の設定通り（step02 で本編動画から自動検出した値）
+- **ラウドネス**: `I=-14.xx LUFS` 付近
 
-### 5. プレビュー再生
+### 6. プレビュー再生
 
 ```bash
-node scripts/open-file.mjs public/output/<ファイル名>.mp4
+node scripts/open-file.mjs public/output/<ファイル名>_normalized.mp4
 ```
 
 ### 6. アップロード前のチェックリスト

@@ -2,7 +2,7 @@
 name: step20-highlight-final
 description: step19のMP4からハイライト範囲を自動抽出し、冒頭に連結して最終MP4レンダリングする。ハイライト不要ならそのままstep19のMP4が完成品。ユーザーが「ハイライト抽出」「最終レンダリング」「highlight」「final」「ステップ20」と言ったら起動する。
 argument-hint: [なし]
-allowed-tools: Read, Write, Edit, Glob, Grep, Bash(npx tsc *), Bash(npx remotion render *), Bash(ls *), Bash(node *), Bash(ffprobe *), Bash(ffmpeg *), Bash(mkdir *), Bash(df *), Bash(du *), Bash(mv *), Bash(node scripts/_chk.mjs)
+allowed-tools: Read, Write, Edit, Glob, Grep, Bash(npx tsc *), Bash(npx remotion render *), Bash(ls *), Bash(node *), Bash(ffprobe *), Bash(ffmpeg *), Bash(mkdir *), Bash(df *), Bash(du *), Bash(mv *), Bash(node scripts/_chk.mjs), Bash(node scripts/loudnorm.mjs *)
 ---
 
 <!-- LICENSE_GUARD: DO NOT REMOVE -->
@@ -163,12 +163,28 @@ npx remotion render Final public/output/MainComposition_final.mp4 --overwrite
 
 ⚠️ タイムアウトは10分（600000ms）に設定。
 
-### 8. 結果確認 + 再生
+### 8. ラウドネス正規化（YouTube/TikTok/X 共通基準 -14 LUFS）
+
+最終MP4にラウドネス正規化を適用する。二段階loudnormで**-14 LUFS / -1 dBTP / LRA 11**に揃える（各プラットフォームの normalization と一致）。
 
 ```bash
-ls -lh public/output/MainComposition_final.mp4
-ffprobe -v quiet -show_entries format=duration -of default=noprint_wrappers=1 public/output/MainComposition_final.mp4
-node scripts/open-file.mjs public/output/MainComposition_final.mp4
+node scripts/loudnorm.mjs public/output/MainComposition_final.mp4 public/output/MainComposition_final_normalized.mp4
+```
+
+出力ログで `I=-14.xx LUFS` 付近に収まっていればOK。
+
+**なぜ必要か**: 動画ごとに音量がバラつくと、視聴者が音量スライダーを触る手間が発生し、離脱要因になる。ラウドネス正規化を入れると、どの動画も同じ体感音量で視聴できる。YouTube/TikTok/Xもこの値で自動正規化しているため、アップロード前に揃えておくと配信時の予期しない音量変化も防げる。
+
+**注意**:
+- 正規化前: 原本の SE/BGM/声のバランスは保たれる（linear=true で全体ゲインのみ調整）
+- 正規化後ファイル `*_final_normalized.mp4` がアップロード用の完成品
+
+### 9. 結果確認 + 再生
+
+```bash
+ls -lh public/output/MainComposition_final_normalized.mp4
+ffprobe -v quiet -show_entries format=duration -of default=noprint_wrappers=1 public/output/MainComposition_final_normalized.mp4
+node scripts/open-file.mjs public/output/MainComposition_final_normalized.mp4
 ```
 
 ## ハイライト音声の扱い
@@ -188,8 +204,10 @@ node scripts/open-file.mjs public/output/MainComposition_final.mp4
 
 ## 完了条件
 - `public/output/MainComposition_final.mp4` が存在する（ハイライトなしの場合は `step19_main.mp4` が完成品）
+- `public/output/MainComposition_final_normalized.mp4` が存在する（ラウドネス正規化済み・アップロード用完成品）
 - ファイルサイズ・長さが妥当
 - ハイライトが冒頭に正しく連結されている
+- `I=-14.xx LUFS` で正規化されている
 
 ## 完了後
 
@@ -197,10 +215,12 @@ node scripts/open-file.mjs public/output/MainComposition_final.mp4
 ✅ Step 20 完了: 最終レンダリングが完了しました！
 
 【出力ファイル】
-- パス: public/output/MainComposition_final.mp4
+- 正規化前: public/output/MainComposition_final.mp4
+- アップロード用: public/output/MainComposition_final_normalized.mp4（-14 LUFS 正規化済み）
 - サイズ: ○○ MB
 - 長さ: ○○秒（ハイライト ○秒 + OP ○秒 + 本編 ○秒）
 - 解像度: 1920x1080
+- ラウドネス: I=-14.xx LUFS / TP=-0.xx dBTP
 
 🎉 動画制作ワークフロー完了！
 確認して問題があれば教えてね。
