@@ -7,43 +7,50 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", "Helvetica Neue", sans-serif;
-      background: #0a0a0c;
-      color: #e4e4e7;
-      line-height: 1.75;
-      letter-spacing: 0.02em;
+      font-family: 'Helvetica Neue', 'Hiragino Kaku Gothic ProN', 'メイリオ', sans-serif;
+      background: #f5f5f5;
+      color: #333;
+      line-height: 1.8;
       -webkit-font-smoothing: antialiased;
       min-height: 100vh;
-      padding: 60px 20px;
+      padding: 40px 20px;
     }
     .wrap {
-      max-width: 760px;
+      max-width: 800px;
       margin: 0 auto;
+      padding: 0 20px;
     }
     .brand-tag {
       font-size: 12px; letter-spacing: 0.32em;
-      color: #60a5fa; text-transform: uppercase;
+      color: #2563EB; text-transform: uppercase;
       font-weight: 700;
       margin-bottom: 10px;
+      text-align: center;
     }
     h1 {
-      font-size: 40px; font-weight: 800;
-      color: #fff; letter-spacing: -0.01em;
+      font-size: 28px; font-weight: 800;
+      color: #121212; letter-spacing: -0.01em;
       margin-bottom: 8px;
+      text-align: center;
     }
     .lead {
-      color: #a1a1aa; font-size: 16px;
-      margin-bottom: 48px;
+      color: #666; font-size: 14px;
+      margin-bottom: 40px;
+      text-align: center;
     }
     .loading {
       text-align: center; padding: 80px 20px;
-      color: #71717a; font-size: 14px;
+      color: #666; font-size: 14px;
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
     }
     .spinner {
       display: inline-block;
       width: 20px; height: 20px;
-      border: 2px solid #3b3b45;
-      border-top-color: #60a5fa;
+      border: 2px solid #ddd;
+      border-top-color: #2563EB;
       border-radius: 50%;
       animation: spin 0.8s linear infinite;
       vertical-align: middle;
@@ -53,62 +60,71 @@
 
     /* 成功パネル */
     .license-panel {
-      background: #1c1c22;
-      border: 1px solid #2d2d36;
-      padding: 40px 44px;
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      padding: 32px 40px;
       margin-bottom: 24px;
       position: relative;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      overflow: hidden;
     }
     .license-panel::before {
       content: "";
       position: absolute;
-      top: 0; left: 0; right: 0; height: 3px;
+      top: 0; left: 0; right: 0; height: 4px;
       background: linear-gradient(90deg, #3b82f6, #8b5cf6, #ec4899);
     }
     .license-label {
       font-size: 11px; letter-spacing: 0.28em;
-      color: #71717a; font-weight: 700;
+      color: #666; font-weight: 700;
       text-transform: uppercase;
       margin-bottom: 14px;
     }
     .license-id {
       font-family: "SF Mono", Menlo, Consolas, monospace;
-      font-size: 36px; font-weight: 700;
-      color: #fff;
+      font-size: 32px; font-weight: 700;
+      color: #121212;
       letter-spacing: 0.08em;
       margin-bottom: 16px;
       word-break: break-all;
     }
     .copy-btn {
       display: inline-flex; align-items: center; gap: 8px;
-      background: #3b82f6; color: #fff;
+      background: #2563EB; color: #fff;
       border: none; padding: 10px 20px;
+      border-radius: 6px;
       font-size: 13px; font-weight: 700;
       letter-spacing: 0.12em; cursor: pointer;
       transition: background 0.15s;
       font-family: inherit;
     }
-    .copy-btn:hover { background: #2563eb; }
+    .copy-btn:hover { background: #1d4ed8; }
     .copy-btn.copied { background: #16a34a; }
 
     /* 手順セクション */
     section.step-section {
-      background: #111114;
-      border: 1px solid #26262e;
-      padding: 36px 40px;
-      margin-bottom: 20px;
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      padding: 32px 40px;
+      margin-bottom: 24px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
     }
     section.step-section h2 {
-      font-size: 22px; font-weight: 700;
-      color: #fff;
-      margin-bottom: 20px;
-      display: flex; align-items: center; gap: 14px;
+      font-size: 20px; font-weight: 700;
+      color: #121212;
+      margin-bottom: 16px;
+      display: flex; align-items: center; gap: 12px;
+      padding-left: 12px;
+      border-left: 4px solid #CCFF00;
     }
     section.step-section h2 .num {
       font-family: "SF Mono", monospace;
-      font-size: 14px; font-weight: 700;
-      background: #3b82f6; color: #fff;
-      padding: 4px 10px;
+      font-size: 13px; font-weight: 700;
+      background: #2563EB; color: #fff;
+      padding: 3px 10px;
+      border-radius: 4px;
       letter-spacing: 0.1em;
     }
     .code-wrap {
@@ -116,42 +132,55 @@
       margin: 12px 0;
     }
     .code {
-      background: #050506;
-      border-left: 3px solid #3b82f6;
-      color: #e4e4e7;
-      padding: 18px 56px 18px 24px;
+      background: #1a1a2e;
+      border-radius: 8px;
+      color: #e0e0e0;
+      padding: 16px 56px 16px 20px;
       font-family: "SF Mono", Menlo, Consolas, monospace;
-      font-size: 14px; line-height: 1.85;
+      font-size: 13px; line-height: 1.85;
       overflow-x: auto;
       white-space: pre;
       margin: 0;
     }
-    /* 更新履歴セクションのライトテーマ用 */
+    /* 更新履歴セクション内のインラインcode用 */
     #changelog-box code {
-      background: #eee;
+      background: #f0f0f0;
       color: #121212;
-      padding: 1px 6px;
-      border-radius: 3px;
+      padding: 2px 6px;
+      border-radius: 4px;
       font-family: "SF Mono", Menlo, Consolas, monospace;
-      font-size: 12px;
+      font-size: 13px;
     }
-    .code .cmt { color: #71717a; }
-    .code .hi { color: #facc15; font-weight: 700; }
+    /* 本文中のインラインcode（ページ全体用） */
+    section p code,
+    section li code,
+    section h2 code {
+      background: #f0f0f0;
+      color: #121212;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: "SF Mono", Menlo, Consolas, monospace;
+      font-size: 13px;
+    }
+    .code .cmt { color: #9ca3af; }
+    .code .hi { color: #fbbf24; font-weight: 700; }
+    .code .str { color: #86efac; }
     .code-copy {
       position: absolute;
       top: 10px; right: 10px;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.12);
-      color: #a1a1aa;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      color: #cbd5e1;
       font-size: 11px; font-weight: 700;
       letter-spacing: 0.14em;
       padding: 5px 12px;
+      border-radius: 4px;
       cursor: pointer;
       font-family: inherit;
       transition: all 0.15s;
     }
     .code-copy:hover {
-      background: #3b82f6;
+      background: #2563EB;
       color: #fff;
       border-color: transparent;
     }
@@ -165,26 +194,28 @@
       gap: 12px; margin: 16px 0;
     }
     .choice-card {
-      background: #050506;
-      border: 1px solid #2d2d36;
+      background: #fafafa;
+      border: 1px solid #ddd;
+      border-radius: 8px;
       padding: 20px 22px;
     }
     .choice-card .choice-num {
       display: inline-block;
-      background: #3b82f6; color: #fff;
+      background: #2563EB; color: #fff;
       font-family: "SF Mono", monospace;
       font-size: 12px; font-weight: 700;
       padding: 3px 8px;
+      border-radius: 4px;
       letter-spacing: 0.1em;
       margin-bottom: 10px;
     }
     .choice-card.short .choice-num { background: #ec4899; }
     .choice-card h3 {
-      font-size: 16px; color: #fff;
+      font-size: 15px; color: #121212;
       margin-bottom: 6px; font-weight: 700;
     }
     .choice-card p {
-      font-size: 13px; color: #71717a;
+      font-size: 13px; color: #666;
       margin: 0; line-height: 1.6;
     }
     .os-label {
@@ -192,50 +223,54 @@
       font-size: 11px; font-weight: 700;
       letter-spacing: 0.18em;
       padding: 3px 10px;
+      border-radius: 4px;
       text-transform: uppercase;
       margin: 14px 0 6px;
     }
-    .os-label.mac { background: #3b82f6; color: #fff; }
+    .os-label.mac { background: #2563EB; color: #fff; }
     .os-label.win { background: #8b5cf6; color: #fff; }
-    section p { color: #a1a1aa; font-size: 15px; margin-bottom: 12px; }
-    section a { color: #60a5fa; text-decoration: underline; }
+    section p { color: #444; font-size: 14px; margin-bottom: 10px; }
+    section a { color: #2563EB; text-decoration: underline; }
 
     /* エラー */
     .error-panel {
-      background: #2a1517;
-      border: 1px solid #7f1d1d;
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: 12px;
       padding: 32px 40px;
-      color: #fca5a5;
+      color: #991b1b;
       text-align: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
     }
     .error-panel h2 {
-      color: #ef4444; font-size: 22px;
+      color: #dc2626; font-size: 20px;
       margin-bottom: 10px;
     }
 
     /* CTA */
     .cta {
-      display: flex; gap: 12px; margin-top: 24px;
+      display: flex; gap: 12px; margin-top: 20px;
       flex-wrap: wrap;
     }
     .cta a {
-      background: #26262e; color: #fff;
-      padding: 12px 22px;
+      background: #f0f0f0; color: #333;
+      padding: 10px 20px;
+      border-radius: 6px;
       text-decoration: none;
-      font-size: 14px; font-weight: 700;
-      letter-spacing: 0.1em;
-      border: 1px solid #3a3a45;
+      font-size: 13px; font-weight: 700;
+      letter-spacing: 0.08em;
+      border: 1px solid #ddd;
       transition: background 0.15s;
     }
-    .cta a:hover { background: #353541; }
-    .cta a.primary { background: #3b82f6; border-color: transparent; }
-    .cta a.primary:hover { background: #2563eb; }
+    .cta a:hover { background: #e0e0e0; }
+    .cta a.primary { background: #2563EB; color: #fff; border-color: transparent; }
+    .cta a.primary:hover { background: #1d4ed8; }
 
     .footer {
-      margin-top: 48px;
+      margin-top: 40px;
       padding-top: 24px;
-      border-top: 1px solid #26262e;
-      color: #52525b; font-size: 12px; letter-spacing: 0.1em;
+      border-top: 1px solid #ddd;
+      color: #999; font-size: 12px; letter-spacing: 0.1em;
       text-align: center;
     }
   </style>
@@ -253,9 +288,9 @@
 
   <div id="result" style="display:none">
     <!-- Support & Notes (top) -->
-    <section class="step-section" style="border-left:3px solid #22d3ee;background:#0f1619">
+    <section class="step-section" style="border-left:4px solid #22d3ee;background:#f0fdff">
       <h2 style="margin-bottom:14px"><span class="num" style="background:#22d3ee;color:#050506">!</span>困ったとき / ブックマーク推奨</h2>
-      <p><strong style="color:#fff">このページのURLはブックマーク推奨。</strong>いつでもライセンスIDを再表示できます。</p>
+      <p><strong style="color:#121212">このページのURLはブックマーク推奨。</strong>いつでもライセンスIDを再表示できます。</p>
       <p style="margin-top:10px">ライセンスIDを忘れた時や今後サポートを受けたい場合は Chatwork で Naoki に個別メッセージしてください。</p>
       <div class="cta">
         <a href="https://www.chatwork.com/Coach_Naoki" target="_blank" class="primary">Chatwork で Naoki に連絡</a>
@@ -265,7 +300,7 @@
     <!-- Step 01: 環境セットアップ -->
     <section class="step-section">
       <h2><span class="num">01</span>環境セットアップ（初回のみ）</h2>
-      <p>動画制作に必要な4ツールをインストールします。<strong style="color:#fff">すでに入っている方はスキップ</strong>してOK。</p>
+      <p>動画制作に必要な4ツールをインストールします。<strong style="color:#121212">すでに入っている方はスキップ</strong>してOK。</p>
 
       <div class="os-label mac">macOS (Apple Silicon)</div>
       <div class="code">brew install node python@3.12 ffmpeg
@@ -273,17 +308,17 @@ pip3.12 install mlx-whisper opencv-python
 npm install -g @anthropic-ai/claude-code</div>
 
       <div class="os-label win">Windows</div>
-      <p style="font-size:14px;color:#a1a1aa;margin:6px 0 4px">まずブラウザから事前準備:</p>
-      <ul style="color:#a1a1aa;font-size:14px;padding-left:24px;line-height:1.9;margin-bottom:12px">
+      <p style="font-size:14px;color:#444;margin:6px 0 4px">まずブラウザから事前準備:</p>
+      <ul style="color:#444;font-size:14px;padding-left:24px;line-height:1.9;margin-bottom:12px">
         <li>Node.js: <a href="https://nodejs.org/" target="_blank">nodejs.org</a></li>
         <li>Python 3.12: <a href="https://www.python.org/downloads/" target="_blank">python.org</a>（<strong style="color:#fde68a">「Add Python to PATH」必須</strong>）</li>
         <li>FFmpeg: <a href="https://www.gyan.dev/ffmpeg/builds/" target="_blank">gyan.dev/ffmpeg</a>（PATHに追加）</li>
       </ul>
-      <p style="font-size:14px;color:#a1a1aa;margin:6px 0 4px">その後 PowerShell で:</p>
+      <p style="font-size:14px;color:#444;margin:6px 0 4px">その後 PowerShell で:</p>
       <div class="code">pip install faster-whisper opencv-python
 npm install -g @anthropic-ai/claude-code</div>
 
-      <div style="background:#2a1b05;border:1px solid #78350f;border-left:3px solid #f59e0b;padding:14px 18px;margin:14px 0 0;font-size:14px;color:#fde68a;">
+      <div style="background:#fffbeb;border:1px solid #fcd34d;border-left:4px solid #f59e0b;border-radius:6px;padding:14px 18px;margin:14px 0 0;font-size:14px;color:#92400e;">
         ⚠ Python は <strong>3.12 限定</strong>。3.14 では mlx-whisper が動きません。
       </div>
     </section>
@@ -291,8 +326,8 @@ npm install -g @anthropic-ai/claude-code</div>
     <!-- Step 02: フォルダ移動 → Clone → Claude Code 起動（統合） -->
     <section class="step-section">
       <h2><span class="num">02</span>リポジトリ取得 → Claude Code 起動</h2>
-      <p><strong id="userName" style="color:#fff"></strong> さん、準備を始めましょう。</p>
-      <div style="background:#2a1b05;border:1px solid #78350f;border-left:3px solid #f59e0b;padding:14px 18px;margin:14px 0;font-size:14px;color:#fde68a;">
+      <p><strong id="userName" style="color:#121212"></strong> さん、準備を始めましょう。</p>
+      <div style="background:#fffbeb;border:1px solid #fcd34d;border-left:4px solid #f59e0b;border-radius:6px;padding:14px 18px;margin:14px 0;font-size:14px;color:#92400e;">
         ⚠ 既に Claude Code を開いている方は、ターミナル上で <strong>Ctrl+C</strong>（Mac は <strong>Control+C</strong>）を <strong>2回押して</strong>終了してから進めてください。
       </div>
 
@@ -303,7 +338,7 @@ cd naoki-blueprint</div>
 
       <p style="margin-top:20px">続けて Claude Code を起動:</p>
       <div class="code">claude --dangerously-skip-permissions</div>
-      <p style="font-size:13px;color:#71717a">起動後は Claude に「この手順を進めて」と伝えるだけでも、自分で以下を順にターミナルで打っても OK。</p>
+      <p style="font-size:13px;color:#666">起動後は Claude に「この手順を進めて」と伝えるだけでも、自分で以下を順にターミナルで打っても OK。</p>
     </section>
 
     <section class="step-section">
@@ -312,7 +347,7 @@ cd naoki-blueprint</div>
       <div class="code">cd .template
 node scripts/validateLicense.mjs <span class="hi" id="licenseIdInCode">NK-XXXX-XXXX-XXXX</span>
 cd ..</div>
-      <p style="font-size:13px;color:#71717a">✅ 認証成功で <code>.license</code> ファイルが生成され、以降は自動認証されます。PCは1台に紐付きます。</p>
+      <p style="font-size:13px;color:#666">✅ 認証成功で <code>.license</code> ファイルが生成され、以降は自動認証されます。PCは1台に紐付きます。</p>
     </section>
 
     <section class="step-section">
@@ -320,7 +355,7 @@ cd ..</div>
       <p>naoki-blueprint フォルダで <code>bash 新規作成.sh</code> を実行します:</p>
       <div class="code">bash 新規作成.sh</div>
       <p>起動すると、以下を順に聞かれます:</p>
-      <ol style="color:#a1a1aa;font-size:15px;padding-left:24px;margin:12px 0 16px">
+      <ol style="color:#444;font-size:15px;padding-left:24px;margin:12px 0 16px">
         <li style="margin-bottom:6px">プロジェクト名（日付でOK。例: <code class="today-date">2026-04-19</code>）</li>
         <li>動画タイプ</li>
       </ol>
@@ -336,7 +371,7 @@ cd ..</div>
           <p>1080×1920<br>14ステップ / テロップ8種に絞り情報密度を優先</p>
         </div>
       </div>
-      <p style="font-size:13px;color:#71717a">フォルダ作成・<code>npm install</code> まで自動。完了後に案内されるコマンドで Claude Code を起動してください。</p>
+      <p style="font-size:13px;color:#666">フォルダ作成・<code>npm install</code> まで自動。完了後に案内されるコマンドで Claude Code を起動してください。</p>
     </section>
 
     <section class="step-section">
@@ -365,21 +400,21 @@ cd ..</div>
       <p>あとは AI が次のコマンドを案内してくれるので、質問に答えながら進めるだけ。</p>
     </section>
 
-    <section class="step-section" style="border-left:3px solid #fbbf24">
+    <section class="step-section" style="border-left:4px solid #fbbf24">
       <h2><span class="num">UP</span>アップデート（バージョンアップ）</h2>
-      <p><strong style="color:#fff">新しい動画を作るときは何もしなくてOK。</strong><br>
+      <p><strong style="color:#121212">新しい動画を作るときは何もしなくてOK。</strong><br>
       <code>bash 新規作成.sh</code> を実行すると、本体を自動で最新版に同期してからプロジェクトを作ります。</p>
 
-      <p style="margin-top:24px;font-size:14px"><strong style="color:#fff">進行中のプロジェクトに最新テンプレを適用したい場合のみ</strong>、以下を実行してください:</p>
+      <p style="margin-top:24px;font-size:14px"><strong style="color:#121212">進行中のプロジェクトに最新テンプレを適用したい場合のみ</strong>、以下を実行してください:</p>
       <div class="code">cd ~/Desktop/Cursor/naoki-blueprint
 bash プロジェクト更新.sh</div>
-      <p style="margin-top:12px;font-size:13px;color:#71717a"><code>projects/</code> 内の全プロジェクトを最新のスキル・スクリプトに同期します（素材・TSX・transcript は保護）。</p>
+      <p style="margin-top:12px;font-size:13px;color:#666"><code>projects/</code> 内の全プロジェクトを最新のスキル・スクリプトに同期します（素材・TSX・transcript は保護）。</p>
 
-      <p style="margin-top:16px;font-size:13px;color:#71717a">⚠ 実行前に Claude Code を <strong style="color:#fff">Ctrl+C を 2回</strong>押して終了してください。</p>
+      <p style="margin-top:16px;font-size:13px;color:#666">⚠ 実行前に Claude Code を <strong style="color:#121212">Ctrl+C を 2回</strong>押して終了してください。</p>
     </section>
 
     <!-- Changelog -->
-    <section class="step-section" style="border-left:3px solid #a78bfa">
+    <section class="step-section" style="border-left:4px solid #a78bfa">
       <h2><span class="num">📋</span>更新履歴</h2>
       <p>追加された機能・改善の一覧です。新しい動画を作るときは <code>bash 新規作成.sh</code> が自動で最新版を取得します。</p>
       <div id="changelog-box" style="max-height:420px;overflow-y:auto;border:1px solid #ddd;border-radius:12px;padding:32px 40px;background:#fff;margin-top:14px;box-shadow:0 2px 8px rgba(0,0,0,0.06)">
