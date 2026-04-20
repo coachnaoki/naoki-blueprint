@@ -507,9 +507,9 @@ bash アップデート.sh</code></pre>
 <div class="card" id="changelog">
   <h2>更新履歴</h2>
   <p>アップデートで追加された機能・改善をここで確認できます。最新版への更新は <code>./アップデート.sh</code> または新規作成時に自動で同期されます。</p>
-  <div class="changelog-scroll" style="max-height: 480px; overflow-y: auto; border: 1px solid #eee; border-radius: 8px; padding: 20px 24px; background: #fafafa; margin-top: 12px;">
+  <div class="changelog-scroll" style="max-height: 480px; overflow-y: auto; border: 1px solid #ddd; border-radius: 12px; padding: 32px 40px; background: #fff; margin-top: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
 
-    <h3 style="margin-top: 0;">2026-04-21</h3>
+    <h3 style="font-size: 16px; margin-top: 0; margin-bottom: 12px; color: #121212; padding-left: 12px; border-left: 4px solid #CCFF00;">2026-04-21</h3>
     <ul style="margin-left: 20px; color: #444; font-size: 14px;">
       <li><strong>🎯 ラウドネス正規化</strong>: 最終MP4を YouTube/TikTok/X 共通基準 <code>-14 LUFS</code> に自動で揃える（<code>scripts/loudnorm.mjs</code>）。step20 / step14 の最終段に組込済み。</li>
       <li><strong>🎯 新規作成.sh が自動アップデート</strong>: 新規プロジェクト作成前に本体を最新版に自動同期。配布済みユーザーがアップデートに気づかない問題を解消。</li>
@@ -517,14 +517,14 @@ bash アップデート.sh</code></pre>
       <li><strong>🔧 SE音量基準</strong>: 0.1 → 0.06 に変更（BGMは 0.03 維持）。</li>
     </ul>
 
-    <h3>2026-04-20</h3>
+    <h3 style="font-size: 16px; margin-top: 28px; margin-bottom: 12px; color: #121212; padding-left: 12px; border-left: 4px solid #CCFF00;">2026-04-20</h3>
     <ul style="margin-left: 20px; color: #444; font-size: 14px;">
       <li><strong>✨ FPS を動画から自動検出</strong>（step02）: 動画タイプ固定FPSを撤廃、本編動画から FFprobe で自動取得。</li>
       <li><strong>✨ 尺の記載を削除</strong>: 動画タイプ選択から尺の記述を外し、解像度のみでシンプル化。</li>
       <li><strong>✨ Claude Code 起動を前倒し</strong>: Mac/Windows 分岐を削減しドキュメント整理。</li>
     </ul>
 
-    <h3>2026-04-19</h3>
+    <h3 style="font-size: 16px; margin-top: 28px; margin-bottom: 12px; color: #121212; padding-left: 12px; border-left: 4px solid #CCFF00;">2026-04-19</h3>
     <ul style="margin-left: 20px; color: #444; font-size: 14px;">
       <li><strong>🎯 アップデート.sh 追加</strong>: 本体を最新版に同期するスクリプト。</li>
       <li><strong>🎯 プロジェクト更新.sh 追加</strong>: 既存 <code>projects/</code> のプロジェクトを最新テンプレで一括同期（素材と TSX は保護）。</li>
@@ -538,7 +538,7 @@ bash アップデート.sh</code></pre>
       <li><strong>📚 terms.html</strong>: サポート窓口を Chatwork ID ベースに変更。</li>
     </ul>
 
-    <h3>2026-04-18: 🎉 初回配布</h3>
+    <h3 style="font-size: 16px; margin-top: 28px; margin-bottom: 12px; color: #121212; padding-left: 12px; border-left: 4px solid #CCFF00;">2026-04-18: 🎉 初回配布</h3>
     <ul style="margin-left: 20px; color: #444; font-size: 14px;">
       <li><strong>🎯 Mac/Windows 両対応</strong>: <code>scripts/transcribe.mjs</code> が OS を自動判定し、Mac は <code>mlx-whisper</code>、Win/Linux は <code>faster-whisper</code> を使い分け。</li>
       <li><strong>🎯 スキル構造確立</strong>: 横動画20ステップ・ショート動画14ステップの2テンプレート体制。</li>
