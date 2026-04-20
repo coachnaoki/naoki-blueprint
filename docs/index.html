@@ -503,6 +503,52 @@ bash アップデート.sh</code></pre>
   </div>
 </div>
 
+<!-- Changelog -->
+<div class="card" id="changelog">
+  <h2>更新履歴</h2>
+  <p>アップデートで追加された機能・改善をここで確認できます。最新版への更新は <code>./アップデート.sh</code> または新規作成時に自動で同期されます。</p>
+  <div class="changelog-scroll" style="max-height: 480px; overflow-y: auto; border: 1px solid #eee; border-radius: 8px; padding: 20px 24px; background: #fafafa; margin-top: 12px;">
+
+    <h3 style="margin-top: 0;">2026-04-21</h3>
+    <ul style="margin-left: 20px; color: #444; font-size: 14px;">
+      <li><strong>🎯 ラウドネス正規化</strong>: 最終MP4を YouTube/TikTok/X 共通基準 <code>-14 LUFS</code> に自動で揃える（<code>scripts/loudnorm.mjs</code>）。step20 / step14 の最終段に組込済み。</li>
+      <li><strong>🎯 新規作成.sh が自動アップデート</strong>: 新規プロジェクト作成前に本体を最新版に自動同期。配布済みユーザーがアップデートに気づかない問題を解消。</li>
+      <li><strong>🔧 step05-cut: word-boundary snap 導入</strong>: カット境界を word 単位にスナップし、発話末尾 +150ms / 次発話 -50ms の非対称padding で「発話プツッ切れ」を防止。snap成功率92%。</li>
+      <li><strong>🔧 SE音量基準</strong>: 0.1 → 0.06 に変更（BGMは 0.03 維持）。</li>
+    </ul>
+
+    <h3>2026-04-20</h3>
+    <ul style="margin-left: 20px; color: #444; font-size: 14px;">
+      <li><strong>✨ FPS を動画から自動検出</strong>（step02）: 動画タイプ固定FPSを撤廃、本編動画から FFprobe で自動取得。</li>
+      <li><strong>✨ 尺の記載を削除</strong>: 動画タイプ選択から尺の記述を外し、解像度のみでシンプル化。</li>
+      <li><strong>✨ Claude Code 起動を前倒し</strong>: Mac/Windows 分岐を削減しドキュメント整理。</li>
+    </ul>
+
+    <h3>2026-04-19</h3>
+    <ul style="margin-left: 20px; color: #444; font-size: 14px;">
+      <li><strong>🎯 アップデート.sh 追加</strong>: 本体を最新版に同期するスクリプト。</li>
+      <li><strong>🎯 プロジェクト更新.sh 追加</strong>: 既存 <code>projects/</code> のプロジェクトを最新テンプレで一括同期（素材と TSX は保護）。</li>
+      <li><strong>🎯 step10-greenback 素人対応パイプライン</strong>: 均一な緑は ffmpeg chromakey、色ムラ・照明ムラは rembg u2net AI + HSV despill + CoreML で処理。</li>
+      <li><strong>🎯 自動ライセンス発行フロー</strong>: 同意書→自動発行→ブラウザ表示 UX を activate.html に実装。</li>
+      <li><strong>🔧 public/ フォルダ構造を再編</strong>: <code>videos/</code> と <code>images/</code> の2階層に整理、main/inserts/overlays/opening/highlight の役割を明確化。</li>
+      <li><strong>🔧 新規作成.sh に動画タイプ選択</strong>: YouTube 横動画 / ショート動画 を選択可能に。</li>
+      <li><strong>🔧 画像生成ポリシー遵守ルール追加</strong>（step15-images）: Google Generative AI Prohibited Use Policy 対策。</li>
+      <li><strong>📚 activate.html 大幅改修</strong>: Mac/Windows 分岐・素材配置ツリー・サポート誘導の整理など初見ユーザーの詰まりポイントを集中対応。</li>
+      <li><strong>📚 workshop-slides 再編</strong> / <strong>index.html 全面更新</strong>。</li>
+      <li><strong>📚 terms.html</strong>: サポート窓口を Chatwork ID ベースに変更。</li>
+    </ul>
+
+    <h3>2026-04-18: 🎉 初回配布</h3>
+    <ul style="margin-left: 20px; color: #444; font-size: 14px;">
+      <li><strong>🎯 Mac/Windows 両対応</strong>: <code>scripts/transcribe.mjs</code> が OS を自動判定し、Mac は <code>mlx-whisper</code>、Win/Linux は <code>faster-whisper</code> を使い分け。</li>
+      <li><strong>🎯 スキル構造確立</strong>: 横動画20ステップ・ショート動画14ステップの2テンプレート体制。</li>
+      <li><strong>🎯 workshop-slides</strong>: 配布者向け作業会スライド26枚を追加。</li>
+      <li><strong>🎉 配布スタート</strong>: Chatwork 経由でライセンス配布開始。</li>
+    </ul>
+  </div>
+  <p style="margin-top: 14px; font-size: 13px;">詳細な変更ログは <a href="https://github.com/coachnaoki/naoki-blueprint/blob/main/CHANGELOG.md" target="_blank" style="color: #2563EB;">CHANGELOG.md</a> を参照してください。</p>
+</div>
+
 <!-- Support -->
 <div class="card" style="border-left: 4px solid #22d3ee;">
   <h2>困ったとき / サポート</h2>

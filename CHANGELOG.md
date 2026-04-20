@@ -18,6 +18,7 @@ naoki-blueprint のバージョンアップ履歴です。
 ### 🎯 新機能
 - **ラウドネス正規化**（`scripts/loudnorm.mjs`）: 最終MP4を YouTube/TikTok/X 共通基準 **-14 LUFS / -1 dBTP / LRA 11** に二段階loudnormで揃える。step20（横）と step14（ショート）の最終段に組込済み。
 - **新規作成.sh の自動アップデート**: 新規プロジェクト作成前に `git fetch + git reset --hard origin/main` を自動実行。配布済みユーザーがアップデートに気づかない問題を解消。
+- **配布ページに更新履歴セクション追加**: [index.html](https://coachnaoki.github.io/naoki-blueprint/) と [activate.html](https://coachnaoki.github.io/naoki-blueprint/activate.html) の両方に、スクロール可能な更新履歴パネルを追加。配布済みユーザーが Web からも最新の変更内容を把握できる。
 
 ### 🔧 改善
 - **step05-cut に word-boundary snap 導入**: カット境界を `transcript_words.json` の word 境界にスナップし、発話末尾 +150ms / 次発話開始 -50ms の非対称 padding を適用。silencedetect のタイムスタンプズレ (±50-100ms) を吸収して「発話がプツッと切れる」問題を防止。snap成功率92%（Teleprompter テストで実測）。
