@@ -221,7 +221,7 @@ keeps = [(s, e) for s, e in keeps if e - s >= 0.3]
 
 # 5. word-boundary snap + 非対称padding（推奨）
 # 各カット境界を transcript_words.json の word.end / word.start にスナップして、
-# 発話末尾に +50ms の余韻、次発話開始に -30ms の息継ぎ余白を残す。
+# 発話末尾に +150ms の余韻、次発話開始に -50ms の息継ぎ余白を残す。
 # silencedetect の timestamps は ±50-100ms ズレるので、word境界に揃えることで
 # 「発話がプツッと切れる」「息継ぎが消える」問題を防げる。
 #
@@ -229,9 +229,9 @@ keeps = [(s, e) for s, e in keeps if e - s >= 0.3]
 #   各無音区間 (s.start, s.end) について:
 #     wPrev = s.start 以前に end する最後のword（±0.30s以内）
 #     wNext = s.end 以降に start する最初のword（±0.30s以内）
-#     cutStart = wPrev.end + 0.050s  (snap 成功時)
+#     cutStart = wPrev.end + 0.150s  (snap 成功時)
 #                 または s.start + 0.075s (フォールバック)
-#     cutEnd   = wNext.start - 0.030s (snap 成功時)
+#     cutEnd   = wNext.start - 0.050s (snap 成功時)
 #                 または s.end - 0.075s (フォールバック)
 #
 # これを keeps 計算に適用したあと、0.3s未満の短いセグメントを除外する。
@@ -252,8 +252,8 @@ def word_after(t):
         if w['start'] >= t - 0.20: return w
     return None
 
-KEEP_AFTER = 0.050   # 発話末尾の余韻
-KEEP_BEFORE = 0.030  # 次発話の息継ぎ前余白
+KEEP_AFTER = 0.150   # 発話末尾の余韻（聴感調整済み・Teleprompter動画テストで確定）
+KEEP_BEFORE = 0.050  # 次発話の息継ぎ前余白（聴感調整済み）
 FALLBACK = 0.075
 
 snapped_cuts = []
@@ -269,11 +269,14 @@ for (cs, ce) in merged:
 # ... (prev_end = 0 から通常通り差し引き)
 ```
 
-> **Teleprompter動画 2分48秒での実測**:
-> - legacy（0.075s固定padding）: 116.91s（30.4%カット）
-> - word-boundary snap: 109.40s（34.9%カット）、snap成功率92% (72/78)
-> - **差分 7.5秒** — word境界に snap する分、無音をよりタイトに削れる
-> - 発話末尾の「息を吸う音」が残るため自然。カット直後の「突然始まる感」が消える
+> **なぜ非対称か**:
+> - **AFTER 150ms**: Whisper の word.end は実際の発話終了より早めに出る傾向があるため、余韻を厚めに残す。これにより「〜です」の「す」の息や母音が確実に保存される。
+> - **BEFORE 50ms**: 発話の始まりは word.start で正確に取れるため短めで十分。息継ぎの気配だけ残る。
+>
+> **Teleprompter動画 2分48秒での実測**（AFTER=0.15/BEFORE=0.05）:
+> - legacy（0.075s対称padding）: 116.91s（30.4%カット）
+> - word-boundary snap: 113.80s（32.3%カット）、snap成功率 92% (72/78境界)
+> - **差分 3.1秒** タイトにカット、かつ発話末尾切れゼロ（Naoki聴感確認済み）
 
 ### Phase 5: FFmpeg一発エンコード
 
