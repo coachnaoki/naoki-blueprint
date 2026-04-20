@@ -127,6 +127,6 @@ npm install
 
 ## 横動画を作りたい場合
 
-YouTube用の通常動画（10〜20分・横向き）を作る場合は、`.template-shorts/` ではなく **`.template/`** を使ってください。
+YouTube用の通常動画（横向き）を作る場合は、`.template-shorts/` ではなく **`.template/`** を使ってください。
 
 ステップ数・実装内容が異なります。

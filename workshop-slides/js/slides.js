@@ -207,11 +207,11 @@ function slide10TypeProject() {
       <div class="grid-2">
         <div class="card card--accent">
           <div class="pill pill--primary mb-16">1. YouTube 横動画</div>
-          <div class="card-body">1920×1080 / 10〜20分<br/>20ステップ / スライド・ワイプ・OP・ハイライト対応</div>
+          <div class="card-body">1920×1080<br/>20ステップ / スライド・ワイプ・OP・ハイライト対応</div>
         </div>
         <div class="card card--hot">
           <div class="pill pill--hot mb-16">2. ショート動画</div>
-          <div class="card-body">1080×1920 / 30〜60秒<br/>14ステップ / テロップ8種に絞り情報密度を優先</div>
+          <div class="card-body">1080×1920<br/>14ステップ / テロップ8種に絞り情報密度を優先</div>
         </div>
       </div>
     </div>
