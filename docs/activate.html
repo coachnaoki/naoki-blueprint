@@ -287,16 +287,9 @@ npm install -g @anthropic-ai/claude-code</div>
         ⚠ 既に Claude Code を開いている方は、ターミナル上で <strong>Ctrl+C</strong>（Mac は <strong>Control+C</strong>）を <strong>2回押して</strong>終了してから進めてください。
       </div>
 
-      <p>Cursor のターミナルで、naoki-blueprint を置きたいフォルダに移動（例: デスクトップ上の <code>Cursor</code> フォルダ）:</p>
-      <div class="os-label mac">macOS</div>
-      <div class="code">cd ~/Desktop/Cursor</div>
-      <div class="os-label win">Windows (PowerShell)</div>
-      <div class="code">cd ~\Desktop\Cursor</div>
-
-      <hr style="border:none;border-top:1px solid #27272a;margin:24px 0">
-
-      <p>そのフォルダでリポジトリをダウンロード（Mac / Windows 共通）:</p>
-      <div class="code">git clone https://github.com/coachnaoki/naoki-blueprint.git
+      <p>Cursor のターミナルを開き、naoki-blueprint を置きたいフォルダに移動してリポジトリをダウンロード（Mac / Windows 共通）:</p>
+      <div class="code">cd ~/Desktop/Cursor
+git clone https://github.com/coachnaoki/naoki-blueprint.git
 cd naoki-blueprint</div>
 
       <p style="margin-top:20px">続けて Claude Code を起動:</p>
@@ -315,8 +308,8 @@ cd ..</div>
 
     <section class="step-section">
       <h2><span class="num">04</span>動画タイプを選んでプロジェクト作成</h2>
-      <p>naoki-blueprint フォルダで <code>./新規作成.sh</code> を実行します:</p>
-      <div class="code">./新規作成.sh</div>
+      <p>naoki-blueprint フォルダで <code>bash 新規作成.sh</code> を実行します:</p>
+      <div class="code">bash 新規作成.sh</div>
       <p>起動すると、以下を順に聞かれます:</p>
       <ol style="color:#a1a1aa;font-size:15px;padding-left:24px;margin:12px 0 16px">
         <li style="margin-bottom:6px">プロジェクト名（日付でOK。例: <code class="today-date">2026-04-19</code>）</li>
@@ -371,12 +364,8 @@ cd ..</div>
       <p>テンプレートやスキルが更新されたら、以下のコマンドで最新版に置き換えできます。<br>
       <strong style="color:#fff">あなたが作った <code>projects/</code> と <code>.license</code> は安全です。</strong></p>
 
-      <p style="margin-top:20px">naoki-blueprint フォルダで実行:</p>
+      <p style="margin-top:20px">naoki-blueprint フォルダで実行（Mac / Windows 共通）:</p>
       <div class="code">cd ~/Desktop/Cursor/naoki-blueprint
-./アップデート.sh</div>
-
-      <p style="margin-top:16px">Windows (PowerShell) の場合:</p>
-      <div class="code">cd ~\Desktop\Cursor\naoki-blueprint
 bash アップデート.sh</div>
 
       <p style="margin-top:16px;font-size:13px;color:#71717a">⚠ アップデート中は Claude Code を <strong style="color:#fff">Ctrl+C を 2回</strong>押して終了してから実行してください。</p>

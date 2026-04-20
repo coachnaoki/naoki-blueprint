@@ -284,35 +284,37 @@ npm install -g @anthropic-ai/claude-code</code></pre>
 
   <div class="warning"><strong>⚠ 事前準備:</strong> すでに Claude Code を開いている方は、ターミナル上で <strong>Ctrl+C</strong>（Mac は <strong>Control+C</strong>）を <strong>2回押して</strong>終了してから進めてください。</div>
 
-  <p>Cursor のターミナルで、<code>naoki-blueprint</code> を置きたいフォルダに移動します（例: デスクトップの <code>Cursor</code> フォルダ）。</p>
+  <p>Cursor のターミナルを開き、<code>naoki-blueprint</code> を置きたいフォルダに移動します（例: デスクトップの <code>Cursor</code> フォルダ）。</p>
 
-  <h3>Mac の場合</h3>
-  <pre><code>cd ~/Desktop/Cursor</code></pre>
-
-  <h3>Windows (PowerShell) の場合</h3>
-  <pre><code>cd ~\Desktop\Cursor</code></pre>
-
-  <hr>
-
-  <p>そのフォルダでリポジトリをダウンロード（Mac / Windows 共通）:</p>
-  <pre><code>git clone https://github.com/coachnaoki/naoki-blueprint.git
+  <pre><code>cd ~/Desktop/Cursor
+git clone https://github.com/coachnaoki/naoki-blueprint.git
 cd naoki-blueprint</code></pre>
+
+  <div class="note">以降のコマンドは <strong>Mac / Windows 共通</strong>です。Cursor のターミナルで、そのままコピペして実行してください。</div>
 </div>
 
 <!-- Step 2 -->
 <div class="card">
-  <h2><span class="step-number">2</span> ライセンス認証（初回のみ）</h2>
+  <h2><span class="step-number">2</span> Claude Code を立ち上げる</h2>
+  <p>ここからは Claude Code に任せます。先に起動しておけば、<strong>以降のセットアップで詰まったときも Claude が代わりに解決</strong>してくれます。</p>
+  <pre><code>claude --dangerously-skip-permissions</code></pre>
+  <div class="note">初回起動時にログインを求められた場合は、画面の指示に従ってブラウザで認証してください。</div>
+</div>
+
+<!-- Step 3 -->
+<div class="card">
+  <h2><span class="step-number">3</span> ライセンス認証（初回のみ）</h2>
   <p>権利者から発行されたライセンスIDを入力します。</p>
   <pre><code>cd .template
 node scripts/validateLicense.mjs NK-XXXX-XXXX-XXXX
 cd ..</code></pre>
   <p>認証成功すると <code>.license</code> ファイルが生成されます。2本目以降はこのステップは不要です（テンプレートをコピーすると <code>.license</code> も一緒にコピーされます）。</p>
-  <div class="note">PCを変更する場合は権利者にご連絡ください。</div>
+  <div class="note">PCを変更する場合は <a href="https://www.chatwork.com/Coach_Naoki" target="_blank">Chatwork で Naoki に個別メッセージ</a>してください。</div>
 </div>
 
-<!-- Step 3 -->
+<!-- Step 4 -->
 <div class="card">
-  <h2><span class="step-number">3</span> プロジェクトフォルダを作成</h2>
+  <h2><span class="step-number">4</span> プロジェクトフォルダを作成</h2>
   <p>動画1本ごとに専用のプロジェクトフォルダを作ります。<strong>作る動画の種類によってテンプレートが2つあります。</strong></p>
 
   <table>
@@ -323,10 +325,6 @@ cd ..</code></pre>
 
   <p><strong>おすすめは自動スクリプト。</strong>プロジェクト名と動画タイプを選ぶだけでフォルダ作成と <code>npm install</code> まで自動で終わります。</p>
 
-  <h3>Mac の場合</h3>
-  <pre><code>./新規作成.sh</code></pre>
-
-  <h3>Windows (PowerShell) の場合</h3>
   <pre><code>bash 新規作成.sh</code></pre>
 
   <p>起動すると以下を順に聞かれます：</p>
@@ -336,13 +334,11 @@ cd ..</code></pre>
   </ol>
 
   <div class="note"><strong>なぜ projects/ に作るの？</strong><br>テンプレートやツール類はリポジトリ直下に残るので、2本目・3本目を作るときも同じ手順でコピーするだけ。</div>
-
-  <div class="note"><strong>手動で作りたい場合は？</strong><br>テンプレートを <code>projects/</code> 配下にコピーして <code>npm install</code> すればOK（Mac: <code>cp -r .template projects/名前</code> / Windows: <code>Copy-Item -Recurse .template projects/名前</code>）。</div>
 </div>
 
-<!-- Step 4 -->
+<!-- Step 5 -->
 <div class="card">
-  <h2><span class="step-number">4</span> 素材を配置</h2>
+  <h2><span class="step-number">5</span> 素材を配置</h2>
   <p>プロジェクトフォルダの <code>public/</code> の中に、素材ごとの専用フォルダが用意されています。Finder（Mac）やエクスプローラー（Windows）で、各フォルダにファイルをドラッグ＆ドロップするだけでOKです。</p>
 
   <div class="folder-tree">
@@ -381,13 +377,10 @@ cd ..</code></pre>
   </table>
 </div>
 
-<!-- Step 5 -->
+<!-- Step 6 -->
 <div class="card">
-  <h2><span class="step-number">5</span> 動画制作スタート！</h2>
-  <p>プロジェクトフォルダ内で Claude Code を起動します。</p>
-  <pre><code><span class="comment"># Claude Code を起動（dangerousモード）</span>
-claude --dangerously-skip-permissions</code></pre>
-  <p>起動したら、以下を入力してください：</p>
+  <h2><span class="step-number">6</span> 動画制作スタート！</h2>
+  <p>Step 2 で起動した Claude Code のタブに戻って、以下を入力してください：</p>
   <pre><code>/step01-context</code></pre>
   <p>あとはAIの指示に従って、<code>/step02-assets</code> → <code>/step03-transcript</code> → … と順番に進めるだけ！</p>
 </div>
@@ -398,12 +391,7 @@ claude --dangerously-skip-permissions</code></pre>
   <p>テンプレートやスキルが更新されたら、以下のコマンドで最新版に置き換えできます。<br>
   <strong>あなたが作った <code>projects/</code> と <code>.license</code> は安全です。</strong></p>
 
-  <h3>Mac の場合</h3>
   <pre><code>cd ~/Desktop/Cursor/naoki-blueprint
-./アップデート.sh</code></pre>
-
-  <h3>Windows (PowerShell) の場合</h3>
-  <pre><code>cd ~\Desktop\Cursor\naoki-blueprint
 bash アップデート.sh</code></pre>
 
   <div class="warning"><strong>⚠ 注意:</strong> アップデート中は Claude Code を <strong>Ctrl+C を2回</strong>押して終了してから実行してください。</div>
