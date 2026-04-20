@@ -14,6 +14,7 @@ allowed-tools: Read, Write, Glob, Grep, Bash(ls *), Bash(node scripts/_chk.mjs)
 
 ## 前提
 - **動画は横向き（16:9 / 1920×1080）** で制作する
+- **FPS はメイン動画から自動検出する**（step02 実行時に ffprobe で取得して video-context.md に書き込む）
 
 ## やること
 
@@ -23,8 +24,7 @@ allowed-tools: Read, Write, Glob, Grep, Bash(ls *), Bash(node scripts/_chk.mjs)
    - この動画のターゲット（誰に向けた動画か）
    - 動画の趣旨・目的
    - 発信者の性別・年代（画像生成のプロンプトに使用）
-   - フレームレート（YouTube用は60fps推奨、デフォルト: 25fps）
-4. `video-context.md` を作成 or 更新する
+4. `video-context.md` を作成 or 更新する（FPS 欄は空欄のままで OK。step02 が埋める）
 
 ## video-context.md のテンプレート
 
@@ -42,7 +42,7 @@ allowed-tools: Read, Write, Glob, Grep, Bash(ls *), Bash(node scripts/_chk.mjs)
 （動画の目的）
 
 ## 制作設定
-- FPS: （25 or 60）
+- FPS: （step02 実行時に自動検出されます）
 
 ## 動画ファイル
 （step02で確認後に記録）

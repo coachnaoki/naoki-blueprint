@@ -84,9 +84,13 @@ ffprobe -v quiet -show_entries format=duration:stream=width,height,r_frame_rate 
 
 ### 5. video-context.md への記録
 
-`video-context.md` の制作設定に動画ファイルの役割を記録する：
+`video-context.md` の制作設定に動画ファイルの役割 + **本編動画から検出した FPS** を記録する：
 
 ```markdown
+## 制作設定
+- 解像度: 1920×1080（横動画 16:9）
+- FPS: 30  ← ffprobe の本編動画 `r_frame_rate` から算出した値（例: 30000/1001 → 29.97 を四捨五入で 30 / 60/1 → 60）
+
 ## 動画ファイル
 - 本編: main/part1.mp4, main/part2.mp4（文字起こし順: part1 → part2）
 - 物理挿入: inserts/demo.mp4（〜30秒あたりに挟む予定）
@@ -94,6 +98,12 @@ ffprobe -v quiet -show_entries format=duration:stream=width,height,r_frame_rate 
 - OP: opening/op.mp4（冒頭連結）
 - ハイライト: highlight/best.mp4（冒頭連結・OPの前）
 ```
+
+**FPS 自動設定の手順**:
+1. `public/videos/main/` の最初の本編動画を ffprobe で解析
+2. `r_frame_rate` を数値に変換（例: `30000/1001` → 29.97 → 四捨五入で 30 / `60/1` → 60）
+3. `video-context.md` の `## 制作設定` セクションの `FPS:` 行を実測値で書き換える
+4. 整数に丸めた値を採用（25 / 30 / 60 のいずれかになることが多い）
 
 ### 6. 不足素材の報告
 

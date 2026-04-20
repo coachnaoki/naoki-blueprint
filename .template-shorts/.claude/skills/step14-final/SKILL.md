@@ -60,8 +60,7 @@ ffprobe -v quiet -show_entries format=duration,size:stream=width,height,r_frame_
 
 確認項目:
 - **解像度**: 1080×1920（縦）
-- **fps**: video-context.md の設定通り
-- **duration**: 想定の尺（30〜60秒）
+- **fps**: video-context.md の設定通り（step02 で本編動画から自動検出した値）
 
 ### 5. プレビュー再生
 
@@ -76,7 +75,6 @@ node scripts/open-file.mjs public/output/<ファイル名>.mp4
 - [ ] テロップが画面中央に配置されている
 - [ ] 下部UI領域（1500px以下）にテキストが入っていない
 - [ ] BGM・SEが入っている
-- [ ] 30〜60秒に収まっている
 
 ## 完了後
 

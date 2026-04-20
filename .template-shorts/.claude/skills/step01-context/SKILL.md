@@ -14,7 +14,7 @@ allowed-tools: Read, Write, Glob, Grep, Bash(ls *), Bash(node *)
 
 ## 前提
 - **動画は縦向き（9:16 / 1080×1920）** で制作する（YouTube Shorts / TikTok / Instagram Reels用）
-- **想定尺**: 30〜60秒以内
+- **FPS はメイン動画から自動検出する**（step02 実行時に ffprobe で取得して video-context.md に書き込む）
 
 ## やること
 
@@ -24,8 +24,7 @@ allowed-tools: Read, Write, Glob, Grep, Bash(ls *), Bash(node *)
    - この動画のターゲット（誰に向けた動画か）
    - 動画の趣旨・目的
    - 発信者の性別・年代（画像生成のプロンプトに使用）
-   - フレームレート（YouTube用は60fps推奨、デフォルト: 25fps）
-4. `video-context.md` を作成 or 更新する
+4. `video-context.md` を作成 or 更新する（FPS 欄は空欄のままで OK。step02 が埋める）
 
 ## video-context.md のテンプレート
 
@@ -43,7 +42,7 @@ allowed-tools: Read, Write, Glob, Grep, Bash(ls *), Bash(node *)
 （動画の目的）
 
 ## 制作設定
-- FPS: （25 or 60）
+- FPS: （step02 実行時に自動検出されます）
 
 ## 動画ファイル
 （step02で確認後に記録）

@@ -21,7 +21,7 @@
 
 ```
 --- 素材準備 ---
-step01-context         → 動画コンテキスト整理（ターゲット・趣旨・FPS・縦動画指定）
+step01-context         → 動画コンテキスト整理（ターゲット・趣旨・縦動画指定）
 step02-assets          → 素材確認＆役割確定（本編/物理挿入/オーバーレイ）
 step03-transcript      → 文字起こし（本編にWhisperでタイムスタンプ化・large-v3固定）
 step04-transcript-fix  → 文字起こし修正（台本と照合して誤変換修正）
