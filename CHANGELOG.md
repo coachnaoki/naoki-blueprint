@@ -18,6 +18,18 @@ naoki-blueprint のバージョンアップ履歴です。バージョンは [Se
 
 ---
 
+## [v1.5.0] - 2026-04-21
+
+### 🎯 新機能
+- **step05 で Remotion Studio を起動（横・ショート両方）**: カット直後に最小版の `MainComposition.tsx` / `Root.tsx` / `index.ts`（カット済み動画を全画面表示するだけ）を生成し、Remotion Studio をバックグラウンド起動。従来は step09 まで起動を遅らせていたため、カットミスが step06〜08 の手戻りに繋がっていた。step05 でフレーム単位の精密確認ができるようになる。
+- **step09 を「新規生成」から「拡張」に変更（横・ショート両方）**: step05 で既に MainComposition.tsx / Root.tsx が存在するため、step09 はテロップレンダラーと SE を既存ファイルに追加する形に変更。Remotion Studio 起動処理は削除（既に起動済みのためホットリロードで反映）。
+
+### 🔧 改善
+- **step05 の確認フローを QuickTime から Remotion Studio に一本化**: 従来の `open-file.mjs` による即時プレビューは削除。Remotion Studio のスクラブ・フレーム移動機能の方がカットミス検出に適している。
+- **CLAUDE.md のワークフロー説明を更新（横・ショート両方）**: step05 と step09 の役割変更を反映。
+
+---
+
 ## [v1.4.0] - 2026-04-21
 
 ### 🎯 新機能

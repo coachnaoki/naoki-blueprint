@@ -169,7 +169,7 @@ ffmpeg -y -i public/videos/main/元動画.mp4 -filter_complex \
 > `[v0][a0][v1][a1][v2][a2]concat=n=3:v=1:a=1` のように、**各セグメントのビデオとオーディオを交互に並べる**。
 > `[v0][v1][v2][a0][a1][a2]` のようにビデオを先にまとめると「Media type mismatch」エラーになる。
 
-### Phase 6: 結果の確認と再生（必須）
+### Phase 6: 結果の確認（Remotion Studio で必須）
 
 ```bash
 # カット前後の尺を比較
@@ -179,22 +179,85 @@ ffprobe -v quiet -show_entries format=duration -of default=noprint_wrappers=1 pu
 
 カット前後の長さ・カット率を表示する。
 
-**カット後は必ず動画を再生してユーザーに確認してもらう。** 再生なしで次のステップに進んではいけない。
+**カット後は必ず Remotion Studio を起動してユーザーに確認してもらう。** フレーム単位で精密確認することでカットミスを早期発見し、step06以降の手戻りを防ぐ。
 
-**⚠️ 必須実行:** エンコード完了直後に以下のコマンドを**必ず実行**する。ユーザーに「確認しますか？」と聞かない。エラー検出のための強制プレビュー。
+#### 6-1. 暫定の MainComposition.tsx / Root.tsx を生成
 
+テロップ・SE・スライド等は入れない、**カット済み動画を全画面表示するだけ**の最小版を生成する。step09 でこの MainComposition.tsx を拡張していく形にする。
+
+**ffprobe でフレーム数・FPSを取得:**
 ```bash
-# Mac/Windows/Linux 共通（内部で open / start / xdg-open を自動選択）
-node scripts/open-file.mjs public/videos/main/元動画_cut.mp4
+ffprobe -v quiet -select_streams v:0 -show_entries stream=r_frame_rate,nb_frames,duration -of default=noprint_wrappers=1 public/videos/main/元動画_cut.mp4
+# r_frame_rate=30/1, duration=XX.XX などから FPS と durationInFrames を算出
 ```
 
-実行後、**動画が自動で再生される** ので、ユーザーに「カットされた動画を開きました。以下を確認してください」と伝えてフィードバックを待つ。
+**`src/MainComposition.tsx` (暫定・最小版):**
+```typescript
+import React from "react";
+import { OffthreadVideo, staticFile } from "remotion";
+
+export const MainComposition: React.FC = () => {
+  return (
+    <div style={{ width: "100%", height: "100%", position: "relative", backgroundColor: "#000" }}>
+      <OffthreadVideo
+        src={staticFile("videos/main/元動画_cut.mp4")}
+        style={{ width: "100%", height: "100%", objectFit: "cover" }}
+      />
+    </div>
+  );
+};
+```
+
+**`src/Root.tsx`:**
+```typescript
+import { Composition } from "remotion";
+import { MainComposition } from "./MainComposition";
+
+export const RemotionRoot: React.FC = () => {
+  return (
+    <Composition
+      id="MainVideo"
+      component={MainComposition}
+      durationInFrames={/* ffprobeで算出 */}
+      fps={/* video-context.md のFPS */}
+      width={1080}
+      height={1920}
+    />
+  );
+};
+```
+
+**`src/index.ts`（Remotion登録エントリ、未作成なら生成）:**
+```typescript
+import { registerRoot } from "remotion";
+import { RemotionRoot } from "./Root";
+registerRoot(RemotionRoot);
+```
+
+#### 6-2. Remotion Studio 起動（必須・バックグラウンド）
+
+```bash
+npx remotion studio
+```
+
+**トラブル時の対処**: `Cannot find native binding` エラー（rspack darwin-x64/universal が見つからない）が出た場合:
+1. `rm -rf node_modules package-lock.json && npm install` で再配置
+2. それでもダメなら `node node_modules/.bin/remotion studio --port 3003` で直接起動
+
+起動後（数秒でブラウザが自動で開く）、ユーザーに以下を伝える:
+
+```
+Remotion Studio を起動しました（http://localhost:3000）。
+カット済み動画がフレーム単位で確認できます。
+以降のステップでも使うので、開いたままにしてください。
+```
 
 ### Phase 7: ユーザー確認 → 追加調整（必須）
 
-動画確認時、必ず以下をユーザーに聞く:
+Remotion Studio のプレビューをユーザーに確認してもらう:
 ```
-カット動画を確認してください。以下をチェックしてほしい:
+Remotion Studio (http://localhost:3000) でカット動画を確認してください。
+フレーム単位でスクラブできます。以下をチェックしてほしい:
 1. 言い直しが全部カットされているか（例: 同じフレーズが2回話されてないか）
 2. 語尾が切れていないか
 3. 無駄なフレーム（数フレームの残骸）がないか
@@ -219,7 +282,9 @@ Whisperの出力・silencedetectでは検出しきれないパターンがある
 - カット済み動画（`*_cut.mp4`）が `public/videos/main/` に存在する
 - 元動画が保持されている
 - カット前後の長さ・カット率を把握している
-- **カット後の動画を再生し、ユーザーがOKを出している**（再生せずに完了してはいけない）
+- 暫定 `src/MainComposition.tsx` / `src/Root.tsx` / `src/index.ts` が存在する
+- Remotion Studio が起動している（http://localhost:3000）
+- **Remotion Studio でカット後の動画を確認し、ユーザーがOKを出している**（確認せずに完了してはいけない）
 
 ## 完了後
 

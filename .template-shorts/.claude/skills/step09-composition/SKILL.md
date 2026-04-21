@@ -8,14 +8,16 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash(npx tsc *), Bash(npx remotion
 <!-- LICENSE_GUARD: DO NOT REMOVE -->
 > **認証必須**: このステップ開始前に `node scripts/_chk.mjs` を実行。exit code が 0 以外なら即中止し「ライセンスが無効です。権利者にお問い合わせください」と伝える。（詳細は CLAUDE.md の「ライセンス認証」セクション参照）
 
-# Step 09: コンポジション構築・登録
+# Step 09: コンポジション構築（拡張）
 
-`src/MainComposition.tsx`（メインのReactコンポーネント）を構築し、`src/Root.tsx` にコンポジションを登録する。
+`src/MainComposition.tsx` を拡張する。**step05で暫定版（動画のみ）が既に生成済み**。ここではテロップレンダラーと SE システムを追加していく。Root.tsx と index.ts は step05 で作成済みなので、durationInFrames / fps の確認のみ。
 
 ## 前提条件
+- Step 05（カット）が完了し、暫定 `src/MainComposition.tsx` / `src/Root.tsx` / `src/index.ts` が存在する
 - Step 07（テンプレート設定）とStep 08（テロップデータ）が完了していること
   - `src/templateConfig.ts`
   - `src/telopData.ts`
+- Remotion Studio が起動中（step05で起動済み、ここではホットリロードで反映される）
 
 ## やること
 
@@ -173,27 +175,22 @@ export const RemotionRoot: React.FC = () => {
 - `fps` は `video-context.md` の制作設定に記載されたFPSを使用する
 - `durationInFrames` は `video-context.md` の総フレーム数を使用する
 
-### 4. Remotion Studio を起動（必須・絶対スキップ禁止）
+### 4. Root.tsx の durationInFrames / fps 確認
 
-**⚠️ MainComposition.tsx と Root.tsx の作成後、無条件で Remotion Studio を起動する。**
+step05 で生成済みの `src/Root.tsx` で `durationInFrames` / `fps` が正しい値になっているか確認。誤っていれば修正する。
 
-「起動しますか？」と聞かずに、以下を**バックグラウンド実行**で起動:
-
-```bash
-npx remotion studio
+```typescript
+<Composition
+  id="MainVideo"
+  component={MainComposition}
+  durationInFrames={/* カット後のフレーム数 */}
+  fps={/* video-context.md のFPS */}
+  width={1080}
+  height={1920}
+/>
 ```
 
-**トラブル時の対処**: `Cannot find native binding` エラー（rspack darwin-x64/universal が見つからない）が出た場合:
-1. `rm -rf node_modules package-lock.json && npm install` で再配置
-2. それでもダメなら `node node_modules/.bin/remotion studio --port 3003` で直接起動（npmスクリプト経由だと別アーキテクチャのnodeが拾われることがある）
-
-起動後（数秒でブラウザが自動で開く）、ユーザーに以下を伝える:
-
-```
-Remotion Studio を起動しました。
-ブラウザが自動で開きます（http://localhost:3000）。
-以降のステップ（画像挿入・BGM・CTA等）でも使うので、開いたままにしておいてください。
-```
+Remotion Studio は step05 で既に起動済みなので、ここでの起動処理は不要。ホットリロードで MainComposition.tsx の拡張内容が自動反映される。
 
 ### 5. TypeScript ビルドチェック
 
@@ -217,24 +214,22 @@ npx tsc --noEmit
 - [ ] Sequence必須ルール: 途中再生の短い動画は `<Sequence>` でラップ
 
 ## 完了条件
-- `src/MainComposition.tsx` が存在する
-- ベース動画・テロップレンダラー・SEの3システムが実装されている
-- `src/Root.tsx` にコンポジションが登録されている
-- Remotion Studio が起動している
+- `src/MainComposition.tsx` にテロップレンダラー・SE が追加されている（ベース動画は step05 で既に実装済み）
+- `src/Root.tsx` の durationInFrames / fps が正しい
+- Remotion Studio のプレビューでテロップ・SE が反映されている（ホットリロード）
 - TypeScript ビルドが通る
 - CLAUDE.md のルールに準拠している
 
 ## 完了後
 
 ```
-✅ Step 09 完了: コンポジション構築・登録が完了しました。
+✅ Step 09 完了: コンポジション拡張が完了しました。
 
-【実装システム】
-- ベース動画: ✅
+【追加システム】
 - テロップレンダラー: ✅（○テンプレート対応）
 - SE自動生成: ✅
-- Root.tsx登録: ✅
-- Remotion Studio: 起動済み
+
+Remotion Studio でプレビューを確認してください（ホットリロード済み）。
 
 次のステップ → /step10-greenback（グリーンバック背景置換）
 進めますか？
