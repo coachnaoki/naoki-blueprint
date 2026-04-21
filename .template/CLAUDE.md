@@ -667,16 +667,42 @@ if (frame < startFrame || frame > endFrame) return null;
 // opacityのinterpolateは一切使わない
 ```
 
-### 左側挿入画像の固定位置（変更不可）
+### インサート画像の固定位置（話者位置で3パターン・変更不可）
 
+`video-context.md` の `speaker_position` に応じて以下を選ぶ。
+
+#### ケースA: speaker_position = right → 画像は**左**に配置（既存デフォルト）
 | プロパティ | 固定値 |
 |-----------|--------|
 | top | 369 |
-| left | 180 |
+| left | **180** |
 | width | 720 |
 | height | 405 |
 | zIndex | 5 |
 
+#### ケースB: speaker_position = left → 画像は**右**に配置
+| プロパティ | 固定値 |
+|-----------|--------|
+| top | 369 |
+| left | **1020** |
+| width | 720 |
+| height | 405 |
+| zIndex | 5 |
+
+#### ケースC: speaker_position = center → 画像は**中央 + 周囲ぼかし**
+2層構造（背景ぼかし + 前景中央）:
+
+| プロパティ | 背景層 | 前景層 |
+|-----------|--------|--------|
+| top | 0 | **202** |
+| left | 0 | **480** |
+| width | 1920 | **960** |
+| height | 1080 | **675** |
+| filter | `blur(30px) brightness(0.7)` | なし |
+| transform | `scale(1.1)` | なし |
+| zIndex | 4 | 5 |
+
+**共通**:
 - `objectFit: "cover"` 必須
 - スライド表示中は非表示（`!slideVisible` 条件）
 

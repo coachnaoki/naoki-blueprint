@@ -43,6 +43,7 @@ allowed-tools: Read, Write, Glob, Grep, Bash(ls *), Bash(node scripts/_chk.mjs)
 
 ## 制作設定
 - FPS: （step02 実行時に自動検出されます）
+- speaker_position: （step15 実行時にユーザーに確認して記録。値: left / center / right）
 
 ## 動画ファイル
 （step02で確認後に記録）
