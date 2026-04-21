@@ -73,9 +73,10 @@ step14-final           → レンダリング
 ### 絶対禁止事項
 - **borderRadius禁止**: 角丸は使わない（角は四角）
 - **勝手なデザイン判断禁止**: ルールにないプロパティを追加しない
-- **折り返し禁止**: テロップには必ず `whiteSpace: "nowrap"` を入れる
-- **台本の勝手な要約・言い換え禁止**: step08でテロップ化する時、台本・transcript の文言を**一字一句変えない**。長すぎる場合は要約せずに分割する。文字数制限を超えたら**ユーザーに短縮案を相談**する。AI判断で勝手に書き換えない
-- **2行テロップ禁止**: 文字数制限を超えたら必ず分割。2行対応すると getCurrentTelop() が壊れる
+- **折り返し自動禁止**: テロップには必ず `whiteSpace: "nowrap"` を入れる。改行は `\n` による明示指定のみ許可（2行対応は normal / normal_emphasis / section / third_party のみ）
+- **台本の勝手な要約・言い換え禁止**: step08でテロップ化する時、台本・transcript の文言を**一字一句変えない**（句読点 `、` `。` は削除する）。長すぎる場合は要約せずに分割する。文字数制限を超えたら**ユーザーに短縮案を相談**する。AI判断で勝手に書き換えない
+- **句読点禁止**: テロップの text から `、` と `。` は削除する（`?` `!` は残す）
+- **全角鉤括弧禁止**: 引用符は半角 `｢｣` を使う（third_partyテンプレで自動付与されるものも含む）
 
 ### テロップ化の優先順位（step08）
 1. **transcript_words.json**（実発話）— 第一優先
@@ -282,9 +283,9 @@ const buildSEEntries = () => {
 
 ### 共通スタイル（変更禁止）
 - **角**: 四角（borderRadius禁止）
-- **折り返し**: なし（whiteSpace: "nowrap" 必須）
+- **折り返し**: `whiteSpace: "nowrap"` 必須（自動折り返しは禁止）。改行は text 内の `\n` による明示指定のみ（normal / normal_emphasis / section / third_party で対応）
 - **fontWeight**: 900
-- **位置**: 全テンプレート共通で**下から1/4の位置**（`top: "75%", left: "50%", transform: "translate(-50%, -50%)"`）— 1920×0.75 = 1440px地点
+- **位置**: 全テンプレート共通で**下から1/4の位置**（`top: "75%", left: "50%", transform: "translate(-50%, -50%)"`）— 1920×0.75 = 1440px地点（2行時は中心基準で上下に振り分け、位置は変わらない）
 - **z-index**: 10
 
 ### ショート動画の安全領域（参考）
@@ -313,7 +314,7 @@ const buildSEEntries = () => {
 // fill="#CC3300", strokeWidth=20
 // ★ドロップシャドウ: filter: "drop-shadow(0px 4px 4px rgba(0,0,0,0.15))"
 
-// third_party: 白文字 + グレーフチ + 「」引用符
+// third_party: 白文字 + グレーフチ + ｢｣ 引用符（半角）
 // fill="#FFFFFF", stroke="#333333" strokeWidth=24
 // ★ドロップシャドウ: filter: "drop-shadow(0px 4px 4px rgba(0,0,0,0.15))"
 ```
@@ -380,25 +381,75 @@ const buildSEEntries = () => {
 | 122 | emphasis / emphasis2 / section / negative2 | **8文字** |
 | 96 | negative | **11文字** |
 
-- **制限を超える字幕は必ず分割する（2行禁止・必ず単行）**
-- 分割の優先ポイント：読点（、）、句点（。）、助詞の後
+### テロップを2行にする条件（normal / normal_emphasis / section / third_party のみ対応）
+
+改行は `\n` を text に含めることで指定する。以下の条件のいずれかを満たす場合に2行化する。
+
+- **条件A**: 1行制限を超える + 分割すると意味が取れなくなる（例: 主語述語が散る／対句が分断される）→ 2行化
+- **条件B**: 隣接する短エントリが連続していて、統合した方が意味のまとまりが良い → 2行化
+
+### 1行化の条件（2行化した後の判定）
+
+- **2行合計が1行の文字数制限以下なら `\n` を削除して1行に連結する**（例: 6字+6字=12字 → 1行化）
+- 2行化 → 1行化の判定は必ず行う
+
+### 分割する条件（2行対応していないテンプレ / 2行にしても収まらない場合）
+
+- emphasis / emphasis2 / negative / negative2 は2行未対応 → 1行制限を超えたら必ず分割
+- 2行にしても画面から見切れる長文 → 分割
+- 分割の優先ポイント: 助詞（は/の/に/を/が/で/も/て/と）の後
 - 分割しても入らない場合は **要約して短くする**（縦動画は短文化必須）
-- **2行対応は禁止**: MainComposition の getCurrentTelop ロジックが壊れるため、物理的に1行で収まるように分割する
 
-### SVG テロップ文字幅計算（見切れ防止）
+### SVG テロップ文字幅計算（見切れ防止・複数行対応）
 
-SVGテロップの幅は以下の計算式で算出する。小さい値だと文字が左右で切れる。
+SVGテロップの幅は以下の計算式で算出する。`\n` で改行された場合は、各行のうち最大幅を返す。
 
 ```typescript
 const charW = (ch: string) => (/[\x00-\x7F]/.test(ch) ? 0.6 : 1.0);
-const calcTextWidth = (text: string, fontSize: number) =>
-  [...text].reduce((sum, ch) => sum + charW(ch), 0) * fontSize + 60;
+const calcLineWidth = (text: string, fontSize: number) =>
+  [...text].reduce((sum, ch) => sum + charW(ch), 0) * fontSize;
+const calcTextWidth = (text: string, fontSize: number) => {
+  const lines = text.split("\n");
+  return Math.max(...lines.map((l) => calcLineWidth(l, fontSize))) + 60;
+};
 ```
 
 - 半角文字: 0.6em、全角文字: 1.0em
 - パディング: **60px**（ショート動画の1080px幅に収めるため、200pxから60pxに縮小）
+- 改行された場合: `\n` で分割して各行の幅を計算し最大値を採用
+
+### 2行テロップのSVGレンダリング（normal系）
+
+SVG `<text>` 内で `<tspan x={svgW/2} y={...}>` を行ごとに出力する。各行のy座標は中央基準で上下に振り分ける。
+
+```typescript
+const lines = displayText.split("\n");
+const lineHeight = fontSize * 1.15;
+const svgH = fontSize * 1.8 + (lines.length - 1) * lineHeight;
+const ys = lines.map((_, i) =>
+  svgH / 2 - ((lines.length - 1) * lineHeight) / 2 + i * lineHeight + fontSize * 0.35
+);
+// → 1行なら従来の svgH*0.7 相当の位置。2行以上なら中央基準で上下に配置。
+```
+
+### emphasisWord の複数対応（normal_emphasis）
+
+`emphasisWord` は `string | string[]` で、配列指定すると各単語を赤く塗る。対句（「前衛 vs 後衛」「体力0 vs 知識と戦術」等の対比構造）は配列で指定する。
+
+```typescript
+export interface TelopEntry {
+  text: string;
+  startFrame: number;
+  endFrame: number;
+  template: TemplateName;
+  emphasisWord?: string | string[]; // 配列なら複数単語を全て赤く塗る
+}
+```
+
+- 単一キーワード強調 → `emphasisWord: "衝撃"`
+- 対句・複数キーワード強調 → `emphasisWord: ["前衛", "後衛"]`
 - `textAnchor="middle"` + `x={svgWidth/2}` で中央配置
-- **third_party**: 表示テキストは「」込みなので `calcTextWidth(\`「\${text}」\`, fontSize)` で計算する
+- **third_party**: 表示テキストは半角 `｢｣` 込みなので `calcTextWidth(\`｢\${text}｣\`, fontSize)` で計算する
 
 ### CSS 強調テロップの見切れ防止（emphasis / emphasis2）
 

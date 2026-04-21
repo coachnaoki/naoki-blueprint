@@ -62,6 +62,25 @@ paddingRight: fontSize * 0.4,
 // 背景層（absolute）と前面層の両方に同じ値を入れないと位置がズレる
 ```
 
+##### emphasisWord の複数単語対応（normal_emphasis）
+
+`emphasisWord` は `string | string[]` で、配列指定すると指定した全単語を赤く塗る。対句（「前衛 vs 後衛」「アマチュア vs プロ」等の対比構造）は配列で指定する。
+
+```typescript
+const emphasisWords = telop.emphasisWord
+  ? Array.isArray(telop.emphasisWord) ? telop.emphasisWord : [telop.emphasisWord]
+  : [];
+// 正規表現で分割 → 各マッチ部分を #CC3300（赤）、それ以外を #10458B（紺）で描画
+const escaped = emphasisWords.map((w) => w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
+const re = new RegExp(`(${escaped.join("|")})`, "g");
+const parts = text.split(re).filter((p) => p !== "");
+// 各 part について emphasisWords に含まれるかで色分岐
+```
+
+##### third_party の引用符（半角 `｢｣`）
+
+third_party テンプレートの自動付与は半角：`\`｢${telop.text}｣\`` （全角「」は使わない）
+
 ##### ドロップシャドウ（全テンプレート必須）
 
 **すべてのテロップにドロップシャドウをつける。** 影がないと背景と文字が溶けて読みにくくなる。SVG系はSVG外側の `<div>` に `filter` を指定、CSS系は各レイヤーの `<div>` に指定。具体的な値はCLAUDE.mdの「テロップのドロップシャドウ」表を参照。
