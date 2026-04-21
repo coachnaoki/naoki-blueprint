@@ -407,8 +407,8 @@ cd ..</div>
 
       <p style="margin-top:24px;font-size:14px"><strong style="color:#121212">進行中のプロジェクトに最新テンプレを適用したい場合のみ</strong>、以下を実行してください:</p>
       <div class="code">cd ~/Desktop/Cursor/naoki-blueprint
-bash プロジェクト更新.sh</div>
-      <p style="margin-top:12px;font-size:13px;color:#666"><code>projects/</code> 内の全プロジェクトを最新のスキル・スクリプトに同期します（素材・TSX・transcript は保護）。</p>
+bash アップデート.sh</div>
+      <p style="margin-top:12px;font-size:13px;color:#666">本体を最新版に更新しつつ、<code>projects/</code> 内の全プロジェクトを最新のスキル・スクリプトに同期します（素材・TSX・transcript は保護）。</p>
 
       <p style="margin-top:16px;font-size:13px;color:#666">⚠ 実行前に Claude Code を <strong style="color:#121212">Ctrl+C を 2回</strong>押して終了してください。</p>
     </section>
@@ -438,7 +438,7 @@ bash プロジェクト更新.sh</div>
         <h3 style="font-size:16px;margin-top:28px;margin-bottom:12px;color:#121212;padding-left:12px;border-left:4px solid #CCFF00">2026-04-19</h3>
         <ul style="margin-left:18px;color:#444;font-size:13px;line-height:1.8">
           <li><strong style="color:#121212">🎯 アップデート.sh 追加</strong>: 本体を最新版に同期するスクリプト。</li>
-          <li><strong style="color:#121212">🎯 プロジェクト更新.sh 追加</strong>: 既存 <code>projects/</code> を最新テンプレで一括同期（素材は保護）。</li>
+          <li><strong style="color:#121212">🎯 プロジェクト更新.sh 追加</strong>: 既存 <code>projects/</code> を最新テンプレで一括同期（素材は保護）。※ 後日 <code>アップデート.sh</code> に統合されました。</li>
           <li><strong style="color:#121212">🎯 step10-greenback 素人対応</strong>: chromakey / rembg u2net / HSV despill + CoreML パイプライン。</li>
           <li><strong style="color:#121212">🎯 自動ライセンス発行フロー</strong>: 同意書→自動発行→ブラウザ表示 UX を実装。</li>
           <li><strong style="color:#121212">🔧 public/ フォルダ構造を再編</strong>: <code>videos/</code> と <code>images/</code> の2階層に。</li>
