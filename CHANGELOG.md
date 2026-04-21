@@ -20,6 +20,9 @@ naoki-blueprint のバージョンアップ履歴です。バージョンは [Se
 
 ## [v1.3.0] - 2026-04-21
 
+### 📚 ドキュメント
+- **workshop-slides をセミナー版に再編**: 対象者を「naoki-blueprint を既に使っている人」に絞り、環境構築・ライセンス発行・Whisper内部・ショート特有注意点 等 8枚を削除。代わりに「編集のコツ 3枚（カット後確認 / Studio目視調整 / AI画像のGoogle規約遵守）」と「Video Use（browser-use チーム公開のOSS）との比較 1枚」を追加して全21枚構成に。v1.3.0新機能（loudnorm・word-boundary snap・step15-images 3フェーズ・新規作成.shの自動更新）も反映済み。
+
 ### 🎯 新機能
 - **ラウドネス正規化**（`scripts/loudnorm.mjs`）: 最終MP4を YouTube/TikTok/X 共通基準 **-14 LUFS / -1 dBTP / LRA 11** に二段階loudnormで揃える。step20（横）と step14（ショート）の最終段に組込済み。
 - **新規作成.sh の自動アップデート**: 新規プロジェクト作成前に `git fetch + git reset --hard origin/main` を自動実行。配布済みユーザーがアップデートに気づかない問題を解消。
