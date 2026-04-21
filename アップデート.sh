@@ -29,8 +29,10 @@ if [ ! -d ".git" ]; then
 fi
 
 # 現在のバージョンを表示
-CURRENT=$(git log -1 --format="%h %s" 2>/dev/null)
-echo "現在のバージョン: $CURRENT"
+CURRENT_VERSION=$(cat VERSION 2>/dev/null || echo "unknown")
+CURRENT_COMMIT=$(git log -1 --format="%h %s" 2>/dev/null)
+echo "現在のバージョン: v$CURRENT_VERSION"
+echo "  ($CURRENT_COMMIT)"
 echo ""
 
 # --- ① 本体を最新版に同期 --------------------------------------------------
@@ -45,15 +47,19 @@ LOCAL=$(git rev-parse HEAD)
 REMOTE=$(git rev-parse origin/main 2>/dev/null)
 
 if [ -n "$REMOTE" ] && [ "$LOCAL" != "$REMOTE" ]; then
+  REMOTE_VERSION=$(git show "origin/main:VERSION" 2>/dev/null | head -1 || echo "unknown")
   echo ""
-  echo "📦 新しいバージョンが見つかりました:"
+  echo "📦 新しいバージョンが見つかりました: v$CURRENT_VERSION → v$REMOTE_VERSION"
+  echo ""
   git log --oneline HEAD..origin/main | head -10
   echo ""
   git reset --hard origin/main >/dev/null 2>&1
-  NEW=$(git log -1 --format="%h %s")
-  echo "✓ 最新版に更新しました: $NEW"
+  NEW_VERSION=$(cat VERSION 2>/dev/null || echo "unknown")
+  NEW_COMMIT=$(git log -1 --format="%h %s")
+  echo "✓ 最新版に更新しました: v$NEW_VERSION"
+  echo "  ($NEW_COMMIT)"
 else
-  echo "✓ すでに最新版です"
+  echo "✓ すでに最新版です (v$CURRENT_VERSION)"
 fi
 echo ""
 

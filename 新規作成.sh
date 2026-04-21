@@ -14,24 +14,27 @@ echo ""
 # 新規作成のたびに本体を最新に揃える。projects/ と .license は .gitignore
 # で守られているので既存プロジェクトは影響を受けない。
 if [ -d ".git" ]; then
-  echo "→ 最新版を確認中..."
+  CURRENT_VERSION=$(cat VERSION 2>/dev/null || echo "unknown")
+  echo "→ 最新版を確認中... (現在 v$CURRENT_VERSION)"
   if git fetch origin 2>/dev/null; then
     LOCAL=$(git rev-parse HEAD)
     REMOTE=$(git rev-parse origin/main 2>/dev/null)
     if [ -n "$REMOTE" ] && [ "$LOCAL" != "$REMOTE" ]; then
-      echo "  📦 新しいバージョンが利用可能です。更新中..."
+      REMOTE_VERSION=$(git show "origin/main:VERSION" 2>/dev/null | head -1 || echo "unknown")
+      echo "  📦 新しいバージョンが利用可能です: v$CURRENT_VERSION → v$REMOTE_VERSION"
       git log --oneline HEAD..origin/main | head -5 | sed 's/^/     /'
       if git reset --hard origin/main >/dev/null 2>&1; then
-        echo "  ✓ 最新版に更新しました: $(git log -1 --format='%h %s')"
+        NEW_VERSION=$(cat VERSION 2>/dev/null || echo "unknown")
+        echo "  ✓ 最新版に更新しました: v$NEW_VERSION ($(git log -1 --format='%h'))"
         echo "  📋 詳細は CHANGELOG.md を参照してください"
       else
         echo "  ⚠️  自動更新に失敗しました。手動で ./アップデート.sh を実行してください。"
       fi
     else
-      echo "  ✓ すでに最新版です"
+      echo "  ✓ すでに最新版です (v$CURRENT_VERSION)"
     fi
   else
-    echo "  ⚠️  最新版の確認に失敗しました（ネットワークを確認してください）。現在のバージョンで続行します。"
+    echo "  ⚠️  最新版の確認に失敗しました（ネットワークを確認してください）。現在のバージョン v$CURRENT_VERSION で続行します。"
   fi
   echo ""
 fi

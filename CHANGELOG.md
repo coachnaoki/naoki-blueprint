@@ -1,6 +1,11 @@
 # 更新履歴 (CHANGELOG)
 
-naoki-blueprint のバージョンアップ履歴です。
+naoki-blueprint のバージョンアップ履歴です。バージョンは [Semantic Versioning](https://semver.org/lang/ja/) に従います:
+- **major**: 破壊的変更（テンプレ構造の大改変など）
+- **minor**: 機能追加
+- **patch**: バグ修正・ドキュメント改善・細かいチューニング
+
+現在の最新バージョンは [`VERSION`](./VERSION) ファイルで確認できます。
 
 最新版への更新は:
 ```bash
@@ -13,7 +18,7 @@ naoki-blueprint のバージョンアップ履歴です。
 
 ---
 
-## 2026-04-21
+## [v1.3.0] - 2026-04-21
 
 ### 🎯 新機能
 - **ラウドネス正規化**（`scripts/loudnorm.mjs`）: 最終MP4を YouTube/TikTok/X 共通基準 **-14 LUFS / -1 dBTP / LRA 11** に二段階loudnormで揃える。step20（横）と step14（ショート）の最終段に組込済み。
@@ -31,7 +36,7 @@ naoki-blueprint のバージョンアップ履歴です。
 
 ---
 
-## 2026-04-20
+## [v1.2.0] - 2026-04-20
 
 ### ✨ 改善
 - **FPS を動画から自動検出**（step02）: 動画タイプから固定 FPS 設定を撤廃し、本編動画から FFprobe で自動取得するように変更。
@@ -40,7 +45,7 @@ naoki-blueprint のバージョンアップ履歴です。
 
 ---
 
-## 2026-04-19
+## [v1.1.0] - 2026-04-19
 
 ### 🎯 新機能
 - **`アップデート.sh` 追加**: `git fetch + reset --hard origin/main` で本体を最新版に同期するスクリプト。
@@ -61,7 +66,7 @@ naoki-blueprint のバージョンアップ履歴です。
 
 ---
 
-## 2026-04-18: 🎉 初回配布
+## [v1.0.0] - 2026-04-18: 🎉 初回配布
 
 ### 🎯 新機能
 - **Mac/Windows 両対応**: `scripts/transcribe.mjs` が OS を自動判定し、Mac は `mlx-whisper`、Windows/Linux は `faster-whisper` を使い分け。
