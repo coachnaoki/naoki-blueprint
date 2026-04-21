@@ -107,13 +107,18 @@ public/
 // 05. 作業開始
 function slide05Start() {
   return `<section class="slide" data-section="start"
-    data-notes="素材を配置したらプロジェクトフォルダに移動して最初のスラッシュコマンドを打つだけ。Claude Codeは既に起動済みなのでclaudeコマンドは不要。あとはAIが次のコマンドを案内してくれます。">
+    data-notes="プロジェクトフォルダに入ってからClaude Codeを起動するのがポイント。naoki-blueprintフォルダで先にClaude Codeを立ち上げるとカレントディレクトリがズレてスラッシュコマンドが動かなくなるので、必ずこの順番で。あとはAIが次のコマンドを案内してくれます。">
     ${ph(5, 'Start work')}
     <div class="slide-content">
       <h2>作業<span class="g-primary">スタート。</span></h2>
+      <p class="lead mb-16">プロジェクトフォルダに <span class="hl">入ってから</span> Claude Code を起動するのがポイント。</p>
       <div class="code">cd projects/<span class="hi">2026-04-19</span>
+claude --dangerously-skip-permissions
 /step01-context</div>
-      <p class="lead mt-32">あとは AI が次のコマンドを案内してくれます。<br/>質問に答えながら <code>/step02-assets</code> → <code>/step03-transcript</code> と進めるだけ。</p>
+      <div class="card card--hot mt-32">
+        <div class="card-title">⚠ 順番を間違えると…</div>
+        <div class="card-body">naoki-blueprint フォルダで先に Claude Code を立ち上げると <span class="bold text-white">cwd がズレて</span> <code>/step01-context</code> が見つからない。必ず <code>cd projects/XXX</code> してから <code>claude</code> を起動</div>
+      </div>
       <div class="card card--accent mt-32">
         <div class="card-title">中断しても大丈夫</div>
         <div class="card-body"><code>/catchup</code> で現在の進捗を確認、どのステップから再開するか AI が教えてくれる</div>
@@ -479,20 +484,23 @@ function slide16SE() {
 // 17. 2本目以降
 function slide17SecondVideo() {
   return `<section class="slide" data-section="advanced"
-    data-notes="2本目以降はもっと簡単です。ライセンス認証はもう終わっているので、新規作成.shを1発打つだけ。v1.3.0からはスクリプト実行時に本体の最新版チェックも自動で走ります。">
+    data-notes="2本目以降はもっと簡単です。ライセンス認証はもう終わっているので、新規作成.shでプロジェクトを作って、そのフォルダに入ってClaude Codeを起動するだけ。v1.3.0からは新規作成.sh実行時に本体の最新版チェックも自動で走ります。">
     ${ph(17, 'For next videos')}
     <div class="slide-content">
-      <h2>2本目以降は、<span class="g-primary">1コマンド。</span></h2>
-      <p class="lead mb-24">ライセンス認証は初回のみ。以降は Cursor のターミナルで1コマンド。</p>
+      <h2>2本目以降は、<span class="g-primary">3コマンド。</span></h2>
+      <p class="lead mb-24">ライセンス認証は初回のみ。<span class="hl">通常のターミナル</span>で以下3行を順に実行:</p>
       <div class="code">
-<span class="cmt"># naoki-blueprint フォルダで</span>
-./新規作成.sh
+<span class="cmt"># ① naoki-blueprint フォルダでプロジェクト作成</span>
+bash 新規作成.sh
 
-<span class="cmt"># プロジェクト名を聞かれるので入力するだけ</span>
-<span class="cmt"># 本体の自動アップデート → フォルダ作成 → npm install → Claude Code 起動まで全自動</span></div>
-      <div class="card card--accent mt-48">
+<span class="cmt"># ② 作ったプロジェクトフォルダに移動</span>
+cd projects/<span class="hi">2026-04-22</span>
+
+<span class="cmt"># ③ そこで Claude Code を起動 → /step01-context</span>
+claude --dangerously-skip-permissions</div>
+      <div class="card card--accent mt-32">
         <div class="card-title">v1.3.0 の自動アップデート</div>
-        <div class="card-body">新規作成前に <code>git fetch + git reset --hard origin/main</code> が自動実行。<span class="hl">常に最新機能で作り始められる</span></div>
+        <div class="card-body"><code>bash 新規作成.sh</code> 実行時に <code>git fetch + git reset --hard origin/main</code> が自動実行。<span class="hl">常に最新機能で作り始められる</span></div>
       </div>
     </div>
   </section>`;

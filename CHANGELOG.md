@@ -20,6 +20,9 @@ naoki-blueprint のバージョンアップ履歴です。バージョンは [Se
 
 ## [v1.3.0] - 2026-04-21
 
+### 🔧 改善
+- **セットアップ手順の Claude Code 起動タイミングを修正**（activate.html / workshop-slides）: Step 02 で Claude Code を起動すると、(1) `bash 新規作成.sh` のカレントディレクトリ変化が Claude Code に反映されず `/step01-context` が発動しない、(2) `git reset --hard origin/main` 自動アップデートが認証直後の `.license` と干渉する、という2つの問題があった。新しいフローでは Step 02〜04 を通常ターミナルで進め、Step 05 で `cd projects/XXX` してから初めて Claude Code を起動する構成に変更。workshop-slides slide05 / slide17 も同調修正。
+
 ### 📚 ドキュメント
 - **activate.html にワークフロー詳細セクション追加**: セットアップ5ステップの後に「全20step ワークフロー詳細」セクションを追加。Phase 1〜4 を色分けし、各スラッシュコマンドに1行説明を付与。ショート動画（14 step）との違いと `/catchup` 便利機能も併記。配布後のユーザーが「次に何を打つか」を迷わず進められる導線に。
 - **workshop-slides をセミナー版に再編**: 対象者を「naoki-blueprint を既に使っている人」に絞り、環境構築・ライセンス発行・Whisper内部・ショート特有注意点 等 8枚を削除。代わりに「編集のコツ 3枚（カット後確認 / Studio目視調整 / AI画像のGoogle規約遵守）」と「Video Use（browser-use チーム公開のOSS）との比較 1枚」を追加して全21枚構成に。v1.3.0新機能（loudnorm・word-boundary snap・step15-images 3フェーズ・新規作成.shの自動更新）も反映済み。

@@ -323,27 +323,24 @@ npm install -g @anthropic-ai/claude-code</div>
       </div>
     </section>
 
-    <!-- Step 02: フォルダ移動 → Clone → Claude Code 起動（統合） -->
+    <!-- Step 02: リポジトリ取得 -->
     <section class="step-section">
-      <h2><span class="num">02</span>リポジトリ取得 → Claude Code 起動</h2>
+      <h2><span class="num">02</span>リポジトリ取得</h2>
       <p><strong id="userName" style="color:#121212"></strong> さん、準備を始めましょう。</p>
       <div style="background:#fffbeb;border:1px solid #fcd34d;border-left:4px solid #f59e0b;border-radius:6px;padding:14px 18px;margin:14px 0;font-size:14px;color:#92400e;">
-        ⚠ 既に Claude Code を開いている方は、ターミナル上で <strong>Ctrl+C</strong>（Mac は <strong>Control+C</strong>）を <strong>2回押して</strong>終了してから進めてください。
+        ⚠ 既に Claude Code を開いている方は、ターミナル上で <strong>Ctrl+C</strong>（Mac は <strong>Control+C</strong>）を <strong>2回押して</strong>終了してから進めてください。Step 05 まで Claude Code は起動しません。
       </div>
 
       <p>Cursor のターミナルを開き、naoki-blueprint を置きたいフォルダに移動してリポジトリをダウンロード（Mac / Windows 共通）:</p>
       <div class="code">cd ~/Desktop/Cursor
 git clone https://github.com/coachnaoki/naoki-blueprint.git
 cd naoki-blueprint</div>
-
-      <p style="margin-top:20px">続けて Claude Code を起動:</p>
-      <div class="code">claude --dangerously-skip-permissions</div>
-      <p style="font-size:13px;color:#666">起動後は Claude に「この手順を進めて」と伝えるだけでも、自分で以下を順にターミナルで打っても OK。</p>
+      <p style="font-size:13px;color:#666">📌 Step 03・04 も<strong style="color:#121212">通常のターミナル</strong>のまま進めます。Claude Code は Step 05 でプロジェクトフォルダに入ってから起動します（起動タイミングを間違えると認証・カレントディレクトリがずれる原因になるため）。</p>
     </section>
 
     <section class="step-section">
       <h2><span class="num">03</span>ライセンス認証</h2>
-      <p>テンプレートフォルダ内で認証します。あなたのライセンスIDを貼り付け:</p>
+      <p><strong style="color:#121212">通常のターミナル</strong>でテンプレートフォルダに入り、あなたのライセンスIDを貼り付けて認証します:</p>
       <div class="code">cd .template
 node scripts/validateLicense.mjs <span class="hi" id="licenseIdInCode">NK-XXXX-XXXX-XXXX</span>
 cd ..</div>
@@ -352,7 +349,7 @@ cd ..</div>
 
     <section class="step-section">
       <h2><span class="num">04</span>動画タイプを選んでプロジェクト作成</h2>
-      <p>naoki-blueprint フォルダで <code>bash 新規作成.sh</code> を実行します:</p>
+      <p><strong style="color:#121212">通常のターミナル</strong>で <code>bash 新規作成.sh</code> を実行します:</p>
       <div class="code">bash 新規作成.sh</div>
       <p>起動すると、以下を順に聞かれます:</p>
       <ol style="color:#444;font-size:15px;padding-left:24px;margin:12px 0 16px">
@@ -371,12 +368,22 @@ cd ..</div>
           <p>1080×1920<br>14ステップ / テロップ8種に絞り情報密度を優先</p>
         </div>
       </div>
-      <p style="font-size:13px;color:#666">フォルダ作成・<code>npm install</code> まで自動。完了後に案内されるコマンドで Claude Code を起動してください。</p>
+      <p style="font-size:13px;color:#666">本体の自動アップデート → フォルダ作成 → <code>npm install</code> まで自動。認証済みの <code>.license</code> も新プロジェクトにコピーされます。</p>
     </section>
 
-    <section class="step-section">
-      <h2><span class="num">05</span>素材配置 → 作業開始</h2>
-      <p>素材を <code>public/</code> フォルダに配置します（Finder / エクスプローラーからドラッグ＆ドロップでOK）:</p>
+    <section class="step-section" style="border-left:4px solid #16a34a">
+      <h2><span class="num" style="background:#16a34a">05</span>プロジェクトに入って Claude Code 起動 → 素材配置 → 作業開始</h2>
+      <div style="background:#f0fdf4;border:1px solid #86efac;border-left:4px solid #16a34a;border-radius:6px;padding:14px 18px;margin:14px 0;font-size:14px;color:#166534;">
+        ✅ <strong style="color:#121212">ここで初めて Claude Code を起動します。</strong>プロジェクトフォルダに入ってから起動することで、<code style="background:#f0f0f0;color:#121212;padding:2px 6px;border-radius:4px;font-size:13px">/step01-context</code> が即動きます。
+      </div>
+
+      <p><strong style="color:#121212">① プロジェクトフォルダに移動</strong>（先ほどの新規作成.sh で指定したプロジェクト名を使う）:</p>
+      <div class="code">cd projects/<span class="hi today-date">2026-04-19</span></div>
+
+      <p style="margin-top:20px"><strong style="color:#121212">② Claude Code を起動</strong>（Mac / Windows 共通）:</p>
+      <div class="code">claude --dangerously-skip-permissions</div>
+
+      <p style="margin-top:20px"><strong style="color:#121212">③ 素材を <code>public/</code> に配置</strong>（Finder / エクスプローラーからドラッグ＆ドロップでOK）:</p>
       <div class="code">public/
 ├── videos/             <span class="cmt">動画素材</span>
 │   ├── main/           <span class="cmt">本編動画 </span><span class="str">★必須</span>
@@ -395,7 +402,7 @@ cd ..</div>
 ├── script/             <span class="cmt">ナレーション台本（推奨）</span>
 └── output/             <span class="cmt">完成動画の出力先</span></div>
 
-      <p style="margin-top:24px">素材を置いたら、Claude Code で作業開始:</p>
+      <p style="margin-top:24px"><strong style="color:#121212">④ 素材を置いたら、Claude Code で作業開始</strong>:</p>
       <div class="code">/step01-context</div>
       <p>あとは AI が次のコマンドを案内してくれるので、質問に答えながら進めるだけ。</p>
     </section>
