@@ -18,6 +18,13 @@ naoki-blueprint のバージョンアップ履歴です。バージョンは [Se
 
 ---
 
+## [v1.5.1] - 2026-04-22
+
+### 📚 ドキュメント
+- **アップデート手順の `cd` と `bash` を分離**（index.html / activate.html）: `cd ~/Desktop/Cursor/naoki-blueprint` と `bash アップデート.sh` を同じコードブロックに入れていたため、丸ごとコピーするユーザーが `~/Desktop/Cursor/naoki-blueprint` 以外の場所にいると `bash アップデート.sh` が見つからずエラーになるケースがあった。「① naoki-blueprint ディレクトリに移動」「② アップデートスクリプトを実行」の2ブロックに分離し、①の `~/Desktop/Cursor` は clone 先に合わせて読み替えるよう明記。
+
+---
+
 ## [v1.5.0] - 2026-04-21
 
 ### 🎯 新機能
