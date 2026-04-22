@@ -1,21 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 220" width="800" height="220">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 240" width="800" height="240">
   <defs>
     <linearGradient id="gradGold" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0%" stop-color="#FFF438"/>
       <stop offset="50%" stop-color="#FFFFFF"/>
       <stop offset="100%" stop-color="#E99B00"/>
     </linearGradient>
-    <linearGradient id="gradRed" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#CC0000"/>
-      <stop offset="100%" stop-color="#FF3333"/>
-    </linearGradient>
   </defs>
   <g>
-    <rect x="10" y="30" width="780" height="160" fill="url(#gradRed)" stroke="#624936" stroke-width="4" rx="0" ry="0" transform="skewX(-6) translate(20 0)"/>
-    <text x="400" y="145" text-anchor="middle" font-family="'Shippori Mincho', serif" font-weight="900" font-size="130" font-style="italic"
-          stroke="#624936" stroke-width="6" stroke-linejoin="round" fill="url(#gradGold)">逆転</text>
-    <text x="400" y="145" text-anchor="middle" font-family="'Shippori Mincho', serif" font-weight="900" font-size="130" font-style="italic"
+    <!-- 黒縁取り層（太め） -->
+    <text x="400" y="170" text-anchor="middle" font-family="'Shippori Mincho', serif" font-weight="900" font-size="170" font-style="italic"
+          stroke="#000000" stroke-width="22" stroke-linejoin="round" fill="none">逆転</text>
+    <!-- 金グラデ本体 -->
+    <text x="400" y="170" text-anchor="middle" font-family="'Shippori Mincho', serif" font-weight="900" font-size="170" font-style="italic"
           fill="url(#gradGold)">逆転</text>
   </g>
 </svg>

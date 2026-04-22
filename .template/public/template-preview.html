@@ -142,18 +142,9 @@
     85% { transform: translateY(0) skewX(-10deg); opacity: 1; }
     100% { transform: translateY(60px) skewX(-10deg); opacity: 0; }
   }
-  @keyframes bounceIn {
-    0% { transform: translateY(60px) scale(0.8); opacity: 0; }
-    10% { transform: translateY(30px) scale(0.9); opacity: 0.5; }
-    20% { transform: translateY(0) scale(1.1); opacity: 1; }
-    30% { transform: translateY(0) scale(1.0); opacity: 1; }
-    85% { transform: translateY(0) scale(1.0); opacity: 1; }
-    100% { transform: translateY(60px) scale(0.9); opacity: 0; }
-  }
   .anim-slide-up { animation: slideUpFade 3s ease-in-out infinite; }
   .anim-slide-left { animation: slideLeftFade 3s ease-in-out infinite; }
   .anim-slide-up-skew { animation: slideUpFadeSkew 3s ease-in-out infinite; }
-  .anim-bounce { animation: bounceIn 3s ease-in-out infinite; }
 
   .note { font-size: 12px; color: #666; text-align: center; margin-top: 40px; }
 </style>
@@ -228,10 +219,10 @@
   <div class="card">
     <div class="card-label">
       <div class="name">emphasis3</div>
-      <div class="meta">SVG画像テロップ<br>（ロゴ/意匠化）<br>最大幅1400px<br>SE: ポジティブ<br>下からバウンス</div>
+      <div class="meta">SVG画像テロップ<br>（ロゴ/意匠化）<br>最大幅1400px<br>SE: ポジティブ<br>下からスライド</div>
     </div>
     <div class="card-preview">
-      <div class="t-emphasis3-wrap anim-bounce">
+      <div class="t-emphasis3-wrap anim-slide-up">
         <img src="telop-svg/sample-gyakuten.svg" alt="逆転" />
       </div>
     </div>

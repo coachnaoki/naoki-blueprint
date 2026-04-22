@@ -86,7 +86,7 @@ third_party テンプレートの自動付与は半角：`\`｢${telop.text}｣\
 
 ##### emphasis3（SVG画像テロップ）の実装
 
-`telopData` の `svgFile` で指定されたSVGを `public/telop-svg/` から読み込んで中央下部に表示。バウンス+フェードイン+スライドアップのアニメーションを組み合わせる。
+`telopData` の `svgFile` で指定されたSVGを `public/telop-svg/` から読み込んで中央下部に表示。下からスライド + フェードイン（他の強調系と同じ10フレーム）。
 
 ```typescript
 import { Img, staticFile, interpolate, useCurrentFrame } from "remotion";
@@ -94,12 +94,8 @@ import { Img, staticFile, interpolate, useCurrentFrame } from "remotion";
 // emphasis3 レンダリング
 if (telop.template === "emphasis3" && telop.svgFile) {
   const localFrame = frame - telop.startFrame;
-  const opacity = interpolate(localFrame, [0, 15], [0, 1], { extrapolateRight: "clamp" });
-  const translateY = interpolate(localFrame, [0, 15], [60, 0], { extrapolateRight: "clamp" });
-  const scale = interpolate(localFrame, [0, 10, 20], [0.8, 1.1, 1.0], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  });
+  const opacity = interpolate(localFrame, [0, 10], [0, 1], { extrapolateRight: "clamp" });
+  const translateY = interpolate(localFrame, [0, 10], [60, 0], { extrapolateRight: "clamp" });
   const width = Math.min(telop.svgWidth ?? 1000, 1400);
 
   return (
@@ -108,7 +104,7 @@ if (telop.template === "emphasis3" && telop.svgFile) {
         position: "absolute",
         bottom: 40,
         left: "50%",
-        transform: `translateX(-50%) translateY(${translateY}px) scale(${scale})`,
+        transform: `translateX(-50%) translateY(${translateY}px)`,
         opacity,
         zIndex: 10,
         filter: "drop-shadow(0px 4px 12px rgba(0,0,0,0.3))",
@@ -125,9 +121,10 @@ if (telop.template === "emphasis3" && telop.svgFile) {
 
 - SVGファイルは `public/telop-svg/` 配下にNaokiが配置
 - 幅は `svgWidth` 指定、未指定時1000px、最大1400px
-- `whiteSpace: nowrap` / `fontWeight` / `borderRadius禁止` は画像のため非適用
+- アニメーション: 下からスライド + フェードイン（10フレーム、他の強調系と統一）
 - フェードアウトは無し（他テンプレと統一）
 - ドロップシャドウは外側divに指定（他のSVG系と同じ方式）
+- **SVG自体のデザイン推奨**: 背景は透過（動画に重ねるため座布団塗りは避ける）、文字には太い黒縁取り（stroke="#000000" strokeWidth=22前後）を入れると視認性が上がる
 
 ##### ドロップシャドウ（全テンプレート必須）
 

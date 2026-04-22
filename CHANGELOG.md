@@ -18,6 +18,17 @@ naoki-blueprint のバージョンアップ履歴です。バージョンは [Se
 
 ---
 
+## [v1.6.1] - 2026-04-22
+
+### 🔧 改善
+- **emphasis3 のデザイン調整**: Naokiのフィードバックに基づき以下を変更
+  - アニメーション: バウンス（scale 0.8→1.1→1.0, 20f）→ **下からスライド+フェードイン（10f）** に変更。他の強調系テンプレ（emphasis / emphasis2 / section / negative2）と統一
+  - サンプルSVG `sample-gyakuten.svg`: 赤座布団を削除して**背景透過**に、文字に**太い黒縁取り**（stroke="#000000" strokeWidth=22）を追加。動画に重ねた時の視認性を優先
+  - SVGデザイン推奨事項を CLAUDE.md / step09-composition SKILL.md に追記：「背景は透過、文字には太い黒縁取りを推奨」
+  - template-preview.html の `.anim-bounce` と `@keyframes bounceIn` を削除、emphasis3 カードは `.anim-slide-up` に切り替え
+
+---
+
 ## [v1.6.0] - 2026-04-22
 
 ### 🎯 新機能
