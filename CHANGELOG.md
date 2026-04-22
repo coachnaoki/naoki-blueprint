@@ -18,6 +18,22 @@ naoki-blueprint のバージョンアップ履歴です。バージョンは [Se
 
 ---
 
+## [v1.6.0] - 2026-04-22
+
+### 🎯 新機能
+- **emphasis3 テンプレート新規追加（横動画）**: キラーワードをロゴ/意匠化したSVG画像として画面中央下部に差し込む新テロップ。Naokiが `public/telop-svg/` 配下に配置した `.svg` を `svgFile` プロパティで指定し、`svgWidth` で表示幅（デフォルト1000px、最大1400px）を制御する。アニメーションは下からスライド+フェードイン+バウンス（scale 0.8→1.1→1.0, 20フレーム）、ドロップシャドウ `filter: "drop-shadow(0px 4px 12px rgba(0,0,0,0.3))"` を外側divに適用。
+  - `TelopEntry` 型に `svgFile?: string` / `svgWidth?: number` フィールドを追加（オプショナル、他テンプレでは無視）
+  - `public/telop-svg/` ディレクトリ新設 + `README.md`（SVG推奨仕様）+ `sample-gyakuten.svg`（「逆転」赤座布団+金文字ロゴのサンプル）を同梱
+  - step09-composition SKILL.md に emphasis3 レンダラー実装を追加（Remotion `<Img src={staticFile(...)} />` + interpolate によるアニメーション）
+  - 使い分け: emphasis=概念強調（文字） / emphasis2=数字+単位（文字） / emphasis3=ロゴ/意匠SVG画像
+  - `public/template-preview.html` に emphasis3 カードを追加（bounceアニメのライブプレビュー）
+  - CLAUDE.md の各表（スタイル早見表・アニメ設定・ドロップシャドウ・文字サイズ・文字数制限・emphasisの使い分け・座布団スタイル判断表・コンポーネント命名規則）に emphasis3 を反映
+
+### 🐛 バグ修正
+- **step07-template SKILL.md の「テンプレート一覧」が横動画版なのにショート動画用の数値で汚染されていた問題を修正**: maxChars が 12/8/11（ショート用）になっていたのを横動画用の 20/14/17 に訂正。`follow_cta`（ショート専用）を削除し `subscribe_cta`（横動画用）を追加。`theme` の maxChars も 9→16 に補正。「ショート動画用」コメントも「横動画用」に修正。
+
+---
+
 ## [v1.5.3] - 2026-04-22
 
 ### 🐛 バグ修正

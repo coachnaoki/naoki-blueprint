@@ -99,24 +99,44 @@ npx tsc --noEmit
 | FONT_SHIPPORI | `'Shippori Mincho', serif` | 強調系・ネガティブ系（感情・インパクト重視） |
 | FONT_NOTO | `'Noto Sans JP', sans-serif` | 箇条書き・テーマ系（テーマカラー統一） |
 
-## テンプレート一覧（実装ベース・ショート動画用）
+## テンプレート一覧（実装ベース・横動画用）
 
-縦動画は横幅1080pxのため、横動画版より文字数制限を厳しくする。
+横動画は1920×1080px。文字数制限はCLAUDE.md「1行の文字数制限」と同期する。
 
 | テンプレート名 | fontFamily | fontSize | maxChars | SEフォルダ |
 |---------------|-----------|----------|----------|-----------|
-| normal | FONT_MPLUS | 84 | 12 | null |
-| normal_emphasis | FONT_MPLUS | 84 | 12 | se/強調/ |
-| emphasis | FONT_SHIPPORI | 122 | 8 | se/ポジティブ/ |
-| emphasis2 | FONT_SHIPPORI | 122 | 8 | se/ポジティブ/ |
-| section | FONT_MPLUS | 122 | 8 | se/強調/ |
-| negative | FONT_SHIPPORI | 96 | 11 | se/ネガティブ/ |
-| negative2 | FONT_SHIPPORI | 122 | 8 | se/ネガティブ/ |
-| third_party | FONT_MPLUS | 84 | 12 | se/強調/ |
+| normal | FONT_MPLUS | 84 | 20 | null |
+| normal_emphasis | FONT_MPLUS | 84 | 20 | se/強調/ |
+| emphasis | FONT_SHIPPORI | 122 | 14 | se/ポジティブ/ |
+| emphasis2 | FONT_SHIPPORI | 122 | 14 | se/ポジティブ/ |
+| emphasis3 | —（SVG画像） | —（width指定） | —（文字数制限なし） | se/ポジティブ/ |
+| section | FONT_MPLUS | 122 | 14 | se/強調/ |
+| negative | FONT_SHIPPORI | 96 | 17 | se/ネガティブ/ |
+| negative2 | FONT_SHIPPORI | 122 | 14 | se/ネガティブ/ |
+| third_party | FONT_MPLUS | 84 | 18 | se/強調/ |
 | bullet_list | FONT_NOTO | 72 | 14 | se/強調/ |
 | line_cta | FONT_MPLUS | 66 | 16 | se/強調/ |
-| follow_cta | FONT_MPLUS | 72 | 14 | se/強調/ |
-| theme | FONT_NOTO | 108 | 9 | se/ポジティブ/ |
+| subscribe_cta | FONT_MPLUS | 72 | 14 | se/強調/ |
+| theme | FONT_NOTO | 108 | 16 | se/ポジティブ/ |
+
+### emphasis3（SVG画像テロップ）の特殊設定
+
+emphasis3 は文字ではなくSVG画像を差し込むため、templateConfig では以下のように定義する:
+
+```typescript
+emphasis3: {
+  label: "SVG画像テロップ",
+  fontFamily: "",        // 画像のため不要
+  fontSize: 0,           // 画像のため不要
+  maxChars: 0,           // 画像のため文字数制限なし
+  seFolder: "se/ポジティブ/",
+  isImage: true,         // 画像フラグ（オプション）
+  defaultWidth: 1000,    // デフォルト表示幅 (px)
+  maxWidth: 1400,        // 最大表示幅 (px)
+},
+```
+
+SVGファイルは `public/telop-svg/` 配下に配置。telopData で `svgFile: "逆転.svg"` のように指定する。
 
 ## 完了条件
 - `src/templateConfig.ts` が存在する
