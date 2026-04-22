@@ -524,7 +524,33 @@ cd ..</code></pre>
   <p>追加された機能・改善の一覧です。新しい動画を作るときは <code>bash 新規作成.sh</code> が自動で最新版を取得します。</p>
   <div class="changelog-scroll" style="max-height: 480px; overflow-y: auto; border: 1px solid #ddd; border-radius: 12px; padding: 32px 40px; background: #fff; margin-top: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
 
-    <h3 style="font-size: 16px; margin-top: 0; margin-bottom: 12px; color: #121212; padding-left: 12px; border-left: 4px solid #CCFF00;"><span style="background:#CCFF00;color:#121212;padding:2px 8px;border-radius:4px;font-size:13px;margin-right:8px;">v1.3.0</span>2026-04-21</h3>
+    <h3 style="font-size: 16px; margin-top: 0; margin-bottom: 12px; color: #121212; padding-left: 12px; border-left: 4px solid #CCFF00;"><span style="background:#CCFF00;color:#121212;padding:2px 8px;border-radius:4px;font-size:13px;margin-right:8px;">v1.5.2</span>2026-04-22</h3>
+    <ul style="margin-left: 20px; color: #444; font-size: 14px;">
+      <li><strong>📚 リポジトリ取得手順の <code>git clone</code> と <code>cd</code> を分離</strong>: 「② リポジトリをダウンロード」「③ ダウンロードしたフォルダに入る」の2ブロックに分割。丸ごとコピーしたユーザーが <code>cd naoki-blueprint</code> の実行で失敗するケースを解消。</li>
+    </ul>
+
+    <h3 style="font-size: 16px; margin-top: 28px; margin-bottom: 12px; color: #121212; padding-left: 12px; border-left: 4px solid #CCFF00;"><span style="background:#f0f0f0;color:#444;padding:2px 8px;border-radius:4px;font-size:13px;margin-right:8px;">v1.5.1</span>2026-04-22</h3>
+    <ul style="margin-left: 20px; color: #444; font-size: 14px;">
+      <li><strong>📚 アップデート手順の <code>cd</code> と <code>bash</code> を分離</strong>: 「① naoki-blueprint ディレクトリに移動」「② アップデートスクリプトを実行」の2ブロックに分割。<code>~/Desktop/Cursor</code> 以外に clone したユーザーのエラーを解消。</li>
+    </ul>
+
+    <h3 style="font-size: 16px; margin-top: 28px; margin-bottom: 12px; color: #121212; padding-left: 12px; border-left: 4px solid #CCFF00;"><span style="background:#f0f0f0;color:#444;padding:2px 8px;border-radius:4px;font-size:13px;margin-right:8px;">v1.5.0</span>2026-04-21</h3>
+    <ul style="margin-left: 20px; color: #444; font-size: 14px;">
+      <li><strong>🎯 step05 で Remotion Studio を起動</strong>（横・ショート両方）: カット直後に最小版の <code>MainComposition.tsx</code> を生成し Studio をバックグラウンド起動。フレーム単位の精密確認ができるようになり、step06〜08 への手戻りを予防。</li>
+      <li><strong>🎯 step09 を「新規生成」から「拡張」に変更</strong>（横・ショート両方）: step05 で既に MainComposition が存在するため、step09 はテロップレンダラーと SE を既存ファイルに追加する形に変更。Studio 起動処理は削除（ホットリロードで反映）。</li>
+      <li><strong>🔧 step05 の確認フローを Remotion Studio に一本化</strong>: QuickTime の即時プレビューは削除。スクラブ・フレーム移動機能の方がカットミス検出に適している。</li>
+    </ul>
+
+    <h3 style="font-size: 16px; margin-top: 28px; margin-bottom: 12px; color: #121212; padding-left: 12px; border-left: 4px solid #CCFF00;"><span style="background:#f0f0f0;color:#444;padding:2px 8px;border-radius:4px;font-size:13px;margin-right:8px;">v1.4.0</span>2026-04-21</h3>
+    <ul style="margin-left: 20px; color: #444; font-size: 14px;">
+      <li><strong>🎯 テロップ2行対応（ショート動画）</strong>: normal / normal_emphasis / section / third_party の4テンプレートで <code>text</code> に <code>\n</code> を含めることで2行表示に対応。1行時の表示位置は従来通り。これまで禁止扱いだった2行テロップを正式機能化。</li>
+      <li><strong>🎯 emphasisWord の複数単語対応</strong>（横・ショート両方）: <code>emphasisWord?: string | string[]</code> に拡張。対句（「前衛 vs 後衛」等）や複数の強調ワードを配列で指定可能に。単一文字列も従来通り動作。</li>
+      <li><strong>🔧 テロップの句読点削除ルール</strong>（横・ショート両方）: <code>text</code> から <code>、</code> と <code>。</code> を削除する運用に統一（<code>?</code> <code>!</code> は残す）。分割は「助詞で分割」に一本化。</li>
+      <li><strong>🔧 引用符を半角 <code>｢｣</code> に変更</strong>（横・ショート両方）: 全角「」はセンタリングがズレるため半角に統一。third_party テンプレートの自動引用符も <code>｢｣</code>。</li>
+      <li><strong>🔧 2行化/1行化の判断基準を追加</strong>（ショート動画）: 主語述語が散る・対句が分断される場合は2行化、2行合計が1行制限以下なら1行連結。</li>
+    </ul>
+
+    <h3 style="font-size: 16px; margin-top: 28px; margin-bottom: 12px; color: #121212; padding-left: 12px; border-left: 4px solid #CCFF00;"><span style="background:#f0f0f0;color:#444;padding:2px 8px;border-radius:4px;font-size:13px;margin-right:8px;">v1.3.0</span>2026-04-21</h3>
     <ul style="margin-left: 20px; color: #444; font-size: 14px;">
       <li><strong>🎯 ラウドネス正規化</strong>: 最終MP4を YouTube/TikTok/X 共通基準 <code>-14 LUFS</code> に自動で揃える（<code>scripts/loudnorm.mjs</code>）。step20 / step14 の最終段に組込済み。</li>
       <li><strong>🎯 新規作成.sh が自動アップデート</strong>: 新規プロジェクト作成前に本体を最新版に自動同期。配布済みユーザーがアップデートに気づかない問題を解消。</li>
