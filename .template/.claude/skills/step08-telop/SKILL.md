@@ -2,7 +2,7 @@
 name: step08-telop
 description: transcript_words.jsonとvideo-context.mdを元に、テロップデータ（telopData.ts）を作成する。CLAUDE.mdのルールに従いテンプレートを自動判定する。ユーザーが「テロップ」「字幕」「telop」「ステップ8」と言ったら起動する。
 argument-hint: [なし]
-allowed-tools: Read, Write, Edit, Glob, Grep, Bash(node scripts/_chk.mjs)
+allowed-tools: Read, Write, Edit, Glob, Grep, Bash(node scripts/_chk.mjs), Bash(node scripts/validateTelopChars.mjs), Bash(npx tsc *)
 ---
 
 <!-- LICENSE_GUARD: DO NOT REMOVE -->
@@ -54,9 +54,25 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash(node scripts/_chk.mjs)
 - **引用符は半角 `｢｣`**（全角「」禁止。third_partyテンプレでは自動で半角付与される）
 - 意訳・短縮・リフレーズは禁止、削除・言い換えも禁止
 
+**1行の最大文字数（横動画・必須・絶対遵守）:**
+
+| テンプレート | 最大文字数 |
+|---|---|
+| normal / normal_emphasis | **20字** |
+| third_party | **18字**（表示時 `｢ ｣` が自動付与されるため） |
+| emphasis / emphasis2 / section / negative2 | **14字** |
+| negative | **17字** |
+| theme | **16字** |
+
+横動画は1行のみ（`\n` での2行化は未対応）。**1字でも上限を超えたら必ず分割する。**
+
 **正しい分割方法（文字数制限超過時）:**
-1. 助詞（は/の/に/を/が/で/も/て/と）の後で分割
-2. どうしても1チャンクが制限を超える場合 → **ユーザーに「この文は長すぎるのでどう分割しますか？」と確認**
+1. **生成時に毎回数える**: text を作成する前に全角文字数を数え、上限を超える場合は分割してから telopData に追加する
+2. 助詞（は/の/に/を/が/で/も/て/と）の後で分割
+3. それでも1チャンクが制限を超える → **ユーザーに「この文は長すぎるのでどう分割しますか？」と確認**
+
+❌ **NG**: 句読点（、。）で分割を試みる → テロップから既に削除されているので存在しない
+❌ **NG**: 「だいたい20字くらい」の目分量で出力 → 1字単位で正確にカウント
 
 **分割例（正しい・句読点は削除済み）:**
 - 台本: 「勇気を出して触っても、ボレーが浮いて逆襲されてしまう」
@@ -131,7 +147,7 @@ export const telopData: TelopEntry[] = [
 
 - **句読点チェック**: 各テロップの text に `、` `。` が含まれていないか（`?` `!` はOK）
 - **引用符チェック**: 全角 `「」` を使っていないか（third_party の自動付与は半角 `｢｣`）
-- **文字数チェック**: 各テロップがfontSizeに応じた最大文字数を超えていないか
+- **文字数チェック（必須）**: 各エントリの text を `[...text].length` で数え、上記「1行の最大文字数」を1字でも超えていないか確認する。超過があれば即座に分割し、再度全エントリを数え直す
 - **重複チェック**: 隣接テロップのendFrame < 次のstartFrame（1フレーム以上の間隔）
 - **カバー率チェック**: 発話時間の90%以上をカバーしているか
 - **テンプレート存在チェック**: 指定したテンプレートがtemplateConfigに存在するか
