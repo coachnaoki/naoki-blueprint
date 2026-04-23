@@ -5,8 +5,10 @@ Gemini API を使って動画用画像を一括生成するスクリプト
 セットアップ:
 1. Google AI Studio (https://aistudio.google.com/apikey) でAPIキーを取得
 2. pip install google-genai Pillow
-3. APIキーを渡す方法は3通り（どれか1つ）:
-   A. プロジェクト直下に `.env` を作成して `GEMINI_API_KEY=xxx` と書く（Mac/Win共通・推奨）
+3. APIキーを渡す方法（どれか1つ）:
+   A. プロジェクト直下の `.env` に直接書く（推奨・安全）
+      - Cursor / VS Code で .env を開いて `GEMINI_API_KEY=xxx` の形式で保存
+      - ⚠️ Claude Code のチャットにキーを貼らないこと（ログに平文で残るため）
    B. 環境変数を直接設定
       - Mac/Linux: `export GEMINI_API_KEY=xxx`
       - Windows (PowerShell): `$env:GEMINI_API_KEY="xxx"`
@@ -102,13 +104,17 @@ def main():
         return
 
     if not GEMINI_API_KEY:
-        print("GEMINI_API_KEY が設定されていません。以下のどれかで設定してください:")
-        print("  A. プロジェクト直下に .env を作成:")
-        print("     GEMINI_API_KEY=your-api-key-here")
-        print("  B. 環境変数を直接設定:")
-        print("     Mac/Linux: export GEMINI_API_KEY=xxx")
-        print("     Windows (PowerShell): $env:GEMINI_API_KEY=\"xxx\"")
-        print("  取得先: https://aistudio.google.com/apikey")
+        print("GEMINI_API_KEY が設定されていません。")
+        print("")
+        print("【推奨・安全な方法】プロジェクト直下の .env に直接入力する")
+        print("  1. https://aistudio.google.com/apikey でキーを取得（AIza... で始まる文字列）")
+        print("  2. Cursor / VS Code の左側ファイルツリーから .env を開く（なければ新規作成）")
+        print("  3. GEMINI_API_KEY=AIza... の形式で1行書いて保存する")
+        print("  ⚠️ キーは Claude Code のチャットには貼らないこと（ログに平文で残るため）")
+        print("")
+        print("【代替】環境変数で直接設定")
+        print("  Mac/Linux: export GEMINI_API_KEY=xxx")
+        print("  Windows (PowerShell): $env:GEMINI_API_KEY=\"xxx\"")
         return
 
     client = genai.Client(api_key=GEMINI_API_KEY)

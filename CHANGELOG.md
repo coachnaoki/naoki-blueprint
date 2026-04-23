@@ -18,6 +18,37 @@ naoki-blueprint のバージョンアップ履歴です。バージョンは [Se
 
 ---
 
+## [v1.5.5] - 2026-04-23
+
+### 🎯 新機能: 完全自動アップデート
+- **`bash アップデート.sh` の手動実行が不要に**（横・ショート両方）: 各 step 実行時に呼ばれる `scripts/_chk.mjs` に自動アップデート機能を内蔵。24時間に1回だけ `git fetch origin` で最新版チェック → 差分があれば自動で `git reset --hard origin/main` + projects/XXX 同期 → CHANGELOG差分を一瞬表示。ユーザーは何もしなくていい。ネットワークエラーや git 未初期化リポジトリでは静かにスキップする（作業は継続）。
+  - 変更箇所: `.template/scripts/_chk.mjs` / `.template-shorts/scripts/_chk.mjs`
+  - 24時間キャッシュ: `scripts/.last-update-check`（gitignore済み）
+  - タイムアウト: 10秒（ネット不調時に待たされない）
+  - docs/activate.html の「アップデート」セクションも「自動です。何もしなくてOK」に書き換え
+
+### 🔧 新規プロジェクト作成フローの改善
+- **`/new-video` スラッシュコマンド実装**（Naoki個人環境・`~/.claude/commands/new-video.md`）: Claude Code 内で `/new-video` とタイプすると、macOS の `osascript` で新しい Terminal.app ウィンドウを自動起動し、そこで `bash 新規作成.sh` を実行する。cwd 問題を回避してシンプルに新規プロジェクトが作れる。
+- **CLAUDE.md に新規作成コマンドの取り扱いルール追加**（横・ショート両方）: ユーザーが Claude Code 内で `bash 新規作成.sh` をタイプした場合、実行は許可するが実行直後に「新しいターミナルで `cd projects/XXX && claude` で起動し直してください」という案内を返すルールを明記。cwd 問題で配布テンプレ本体を書き換える事故を防ぐ。
+
+### 📌 既存受講生への影響
+- `.license` ・素材（`public/`）・テロップデータ（`src/*.tsx`）・transcript は今まで通り完全保護
+- 今回の `_chk.mjs` 更新は、**1回だけ手動で** `bash アップデート.sh` を実行すると反映される（以降は完全自動）
+- または新規プロジェクト作成で `新規作成.sh` を走らせれば本体が最新化されるため、その際に projects/XXX も同期される
+
+---
+
+## [v1.5.4] - 2026-04-23
+
+### 🔒 セキュリティ改善
+- **Gemini APIキーの入力フローを「チャット貼付→自動 `.env` 作成」から「空 `.env` 作成→ユーザーがプレビューで直接入力」に変更**（横・ショート両方）: 従来は Claude Code のチャットにAPIキーを貼り付けさせ Write ツールで `.env` を自動作成していた。このフローではキーが Claude Code のローカルトランスクリプトに平文で残り、サブエージェントへのコンテキスト引き継ぎ・画面共有・スクショ経由での漏えいリスクがあった。新フローでは Claude Code が空の `.env` を Write で作成し、ユーザーが Cursor / VS Code のファイルプレビューで `.env` を開いてキーを直接貼り付け・保存する。完了後「OK」とだけ返答してもらい、Claude Code は `.env` を Read して形式検証する。キーは一切チャットを経由しない。
+  - 変更箇所1: `.template/.claude/skills/step15-images/SKILL.md`（横動画・0-A セクション）
+  - 変更箇所2: `.template-shorts/.claude/skills/step12-images/references/ai-generated.md`（ショート動画・0-A セクション）
+  - 変更箇所3: `.template/scripts/generate-images.py` / `.template-shorts/scripts/generate-images.py`（docstring と未設定時のエラーメッセージ）
+  - **既存ユーザーへの影響**: 既に `.env` が存在するプロジェクトは変更なしで動作継続。新規プロジェクト or APIキー未設定プロジェクトのみ新フローが適用される。
+
+---
+
 ## [v1.5.3] - 2026-04-22
 
 ### 🐛 バグ修正

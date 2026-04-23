@@ -479,18 +479,16 @@ cd ..</div>
     </section>
 
     <section class="step-section" style="border-left:4px solid #fbbf24">
-      <h2><span class="num">UP</span>アップデート（バージョンアップ）</h2>
-      <p><strong style="color:#121212">新しい動画を作るときは何もしなくてOK。</strong><br>
-      <code>bash 新規作成.sh</code> を実行すると、本体を自動で最新版に同期してからプロジェクトを作ります。</p>
+      <h2><span class="num">UP</span>アップデート（完全自動・v1.5.5〜）</h2>
+      <p><strong style="color:#121212">何もしなくてOK。最新版が自動で適用されます。</strong></p>
+      <p style="margin-top:14px;font-size:14px">各 step 実行時に内部で <strong style="color:#121212">24時間に1回だけ</strong> 最新版チェックが走り、新しいバージョンがあれば自動でダウンロード・適用されます。作業中の素材（<code>public/</code>）・テロップデータ（<code>src/*.tsx</code>）・transcript は保護されるので、いつ自動更新が走っても作業は壊れません。</p>
 
-      <p style="margin-top:24px;font-size:14px"><strong style="color:#121212">進行中のプロジェクトに最新テンプレを適用したい場合のみ</strong>、以下を実行してください:</p>
-      <p style="font-size:13px;color:#666;margin:8px 0 4px">① naoki-blueprint ディレクトリに移動（<code>~/Desktop/Cursor</code> は clone 先に合わせて読み替え）</p>
-      <div class="code">cd ~/Desktop/Cursor/naoki-blueprint</div>
-      <p style="font-size:13px;color:#666;margin:12px 0 4px">② アップデートスクリプトを実行</p>
-      <div class="code">bash アップデート.sh</div>
-      <p style="margin-top:12px;font-size:13px;color:#666">本体を最新版に更新しつつ、<code>projects/</code> 内の全プロジェクトを最新のスキル・スクリプトに同期します（素材・TSX・transcript は保護）。</p>
+      <p style="margin-top:16px;font-size:14px">更新があると Claude Code のログに以下のようなメッセージが一瞬表示されます:</p>
+      <div class="code">📦 naoki-blueprint v1.5.5 → v1.5.6 に自動更新中...<br>✓ 更新完了</div>
 
-      <p style="margin-top:16px;font-size:13px;color:#666">⚠ 実行前に Claude Code を <strong style="color:#121212">Ctrl+C を 2回</strong>押して終了してください。</p>
+      <p style="margin-top:20px;font-size:13px;color:#666"><strong style="color:#121212">※ どうしても今すぐ最新版にしたい場合（レアケース）</strong>: Claude Code を <strong style="color:#121212">Ctrl+C を 2回</strong> 押して終了し、通常ターミナルで以下を実行:</p>
+      <div class="code">cd ~/Desktop/Cursor/naoki-blueprint && bash アップデート.sh</div>
+      <p style="margin-top:8px;font-size:12px;color:#999">通常は自動更新に任せてOKです。</p>
     </section>
 
     <!-- Changelog -->

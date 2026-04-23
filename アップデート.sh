@@ -98,6 +98,13 @@ update_project() {
     echo "   ✓ .claude/skills/ 更新"
   fi
 
+  # スラッシュコマンド: 完全上書き（旧コマンドも削除）
+  if [ -d "$src/.claude/commands" ]; then
+    mkdir -p "$proj/.claude"
+    rsync -a --delete "$src/.claude/commands/" "$proj/.claude/commands/"
+    echo "   ✓ .claude/commands/ 更新"
+  fi
+
   # スクリプト: 上書き（追加のみ、削除なし）
   if [ -d "$src/scripts" ]; then
     mkdir -p "$proj/scripts"

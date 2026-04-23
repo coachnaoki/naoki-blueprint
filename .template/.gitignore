@@ -1,2 +1,4 @@
 .env
+.last-update-check
 scripts/__pycache__/
+scripts/.last-update-check

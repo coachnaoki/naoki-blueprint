@@ -1,7 +1,9 @@
 .env
 .license
+.last-update-check
 node_modules/
 scripts/__pycache__/
+scripts/.last-update-check
 
 # 完成動画・カット動画・バックアップは個人素材なのでコミット禁止
 public/output/*.mp4
