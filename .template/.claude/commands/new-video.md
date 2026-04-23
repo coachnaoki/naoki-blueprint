@@ -10,36 +10,46 @@ naoki-blueprint で新しい動画プロジェクトを作ります。
 以下を Bash で実行してください:
 
 ```bash
-# naoki-blueprint 本体の絶対パスを取得（現在の cwd は projects/XXX のはず）
-ROOT=$(cd "$(pwd)/../.." && pwd)
+# naoki-blueprint 本体の絶対パスを取得（git rev-parse で cwd に依存せず確実に）
+ROOT=$(git rev-parse --show-toplevel 2>/dev/null)
+if [ -z "$ROOT" ] || [ ! -f "$ROOT/新規作成.sh" ]; then
+  echo "❌ naoki-blueprint 本体が見つかりません。naoki-blueprint の projects/ 配下で実行してください。"
+  exit 1
+fi
 
-# OS 判定して新ターミナルを起動
+# osascript 用のパスエスケープ（シングルクォートを '\'' に変換）
+ROOT_AS=$(printf "%s" "$ROOT" | sed "s/'/'\\\\''/g")
+
+# OS 判定して新ターミナルを起動（新規作成.sh は絶対パスで渡す = Windows日本語ファイル名対応）
 case "$(uname -s)" in
   Darwin*)
     # macOS
-    osascript -e "tell application \"Terminal\" to do script \"cd '$ROOT' && bash 新規作成.sh\""
+    osascript -e "tell application \"Terminal\" to do script \"cd '$ROOT_AS' && bash '$ROOT_AS/新規作成.sh'\""
     osascript -e 'tell application "Terminal" to activate'
     echo "✅ 新しい Terminal.app ウィンドウを起動しました。そちらで続けてください。"
     ;;
   MINGW*|MSYS*|CYGWIN*)
     # Windows (Git Bash / MSYS)
     if command -v wt.exe >/dev/null 2>&1; then
-      # Windows Terminal がある場合
-      wt.exe bash -c "cd '$ROOT' && bash 新規作成.sh; exec bash"
+      # Windows Terminal がある場合（Windows 11 標準）
+      wt.exe bash -c "cd '$ROOT' && bash '$ROOT/新規作成.sh'; exec bash"
       echo "✅ 新しい Windows Terminal ウィンドウを起動しました。そちらで続けてください。"
     else
-      # Git Bash を start で起動
-      cmd.exe //c start "" bash -c "cd '$ROOT' && bash 新規作成.sh; exec bash"
+      # Git Bash を start で起動（Windows 10）
+      cmd.exe //c start "" bash -c "cd '$ROOT' && bash '$ROOT/新規作成.sh'; exec bash"
       echo "✅ 新しい Git Bash ウィンドウを起動しました。そちらで続けてください。"
     fi
     ;;
   Linux*)
-    # Linux
+    # Linux（主要ターミナルをフォールバック順にチェック）
     if command -v gnome-terminal >/dev/null 2>&1; then
-      gnome-terminal -- bash -c "cd '$ROOT' && bash 新規作成.sh; exec bash"
+      gnome-terminal -- bash -c "cd '$ROOT' && bash '$ROOT/新規作成.sh'; exec bash"
       echo "✅ 新しい GNOME Terminal を起動しました。"
+    elif command -v konsole >/dev/null 2>&1; then
+      konsole -e bash -c "cd '$ROOT' && bash '$ROOT/新規作成.sh'; exec bash" &
+      echo "✅ 新しい Konsole を起動しました。"
     elif command -v xterm >/dev/null 2>&1; then
-      xterm -e "cd '$ROOT' && bash 新規作成.sh; exec bash" &
+      xterm -e "cd '$ROOT' && bash '$ROOT/新規作成.sh'; exec bash" &
       echo "✅ 新しい xterm を起動しました。"
     else
       echo "⚠️ 自動起動できませんでした。通常ターミナルで以下を実行してください:"

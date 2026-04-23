@@ -53,6 +53,18 @@ if [ -n "$REMOTE" ] && [ "$LOCAL" != "$REMOTE" ]; then
   echo ""
   git log --oneline HEAD..origin/main | head -10
   echo ""
+
+  # ルート直下のローカル変更を保護（受講生がうっかり CLAUDE.md などを編集していた場合のセーフティネット）
+  # projects/ は .gitignore 除外なので影響なし
+  if ! git diff --quiet HEAD 2>/dev/null || [ -n "$(git ls-files --others --exclude-standard 2>/dev/null)" ]; then
+    STASH_MSG="auto-stash-before-update-$(date +%Y%m%d-%H%M%S)"
+    echo "⚠️  ルート直下にローカル変更が見つかりました。安全のため一時退避します。"
+    echo "   退避名: $STASH_MSG"
+    echo "   退避した変更を戻すには: git stash list で確認 → git stash pop で復元"
+    git stash push -u -m "$STASH_MSG" >/dev/null 2>&1 || true
+    echo ""
+  fi
+
   git reset --hard origin/main >/dev/null 2>&1
   NEW_VERSION=$(cat VERSION 2>/dev/null || echo "unknown")
   NEW_COMMIT=$(git log -1 --format="%h %s")
