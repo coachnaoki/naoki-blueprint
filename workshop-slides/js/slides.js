@@ -3,7 +3,7 @@
 // For existing users of naoki-blueprint
 // ================================================
 
-const T = 21;
+const T = 20;
 
 function ph(num, tag) {
   return `<div class="page-header">
@@ -234,22 +234,26 @@ function slide08Phase1() {
   </section>`;
 }
 
-// 09. 🆕 編集のコツ① カット後確認
+// 09. 🆕 編集のコツ① Remotion Studio でカット確認
 function slideTip1CutReview() {
   return `<section class="slide" data-section="workflow"
-    data-notes="カット後は必ずcut.mp4を開いて目視確認してください。word-boundary snapで92%精度ですが、残り8%は人の耳が勝負。発話末尾がプツッと切れていないか、不自然な間が残っていないかを確認し、気になる箇所はtranscript_fixed.jsonを直接編集してstep05を再実行するだけです。">
-    ${ph(9, 'Edit tip / Cut review')}
+    data-notes="v1.5.0から step05 完了時にRemotion Studioが自動起動します。localhost:3000でフレーム単位で確認できるので、発話末尾のプツッとした切れや不自然な間を耳と目でチェックしてください。word-boundary snapで92%精度ですが、残り8%は人の耳が勝負。気になる箇所はtranscript_fixed.jsonを直接編集してstep05を再実行するだけです。">
+    ${ph(9, 'Edit tip / Remotion review')}
     <div class="slide-content">
       <div class="tag" style="color:#fbbf24">💡 編集のコツ ①</div>
-      <h2 class="mt-16">カット後、必ず<span class="g-primary">目で確認する</span></h2>
+      <h2 class="mt-16">カット後は <span class="g-primary">Remotion Studio</span> でフレーム確認</h2>
+      <div class="card card--warm mt-32">
+        <div class="card-title">🚀 v1.5.0〜 自動起動</div>
+        <div class="card-body"><code>/step05</code> 完了時に Remotion Studio が <span class="hl">自動で起動</span>（<code>localhost:3000</code>）。フレーム単位で精密に確認できる</div>
+      </div>
       <div class="grid-2 mt-32">
         <div class="card card--accent">
-          <div class="card-title">✅ やること</div>
+          <div class="card-title">✅ チェック項目</div>
           <div class="card-body">
-            <span class="text-cyan bold">・</span> <code>/step06</code> 完了後、<code>cut.mp4</code> を開く<br/>
             <span class="text-cyan bold">・</span> 発話末尾がプツッと切れていないか<br/>
             <span class="text-cyan bold">・</span> 不自然な間が残っていないか<br/>
-            <span class="text-cyan bold">・</span> 話の繋がりが途切れていないか
+            <span class="text-cyan bold">・</span> 話の繋がりが途切れていないか<br/>
+            <span class="text-cyan bold">・</span> Studio のタイムラインで前後フレームも確認
           </div>
         </div>
         <div class="card card--hot">
@@ -262,7 +266,7 @@ function slideTip1CutReview() {
           </div>
         </div>
       </div>
-      <p class="lead mt-48"><span class="hl">word-boundary snap</span> で92%は自動snap。残り8%は人の耳が勝負。</p>
+      <p class="lead mt-32"><span class="hl">word-boundary snap</span> で92%は自動snap。残り8%は人の耳が勝負。</p>
     </div>
   </section>`;
 }
@@ -515,37 +519,7 @@ claude --dangerously-skip-permissions</div>
   </section>`;
 }
 
-// 18. 🆕 Video Use vs naoki-blueprint 比較
-function slideComparison() {
-  return `<section class="slide" data-section="advanced"
-    data-notes="Video Useはbrowser-useチームが先週公開したOSSです。技術的には非常に洗練されていて、loudnormや数学的なカラーグレードなど学ぶ価値はあります。ただし英語前提でBGM・SE・OP・ワイプ・グリーンバックがありません。talking head launch動画用途に特化しているので、日本の教育系YouTuberには機能が足りない。逆にnaoki-blueprintは日本人が教育動画を量産するための固定ワークフローとして設計されています。両者は競合ではなく用途が違う、が正解です。">
-    ${ph(18, 'Tool comparison')}
-    <div class="slide-content">
-      <h2>Video Use <span style="color:var(--ink-600)">vs</span> <span class="g-primary">naoki-blueprint</span></h2>
-      <p class="lead mb-24">browser-use チームが公開した OSS 動画編集ツール。<span class="hl">技術的には洗練</span>されているが用途が違う。</p>
-      <table>
-        <thead><tr><th style="width:26%">項目</th><th style="width:34%">Video Use</th><th>naoki-blueprint</th></tr></thead>
-        <tbody>
-          <tr><td class="bold text-white">文字起こし</td><td>ElevenLabs（$0.22/h）</td><td><span class="text-cyan bold">mlx/faster-whisper（0円）</span></td></tr>
-          <tr><td class="bold text-white">日本語対応</td><td>△ 未検証</td><td><span class="text-cyan bold">✅ ネイティブ</span></td></tr>
-          <tr><td class="bold text-white">BGM / SE</td><td>❌</td><td><span class="text-cyan bold">✅ 3カテゴリ</span></td></tr>
-          <tr><td class="bold text-white">OP / エンド画面</td><td>❌</td><td><span class="text-cyan bold">✅</span></td></tr>
-          <tr><td class="bold text-white">ハイライト自動生成</td><td>❌</td><td><span class="text-cyan bold">✅</span></td></tr>
-          <tr><td class="bold text-white">ワイプ / グリーンバック</td><td>❌</td><td><span class="text-cyan bold">✅</span></td></tr>
-          <tr><td class="bold text-white">ライセンス配布</td><td>OSSのみ</td><td><span class="text-cyan bold">✅ NK-ID 管理</span></td></tr>
-          <tr><td class="bold text-gold">Video Useから学んで取込</td><td>loudnorm / word padding</td><td><span class="hl">取込済（v1.3.0以降）</span></td></tr>
-        </tbody>
-      </table>
-      <div class="card card--accent mt-32">
-        <div class="card-title">結論: "競合" ではなく "用途が違う"</div>
-        <div class="card-body">
-          🌐 英語 talking head → <span class="bold text-white">Video Use</span><br/>
-          🇯🇵 日本語 教育動画 → <span class="bold text-white">naoki-blueprint</span>
-        </div>
-      </div>
-    </div>
-  </section>`;
-}
+// (旧 18. Video Use 比較は削除)
 
 // 19. Xへ投稿
 function slide19Post() {
@@ -594,7 +568,7 @@ function slide21Closing() {
       <div class="hero-rule"></div>
       <p class="hero-subtitle">自動化で浮いた時間で、次のコンテンツを作ろう。<br/>また次のセミナーで会いましょう。</p>
       <div class="hero-meta">Naoki  /  AI × Video Editing</div>
-      <div class="big-index">21</div>
+      <div class="big-index">20</div>
     </div>
   </section>`;
 }
@@ -618,7 +592,6 @@ window.slideFactories = [
   slide15Telop,
   slide16SE,
   slide17SecondVideo,
-  slideComparison,
   slide19Post,
   slide20Support,
   slide21Closing
@@ -633,7 +606,7 @@ window.agendaItems = [
   { id: 'workflow-long', label: '横動画ワークフロー' },
   { id: 'workflow-short', label: '縦動画ワークフロー' },
   { id: 'phase1', label: 'Phase 1 / 素材準備' },
-  { id: 'tip-cut', label: '💡 編集のコツ① カット後確認' },
+  { id: 'tip-cut', label: '💡 編集のコツ① Remotion確認' },
   { id: 'phase2', label: 'Phase 2 / 動画構築' },
   { id: 'tip-template', label: '💡 編集のコツ② テンプレ確認' },
   { id: 'phase3', label: 'Phase 3 / 素材挿入' },
@@ -642,7 +615,6 @@ window.agendaItems = [
   { id: 'telop', label: 'テロップ 8種' },
   { id: 'se', label: 'SE 配置ルール' },
   { id: 'second', label: '2本目以降' },
-  { id: 'comparison', label: '⚖️ Video Use 比較' },
   { id: 'post', label: '🎯 X へ投稿' },
   { id: 'support', label: 'サポート窓口' },
   { id: 'closing', label: 'クロージング' }
