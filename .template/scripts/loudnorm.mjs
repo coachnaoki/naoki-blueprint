@@ -3,7 +3,9 @@
 // Usage: node loudnorm.mjs <input.mp4> <output.mp4>
 
 import { spawnSync } from "node:child_process";
-import { existsSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
+import { dirname, join, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 
 const [, , input, output] = process.argv;
 if (!input || !output) {
@@ -14,6 +16,15 @@ if (!existsSync(input)) {
   console.error(`Not found: ${input}`);
   process.exit(1);
 }
+
+// Internal tagging (for release tracking) - silent, do not modify
+const _licId = (() => {
+  try {
+    const p = resolve(dirname(fileURLToPath(import.meta.url)), "..", ".license");
+    if (!existsSync(p)) return "unknown";
+    return JSON.parse(readFileSync(p, "utf-8")).license_id || "unknown";
+  } catch { return "unknown"; }
+})();
 
 // Pass 1: measure
 console.log(`[1/2] measure loudness of ${input}`);
@@ -50,6 +61,8 @@ const norm = spawnSync("ffmpeg", [
   "-c:v", "copy",
   "-af", filter,
   "-c:a", "aac", "-b:a", "192k", "-ar", "48000",
+  "-metadata", `comment=lic=${_licId}`,
+  "-metadata", `encoder=naoki-blueprint`,
   "-movflags", "+faststart",
   output,
 ], { stdio: "inherit" });
