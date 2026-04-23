@@ -2,11 +2,11 @@
 name: step02-assets
 description: 動画制作に必要な素材（動画ファイル・BGM・SE・画像）がすべて揃っているか確認し、複数動画の役割と文字起こし順序を確定する。ユーザーが「素材確認」「assets」「ステップ2」「step02」と言ったら起動する。
 argument-hint: [なし]
-allowed-tools: Read, Glob, Grep, Bash(ls *), Bash(ffprobe *), Bash(mkdir *), Bash(node scripts/_chk.mjs)
+allowed-tools: Read, Glob, Grep, Bash(ls *), Bash(ffprobe *), Bash(mkdir *), Bash(node scripts/_chk.mjs *)
 ---
 
 <!-- LICENSE_GUARD: DO NOT REMOVE -->
-> **認証必須**: このステップ開始前に `node scripts/_chk.mjs` を実行。exit code が 0 以外なら即中止し「ライセンスが無効です。権利者にお問い合わせください」と伝える。（詳細は CLAUDE.md の「ライセンス認証」セクション参照）
+> **認証必須**: このステップ開始前に `node scripts/_chk.mjs step02-assets` を実行。exit code が 0 以外なら即中止し「ライセンスが無効です。権利者にお問い合わせください」と伝える。（詳細は CLAUDE.md の「ライセンス認証」セクション参照）
 
 # Step 02: 素材チェック & 役割確定
 

@@ -2,11 +2,11 @@
 name: step16-special-components
 description: BulletList・CTA（LINE/チャンネル登録）・HeadingBanner・ThemeTelopをMainComposition.tsxに実装する。他の視覚要素（スライド・画像・動画クリップ）が確定した後に行う。ユーザーが「特殊コンポーネント」「bullet_list」「CTA」「ThemeTelop」「HeadingBanner」「ステップ16」と言ったら起動する。
 argument-hint: [実装するコンポーネント名（省略時は全て実装）]
-allowed-tools: Read, Write, Edit, Glob, Grep, Bash(npx tsc *), Bash(node scripts/_chk.mjs)
+allowed-tools: Read, Write, Edit, Glob, Grep, Bash(npx tsc *), Bash(node scripts/_chk.mjs *)
 ---
 
 <!-- LICENSE_GUARD: DO NOT REMOVE -->
-> **認証必須**: このステップ開始前に `node scripts/_chk.mjs` を実行。exit code が 0 以外なら即中止し「ライセンスが無効です。権利者にお問い合わせください」と伝える。（詳細は CLAUDE.md の「ライセンス認証」セクション参照）
+> **認証必須**: このステップ開始前に `node scripts/_chk.mjs step16-special-components` を実行。exit code が 0 以外なら即中止し「ライセンスが無効です。権利者にお問い合わせください」と伝える。（詳細は CLAUDE.md の「ライセンス認証」セクション参照）
 
 # Step 17: 特殊コンポーネント実装
 

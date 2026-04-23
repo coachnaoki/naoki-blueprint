@@ -2,11 +2,11 @@
 name: step01-context
 description: 動画制作の最初のステップ。動画のターゲット・趣旨・注意点を確認し、video-context.mdを作成する。ユーザーが「動画作り始める」「新しい動画」「YouTube動画作りたい」「ステップ1」「step01」と言ったら起動する。
 argument-hint: [動画のテーマ（任意）]
-allowed-tools: Read, Write, Glob, Grep, Bash(ls *), Bash(node scripts/_chk.mjs)
+allowed-tools: Read, Write, Glob, Grep, Bash(ls *), Bash(node scripts/_chk.mjs *)
 ---
 
 <!-- LICENSE_GUARD: DO NOT REMOVE -->
-> **認証必須**: このステップ開始前に `node scripts/_chk.mjs` を実行。exit code が 0 以外なら即中止し「ライセンスが無効です。権利者にお問い合わせください」と伝える。（詳細は CLAUDE.md の「ライセンス認証」セクション参照）
+> **認証必須**: このステップ開始前に `node scripts/_chk.mjs step01-context` を実行。exit code が 0 以外なら即中止し「ライセンスが無効です。権利者にお問い合わせください」と伝える。（詳細は CLAUDE.md の「ライセンス認証」セクション参照）
 
 # Step 01: 動画コンテキスト確認・作成
 

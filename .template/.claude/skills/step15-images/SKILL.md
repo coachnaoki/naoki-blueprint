@@ -2,11 +2,11 @@
 name: step15-images
 description: イメージ画像を動画に挿入する。インサート（部分挿入・話者位置に応じて配置）/ オーバーレイ（全画面・ランダムアニメーション）/ 顔アイコン（対談動画・固定推奨）の3フェーズ構造。画像生成（Gemini API）にも対応。ユーザーが「画像挿入」「AI画像生成」「話者アイコン」「ステップ15」と言ったら起動する。
 argument-hint: [挿入位置の秒数やキーワード（省略時はtranscriptから判断）]
-allowed-tools: Read, Write, Edit, Glob, Grep, WebSearch, WebFetch, Bash(npx tsc *), Bash(npx remotion still *), Bash(rm *), Bash(ls *), Bash(python3 *), Bash(python3.12 *), Bash(ffmpeg *), Bash(cp *), Bash(node scripts/_chk.mjs)
+allowed-tools: Read, Write, Edit, Glob, Grep, WebSearch, WebFetch, Bash(npx tsc *), Bash(npx remotion still *), Bash(rm *), Bash(ls *), Bash(python3 *), Bash(python3.12 *), Bash(ffmpeg *), Bash(cp *), Bash(node scripts/_chk.mjs *)
 ---
 
 <!-- LICENSE_GUARD: DO NOT REMOVE -->
-> **認証必須**: このステップ開始前に `node scripts/_chk.mjs` を実行。exit code が 0 以外なら即中止し「ライセンスが無効です。権利者にお問い合わせください」と伝える。（詳細は CLAUDE.md の「ライセンス認証」セクション参照）
+> **認証必須**: このステップ開始前に `node scripts/_chk.mjs step15-images` を実行。exit code が 0 以外なら即中止し「ライセンスが無効です。権利者にお問い合わせください」と伝える。（詳細は CLAUDE.md の「ライセンス認証」セクション参照）
 
 # Step 15: イメージ画像挿入
 

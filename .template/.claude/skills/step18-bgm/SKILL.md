@@ -2,11 +2,11 @@
 name: step18-bgm
 description: BGM（バックグラウンドミュージック）を動画に挿入する。フェードイン・フェードアウト付き。ユーザーが「BGM」「音楽」「バックグラウンドミュージック」「ステップ18」と言ったら起動する。
 argument-hint: [BGMファイルパス（省略時はpublic/bgm/内を確認）]
-allowed-tools: Read, Write, Edit, Glob, Bash(ls *), Bash(ffprobe *), Bash(npx tsc *), Bash(node scripts/_chk.mjs)
+allowed-tools: Read, Write, Edit, Glob, Bash(ls *), Bash(ffprobe *), Bash(npx tsc *), Bash(node scripts/_chk.mjs *)
 ---
 
 <!-- LICENSE_GUARD: DO NOT REMOVE -->
-> **認証必須**: このステップ開始前に `node scripts/_chk.mjs` を実行。exit code が 0 以外なら即中止し「ライセンスが無効です。権利者にお問い合わせください」と伝える。（詳細は CLAUDE.md の「ライセンス認証」セクション参照）
+> **認証必須**: このステップ開始前に `node scripts/_chk.mjs step18-bgm` を実行。exit code が 0 以外なら即中止し「ライセンスが無効です。権利者にお問い合わせください」と伝える。（詳細は CLAUDE.md の「ライセンス認証」セクション参照）
 
 # Step 19: BGM挿入
 

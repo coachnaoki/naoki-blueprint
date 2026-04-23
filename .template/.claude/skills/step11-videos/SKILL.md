@@ -2,11 +2,11 @@
 name: step11-videos
 description: デモ動画を本編に挿入する。物理挿入(Series分割)とオーバーレイ(上に重ね)の2方式を選択可。ユーザーが「デモ動画挿入」「動画挿入」「video insert」「Series分割」「ステップ11」と言ったら起動する。
 argument-hint: [挿入位置の秒数やキーワード（省略時はtranscriptから判断）]
-allowed-tools: Read, Write, Edit, Glob, Grep, Bash(npx tsc *), Bash(npx remotion still *), Bash(rm *), Bash(ls *), Bash(ffprobe *), Bash(node scripts/_chk.mjs)
+allowed-tools: Read, Write, Edit, Glob, Grep, Bash(npx tsc *), Bash(npx remotion still *), Bash(rm *), Bash(ls *), Bash(ffprobe *), Bash(node scripts/_chk.mjs *)
 ---
 
 <!-- LICENSE_GUARD: DO NOT REMOVE -->
-> **認証必須**: このステップ開始前に `node scripts/_chk.mjs` を実行。exit code が 0 以外なら即中止し「ライセンスが無効です。権利者にお問い合わせください」と伝える。（詳細は CLAUDE.md の「ライセンス認証」セクション参照）
+> **認証必須**: このステップ開始前に `node scripts/_chk.mjs step11-videos` を実行。exit code が 0 以外なら即中止し「ライセンスが無効です。権利者にお問い合わせください」と伝える。（詳細は CLAUDE.md の「ライセンス認証」セクション参照）
 
 # Step 11: デモ動画の挿入（物理挿入 or オーバーレイ）
 

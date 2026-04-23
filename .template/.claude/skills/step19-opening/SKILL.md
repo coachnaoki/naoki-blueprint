@@ -2,11 +2,11 @@
 name: step19-opening
 description: 冒頭にOP動画だけ連結して、本編+OPを一度MP4レンダリングする。次のstep20でこのMP4からハイライトを切り抜いて最終連結する。ユーザーが「OP連結」「オープニング」「opening」「ステップ19」と言ったら起動する。
 argument-hint: [なし]
-allowed-tools: Read, Write, Edit, Glob, Grep, Bash(npx tsc *), Bash(npx remotion render *), Bash(ls *), Bash(node *), Bash(ffprobe *), Bash(mkdir *), Bash(df *), Bash(du *), Bash(node scripts/_chk.mjs)
+allowed-tools: Read, Write, Edit, Glob, Grep, Bash(npx tsc *), Bash(npx remotion render *), Bash(ls *), Bash(node *), Bash(ffprobe *), Bash(mkdir *), Bash(df *), Bash(du *), Bash(node scripts/_chk.mjs *)
 ---
 
 <!-- LICENSE_GUARD: DO NOT REMOVE -->
-> **認証必須**: このステップ開始前に `node scripts/_chk.mjs` を実行。exit code が 0 以外なら即中止し「ライセンスが無効です。権利者にお問い合わせください」と伝える。（詳細は CLAUDE.md の「ライセンス認証」セクション参照）
+> **認証必須**: このステップ開始前に `node scripts/_chk.mjs step19-opening` を実行。exit code が 0 以外なら即中止し「ライセンスが無効です。権利者にお問い合わせください」と伝える。（詳細は CLAUDE.md の「ライセンス認証」セクション参照）
 
 # Step 19: OP連結 + 本編レンダリング（1回目 / 仮出し）
 

@@ -2,11 +2,11 @@
 name: step20-highlight-final
 description: step19のMP4からハイライト範囲を自動抽出し、冒頭に連結して最終MP4レンダリングする。ハイライト不要ならそのままstep19のMP4が完成品。ユーザーが「ハイライト抽出」「最終レンダリング」「highlight」「final」「ステップ20」と言ったら起動する。
 argument-hint: [なし]
-allowed-tools: Read, Write, Edit, Glob, Grep, Bash(npx tsc *), Bash(npx remotion render *), Bash(ls *), Bash(node *), Bash(ffprobe *), Bash(ffmpeg *), Bash(mkdir *), Bash(df *), Bash(du *), Bash(mv *), Bash(node scripts/_chk.mjs), Bash(node scripts/loudnorm.mjs *)
+allowed-tools: Read, Write, Edit, Glob, Grep, Bash(npx tsc *), Bash(npx remotion render *), Bash(ls *), Bash(node *), Bash(ffprobe *), Bash(ffmpeg *), Bash(mkdir *), Bash(df *), Bash(du *), Bash(mv *), Bash(node scripts/_chk.mjs *), Bash(node scripts/loudnorm.mjs *)
 ---
 
 <!-- LICENSE_GUARD: DO NOT REMOVE -->
-> **認証必須**: このステップ開始前に `node scripts/_chk.mjs` を実行。exit code が 0 以外なら即中止し「ライセンスが無効です。権利者にお問い合わせください」と伝える。（詳細は CLAUDE.md の「ライセンス認証」セクション参照）
+> **認証必須**: このステップ開始前に `node scripts/_chk.mjs step20-highlight-final` を実行。exit code が 0 以外なら即中止し「ライセンスが無効です。権利者にお問い合わせください」と伝える。（詳細は CLAUDE.md の「ライセンス認証」セクション参照）
 
 # Step 20: ハイライト自動抽出 + 最終レンダリング
 
