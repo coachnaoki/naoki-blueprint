@@ -30,17 +30,17 @@ function slide01Cover() {
 // 02. AI が自動でやってくれる機能一覧
 function slide02Features() {
   return `<section class="slide" data-section="intro"
-    data-notes="このテンプレートがやってくれることは6つ。無音カット、文字起こし、テロップ配置、BGMとSE、レンダリング、そしてラウドネス正規化。v1.3.0でloudnormが加わり、YouTube標準音量に自動で揃えてくれます。">
+    data-notes="このテンプレートがやってくれることは6つ。無音カット、文字起こし、テロップ配置、BGMとSE、レンダリング、そしてラウドネス正規化。word-boundary snapで発話末尾の切れ防止、loudnormでYouTube標準音量に自動で揃えてくれます。">
     ${ph(2, 'What it does')}
     <div class="slide-content">
       <h2>AI がやってくれる<span class="g-primary">6つのこと</span></h2>
       <div class="grid-3">
-        <div class="feature-tile"><div class="tile-num">01</div><div class="tile-title">無音カット</div><div class="tile-body">FFmpeg で沈黙区間と言い直しを一発削除<br/>word-boundary snap 92%精度 (v1.3.0)</div></div>
+        <div class="feature-tile"><div class="tile-num">01</div><div class="tile-title">無音カット</div><div class="tile-body">FFmpeg で沈黙区間と言い直しを一発削除<br/>word-boundary snap 92%精度</div></div>
         <div class="feature-tile"><div class="tile-num">02</div><div class="tile-title">文字起こし</div><div class="tile-body">Whisper large-v3 で word-level の精度</div></div>
-        <div class="feature-tile"><div class="tile-num">03</div><div class="tile-title">テロップ自動配置</div><div class="tile-body">8種のデザインから AI が自動判定</div></div>
+        <div class="feature-tile"><div class="tile-num">03</div><div class="tile-title">テロップ自動配置</div><div class="tile-body">8種のデザインから AI が自動判定<br/>句読点削除・半角｢｣・2行対応</div></div>
         <div class="feature-tile"><div class="tile-num">04</div><div class="tile-title">SE & BGM</div><div class="tile-body">発言内容に合わせてランダム配置・フェード付き</div></div>
         <div class="feature-tile"><div class="tile-num">05</div><div class="tile-title">レンダリング</div><div class="tile-body">Remotion で MP4 を自動書き出し</div></div>
-        <div class="feature-tile" style="border-color:rgba(236,72,153,0.4)"><div class="tile-num" style="background:var(--grad-warm);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent">06</div><div class="tile-title">ラウドネス正規化</div><div class="tile-body">YouTube/TikTok/X 共通基準<br/><span class="hl">-14 LUFS</span> に自動調整 (v1.3.0)</div></div>
+        <div class="feature-tile" style="border-color:rgba(236,72,153,0.4)"><div class="tile-num" style="background:var(--grad-warm);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent">06</div><div class="tile-title">ラウドネス正規化</div><div class="tile-body">YouTube/TikTok/X 共通基準<br/><span class="hl">-14 LUFS</span> に自動調整</div></div>
       </div>
     </div>
   </section>`;
@@ -49,15 +49,15 @@ function slide02Features() {
 // 03. 動画タイプ選択 + プロジェクト作成
 function slide03TypeProject() {
   return `<section class="slide" data-section="start"
-    data-notes="プロジェクト作成は新規作成.shスクリプト1コマンドで自動化されています。実行するとプロジェクト名と動画タイプを聞かれるので答えるだけ。フォルダ作成・npm installまで自動です。v1.3.0では新規作成前に本体の自動アップデートも走るようになりました。">
+    data-notes="プロジェクト作成は新規作成.shスクリプト1コマンドで自動化されています。実行するとプロジェクト名と動画タイプを聞かれるので答えるだけ。フォルダ作成・npm installまで自動です。v1.5.5以降はstep実行時に24時間毎に自動更新が走るので、新規作成前に特別な操作は不要になりました。">
     ${ph(3, 'Create project')}
     <div class="slide-content">
       <h2>動画タイプを選んで<span class="g-primary">プロジェクト作成</span></h2>
       <p class="lead mb-24">naoki-blueprint フォルダで 1コマンド実行:</p>
-      <div class="code">./新規作成.sh</div>
+      <div class="code">bash 新規作成.sh</div>
       <p class="mt-24">起動すると順番に2つ聞かれます:</p>
       <ol class="ordered" style="margin-top:12px;margin-bottom:24px">
-        <li><span class="bold text-white">プロジェクト名</span>（例: <code>2026-04-19</code> など日付でOK）</li>
+        <li><span class="bold text-white">プロジェクト名</span>（例: <code>2026-04-23</code> など日付でOK）</li>
         <li><span class="bold text-white">動画タイプ</span>（1 or 2 を入力）</li>
       </ol>
       <div class="grid-2">
@@ -70,7 +70,7 @@ function slide03TypeProject() {
           <div class="card-body">1080×1920<br/>14ステップ / テロップ8種に絞り情報密度を優先</div>
         </div>
       </div>
-      <p class="mt-32"><span class="pill pill--warm">v1.3.0</span>　<code>新規作成.sh</code> 実行時に本体も自動で最新版へ更新されるようになりました</p>
+      <p class="mt-32"><span class="pill pill--warm">v1.5.5〜</span>　本体の更新は <span class="hl">step実行時に24時間毎</span>に自動でチェック。<code>アップデート.sh</code>の手動実行は不要</p>
     </div>
   </section>`;
 }
@@ -227,7 +227,7 @@ function slide08Phase1() {
         </div>
         <div class="card card--accent">
           <div class="card-title">step05〜06　一括カット</div>
-          <div class="card-body">無音 + 言い直しを FFmpeg 一発エンコード。<span class="hl">word-boundary snap 92%精度</span>（v1.3.0）で発話末尾プツッを防止</div>
+          <div class="card-body">無音 + 言い直しを FFmpeg 一発エンコード。<span class="hl">word-boundary snap 92%精度</span>で発話末尾プツッを防止</div>
         </div>
       </div>
     </div>
@@ -262,7 +262,7 @@ function slideTip1CutReview() {
           </div>
         </div>
       </div>
-      <p class="lead mt-48"><span class="hl">word-boundary snap v1.3.0</span> で92%は自動snap。残り8%は人の耳が勝負。</p>
+      <p class="lead mt-48"><span class="hl">word-boundary snap</span> で92%は自動snap。残り8%は人の耳が勝負。</p>
     </div>
   </section>`;
 }
@@ -349,7 +349,7 @@ function slide12Phase3() {
         </div>
         <div class="card">
           <div class="card-title">step12　画像挿入（3フェーズ構造）</div>
-          <div class="card-body"><span class="text-cyan bold">インサート画像 / オーバーレイ画像 / 顔アイコン</span> を v1.3.0 で明確分離</div>
+          <div class="card-body"><span class="text-cyan bold">インサート画像 / オーバーレイ画像 / 顔アイコン</span> で明確分離</div>
         </div>
         <div class="card card--warm">
           <div class="card-title">横動画の追加</div>
@@ -415,7 +415,7 @@ function slide14Phase4() {
         </div>
       </div>
       <div class="card card--warm mt-32">
-        <div class="card-title">🔊 ラウドネス正規化 (v1.3.0)</div>
+        <div class="card-title">🔊 ラウドネス正規化</div>
         <div class="card-body"><span class="hl">-14 LUFS / -1 dBTP / LRA 11</span>　YouTube/TikTok/X 共通基準に自動で揃える。二段階loudnormで声・SE・BGMのバランスは崩さない</div>
       </div>
       <p class="lead mt-32">完成動画は <code>public/output/</code> に出力されます</p>
@@ -426,7 +426,7 @@ function slide14Phase4() {
 // 15. テロップ8種
 function slide15Telop() {
   return `<section class="slide" data-section="rules"
-    data-notes="テロップは全部で8種類。発言の内容や感情に応じて、AIが自動で判定してくれます。">
+    data-notes="テロップは全部で8種類。発言の内容や感情に応じて、AIが自動で判定してくれます。v1.4.0からは句読点の自動削除・半角｢｣引用符・emphasisWord 複数単語対応・ショート動画の2行対応が入りました。">
     ${ph(15, 'Telop / 8 styles')}
     <div class="slide-content">
       <h2>テロップ<span class="g-primary">8デザイン</span></h2>
@@ -440,9 +440,18 @@ function slide15Telop() {
           <tr><td class="bold text-white">section</td><td>セクション見出し</td><td>赤文字 + 白フチ（大サイズ）</td><td>se/強調</td></tr>
           <tr><td class="bold text-pink">negative</td><td>警告・失敗</td><td>白文字 + 黒グロー（明朝）</td><td>se/ネガティブ</td></tr>
           <tr><td class="bold text-pink">negative2</td><td>絶望・衝撃</td><td>白文字 + 黒縁 + グレースケール</td><td>se/ネガティブ</td></tr>
-          <tr><td class="bold text-white">third_party</td><td>他者の発言・視聴者の声</td><td>白文字 + グレーフチ + 「」</td><td>se/強調</td></tr>
+          <tr><td class="bold text-white">third_party</td><td>他者の発言・視聴者の声</td><td>白文字 + グレーフチ + <span class="hl">｢｣</span></td><td>se/強調</td></tr>
         </tbody>
       </table>
+      <div class="card card--warm mt-32">
+        <div class="card-title">📝 v1.4.0 テロップ運用ルール</div>
+        <div class="card-body">
+          <span class="text-cyan bold">・</span> <span class="bold text-white">句読点削除</span>: <code>、</code> <code>。</code> は自動削除（<code>?</code> <code>!</code> は残す）<br/>
+          <span class="text-cyan bold">・</span> <span class="bold text-white">引用符は半角</span> <code>｢｣</code>: 全角「」はセンタリングがズレるため統一<br/>
+          <span class="text-cyan bold">・</span> <span class="bold text-white">emphasisWord は配列可</span>: <code>['前衛','後衛']</code> のように対句・複数強調に対応<br/>
+          <span class="text-cyan bold">・</span> <span class="bold text-white">ショート動画は2行可</span>: <code>\\n</code> で改行。主語述語が散る時・対句が分断される時に使用
+        </div>
+      </div>
     </div>
   </section>`;
 }
@@ -474,7 +483,7 @@ function slide16SE() {
           <span class="text-cyan bold">・</span> startFrame をシードにした疑似乱数で選択（毎回同じ結果）<br/>
           <span class="text-cyan bold">・</span> 直近2回と同じSEは避ける<br/>
           <span class="text-cyan bold">・</span> 連続SE間隔は最低 <span class="hl">50フレーム（2秒）</span><br/>
-          <span class="text-cyan bold">・</span> <span class="hl">SE音量 0.06</span>（v1.3.0・BGM 0.03との自然バランス）
+          <span class="text-cyan bold">・</span> <span class="hl">SE音量 0.06</span>（BGM 0.03との自然バランス）
         </div>
       </div>
     </div>
@@ -484,7 +493,7 @@ function slide16SE() {
 // 17. 2本目以降
 function slide17SecondVideo() {
   return `<section class="slide" data-section="advanced"
-    data-notes="2本目以降はもっと簡単です。ライセンス認証はもう終わっているので、新規作成.shでプロジェクトを作って、そのフォルダに入ってClaude Codeを起動するだけ。v1.3.0からは新規作成.sh実行時に本体の最新版チェックも自動で走ります。">
+    data-notes="2本目以降はもっと簡単です。ライセンス認証はもう終わっているので、新規作成.shでプロジェクトを作って、そのフォルダに入ってClaude Codeを起動するだけ。v1.5.5以降は各step実行時に24時間に1回だけ本体の最新版チェックが裏で自動実行されるので、アップデート.shを手動で叩く必要もありません。">
     ${ph(17, 'For next videos')}
     <div class="slide-content">
       <h2>2本目以降は、<span class="g-primary">3コマンド。</span></h2>
@@ -494,13 +503,13 @@ function slide17SecondVideo() {
 bash 新規作成.sh
 
 <span class="cmt"># ② 作ったプロジェクトフォルダに移動</span>
-cd projects/<span class="hi">2026-04-22</span>
+cd projects/<span class="hi">2026-04-23</span>
 
 <span class="cmt"># ③ そこで Claude Code を起動 → /step01-context</span>
 claude --dangerously-skip-permissions</div>
       <div class="card card--accent mt-32">
-        <div class="card-title">v1.3.0 の自動アップデート</div>
-        <div class="card-body"><code>bash 新規作成.sh</code> 実行時に <code>git fetch + git reset --hard origin/main</code> が自動実行。<span class="hl">常に最新機能で作り始められる</span></div>
+        <div class="card-title">🔄 完全自動アップデート (v1.5.5〜)</div>
+        <div class="card-body">各 <code>/step</code> 実行時に <span class="hl">24時間に1回</span>だけ最新版チェックが裏で走る。差分があれば自動で <code>git reset --hard origin/main</code> → projects同期。<span class="bold text-white"><code>アップデート.sh</code> の手動実行は不要</span>（ネット不調やgit未初期化でも静かにスキップして作業継続）</div>
       </div>
     </div>
   </section>`;
@@ -524,7 +533,7 @@ function slideComparison() {
           <tr><td class="bold text-white">ハイライト自動生成</td><td>❌</td><td><span class="text-cyan bold">✅</span></td></tr>
           <tr><td class="bold text-white">ワイプ / グリーンバック</td><td>❌</td><td><span class="text-cyan bold">✅</span></td></tr>
           <tr><td class="bold text-white">ライセンス配布</td><td>OSSのみ</td><td><span class="text-cyan bold">✅ NK-ID 管理</span></td></tr>
-          <tr><td class="bold text-gold">Video Useから学んで取込</td><td>loudnorm / word padding</td><td><span class="hl">v1.3.0で取込済</span></td></tr>
+          <tr><td class="bold text-gold">Video Useから学んで取込</td><td>loudnorm / word padding</td><td><span class="hl">取込済（v1.3.0以降）</span></td></tr>
         </tbody>
       </table>
       <div class="card card--accent mt-32">
