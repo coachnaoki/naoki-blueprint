@@ -93,6 +93,15 @@ echo ""
 
 mkdir -p projects
 cp -r "$SRC" "projects/$PROJECT_NAME"
+
+# .license を親から自動コピー（認証済みなら毎回入力不要）
+if [ -f ".license" ]; then
+  cp ".license" "projects/$PROJECT_NAME/.license"
+  echo "✓ .license を projects/$PROJECT_NAME/ に自動コピーしました"
+else
+  echo "⚠ 親の .license が見つかりません。新プロジェクト側で認証が必要です。"
+fi
+
 cd "projects/$PROJECT_NAME"
 npm install
 

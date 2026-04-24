@@ -18,6 +18,31 @@ naoki-blueprint のバージョンアップ履歴です。バージョンは [Se
 
 ---
 
+## [v1.6.0] - 2026-04-24
+
+### ✨ 新機能: 新規プロジェクトへの .license 自動コピー
+
+受講生が新規プロジェクトを作るたびにライセンスID入力を求められる問題を解消。
+
+- **`新規作成.sh` が `.license` を自動コピー**: `projects/$NAME/` を作成した直後に、親の `naoki-blueprint/.license` をコピーする処理を追加。認証済みなら再入力不要。親に `.license` がない場合は警告表示のみで処理は続行。
+- **`find-license.mjs` を新規追加**（横・ショート両方の `scripts/`）: 万が一 `.license` がコピーされていない環境でも、`node scripts/find-license.mjs` を実行すれば親 naoki-blueprint または兄弟プロジェクトから自動探索してコピーする。fingerprint（hostname|user|platform|arch）一致時のみコピー、別PCのライセンスは拒否する。naoki-slides の同名スクリプトと同じ思想。
+- **`CLAUDE.md` のライセンス認証フロー刷新**（横・ショート両方）: 旧「毎回 validateLicense.mjs 実行」の4ステップから、新「_chk.mjs → find-license.mjs → validateLicense.mjs」の5ステップ順番試行フローに変更。naoki-slides と認証フローを統一。
+
+### 🎨 個人環境の改善（`~/.claude/commands/new-video.md`）
+
+Naoki本人の環境のみに適用される変更。
+
+- **`/new-video` を osascript + Terminal.app から `cursor` コマンドに切替**: プロジェクト作成後、別アプリ（Terminal.app）を立ち上げずに **Cursor の新ウィンドウ** を開くよう変更。素材ドラッグ&ドロップも同じアプリ内で完結。Mac/Windows/Linux 共通で動作。
+- **`.license` 自動コピーを `/new-video` にも組み込み**: `新規作成.sh` → `.license` コピー → `cursor` 起動 の順で実行し、新ウィンドウ側のセッションで即 `/step01-context` が叩ける状態に。
+
+### 📌 既存受講生への影響
+
+- 次回 `./アップデート.sh` または step 実行時の自動更新で、`projects/*/scripts/` に `find-license.mjs` が配布される
+- 既存プロジェクトは `.license` がそのまま残るので影響なし
+- 新規プロジェクト作成時（`bash 新規作成.sh`）から自動コピーが効くようになる
+
+---
+
 ## [v1.5.7] - 2026-04-23
 
 ### 🐛 緊急修正: step12 が動かなかった不具合を解消
