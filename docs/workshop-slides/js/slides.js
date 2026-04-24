@@ -30,7 +30,7 @@ function slide01Cover() {
 // 02. AI が自動でやってくれる機能一覧
 function slide02Features() {
   return `<section class="slide" data-section="intro"
-    data-notes="このテンプレートがやってくれることは6つ。無音カット、文字起こし、テロップ配置、BGMとSE、レンダリング、そしてラウドネス正規化。音量ベースの対称 padding で発話末尾の切れ防止、loudnormでYouTube標準音量に自動で揃えてくれます。">
+    data-notes="このテンプレートがやってくれることは6つ。無音カット、文字起こし、テロップ配置、BGMとSE、Step10以降の素材挿入、そしてレンダリング。レンダリング時にloudnormでYouTube標準音量に自動で揃えてくれます。">
     ${ph(2, 'What it does')}
     <div class="slide-content">
       <h2>AI がやってくれる<span class="g-primary">6つのこと</span></h2>
@@ -39,8 +39,8 @@ function slide02Features() {
         <div class="feature-tile"><div class="tile-num">02</div><div class="tile-title">文字起こし</div><div class="tile-body">Whisper large-v3 で word-level の精度</div></div>
         <div class="feature-tile"><div class="tile-num">03</div><div class="tile-title">テロップ自動配置</div><div class="tile-body">8種のデザインから AI が自動判定<br/>句読点削除・半角｢｣・2行対応</div></div>
         <div class="feature-tile"><div class="tile-num">04</div><div class="tile-title">SE & BGM</div><div class="tile-body">発言内容に合わせてランダム配置・フェード付き</div></div>
-        <div class="feature-tile"><div class="tile-num">05</div><div class="tile-title">レンダリング</div><div class="tile-body">Remotion で MP4 を自動書き出し</div></div>
-        <div class="feature-tile" style="border-color:rgba(236,72,153,0.4)"><div class="tile-num" style="background:var(--grad-warm);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent">06</div><div class="tile-title">ラウドネス正規化</div><div class="tile-body">YouTube/TikTok/X 共通基準<br/><span class="hl">-14 LUFS</span> に自動調整</div></div>
+        <div class="feature-tile"><div class="tile-num">05</div><div class="tile-title">Step10 以降の素材追加</div><div class="tile-body">グリーンバック・動画挿入・画像挿入・スライド・ワイプ等を任意で</div></div>
+        <div class="feature-tile" style="border-color:rgba(236,72,153,0.4)"><div class="tile-num" style="background:var(--grad-warm);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent">06</div><div class="tile-title">レンダリング</div><div class="tile-body">Remotion で MP4 書き出し<br/><span class="hl">-14 LUFS</span> に自動調整</div></div>
       </div>
     </div>
   </section>`;
@@ -240,7 +240,7 @@ function slideTip1CutReview() {
     ${ph(9, 'Edit tip / Remotion review')}
     <div class="slide-content">
       <div class="tag" style="color:#fbbf24">💡 編集のコツ ①</div>
-      <h2 class="mt-16">カット後は <span class="g-primary">Remotion Studio</span> でフレーム確認</h2>
+      <h2 class="mt-16"><span class="g-primary">Remotion Studio</span> でフレーム確認</h2>
       <div class="card card--warm mt-32">
         <div class="card-title">🚀 自動起動</div>
         <div class="card-body"><code>/step05</code> 完了時に Remotion Studio が <span class="hl">自動で起動</span>（<code>localhost:3000</code>）。フレーム単位で精密に確認できる</div>
@@ -299,46 +299,11 @@ function slide10Phase2() {
   </section>`;
 }
 
-// 11. 🆕 編集のコツ② テンプレ確認
-function slideTip2TemplateCheck() {
-  return `<section class="slide" data-section="workflow"
-    data-notes="step09でRemotion Studioが起動したら、localhost:3000をブラウザで開いてテロップ・スライド・ワイプを1枚ずつ確認してください。違和感があればtemplateConfig.tsを編集すれば即ブラウザに反映されます。目視で直すのが最速ルートです。">
-    ${ph(11, 'Edit tip / Template')}
-    <div class="slide-content">
-      <div class="tag" style="color:#fbbf24">💡 編集のコツ ②</div>
-      <h2 class="mt-16">Studio で<span class="g-primary">1枚ずつ目視調整</span></h2>
-      <div class="card card--accent mt-32">
-        <div class="card-title">Remotion Studio の使い方</div>
-        <div class="card-body">
-          <code>/step09</code> 実行で <code>localhost:3000</code> が起動<br/>
-          左サイドバーから <span class="bold text-white">テロップ・スライド・ワイプ</span> を個別プレビュー可能
-        </div>
-      </div>
-      <h3 class="mt-32" style="color:var(--white);font-size:28px">よくある修正ポイント</h3>
-      <div class="grid-3 mt-16">
-        <div class="card">
-          <div class="card-title">テロップ</div>
-          <div class="card-body">画面端で切れる / 改行位置が汚い → <code>templateConfig.ts</code> で max-width・余白を調整</div>
-        </div>
-        <div class="card">
-          <div class="card-title">ワイプ位置</div>
-          <div class="card-body">顔に被る / はみ出す → ピクセル座標で px 指定</div>
-        </div>
-        <div class="card">
-          <div class="card-title">スライド背景</div>
-          <div class="card-body">動画と色がぶつかる → 背景色・透明度を調整</div>
-        </div>
-      </div>
-      <p class="mt-32"><span class="pill pill--primary">ポイント</span>　ブラウザで見ながら直すのが<span class="hl">最速ルート</span></p>
-    </div>
-  </section>`;
-}
-
-// 12. Phase 3
+// 11. Phase 3
 function slide12Phase3() {
   return `<section class="slide" data-section="workflow"
     data-notes="フェーズ3は素材挿入。任意のステップが多いので、必要な演出だけ使ってください。step15の画像挿入は3フェーズ構造で、インサート画像・オーバーレイ画像・顔アイコンが明確に分離されています。">
-    ${ph(12, 'Phase 3')}
+    ${ph(11, 'Phase 3')}
     <div class="slide-content">
       <h2>Phase 3　<span class="g-primary">素材挿入</span>　任意</h2>
       <div class="grid-2">
@@ -367,7 +332,7 @@ function slide12Phase3() {
 function slideTip3ImagePolicy() {
   return `<section class="slide" data-section="workflow"
     data-notes="Geminiの画像生成にはGoogleのGenerative AI Prohibited Use Policyがあります。実在人物・児童・性的・暴力・なりすましは禁止。naoki-blueprintのstep15-imagesにはNG語リストと代替フレーズが搭載されているので、プロンプトを入れると自動で検出・言い換え提案されます。">
-    ${ph(13, 'Edit tip / Image policy')}
+    ${ph(12, 'Edit tip / Image policy')}
     <div class="slide-content">
       <div class="tag" style="color:#fbbf24">💡 編集のコツ ③</div>
       <h2 class="mt-16">AI画像は <span class="g-warm">Google規約</span> <span class="g-primary">遵守が必須</span></h2>
@@ -404,7 +369,7 @@ function slideTip3ImagePolicy() {
 function slide14Phase4() {
   return `<section class="slide" data-section="workflow"
     data-notes="最後のフェーズ。BGMを入れて、OP連結して、ハイライトを自動抽出、そしてラウドネス正規化でYouTube基準に揃えて完成です。">
-    ${ph(14, 'Phase 4')}
+    ${ph(13, 'Phase 4')}
     <div class="slide-content">
       <h2>Phase 4　<span class="g-primary">BGM・出力</span></h2>
       <div class="grid-2">
@@ -426,11 +391,11 @@ function slide14Phase4() {
   </section>`;
 }
 
-// 15. テロップ8種
+// 14. テロップ8種
 function slide15Telop() {
   return `<section class="slide" data-section="rules"
-    data-notes="テロップは全部で8種類。発言の内容や感情に応じて、AIが自動で判定してくれます。句読点の自動削除・半角｢｣引用符・emphasisWord 複数単語対応・ショート動画の2行対応が入っています。">
-    ${ph(15, 'Telop / 8 styles')}
+    data-notes="テロップは全部で8種類。発言の内容や感情に応じて、AIが自動で判定してくれます。">
+    ${ph(14, 'Telop / 8 styles')}
     <div class="slide-content">
       <h2>テロップ<span class="g-primary">8デザイン</span></h2>
       <table>
@@ -446,9 +411,19 @@ function slide15Telop() {
           <tr><td class="bold text-white">third_party</td><td>他者の発言・視聴者の声</td><td>白文字 + グレーフチ + <span class="hl">｢｣</span></td><td>se/強調</td></tr>
         </tbody>
       </table>
+    </div>
+  </section>`;
+}
+
+// 15. テロップ運用ルール
+function slide15bTelopRules() {
+  return `<section class="slide" data-section="rules"
+    data-notes="テロップを組む時のルールは4つ。句読点は自動で削除、引用符は半角｢｣、emphasisWord は配列で複数強調に対応、ショート動画は2行化可能です。">
+    ${ph(15, 'Telop rules')}
+    <div class="slide-content">
+      <h2><span class="g-primary">テロップ運用ルール</span></h2>
       <div class="card card--warm mt-32">
-        <div class="card-title">📝 テロップ運用ルール</div>
-        <div class="card-body">
+        <div class="card-body" style="font-size:20px;line-height:2.0">
           <span class="text-cyan bold">・</span> <span class="bold text-white">句読点削除</span>: <code>、</code> <code>。</code> は自動削除（<code>?</code> <code>!</code> は残す）<br/>
           <span class="text-cyan bold">・</span> <span class="bold text-white">引用符は半角</span> <code>｢｣</code>: 全角「」はセンタリングがズレるため統一<br/>
           <span class="text-cyan bold">・</span> <span class="bold text-white">emphasisWord は配列可</span>: <code>['前衛','後衛']</code> のように対句・複数強調に対応<br/>
@@ -520,7 +495,7 @@ claude --dangerously-skip-permissions</div>
 function slide19Post() {
   return `<section class="slide anim-fade-up" data-section="post"
     data-notes="感想や成果物はぜひXにシェアしてください。QRに投稿本文があらかじめセットされているので、スマホで読み取ればそのまま投稿できます。投稿いただいた内容はこちらで拡散させていただきます。">
-    ${ph(19, 'Share on X')}
+    ${ph(18, 'Share on X')}
     <div class="slide-content" style="align-items:center;text-align:center">
       <h2 style="font-size:96px;text-align:center;margin-bottom:24px">今日の成果を<span class="g-warm">投稿しましょう！</span></h2>
       <p class="lead" style="text-align:center;margin-bottom:56px">QRを読むだけで投稿画面が開きます。みんなで盛り上げよう。</p>
@@ -536,7 +511,7 @@ function slide19Post() {
 function slide20Support() {
   return `<section class="slide" data-section="closing"
     data-notes="このセミナーが終わったあとも、Chatworkのグループで1ヶ月間サポートします。1ヶ月経過後は個別でご案内します。">
-    ${ph(20, 'Support')}
+    ${ph(19, 'Support')}
     <div class="slide-content" style="align-items:center;text-align:center">
       <h2 style="text-align:center">サポート窓口</h2>
       <div class="pill pill--primary" style="margin-bottom:40px">Chatwork グループ</div>
@@ -580,11 +555,11 @@ window.slideFactories = [
   slide08Phase1,
   slideTip1CutReview,
   slide10Phase2,
-  slideTip2TemplateCheck,
   slide12Phase3,
   slideTip3ImagePolicy,
   slide14Phase4,
   slide15Telop,
+  slide15bTelopRules,
   slide16SE,
   slide17SecondVideo,
   slide19Post,
@@ -603,11 +578,11 @@ window.agendaItems = [
   { id: 'phase1', label: 'Phase 1 / 素材準備' },
   { id: 'tip-cut', label: '💡 編集のコツ① Remotion確認' },
   { id: 'phase2', label: 'Phase 2 / 動画構築' },
-  { id: 'tip-template', label: '💡 編集のコツ② テンプレ確認' },
   { id: 'phase3', label: 'Phase 3 / 素材挿入' },
   { id: 'tip-image', label: '💡 編集のコツ③ AI画像の規約' },
   { id: 'phase4', label: 'Phase 4 / BGM・出力' },
   { id: 'telop', label: 'テロップ 8種' },
+  { id: 'telop-rules', label: 'テロップ運用ルール' },
   { id: 'se', label: 'SE 配置ルール' },
   { id: 'second', label: '2本目以降' },
   { id: 'post', label: '🎯 X へ投稿' },
