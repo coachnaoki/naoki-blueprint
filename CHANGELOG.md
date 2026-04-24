@@ -18,6 +18,41 @@ naoki-blueprint のバージョンアップ履歴です。バージョンは [Se
 
 ---
 
+## [v1.8.0] - 2026-04-24
+
+### 🔥 emphasis / emphasis2 全面リニューアル（両テンプレ同時）
+
+**動画のHook部分に使う2つの強調テロップを、CSS 2層方式から SVG 多層+カスタムfilter方式に全面作り直し**。質感がPSD レイヤースタイル並みに底上げ。
+
+#### emphasis (5層SVG + カスタムfilter)
+旧: CSS 2層 赤グラデ文字 + 金縁 (`#990000→#FF2222` / `#FFFFCC→#FFD700`) の斜体
+新: **PSD `text-style.psd` 忠実再現**
+- 赤5段グラデ `#ff7a63 → #ff3b25 → #ea1208 → #c70000 → #8d0000`
+- クリーム縁 `#fff3bf` + 濃赤茶締め `#7f280e` + 上ハイライト
+- カスタムfilter: `feGaussianBlur + feColorMatrix` で金色グロー、`feDropShadow` で右下影
+- fontSize 122 維持, Shippori Mincho 800, 斜体廃止
+
+#### emphasis2 (10層SVG + カスタムfilter)
+旧: SVG 2層 金グラデ `#FFF438→#FFFFFF→#E99B00` + ダークゴールド縁の斜体
+新: **中心で割れる金属反射表現**
+- 11段グラデ (上端 `#d89f06` → 中心直上 `#ffffff` / 中心直下 `#8c5a00` → 下端 `#d89f06`)
+- 実体押し出し2段 (+6/+6 & +3/+3) + 濃茶外周 + 黄土内縁 + 黄白細エッジ
+- 中央暗部切替帯 + 下側再反射 + 金外光の独立レイヤー
+- fontSize 122 維持, Shippori Mincho 800, letterSpacing -0.03em, 斜体廃止
+
+#### 運用への影響
+
+- **書式は他テンプレと同じ** (`text` props のみ) — 生徒の学習コスト変化なし
+- テンプレ判断表 (step08-telop) の使い分けルールは完全維持、見た目だけ豪華に
+- **emphasis3 および python `generate-svg.py` 事前生成ワークフロー完全廃止** (emphasis2の新実装で包含)
+- 更新: 両テンプレ (`.template` / `.template-shorts`) の CLAUDE.md・step09-composition SKILL.md
+
+#### 文字数制限
+
+fontSize 122 維持のため文字数制限も不変。縦 8文字max / 横 14文字max。
+
+---
+
 ## [v1.7.0] - 2026-04-24
 
 ### 🔥 word-boundary snap の廃止（step05-cut）

@@ -263,8 +263,8 @@ const buildSEEntries = () => {
 |---|---|---|---|---|---|---|
 | **normal** | M PLUS Rounded 1c | 84 | 紺 `#10458B` | 白フチ SVG strokeWidth:32 | SVG 2層 | なし |
 | **normal_emphasis** | M PLUS Rounded 1c | 84 | 紺 `#10458B` + 赤 `#CC3300` | 白フチ SVG strokeWidth:20 | SVG 2層 | se/強調/ |
-| **emphasis** | Shippori Mincho | 122 | 赤グラデ `#990000→#FF2222` | 金 `#FFFFCC→#FFD700` + 金グロー | CSS 2層 斜体 | se/ポジティブ/ |
-| **emphasis2** | Shippori Mincho | 122 | 金グラデ `#FFF438→#FFFFFF→#E99B00` | ダークゴールド `#624936` 縁 + 白グロー + 暗影 | SVG 2層 斜体 | se/ポジティブ/ |
+| **emphasis** | Shippori Mincho | 122 | 赤5段グラデ `#ff7a63 → #ff3b25 → #ea1208 → #c70000 → #8d0000` | クリーム `#fff3bf` + 濃赤茶 `#7f280e` + 金グロー (feColorMatrix) | SVG 5層 + カスタムfilter | se/ポジティブ/ |
+| **emphasis2** | Shippori Mincho | 122 | 金11段グラデ (上端 `#d89f06` → 中心直上 `#ffffff` / 中心直下 `#8c5a00` → 下端 `#d89f06`) | 濃茶 `#5a3109` 外周 + 黄土 `#9c6900` + 黄白エッジ + 金外光 | SVG 10層 (実体押し出し2段+中央暗部+下側再反射) | se/ポジティブ/ |
 | **section** | M PLUS Rounded 1c | 122 | 赤 `#CC3300` | 白フチ SVG strokeWidth:20 | SVG 2層 | se/強調/ |
 | **negative** | Shippori Mincho | 96 | 白 | 黒グロー textShadow×3 | CSS 2層 斜体 | se/ネガティブ/ |
 | **negative2** | Shippori Mincho | 122 | 白 | 黒縁取り `18px #000` + grayscale | CSS 1層 斜体 | se/ネガティブ/ |
@@ -299,10 +299,10 @@ const buildSEEntries = () => {
 |------|--------|----------|
 | **通常文字** | 紺 `#10458B` | normal / normal_emphasis |
 | **強調ワード・section** | 赤 `#CC3300` | normal_emphasisの強調部分 / section |
-| **emphasis文字** | 赤グラデ `#990000→#FF2222` | emphasis |
-| **emphasis2文字** | 金グラデ `#FFF438→#FFFFFF→#E99B00` | emphasis2 |
-| **emphasis縁取り** | 金 `#FFFFCC→#FFD700` | emphasis背景層 |
-| **emphasis2縁取り** | ダークゴールド `#624936` stroke | emphasis2背景層 |
+| **emphasis文字** | 赤5段グラデ `#ff7a63 → #ff3b25 → #ea1208 → #c70000 → #8d0000` | emphasis 本文 |
+| **emphasis2文字** | 金11段グラデ (中心48%で `#ffffff` → `#8c5a00` に反転) | emphasis2 本文 |
+| **emphasis縁取り** | 金 `rgba(235,200,95,1)` + クリーム `#fff3bf` + 濃赤茶 `#7f280e` | emphasis 外縁 |
+| **emphasis2縁取り** | 濃茶 `#5a3109` + 黄土 `#9c6900` + 黄白エッジ `#fff1a6` | emphasis2 外縁 |
 | **SVG白フチ** | 白 `#FFFFFF` | normal / normal_emphasis / section |
 | **SVGグレーフチ** | グレー `#333333` | third_party |
 | **ネガティブ文字** | 白 | negative / negative2 |
@@ -367,44 +367,59 @@ const buildSEEntries = () => {
 // ★ドロップシャドウ: filter: "drop-shadow(0px 4px 4px rgba(0,0,0,0.15))"
 ```
 
-### CSS 2層構造テンプレートのスタイル
-```typescript
-// emphasis: 赤グラデ文字 + 金縁取り + 金グロー（2層構造・斜体）
-// 外側div: filter: "drop-shadow(0 0 1px rgba(255,215,0,0.8)) drop-shadow(0 0 2px rgba(255,215,0,0.6)) drop-shadow(0 0 3px rgba(255,215,0,0.4)) drop-shadow(0 0 4px rgba(255,215,0,0.3))"
-// layer1(背景): background: linear-gradient(to bottom, #FFFFCC, #FFD700)
-//   ★ドロップシャドウ: filter: "drop-shadow(0 0 8px rgba(255,255,255,0.7)) drop-shadow(0 0 20px rgba(0,0,0,0.2))"
-// layer2(前面): background: linear-gradient(to bottom, #990000 10%, #FF2222 90%)
-//   ★ドロップシャドウ: filter: "drop-shadow(0 -1px 1px rgba(255,255,255,0.5)) drop-shadow(1px 1px 2px rgba(0,0,0,0.3))"
+### SVG多層構造テンプレート (emphasis / emphasis2) の実装ガイド
 
-// emphasis2: SVG2層構造 + 白グロー + 暗影（斜体・立体感）
-// 外側div: filter: "drop-shadow(0 0 10px white) drop-shadow(0 0 20px white) drop-shadow(0 0 35px white) drop-shadow(0 0 50px rgba(255,255,255,0.8)) drop-shadow(0 3px 6px rgba(0,0,0,0.3)) drop-shadow(0 6px 12px rgba(0,0,0,0.15))"
-// 層1(背面): stroke="#624936" strokeWidth=6（ダークゴールド縁取り）+ SVGフィルターで下方向の暗影
-// 層2(前面): fill="url(#goldGrad)" stroke="#624936" strokeWidth=1（金→白→金グラデーション #FFF438→#FFFFFF→#E99B00）+ SVGフィルターで上方向の光沢
+emphasis / emphasis2 は **SVG の `<text>` を多層スタックする方式**で実装する。
+fontStyle は通常 (斜体なし)。Shippori Mincho fontWeight 800。
 
-// negative: 白文字 + 黒グロー（2層構造・斜体）
-// layer1(背景): color: white + textShadow 3重(15px,30px,45px)
-// layer2(前面): color: white
+```tsx
+// emphasis: 赤5段グラデ本文 + クリーム縁 + 濃赤茶締め + 金グロー (5層SVG + カスタムfilter)
+// fontSize 122, letterSpacing なし, fontWeight 800
+// width = charW(text) * 122 + 200, height = 244
+//
+// <defs>
+//   linearGradient#e_fillRed: 0%#ff7a63 → 20%#ff3b25 → 48%#ea1208 → 78%#c70000 → 100%#8d0000
+//   linearGradient#e_shine: 0%rgba(255,255,255,0.95) → 18%rgba(255,244,220,0.65) → 36% transparent
+//   filter#e_goldGlow: feGaussianBlur stdDev 6.5 + feColorMatrix (1 0 0 0 0.82 / 0 1 0 0 0.68 / 0 0 1 0 0.26 / 0 0 0 0.75 0) + feMerge 2重
+//   filter#e_softShadow: feDropShadow dx=2 dy=3 stdDev=1.2 floodColor rgba(40,0,0,0.35)
+// 層1 金グロー最外: stroke "rgba(235,200,95,1)" strokeWidth 22 + filter e_goldGlow opacity 0.95
+// 層2 濃赤茶締め縁: stroke "#7f280e" strokeWidth 13 + filter e_softShadow
+// 層3 クリーム外縁: stroke "#fff3bf" strokeWidth 9.5
+// 層4 本体 赤5段グラデ: fill url(#e_fillRed) + stroke "#b10000" strokeWidth 1
+// 層5 上ハイライト: y={cy-1} fill url(#e_shine) opacity 0.72
 
-// negative2: SVG3層構造 + grayscale（斜体）
-// 層1(最外周): stroke="#000000" strokeWidth=46 （黒縁取り）
-// 層2(中間): stroke="#FFFFFF" strokeWidth=20 fill="#FFFFFF"（白縁取り）
-// 層3(最前面): fill="#000000"（黒文字）
+// emphasis2: 金11段グラデ (二段反射) + 実体押し出し2段 + 10層SVG
+// fontSize 122, letterSpacing "-0.03em", fontWeight 800
+// width = charW(text) * 122 + 240, height = 244
+//
+// <defs>
+//   linearGradient#e2_goldFill: 0%#d89f06 → 10%#ffd900 → 22%#ffe94b → 34%#fff4a0 → 45%#ffffff (中心直上白) → 50%#fff4a0 → 55%#8c5a00 (中心直下黄土) → 66%#c98c00 → 78%#ffd11c → 90%#ffc500 → 100%#d89f06
+//   linearGradient#e2_topShine: 0%#ffffff op0.98 → 6%#fff9db op0.92 → 11%#fff6bf op0.56 → 16%#ffffff op0.14 → 22% transparent
+//   linearGradient#e2_centerCut: 0% transparent → 48% transparent → 53%#5a3a00 op0.18 → 56%#4b2700 op0.32 → 60%#6b3a00 op0.14 → 66% transparent
+//   linearGradient#e2_lowerBloom: 0% transparent → 52% transparent → 59%#ffe456 op0.18 → 66%#ffd61f op0.54 → 73%#ffdf49 op0.20 → 80% transparent
+//   filter#e2_softGoldGlow: feGaussianBlur stdDev 2.2 + feColorMatrix (1 0 0 0 0.84 / 0 1 0 0 0.67 / 0 0 1 0 0.05 / 0 0 0 0.22 0)
+// 層1 押し出し外 (x+6, y+6): fill/stroke "#5a3109" strokeWidth 20
+// 層2 押し出し中 (x+3, y+3): fill/stroke "#74400c" strokeWidth 20 opacity 0.92
+// 層3 最外周濃茶輪郭: stroke "#5a3109" strokeWidth 20
+// 層4 黄土色内縁: stroke "#9c6900" strokeWidth 12
+// 層5 黄白細エッジ: stroke "#fff1a6" strokeWidth 5.2
+// 層6 本体11段グラデ: fill url(#e2_goldFill) + stroke "#d29e00" strokeWidth 1.1
+// 層7 上端白反射 (y-2): fill url(#e2_topShine) opacity 0.95
+// 層8 中央暗部切替帯: fill url(#e2_centerCut) opacity 0.95
+// 層9 下側再反射: fill url(#e2_lowerBloom)
+// 層10 金外光: stroke "rgba(255,220,70,0.85)" strokeWidth 22 + filter e2_softGoldGlow opacity 0.4
 ```
 
-### テロップのドロップシャドウ（必須）
+### テロップのドロップシャドウ・発光エフェクト（必須）
 
 **すべてのテロップにドロップシャドウをつける。** 影がないと背景と文字が溶けて読みにくくなる。
 
-| テンプレート | ドロップシャドウ |
+| テンプレート | 影・発光の実装 |
 |---|---|
 | **normal** | `filter: "drop-shadow(0px 8px 6px rgba(0,0,0,0.2))"` |
 | **normal_emphasis / section / third_party** | `filter: "drop-shadow(0px 4px 4px rgba(0,0,0,0.15))"` |
-| **emphasis (外側)** | `filter: "drop-shadow(0 0 1px rgba(255,215,0,0.8)) drop-shadow(0 0 2px rgba(255,215,0,0.6)) drop-shadow(0 0 3px rgba(255,215,0,0.4)) drop-shadow(0 0 4px rgba(255,215,0,0.3))"` (金グロー) |
-| **emphasis (背景層)** | `filter: "drop-shadow(0 0 8px rgba(255,255,255,0.7)) drop-shadow(0 0 20px rgba(0,0,0,0.2))"` |
-| **emphasis (前面層)** | `filter: "drop-shadow(0 -1px 1px rgba(255,255,255,0.5)) drop-shadow(1px 1px 2px rgba(0,0,0,0.3))"` |
-| **emphasis2 (外側)** | `filter: "drop-shadow(0 0 10px white) drop-shadow(0 0 20px white) drop-shadow(0 0 35px white) drop-shadow(0 0 50px rgba(255,255,255,0.8)) drop-shadow(0 3px 6px rgba(0,0,0,0.3)) drop-shadow(0 6px 12px rgba(0,0,0,0.15))"` |
-| **emphasis2 (背景層)** | SVGフィルター: `feGaussianBlur stdDeviation=3` + `feOffset dy=3` + `floodColor rgba(0,0,0,0.25)`（下方向の暗影） |
-| **emphasis2 (前面層)** | SVGフィルター: `feGaussianBlur stdDeviation=1` + `feOffset dy=-1` + `floodColor rgba(255,255,255,0.5)`（上方向の光沢） |
+| **emphasis** | SVG内部で処理 (金グロー層は `e_goldGlow` filter で feColorMatrix 金色化 + feMerge 2重 / 濃赤茶層は `e_softShadow` filter で dy=3 右下影) |
+| **emphasis2** | SVG内部で処理 (実体押し出し2段 x+6/y+6 & x+3/y+3 / 金外光層は `e2_softGoldGlow` filter で feColorMatrix 金色化) |
 | **negative** | textShadow 3重で代替（既に黒グローがある） |
 | **negative2** | WebkitTextStroke で代替（既に黒縁取りがある） |
 
@@ -499,21 +514,17 @@ export interface TelopEntry {
 - `textAnchor="middle"` + `x={svgWidth/2}` で中央配置
 - **third_party**: 表示テキストは半角 `｢｣` 込みなので `calcTextWidth(\`｢\${text}｣\`, fontSize)` で計算する
 
-### CSS 強調テロップの見切れ防止（emphasis / emphasis2）
+### SVG多層 emphasis / emphasis2 の見切れ防止
 
-イタリック体は右端が斜めにはみ出すため、両レイヤーにパディングが必要：
-
-```typescript
-// layer1（背景・absolute）
-<div style={{ ...layer1, position: "absolute", top: 0, left: 0,
-  paddingLeft: fontSize * 0.4, paddingRight: fontSize * 0.4 }}>{text}</div>
-// layer2（前面）
-<div style={{ ...layer2,
-  paddingLeft: fontSize * 0.4, paddingRight: fontSize * 0.4 }}>{text}</div>
-```
-
-- パディング: fontSize × 0.4（イタリックのはみ出し分）
-- 両レイヤーに同じパディングを入れないと位置がズレる
+stroke + filter が SVG viewBox を超えて広がるため、以下を必須にする:
+- `svg style={{ overflow: "visible" }}`
+- `width = charW(text) * fontSize + padding` (fontSize 122)
+  - emphasis: padding 200
+  - emphasis2: padding 240 (実体押し出し +6 を含む分)
+- `height = fontSize * 2` (上下に stroke + glow の余裕)
+- 各 `<text>` は `textAnchor="middle"` + `dominantBaseline="central"` で中央配置
+- `x = width/2, y = height/2` (emphasis2 の押し出しは x+6/y+6 と x+3/y+3 で個別オフセット)
+- 斜体不要 (fontStyle指定なし、Shippori Mincho の明朝字形だけで重厚感出る)
 
 ---
 
