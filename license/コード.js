@@ -44,6 +44,9 @@ function doGet(e) {
     case "get":
       result = getLicenseByToken((e.parameter.t || e.parameter.token || "").trim());
       break;
+    case "check_update":
+      result = checkUpdateAllowed(id, fp);
+      break;
     default:
       result = { valid: false, error: "unknown action" };
   }
@@ -68,6 +71,13 @@ function doPost(e) {
         .setMimeType(ContentService.MimeType.JSON);
     }
 
+    if (action === "rp") {
+      const result = recordRuntimeState(data);
+      return ContentService
+        .createTextOutput(JSON.stringify(result))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+
     return ContentService
       .createTextOutput(JSON.stringify({ success: false, error: "unknown action" }))
       .setMimeType(ContentService.MimeType.JSON);
@@ -76,6 +86,77 @@ function doPost(e) {
       .createTextOutput(JSON.stringify({ success: false, error: err.message }))
       .setMimeType(ContentService.MimeType.JSON);
   }
+}
+
+// =====================================================
+// 稼働状態の記録（L, M列のみ upsert）
+// L:current_version / M:last_seen
+// N列 (update_expires) は手動管理のため触らない
+// =====================================================
+function recordRuntimeState(data) {
+  const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  const sheet = ss.getSheetByName(SHEET_NAME);
+  if (!sheet) return { ok: false, error: "シートが見つかりません" };
+
+  const licenseId = String(data.license_id || "").trim();
+  if (!licenseId) return { ok: false, error: "license_id が空です" };
+
+  const lastRow = sheet.getLastRow();
+  if (lastRow < 2) return { ok: false, error: "シートにデータがありません" };
+
+  const ids = sheet.getRange(2, 1, lastRow - 1, 1).getValues();
+  let rowIndex = -1;
+  for (let i = 0; i < ids.length; i++) {
+    if (String(ids[i][0]).trim() === licenseId) {
+      rowIndex = i + 2;
+      break;
+    }
+  }
+  if (rowIndex === -1) return { ok: false, error: "ライセンスが見つかりません" };
+
+  const nowIso = Utilities.formatDate(new Date(), "Asia/Tokyo", "yyyy-MM-dd'T'HH:mm:ssXXX");
+  sheet.getRange(rowIndex, 12, 1, 2).setValues([[
+    String(data.version || ""),
+    nowIso,
+  ]]);
+
+  return { ok: true };
+}
+
+// =====================================================
+// 列整理 + ヘッダー刷新（GASエディタで1回だけ手動実行）
+// - L(current_version), M(last_seen) は残す
+// - N列を update_expires に刷新（既存値はクリア）
+// - O〜Q列（旧 os/node_version/project_count）は列ごと削除
+// =====================================================
+function cleanupAndInitColumns() {
+  const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  const sheet = ss.getSheetByName(SHEET_NAME);
+  if (!sheet) throw new Error("シートが見つかりません");
+
+  const lastCol = sheet.getLastColumn();
+  if (lastCol > 14) {
+    // O列以降（15列目〜）を削除
+    sheet.deleteColumns(15, lastCol - 14);
+  }
+
+  // N列のデータをクリア（旧 last_step）してヘッダーを update_expires に
+  const lastRow = sheet.getLastRow();
+  if (lastRow >= 2) {
+    sheet.getRange(2, 14, lastRow - 1, 1).clearContent();
+  }
+  sheet.getRange(1, 14).setValue("update_expires").setFontWeight("bold");
+
+  // L, M のヘッダーも念のため明示
+  sheet.getRange(1, 12, 1, 2).setValues([["current_version", "last_seen"]]);
+  sheet.getRange(1, 12, 1, 2).setFontWeight("bold");
+
+  // N列を日付形式に設定
+  if (lastRow >= 2) {
+    sheet.getRange(2, 14, lastRow - 1, 1).setNumberFormat("yyyy-mm-dd");
+  }
+
+  Logger.log("列整理完了: L,M保持 / N=update_expires(日付) / O〜Q削除");
 }
 
 // =====================================================
@@ -170,7 +251,7 @@ function getLicenseByToken(token) {
 
 // =====================================================
 // 行データ取得ヘルパー
-// ヘッダー: A:license_id | B:name | C:email | D:signed_at | E:status | F:expires | G:activated_at | H:fingerprint | I:check | J:cracked
+// ヘッダー: A:license_id | B:name | C:account | D:signed_at | E:status | F:expires | G:activated_at | H:fingerprint | I:select | J:cracked | K:token | L:current_version | M:last_seen | N:update_expires
 // =====================================================
 function findLicenseRow(sheet, data, licenseId) {
   for (let i = 1; i < data.length; i++) {
@@ -184,7 +265,8 @@ function findLicenseRow(sheet, data, licenseId) {
         status: String(data[i][4]).trim().toLowerCase(),
         expires: data[i][5],
         activated_at: data[i][6],
-        fingerprint: String(data[i][7] || "").trim()
+        fingerprint: String(data[i][7] || "").trim(),
+        update_expires: data[i][13] || ""  // N列
       };
     }
   }
@@ -264,6 +346,46 @@ function verifyLicense(licenseId, fp) {
   }
 
   return { valid: true, name: row.name, license_id: licenseId };
+}
+
+// =====================================================
+// アップデート権限チェック
+// N列 update_expires を見て、今日がその日付以降なら update_allowed: false
+// 空欄 = 無期限にアップデート可
+// status/fingerprint は verify と同じチェック
+// =====================================================
+function checkUpdateAllowed(licenseId, fp) {
+  if (!licenseId) return { valid: false, update_allowed: false, error: "ライセンスIDが空です" };
+  if (!fp) return { valid: false, update_allowed: false, error: "マシン情報がありません" };
+
+  const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  const sheet = ss.getSheetByName(SHEET_NAME);
+  if (!sheet) return { valid: false, update_allowed: false, error: "シートが見つかりません" };
+
+  const data = sheet.getDataRange().getValues();
+  const row = findLicenseRow(sheet, data, licenseId);
+  if (!row) return { valid: false, update_allowed: false, error: "ライセンスIDが見つかりません" };
+
+  const statusErr = checkStatusAndExpiry(row);
+  if (statusErr) return Object.assign({ update_allowed: false }, statusErr);
+
+  if (row.fingerprint && row.fingerprint !== fp) {
+    return { valid: false, update_allowed: false, error: "このライセンスは別のPCに紐付けられています" };
+  }
+
+  // update_expires チェック（空欄なら無期限OK）
+  const exp = row.update_expires;
+  if (exp instanceof Date) {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const expDay = new Date(exp.getFullYear(), exp.getMonth(), exp.getDate());
+    if (today > expDay) {
+      return { valid: true, update_allowed: false, update_expires: exp.toISOString() };
+    }
+    return { valid: true, update_allowed: true, update_expires: exp.toISOString() };
+  }
+
+  return { valid: true, update_allowed: true, update_expires: null };
 }
 
 // =====================================================

@@ -35,18 +35,37 @@ echo "現在のバージョン: v$CURRENT_VERSION"
 echo "  ($CURRENT_COMMIT)"
 echo ""
 
-# --- ① 本体を最新版に同期 --------------------------------------------------
-echo "→ 最新版を取得中..."
-if ! git fetch origin 2>/dev/null; then
-  echo "⚠️  最新版の取得に失敗しました（ネットワークを確認してください）。"
-  echo "   現在のバージョンでプロジェクト同期のみ実行します。"
-  echo ""
+# --- ① アップデート権限チェック（サイレント） ------------------------------
+# .license から license_id + fingerprint を取り、check_update API を叩く。
+# update_allowed が false の場合は本体更新をスキップして「最新版です」と表示する。
+# API 失敗時（ネットワーク断等）は従来通り更新を進める（オフライン対応）。
+UPDATE_ALLOWED=1
+if [ -f ".license" ] && command -v python3 >/dev/null 2>&1; then
+  LICENSE_ID=$(python3 -c 'import json,sys;d=json.load(open(".license"));print(d.get("license_id",""))' 2>/dev/null)
+  LICENSE_FP=$(python3 -c 'import json,sys;d=json.load(open(".license"));print(d.get("fingerprint",""))' 2>/dev/null)
+  if [ -n "$LICENSE_ID" ] && [ -n "$LICENSE_FP" ]; then
+    API_URL="https://script.google.com/macros/s/AKfycbz50xJ-uVfTMgHI4e0FTFa7b21q3S4oMftfI2SidWJPSbC_bhKYkmqFOj_RG0FWYkQe/exec"
+    RESP=$(curl -sL --max-time 5 "$API_URL?action=check_update&id=$LICENSE_ID&fp=$LICENSE_FP" 2>/dev/null)
+    if [ -n "$RESP" ] && echo "$RESP" | grep -q '"update_allowed":false'; then
+      UPDATE_ALLOWED=0
+    fi
+  fi
+fi
+
+# --- ② 本体を最新版に同期 --------------------------------------------------
+if [ "$UPDATE_ALLOWED" = "1" ]; then
+  echo "→ 最新版を取得中..."
+  if ! git fetch origin 2>/dev/null; then
+    echo "⚠️  最新版の取得に失敗しました（ネットワークを確認してください）。"
+    echo "   現在のバージョンでプロジェクト同期のみ実行します。"
+    echo ""
+  fi
 fi
 
 LOCAL=$(git rev-parse HEAD)
 REMOTE=$(git rev-parse origin/main 2>/dev/null)
 
-if [ -n "$REMOTE" ] && [ "$LOCAL" != "$REMOTE" ]; then
+if [ "$UPDATE_ALLOWED" = "1" ] && [ -n "$REMOTE" ] && [ "$LOCAL" != "$REMOTE" ]; then
   REMOTE_VERSION=$(git show "origin/main:VERSION" 2>/dev/null | head -1 || echo "unknown")
   echo ""
   echo "📦 新しいバージョンが見つかりました: v$CURRENT_VERSION → v$REMOTE_VERSION"
@@ -75,7 +94,7 @@ else
 fi
 echo ""
 
-# --- ② projects/ 配下を最新テンプレに同期 ---------------------------------
+# --- ③ projects/ 配下を最新テンプレに同期 ---------------------------------
 # テンプレート自動判定（横動画 or ショート動画）
 detect_template() {
   local proj="$1"

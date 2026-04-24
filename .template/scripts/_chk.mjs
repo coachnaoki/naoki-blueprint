@@ -13,12 +13,12 @@ const _lf=_j(_p,".license");
 const _k=Buffer.from("aHR0cHM6Ly9zY3JpcHQuZ29vZ2xlLmNvbS9tYWNyb3Mvcy9BS2Z5Y2J6NTB4Si11VmZUTWdISTRlMEZURmE3YjIxcTNTNG9NZnRmSTJTaWRXSlBTYkNfYmhLWWttcUZPal9SRzBGV1lrUWUvZXhlYw==","base64").toString();
 const _g=()=>{const r=`${_hn()}|${_ui().username}|${_pf()}|${_ar()}`;return _h("sha256").update(r).digest("hex").slice(0,16)};
 
-const _rp=async(id,st)=>{try{const root=_rv(_p,"..","..");const c=_j(_p,".last-rp"),nw=Date.now();if(_e(c)){const l=parseInt(_r(c,"utf-8"),10);if(!isNaN(l)&&Math.abs(nw-l)<86400000)return;}try{_wf(c,String(nw));}catch{}let v="?";try{v=_r(_j(root,"VERSION"),"utf-8").trim();}catch{}let pc=0;try{const pd=_j(root,"projects");if(_e(pd))pc=_rd(pd).filter(n=>{try{return _st(_j(pd,n)).isDirectory();}catch{return false;}}).length;}catch{}await fetch(_k,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({action:"rp",license_id:id,version:v,last_step:st||"",os:`${_pf()}-${_ar()}`,node_version:process.version,project_count:pc}),signal:AbortSignal.timeout(3000)});}catch{}};
+const _rp=async(id)=>{try{const root=_rv(_p,"..","..");const c=_j(_p,".last-rp"),nw=Date.now();if(_e(c)){const l=parseInt(_r(c,"utf-8"),10);if(!isNaN(l)&&Math.abs(nw-l)<86400000)return;}try{_wf(c,String(nw));}catch{}let v="?";try{v=_r(_j(root,"VERSION"),"utf-8").trim();}catch{}await fetch(_k,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({action:"rp",license_id:id,version:v}),signal:AbortSignal.timeout(3000)});}catch{}};
 
 // === AUTO-UPDATE (naoki-blueprint v1.5.5+, hardened v1.5.6) ===
 // 各 step 実行前に呼ばれる。24h に1回だけ本体の最新版を取得して projects/XXX を同期する。
 // 失敗時は静かにスキップするが、致命的なエラーは簡易メッセージを出す。
-const _autoUpdate=()=>{
+const _autoUpdate=async()=>{
   try{
     const root=_rv(_p,"..","..");
     if(!_e(_j(root,".git")))return;
@@ -44,6 +44,9 @@ const _autoUpdate=()=>{
       remote=_ex("git rev-parse origin/main",{cwd:root}).toString().trim();
     }catch{return;}
     if(local===remote)return;
+
+    // 4.5) アップデート権限チェック（サイレント）
+    if(_e(_lf)){try{const d=JSON.parse(_r(_lf,"utf-8"));const fp=_g();const r=await fetch(`${_k}?action=check_update&id=${encodeURIComponent(d.license_id)}&fp=${fp}`,{signal:AbortSignal.timeout(5000)});const j=await r.json();if(j.update_allowed===false)return;}catch{}}
 
     // 5) バージョン取得
     let cv="?",nv="?";
@@ -76,7 +79,7 @@ const _autoUpdate=()=>{
 };
 
 (async()=>{
-  _autoUpdate();
+  await _autoUpdate();
   if(!_e(_lf)){
     process.stderr.write("\x1b[31m✗ ライセンス未認証。node scripts/validateLicense.mjs NK-XXXX-XXXX-XXXX を実行してください\x1b[0m\n");
     process.exit(1);
@@ -96,7 +99,7 @@ const _autoUpdate=()=>{
         process.exit(1);
       }
     }catch{}
-    await _rp(d.license_id,process.argv[2]);
+    await _rp(d.license_id);
     process.exit(0);
   }catch{
     process.stderr.write("\x1b[31m✗ .licenseファイルが破損しています\x1b[0m\n");
