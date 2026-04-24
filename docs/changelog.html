@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>更新履歴 | Naoki式 丸投げビジネス動画編集</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Helvetica Neue', 'Hiragino Kaku Gothic ProN', 'メイリオ', sans-serif;
+    background: #f5f5f5;
+    color: #333;
+    line-height: 1.8;
+  }
+  .container { max-width: 800px; margin: 0 auto; padding: 40px 20px; }
+  .header { text-align: center; margin-bottom: 40px; }
+  .header h1 { font-size: 28px; color: #121212; margin-bottom: 8px; }
+  .header p { font-size: 14px; color: #666; }
+  .back-link {
+    display: inline-block;
+    margin-bottom: 24px;
+    padding: 8px 16px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    color: #444;
+    text-decoration: none;
+    font-size: 14px;
+    transition: background 0.15s;
+  }
+  .back-link:hover { background: #f0f0f0; }
+  .card {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    padding: 32px 40px;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+  .card h2 {
+    font-size: 20px;
+    color: #121212;
+    margin-bottom: 16px;
+    padding-left: 12px;
+    border-left: 4px solid #CCFF00;
+  }
+  .card p { font-size: 14px; color: #444; margin-bottom: 10px; }
+  strong { color: #121212; }
+  code {
+    background: #f0f0f0;
+    color: #121212;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 13px;
+    font-family: 'SF Mono', 'Menlo', monospace;
+  }
+  .version-entry {
+    margin-bottom: 36px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid #eee;
+  }
+  .version-entry:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .version-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+  .version-badge {
+    background: #f0f0f0;
+    color: #444;
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 700;
+    font-family: 'SF Mono', 'Menlo', monospace;
+  }
+  .version-badge.latest {
+    background: #CCFF00;
+    color: #121212;
+  }
+  .version-date { font-size: 14px; color: #666; }
+  .version-title {
+    font-size: 17px;
+    color: #121212;
+    font-weight: 700;
+    margin: 12px 0 10px;
+  }
+  .version-desc {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 14px;
+    padding-left: 4px;
+    border-left: 3px solid #f0f0f0;
+    padding-left: 12px;
+  }
+  .version-entry ul {
+    margin: 10px 0 10px 20px;
+    color: #444;
+    font-size: 14px;
+    line-height: 1.85;
+  }
+  .version-entry ul li { margin-bottom: 8px; }
+  .version-entry ul ul {
+    margin-top: 6px;
+    margin-left: 20px;
+    font-size: 13px;
+    color: #555;
+  }
+  .section-label {
+    display: inline-block;
+    margin: 16px 0 8px;
+    padding: 3px 10px;
+    background: #f0f4ff;
+    color: #4B6AC6;
+    font-size: 13px;
+    font-weight: 700;
+    border-radius: 4px;
+  }
+  .footer {
+    text-align: center;
+    margin-top: 40px;
+    padding: 20px;
+    font-size: 12px;
+    color: #999;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<a href="./" class="back-link">← メインページに戻る</a>
+
+<div class="header">
+  <h1>更新履歴</h1>
+  <p>naoki-blueprint のバージョンアップ履歴（Semantic Versioning）</p>
+</div>
+
+<div class="card">
+  <p style="font-size: 13px; color: #666;">追加された機能・改善の一覧です。新しい動画を作るときは <code>bash 新規作成.sh</code> が自動で最新版を取得します。手動で更新したい場合は <code>bash アップデート.sh</code> を実行してください。</p>
+</div>
+
+<div class="card">
+
+<!-- v1.6.0 -->
+<div class="version-entry">
+  <div class="version-header">
+    <span class="version-badge latest">v1.6.0</span>
+    <span class="version-date">2026-04-24</span>
+  </div>
+
+  <div class="section-label">✨ 新機能: 新規プロジェクトへの .license 自動コピー</div>
+  <p class="version-desc">受講生が新規プロジェクトを作るたびにライセンスID入力を求められる問題を解消。</p>
+  <ul>
+    <li><strong><code>新規作成.sh</code> が <code>.license</code> を自動コピー</strong>: <code>projects/$NAME/</code> 作成直後に親の <code>naoki-blueprint/.license</code> をコピー。認証済みなら再入力不要。</li>
+    <li><strong><code>find-license.mjs</code> を新規追加</strong>（横・ショート両方の <code>scripts/</code>）: 万が一コピーされていない環境でも <code>node scripts/find-license.mjs</code> で親または兄弟プロジェクトから自動探索。fingerprint 一致時のみコピー。</li>
+    <li><strong><code>CLAUDE.md</code> のライセンス認証フロー刷新</strong>（横・ショート両方）: 「<code>_chk.mjs</code> → <code>find-license.mjs</code> → <code>validateLicense.mjs</code>」の5ステップ順番試行に変更。naoki-slides と認証フローを統一。</li>
+  </ul>
+
+  <div class="section-label">🎨 個人環境の改善</div>
+  <ul>
+    <li><strong><code>/new-video</code> を <code>osascript</code> + Terminal.app から <code>cursor</code> コマンドに切替</strong>: 別アプリを立ち上げず Cursor の新ウィンドウを開く。Mac/Windows/Linux 共通で動作。</li>
+    <li><strong><code>.license</code> 自動コピーを <code>/new-video</code> にも組み込み</strong>: 新ウィンドウ側で即 <code>/step01-context</code> が叩ける状態に。</li>
+  </ul>
+</div>
+
+<!-- v1.5.7 -->
+<div class="version-entry">
+  <div class="version-header">
+    <span class="version-badge">v1.5.7</span>
+    <span class="version-date">2026-04-23</span>
+  </div>
+
+  <div class="section-label">🐛 緊急修正: step12 が動かなかった不具合を解消</div>
+  <ul>
+    <li><strong><code>aislides/slides.html</code> を復元</strong>: v1.5.0 付近の整理時に誤って削除していたテンプレートエンジン本体（17種類のスライドレンダラー関数群、767行）を復元。受講生が step12 を起動すると「slides.html が存在しません」で止まる状態を解消。</li>
+    <li><code>SLIDE_SCRIPT</code> 部分は <code>title</code> 1枚の最小雛形に差し替え済み。step12〜step14 のワークフローが機能する状態に。</li>
+  </ul>
+</div>
+
+<!-- v1.5.6 -->
+<div class="version-entry">
+  <div class="version-header">
+    <span class="version-badge">v1.5.6</span>
+    <span class="version-date">2026-04-23</span>
+  </div>
+
+  <div class="section-label">🛡️ 信頼性・堅牢性の強化（v1.5.5 レビュー指摘反映）</div>
+  <ul>
+    <li><strong><code>_chk.mjs</code> 自動アップデートの自己書き換え回避</strong>: アップデート.sh を <code>/tmp/</code> にコピーしてから実行するよう変更。</li>
+    <li><strong><code>_chk.mjs</code> 失敗ループ防止</strong>: git fetch 失敗時にキャッシュを先に書くよう修正。</li>
+    <li><strong><code>_chk.mjs</code> 未来時刻対応</strong>: PC時計が狂っていても24h判定が効くよう <code>Math.abs()</code> で対応。</li>
+    <li><strong><code>/new-video</code> 複数環境対応</strong>: Windows Git Bash / Linux KDE / osascriptエスケープ / ROOT解決を git rev-parse 化。</li>
+    <li><strong><code>アップデート.sh</code> ローカル変更の自動退避</strong>: <code>git stash push</code> でデータロス防止。</li>
+  </ul>
+</div>
+
+<!-- v1.5.5 -->
+<div class="version-entry">
+  <div class="version-header">
+    <span class="version-badge">v1.5.5</span>
+    <span class="version-date">2026-04-23</span>
+  </div>
+
+  <div class="section-label">🎯 新機能: 完全自動アップデート</div>
+  <ul>
+    <li><strong><code>bash アップデート.sh</code> の手動実行が不要に</strong>: 各 step 実行時に呼ばれる <code>scripts/_chk.mjs</code> に自動アップデート機能を内蔵。24時間に1回だけ最新版チェック → 差分があれば自動同期。</li>
+    <li><strong><code>/new-video</code> スラッシュコマンド実装</strong>（Naoki個人環境）: Claude Code 内で <code>/new-video</code> と打つと別ターミナルで <code>bash 新規作成.sh</code> を自動起動し cwd 問題を回避。</li>
+    <li><strong>CLAUDE.md に新規作成コマンドの取り扱いルール追加</strong>: cwd 問題で配布テンプレ本体を書き換える事故を防ぐルールを明記。</li>
+  </ul>
+</div>
+
+<!-- v1.5.4 -->
+<div class="version-entry">
+  <div class="version-header">
+    <span class="version-badge">v1.5.4</span>
+    <span class="version-date">2026-04-23</span>
+  </div>
+
+  <div class="section-label">🔒 セキュリティ改善</div>
+  <ul>
+    <li><strong>Gemini APIキーの入力フロー変更</strong>: 「チャット貼付→自動 <code>.env</code>」から「空 <code>.env</code> 作成→ユーザーがプレビューで直接入力」に変更。キーが Claude Code のローカルトランスクリプトに残らない。</li>
+    <li>既存 <code>.env</code> があるプロジェクトは影響なし。新規のみ適用。</li>
+  </ul>
+</div>
+
+<!-- v1.5.3 -->
+<div class="version-entry">
+  <div class="version-header">
+    <span class="version-badge">v1.5.3</span>
+    <span class="version-date">2026-04-22</span>
+  </div>
+
+  <div class="section-label">🐛 バグ修正</div>
+  <ul>
+    <li><strong>横動画のテロップ文字数制限が守られない問題を修正</strong>: 句読点削除後の分割優先順位から古い表記が残っていたため、20字超の長文がそのまま出力される事故を解消。CLAUDE.md 「1行の文字数制限」を全テンプレート別の表に拡充（normal=20字 / third_party=18字 / negative=17字 / theme=16字 / 強調系=14字）。</li>
+    <li><strong>横動画は1行のみを明記</strong>: v1.4.0 の <code>\n</code> 2行化はショート動画のみ。混同防止。</li>
+  </ul>
+</div>
+
+<!-- v1.5.2 -->
+<div class="version-entry">
+  <div class="version-header">
+    <span class="version-badge">v1.5.2</span>
+    <span class="version-date">2026-04-22</span>
+  </div>
+
+  <div class="section-label">📚 ドキュメント</div>
+  <ul>
+    <li><strong>リポジトリ取得手順の <code>git clone</code> と <code>cd</code> を分離</strong>: Step 1 の「② リポジトリをダウンロード」「③ ダウンロードしたフォルダに入る」の2ブロックに分割。</li>
+  </ul>
+</div>
+
+<!-- v1.5.1 -->
+<div class="version-entry">
+  <div class="version-header">
+    <span class="version-badge">v1.5.1</span>
+    <span class="version-date">2026-04-22</span>
+  </div>
+
+  <div class="section-label">📚 ドキュメント</div>
+  <ul>
+    <li><strong>アップデート手順の <code>cd</code> と <code>bash</code> を分離</strong>: 「① naoki-blueprint ディレクトリに移動」「② アップデートスクリプトを実行」の2ブロックに分割。clone 先が <code>~/Desktop/Cursor</code> 以外のユーザーのエラーを解消。</li>
+  </ul>
+</div>
+
+<!-- v1.5.0 -->
+<div class="version-entry">
+  <div class="version-header">
+    <span class="version-badge">v1.5.0</span>
+    <span class="version-date">2026-04-21</span>
+  </div>
+
+  <div class="section-label">🎯 新機能</div>
+  <ul>
+    <li><strong>step05 で Remotion Studio を起動</strong>（横・ショート両方）: カット直後に最小版の <code>MainComposition.tsx</code> を生成し Studio をバックグラウンド起動。フレーム単位の精密確認が step05 時点でできるように。</li>
+    <li><strong>step09 を「新規生成」から「拡張」に変更</strong>: step05 で既に MainComposition が存在するため、step09 はテロップレンダラーと SE を既存ファイルに追加する形に。</li>
+  </ul>
+
+  <div class="section-label">🔧 改善</div>
+  <ul>
+    <li><strong>step05 の確認フローを Remotion Studio に一本化</strong>: QuickTime プレビューは削除。</li>
+  </ul>
+</div>
+
+<!-- v1.4.0 -->
+<div class="version-entry">
+  <div class="version-header">
+    <span class="version-badge">v1.4.0</span>
+    <span class="version-date">2026-04-21</span>
+  </div>
+
+  <div class="section-label">🎯 新機能</div>
+  <ul>
+    <li><strong>テロップ2行対応</strong>（ショート動画）: normal / normal_emphasis / section / third_party の4テンプレで <code>text</code> に <code>\n</code> を含めることで2行表示に対応。</li>
+    <li><strong>emphasisWord の複数単語対応</strong>（横・ショート両方）: <code>emphasisWord?: string | string[]</code> に拡張。対句や複数ワード強調に対応。</li>
+  </ul>
+
+  <div class="section-label">🔧 改善</div>
+  <ul>
+    <li><strong>テロップの句読点削除ルール</strong>: <code>、</code> <code>。</code> を削除、<code>?</code> <code>!</code> は残す。分割は助詞に一本化。</li>
+    <li><strong>引用符を半角 <code>｢｣</code> に変更</strong>: 全角「」のセンタリングズレを解消。</li>
+  </ul>
+</div>
+
+<!-- v1.3.0 -->
+<div class="version-entry">
+  <div class="version-header">
+    <span class="version-badge">v1.3.0</span>
+    <span class="version-date">2026-04-21</span>
+  </div>
+
+  <div class="section-label">🎯 新機能</div>
+  <ul>
+    <li><strong>ラウドネス正規化</strong>（<code>scripts/loudnorm.mjs</code>）: 最終MP4を YouTube/TikTok/X 共通基準 <strong>-14 LUFS / -1 dBTP / LRA 11</strong> に自動で揃える。step20（横）と step14（ショート）の最終段に組込済み。</li>
+    <li><strong>新規作成.sh の自動アップデート</strong>: 新規プロジェクト作成前に <code>git fetch + reset --hard origin/main</code> を自動実行。</li>
+    <li><strong>配布ページに更新履歴セクション追加</strong>: index.html と activate.html にスクロール可能な更新履歴パネルを追加。</li>
+  </ul>
+
+  <div class="section-label">🔧 改善</div>
+  <ul>
+    <li><strong>step05-cut に word-boundary snap 導入</strong>: カット境界を word 単位にスナップし「発話プツッと切れ」を防止。snap成功率92%。</li>
+    <li><strong>SE音量基準を 0.1 → 0.06 に変更</strong>（BGMは 0.03 維持）。</li>
+    <li><strong>step15-images / step12-images を3フェーズ構造に再編</strong>: インサート画像 / オーバーレイ / 顔アイコン で明確に分離。</li>
+    <li><strong>セットアップ手順の Claude Code 起動タイミングを修正</strong>: Step 05 で <code>cd projects/XXX</code> してから初めて起動する構成に。</li>
+  </ul>
+</div>
+
+<!-- v1.2.0 -->
+<div class="version-entry">
+  <div class="version-header">
+    <span class="version-badge">v1.2.0</span>
+    <span class="version-date">2026-04-20</span>
+  </div>
+
+  <div class="section-label">✨ 改善</div>
+  <ul>
+    <li><strong>FPS を動画から自動検出</strong>（step02）: 動画タイプ固定FPSを撤廃、本編動画から FFprobe で自動取得。</li>
+    <li><strong>尺の記載を削除</strong>: 動画タイプ選択から尺を外し、解像度のみでシンプル化。</li>
+    <li><strong>Claude Code 起動を前倒し</strong>: Mac/Windows 分岐を削減しドキュメント整理。</li>
+  </ul>
+</div>
+
+<!-- v1.1.0 -->
+<div class="version-entry">
+  <div class="version-header">
+    <span class="version-badge">v1.1.0</span>
+    <span class="version-date">2026-04-19</span>
+  </div>
+
+  <div class="section-label">🎯 新機能</div>
+  <ul>
+    <li><strong><code>アップデート.sh</code> 追加</strong>: 本体を最新版に同期するスクリプト。</li>
+    <li><strong>step10-greenback 素人対応パイプライン</strong>: 均一な緑は ffmpeg chromakey、色ムラ・照明ムラは rembg u2net AI + HSV despill + CoreML で処理。</li>
+    <li><strong>自動ライセンス発行フロー</strong>: 同意書→自動発行→ブラウザ表示 UX を activate.html に実装。</li>
+  </ul>
+
+  <div class="section-label">🔧 改善</div>
+  <ul>
+    <li><strong>public/ フォルダ構造を再編</strong>: <code>videos/</code> と <code>images/</code> の2階層に整理。main/inserts/overlays/opening/highlight の役割を明確化。</li>
+    <li><strong>新規作成.sh に動画タイプ選択</strong>: YouTube 横動画 / ショート動画 を選択可能に。</li>
+    <li><strong>画像生成ポリシー遵守ルール追加</strong>（step15-images）: Google Generative AI Prohibited Use Policy 対策。</li>
+  </ul>
+
+  <div class="section-label">📚 ドキュメント</div>
+  <ul>
+    <li><strong>activate.html 大幅改修</strong>: Mac/Windows 分岐・素材配置ツリー・サポート誘導の整理など初見ユーザーの詰まりポイント集中対応。</li>
+    <li><strong>workshop-slides 再編</strong> / <strong>index.html 全面更新</strong>。</li>
+  </ul>
+</div>
+
+<!-- v1.0.0 -->
+<div class="version-entry">
+  <div class="version-header">
+    <span class="version-badge">v1.0.0</span>
+    <span class="version-date">2026-04-18</span>
+  </div>
+
+  <div class="section-label">🎉 初回配布</div>
+  <ul>
+    <li><strong>Mac/Windows 両対応</strong>: <code>transcribe.mjs</code> が OS 自動判定し mlx-whisper / faster-whisper を使い分け。</li>
+    <li><strong>スキル構造リファクタ</strong>: 全ステップを <code>.claude/skills/</code> 配下に整理。横動画20ステップ・ショート動画14ステップの2テンプレ体制を確立。</li>
+    <li><strong>workshop-slides</strong>: 配布者向け作業会スライド26枚を追加。</li>
+    <li><strong>🎉 配布スタート</strong>: Chatwork 経由でライセンス配布開始。</li>
+  </ul>
+</div>
+
+</div>
+
+<a href="./" class="back-link">← メインページに戻る</a>
+
+<div class="footer">
+  &copy; Naoki Kobayashi — <a href="https://github.com/coachnaoki/naoki-blueprint/blob/main/CHANGELOG.md" style="color:#999;">GitHub で最新の CHANGELOG.md を見る</a>
+</div>
+
+</div>
+
+</body>
+</html>
