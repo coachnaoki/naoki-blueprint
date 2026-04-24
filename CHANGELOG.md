@@ -18,6 +18,62 @@ naoki-blueprint のバージョンアップ履歴です。バージョンは [Se
 
 ---
 
+## [v1.9.0] - 2026-04-25
+
+### ✨ my-workspace/ 新設（受講生専用ナレッジ領域）
+
+**全動画プロジェクトから横断参照される「受講生のナレッジ置き場」を追加**。
+動画を作るたびに話し方・NGワード・文体を入力し直す必要がなくなり、
+Claude Code が自動で個別最適化された台本・テロップを生成できるようになる。
+
+#### 追加ファイル
+
+```
+naoki-blueprint/
+└─ my-workspace/
+   ├─ README.md              ← 使い方ガイド
+   ├─ my-style.example.md    ← 話し方・NGワード・好み テンプレ（コピーして埋める）
+   ├─ past-scripts/          ← 過去台本アーカイブ（任意）
+   ├─ benchmark-videos/      ← お手本動画メモ（任意）
+   └─ .gitignore             ← 受講生の実データを追跡しない（自動アップデート耐性）
+```
+
+#### 参照ルール（両テンプレに追記）
+
+各 step の作業開始時に `../../my-workspace/my-style.md` の存在を確認。
+あれば読み込み、以下を反映：
+- 一人称・二人称・口癖・キラーフレーズ
+- NGワード・避けたい表現
+- テロップ量・絵文字ルール・強調の仕方
+- 好みのBGMトーン・演出
+
+#### 優先順位
+
+1. `my-style.md`（受講生個別ルール）
+2. CLAUDE.md（テロップデザイン固定値等）
+3. 汎用判断
+
+文体・構成は `my-style.md` 優先、テロップ色・フォント等の固定値は CLAUDE.md 優先。
+
+#### 自動アップデート耐性
+
+- `my-style.md` / `past-scripts/*` / `benchmark-videos/*` は `my-workspace/.gitignore` で除外
+- `git reset --hard origin/main` の自動アップデートで上書きされない
+- `.example.md` / `README.md` だけはテンプレ側で更新される
+
+#### 運用への影響
+
+- **既存プロジェクト互換性あり**: `my-workspace/` が存在しなくても従来通り動く
+- **受講生オンボーディング**: 初回 `cp my-style.example.md my-style.md` → 埋める、だけ
+- **Claude Code セッション開始時**: 各 step が自動で `my-style.md` を読み込む
+
+#### 更新ファイル
+
+- 新規: `my-workspace/` 配下一式
+- 更新: `.template/CLAUDE.md`、`.template-shorts/CLAUDE.md`（「受講生ナレッジの参照」セクション追加）
+
+---
+
 ## [v1.8.0] - 2026-04-24
 
 ### 🔥 emphasis / emphasis2 全面リニューアル（両テンプレ同時）
