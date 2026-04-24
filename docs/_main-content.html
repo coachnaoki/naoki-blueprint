@@ -66,14 +66,18 @@ cd ..</div>
 
 <section id="second-onwards" class="step-section" style="border-left:4px solid #f97316;background:#fff7ed">
   <h2><span class="num" style="background:#f97316">🔁</span>2本目以降の動画を作る方へ</h2>
-  <p><strong style="color:#121212">Step 01〜03 はスキップしてOK。</strong>下の Step 04「<code>bash 新規作成.sh</code>」から始めてください。</p>
-  <p style="margin-top:10px;font-size:14px">自動で引き継がれるもの:</p>
+  <p><strong style="color:#121212">Step 01〜03 はスキップしてOK。</strong>1本目のプロジェクト内で動いている Claude Code セッションで、以下のコマンドを打つだけで新しい動画が作れます:</p>
+  <div class="code">/new-video</div>
+  <p style="margin-top:10px;font-size:14px">自動で新しいターミナルが開き、プロジェクト名と動画タイプ（横 / ショート）を聞かれます。その後は下の Step 05 の流れで作業開始してください。</p>
+
+  <p style="margin-top:18px;font-size:14px">自動で引き継がれるもの:</p>
   <ul style="color:#444;font-size:14px;padding-left:24px;line-height:1.9">
     <li>✅ ツール類（node / python / ffmpeg / claude-code）— 再インストール不要</li>
     <li>✅ naoki-blueprint 本体 — 再ダウンロード不要</li>
     <li>✅ ライセンス（新規プロジェクトに自動コピー、再認証不要）</li>
   </ul>
-  <p style="margin-top:12px;font-size:14px"><strong style="color:#121212">つまり、下の Step 04 → Step 05 の2つを実行するだけで、新しい動画作りが始められます。</strong></p>
+
+  <p style="margin-top:16px;font-size:13px;color:#666"><strong style="color:#121212">※ Claude Code を閉じてしまった場合</strong>: 下の Step 04「<code>bash 新規作成.sh</code>」から始めてもOKです。</p>
 </section>
 
 <section class="step-section">
@@ -200,15 +204,5 @@ cd ..</div>
     <strong style="color:#121212">💡 便利コマンド</strong>:
     <code style="background:#f0f0f0;color:#121212;padding:2px 6px;border-radius:4px;font-size:13px">/catchup</code> で現在の進捗を確認できます。中断しても AI がどのステップから再開すべきか教えてくれるので、気軽に休憩OK。
   </div>
-</section>
-
-<!-- セミナースライド（配布） -->
-<section class="step-section" style="border-left:4px solid #ec4899">
-  <h2><span class="num" style="background:#ec4899">📽️</span>セミナースライド（作業会の復習用）</h2>
-  <p>作業会でお見せしたスライド全20枚を、いつでもブラウザで見返せます。<strong style="color:#121212">テロップ8種・SE配置ルール・編集のコツ3選</strong>など、作業中に迷った時のリファレンスにどうぞ。</p>
-  <div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:18px">
-    <a href="./workshop-slides/" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:10px;padding:14px 24px;background:#121212;color:#CCFF00;border-radius:10px;text-decoration:none;font-weight:700;font-size:15px">▶ スライドを開く（全20枚）</a>
-  </div>
-  <p style="margin-top:14px;font-size:13px;color:#666">← / → キーでページ送り。サイドバーからアジェンダにジャンプできます。</p>
 </section>
 
