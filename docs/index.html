@@ -1,558 +1,70 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Naoki式 丸投げビジネス動画編集テンプレート - ガイド</title>
-<style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    font-family: 'Helvetica Neue', 'Hiragino Kaku Gothic ProN', 'メイリオ', sans-serif;
-    background: #f5f5f5;
-    color: #333;
-    line-height: 1.8;
-  }
-  .container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 40px 20px;
-  }
-  .header {
-    text-align: center;
-    margin-bottom: 40px;
-  }
-  .header h1 {
-    font-size: 28px;
-    color: #121212;
-    margin-bottom: 8px;
-  }
-  .header p {
-    font-size: 14px;
-    color: #666;
-  }
-  .card {
-    background: #fff;
-    border: 1px solid #ddd;
-    border-radius: 12px;
-    padding: 32px 40px;
-    margin-bottom: 24px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-  }
-  .card h2 {
-    font-size: 20px;
-    color: #121212;
-    margin-bottom: 16px;
-    padding-left: 12px;
-    border-left: 4px solid #CCFF00;
-  }
-  .card h3 {
-    font-size: 16px;
-    color: #121212;
-    margin-top: 20px;
-    margin-bottom: 8px;
-  }
-  .card p {
-    font-size: 14px;
-    color: #444;
-    margin-bottom: 10px;
-  }
-  strong { color: #121212; }
-  code {
-    background: #f0f0f0;
-    color: #121212;
-    padding: 2px 6px;
-    border-radius: 4px;
-    font-size: 13px;
-    font-family: 'SF Mono', 'Menlo', monospace;
-  }
-  pre {
-    background: #1a1a2e;
-    border-radius: 8px;
-    padding: 16px 20px;
-    margin: 12px 0 16px;
-    overflow-x: auto;
-    font-size: 13px;
-    line-height: 1.7;
-  }
-  pre code {
-    background: none;
-    color: #e0e0e0;
-    padding: 0;
-  }
-  .comment { color: #666; }
-  .highlight { color: #CCFF00; }
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 12px 0 16px;
-    font-size: 13px;
-  }
-  th {
-    background: #f9f9f9;
-    color: #121212;
-    padding: 10px 12px;
-    text-align: left;
-    border: 1px solid #ddd;
-    font-weight: bold;
-  }
-  td {
-    padding: 10px 12px;
-    border: 1px solid #ddd;
-    color: #444;
-  }
-  .note {
-    background: #f9f9f9;
-    border-left: 4px solid #CCFF00;
-    padding: 12px 16px;
-    margin: 12px 0 16px;
-    font-size: 13px;
-    color: #444;
-    border-radius: 0 8px 8px 0;
-  }
-  .warning {
-    background: #fff5f5;
-    border-left: 4px solid #e53e3e;
-    padding: 12px 16px;
-    margin: 12px 0 16px;
-    font-size: 13px;
-    color: #444;
-    border-radius: 0 8px 8px 0;
-  }
-  .step-number {
-    display: inline-block;
-    background: #121212;
-    color: #CCFF00;
-    font-weight: 900;
-    width: 28px;
-    height: 28px;
-    line-height: 28px;
-    text-align: center;
-    border-radius: 50%;
-    margin-right: 8px;
-    font-size: 14px;
-  }
-  .workflow-card {
-    background: #fff;
-    border: 1px solid #ddd;
-    border-radius: 12px;
-    padding: 24px 32px;
-    margin-bottom: 24px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-  }
-  .workflow-card h2 {
-    font-size: 20px;
-    color: #121212;
-    margin-bottom: 20px;
-    padding-left: 12px;
-    border-left: 4px solid #CCFF00;
-  }
-  .phase {
-    font-size: 14px;
-    font-weight: 700;
-    color: #121212;
-    background: #f0f7e6;
-    padding: 6px 12px;
-    border-radius: 6px;
-    margin: 16px 0 8px;
-    border-left: 3px solid #CCFF00;
-  }
-  .phase:first-child { margin-top: 0; }
-  .step-row {
-    display: flex;
-    gap: 12px;
-    padding: 4px 0 4px 16px;
-    font-size: 13px;
-    line-height: 1.6;
-  }
-  .step-cmd {
-    font-family: 'SF Mono', 'Menlo', monospace;
-    color: #121212;
-    font-weight: 600;
-    white-space: nowrap;
-    min-width: 200px;
-  }
-  .step-desc { color: #666; }
-  .step-optional { color: #999; font-size: 12px; }
-  .arrow {
-    text-align: center;
-    color: #ccc;
-    font-size: 14px;
-    margin: 8px 0;
-  }
-  .faq-q {
-    font-size: 15px;
-    font-weight: 700;
-    color: #121212;
-    margin-top: 20px;
-    margin-bottom: 8px;
-  }
-  .faq-q:first-child { margin-top: 0; }
-  .folder-tree pre {
-    background: #f9f9f9;
-    border: 1px solid #ddd;
-    color: #333;
-  }
-  .folder-tree pre code { color: #333; }
-  .folder-tree .comment { color: #999; }
-  a { color: #2563EB; text-decoration: none; }
-  a:hover { text-decoration: underline; }
-  .code-wrap {
-    position: relative;
-  }
-  .copy-btn {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    background: rgba(255,255,255,0.15);
-    border: 1px solid rgba(255,255,255,0.25);
-    color: #ccc;
-    font-size: 12px;
-    padding: 4px 10px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-family: inherit;
-    transition: background 0.2s, color 0.2s;
-  }
-  .copy-btn:hover { background: rgba(255,255,255,0.25); color: #fff; }
-  .copy-btn.copied { background: #CCFF00; color: #121212; border-color: #CCFF00; }
-  ul { margin: 8px 0 12px 24px; color: #444; font-size: 14px; }
-  li { margin-bottom: 4px; }
-  hr {
-    border: none;
-    border-top: 1px solid #eee;
-    margin: 8px 0;
-  }
-  .footer {
-    text-align: center;
-    margin-top: 40px;
-    padding-top: 24px;
-    border-top: 1px solid #ddd;
-    font-size: 13px;
-    color: #999;
-  }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Naoki's Blueprint - 丸投げビジネス動画編集テンプレート</title>
+  <link rel="stylesheet" href="common.css">
 </head>
 <body>
-<div class="container">
 
-<div class="header">
-  <h1>Naoki式 丸投げビジネス動画編集テンプレート</h1>
-  <p>Claude Code を使って、撮影した動画から YouTube 横動画（全20ステップ）/ ショート動画（全14ステップ）を自動制作するツールキット</p>
+<div class="wrap">
+  <div class="brand-tag">Naoki's Blueprint</div>
+  <h1>丸投げビジネス動画編集テンプレート</h1>
+  <p class="lead">台本を読み込ませるだけで、テロップ・SE・BGM・スライド・ワイプ入りの動画が完成する仕組み</p>
+
+  <div id="main-content"></div>
 </div>
 
-<!-- Step 0 -->
-<div class="card">
-  <h2><span class="step-number">0</span> 環境セットアップ（初回のみ）</h2>
-  <p>動画制作に必要なツールをインストールします。<strong>既にインストール済みのものはスキップしてOK。</strong></p>
-  <p>確認コマンドを実行して、バージョン番号が表示されればインストール済みです。</p>
-
-  <table>
-    <tr><th>ツール</th><th>何に使う？</th><th>確認コマンド</th><th>インストール方法</th></tr>
-    <tr><td><strong>Node.js</strong> (v18+)</td><td>動画の組み立て</td><td><code>node -v</code></td><td><a href="https://nodejs.org/">nodejs.org</a></td></tr>
-    <tr><td><strong>FFmpeg</strong></td><td>動画のカット・結合</td><td><code>ffmpeg -version</code></td><td>下記参照</td></tr>
-    <tr><td><strong>Python 3.12</strong></td><td>文字起こし</td><td><code>python3.12 --version</code></td><td>下記参照</td></tr>
-    <tr><td><strong>Whisper</strong></td><td>AI音声→テキスト変換</td><td>下記参照</td><td>下記参照</td></tr>
-    <tr><td><strong>Claude Code</strong></td><td>AI動画制作の自動化</td><td><code>claude --version</code></td><td><a href="https://claude.ai/claude-code">claude.ai</a></td></tr>
-  </table>
-
-  <h3>Mac（Apple Silicon）の場合</h3>
-  <pre><code>brew install node python@3.12 ffmpeg
-pip3.12 install mlx-whisper opencv-python
-npm install -g @anthropic-ai/claude-code</code></pre>
-
-  <div class="warning"><strong>注意:</strong> mlx-whisper は Python 3.12 でのみ動作します（3.13以降では動きません）。</div>
-
-  <h3>Windows の場合</h3>
-  <p>まずブラウザから事前準備：</p>
-  <ul>
-    <li>Node.js: <a href="https://nodejs.org/">nodejs.org</a></li>
-    <li>Python 3.12: <a href="https://www.python.org/downloads/">python.org</a>（<strong>「Add Python to PATH」にチェック必須</strong>）</li>
-    <li>FFmpeg: <a href="https://www.gyan.dev/ffmpeg/builds/">gyan.dev/ffmpeg</a>（PATHに追加）</li>
-  </ul>
-  <p>その後 PowerShell で以下を実行：</p>
-  <pre><code>pip install faster-whisper opencv-python
-npm install -g @anthropic-ai/claude-code</code></pre>
-
-  <div class="note"><strong>Whisperモデルの自動切替:</strong> macOSは <code>mlx-whisper</code>（Apple Silicon最適化で高速）、Windowsは <code>faster-whisper</code> を使用。精度は同等（どちらもlarge-v3モデル）。<code>scripts/transcribe.mjs</code> が自動で切り替えます。</div>
-
-  <div class="note"><strong>OpenCV の用途:</strong> ワイプ（ピクチャーインピクチャー）の顔位置を自動検出するのに使います。</div>
-</div>
-
-<!-- Step 1 -->
-<div class="card">
-  <h2><span class="step-number">1</span> リポジトリをダウンロード</h2>
-
-  <div class="warning"><strong>⚠ 事前準備:</strong> すでに Claude Code を開いている方は、ターミナル上で <strong>Ctrl+C</strong>（Mac は <strong>Control+C</strong>）を <strong>2回押して</strong>終了してから進めてください。Step 5 まで Claude Code は起動しません。</div>
-
-  <p><strong>① <code>naoki-blueprint</code> を置きたいフォルダに移動</strong>（お好きな場所でOK。以下は例）:</p>
-
-  <pre><code>cd ~/Desktop/Cursor</code></pre>
-  <p style="font-size: 13px; color: #666; margin: 6px 0 0;">💡 <code>~/Desktop/Cursor</code> は例です。すでに別のフォルダで作業している方はそちらに <code>cd</code> してください。迷ったら <code>~/Desktop</code>（デスクトップ直下）でもOK。</p>
-
-  <p style="margin-top: 20px;"><strong>② リポジトリをダウンロード</strong>（Mac / Windows 共通）:</p>
-
-  <pre><code>git clone https://github.com/coachnaoki/naoki-blueprint.git</code></pre>
-
-  <p style="margin-top: 20px;"><strong>③ ダウンロードしたフォルダに入る</strong>:</p>
-
-  <pre><code>cd naoki-blueprint</code></pre>
-
-  <div class="note">Step 2 〜 4 も<strong>通常のターミナル</strong>のまま進めます。Claude Code は Step 5 でプロジェクトフォルダに入ってから起動します（起動タイミングを間違えると認証・カレントディレクトリがずれる原因になるため）。</div>
-</div>
-
-<!-- Step 2 -->
-<div class="card">
-  <h2><span class="step-number">2</span> ライセンス認証（初回のみ）</h2>
-  <p><strong>通常のターミナル</strong>のまま、権利者から発行されたライセンスIDを入力します。</p>
-  <pre><code>cd .template
-node scripts/validateLicense.mjs NK-XXXX-XXXX-XXXX
-cd ..</code></pre>
-  <p>認証成功すると <code>.license</code> ファイルが生成されます。2本目以降はこのステップは不要です（<code>bash 新規作成.sh</code> が <code>.license</code> も一緒にコピーします）。</p>
-  <div class="note">PCを変更する場合は <a href="https://www.chatwork.com/Coach_Naoki" target="_blank">Chatwork で Naoki に個別メッセージ</a>してください。</div>
-</div>
-
-<!-- Step 3 -->
-<div class="card">
-  <h2><span class="step-number">3</span> プロジェクトフォルダを作成</h2>
-  <p>動画1本ごとに専用のプロジェクトフォルダを作ります。<strong>作る動画の種類によってテンプレートが2つあります。</strong></p>
-
-  <table>
-    <tr><th>動画の種類</th><th>テンプレート</th><th>解像度</th><th>ステップ数</th></tr>
-    <tr><td>YouTube横動画</td><td><code>.template/</code></td><td>1920×1080</td><td>20ステップ</td></tr>
-    <tr><td>ショート動画</td><td><code>.template-shorts/</code></td><td>1080×1920</td><td>14ステップ</td></tr>
-  </table>
-
-  <p><strong>おすすめは自動スクリプト。</strong>プロジェクト名と動画タイプを選ぶだけでフォルダ作成と <code>npm install</code> まで自動で終わります。</p>
-
-  <pre><code>bash 新規作成.sh</code></pre>
-
-  <p>起動すると以下を順に聞かれます：</p>
-  <ol style="margin: 8px 0 12px 24px; color: #444; font-size: 14px;">
-    <li>プロジェクト名（日付でもOK。例: <code>2026-04-19</code>）</li>
-    <li>動画タイプ（1: YouTube横動画 / 2: ショート動画）</li>
-  </ol>
-
-  <div class="note"><strong>なぜ projects/ に作るの？</strong><br>テンプレートやツール類はリポジトリ直下に残るので、2本目・3本目を作るときも同じ手順でコピーするだけ。</div>
-</div>
-
-<!-- Step 4 -->
-<div class="card">
-  <h2><span class="step-number">4</span> 素材を配置</h2>
-  <p>プロジェクトフォルダの <code>public/</code> の中に、素材ごとの専用フォルダが用意されています。Finder（Mac）やエクスプローラー（Windows）で、各フォルダにファイルをドラッグ＆ドロップするだけでOKです。</p>
-
-  <div class="folder-tree">
-  <pre><code>public/
-├── videos/                <span class="comment">← 動画素材</span>
-│   ├── main/              <span class="comment">← 本編動画（MP4） ★必須</span>
-│   ├── inserts/           <span class="comment">← 物理挿入動画（ナレーションを止めて挟む・任意）</span>
-│   ├── overlays/          <span class="comment">← オーバーレイ動画（ナレーション中に上に被せる・任意）</span>
-│   ├── opening/           <span class="comment">← OP動画（冒頭連結・横動画のみ・任意）</span>
-│   └── highlight/         <span class="comment">← ハイライト動画（自動生成・横動画のみ）</span>
-├── images/                <span class="comment">← 画像素材</span>
-│   ├── inserts/           <span class="comment">← 横に表示する画像（720×405・固定位置・任意）</span>
-│   └── overlays/          <span class="comment">← 全画面表示画像（アニメーション付き・任意）</span>
-├── bgm/                   <span class="comment">← BGM（MP3） ★必須</span>
-├── se/                    <span class="comment">← SE（効果音） ★必須</span>
-│   ├── 強調/              <span class="comment">← 通常の強調・箇条書き・表など</span>
-│   ├── ポジティブ/         <span class="comment">← 前向き・成功・インパクト系</span>
-│   └── ネガティブ/         <span class="comment">← 警告・失敗・ツッコミ系</span>
-├── script/                <span class="comment">← ナレーション台本（テキスト）</span>
-├── slides/                <span class="comment">← （自動生成されるので触らなくてOK）</span>
-└── output/                <span class="comment">← （完成動画の出力先）</span></code></pre>
-  </div>
-
-  <table>
-    <tr><th>素材</th><th>必須？</th><th>説明</th></tr>
-    <tr><td>本編動画</td><td><strong>必須</strong></td><td>撮影したMP4ファイルを <code>videos/main/</code> に入れる</td></tr>
-    <tr><td>物理挿入動画</td><td>任意</td><td>ナレーションを止めて挟むクリップを <code>videos/inserts/</code> に入れる</td></tr>
-    <tr><td>オーバーレイ動画</td><td>任意</td><td>ナレーション中に上に被せる補足映像を <code>videos/overlays/</code> に入れる</td></tr>
-    <tr><td>OP動画</td><td>任意</td><td>冒頭のタイトル・ロゴ映像を <code>videos/opening/</code> に入れる（横動画のみ）</td></tr>
-    <tr><td>ハイライト動画</td><td>—</td><td>完成後に<strong>自動生成</strong>（横動画のみ）</td></tr>
-    <tr><td>横挿入画像</td><td>任意</td><td>720×405 の画像を <code>images/inserts/</code> に入れる</td></tr>
-    <tr><td>全画面画像</td><td>任意</td><td>全画面アニメーション表示用の画像を <code>images/overlays/</code> に入れる</td></tr>
-    <tr><td>BGM</td><td><strong>必須</strong></td><td>フリーBGMサイト等からダウンロードしたMP3を <code>bgm/</code> に入れる</td></tr>
-    <tr><td>SE（効果音）</td><td><strong>必須</strong></td><td>フリーSEサイト等からMP3をダウンロードして <code>se/</code> に入れる</td></tr>
-    <tr><td>ナレーション台本</td><td>推奨</td><td>話した内容のテキストを <code>script/</code> に入れる（文字起こしの精度UP）</td></tr>
-  </table>
-</div>
-
-<!-- Step 5 -->
-<div class="card" style="border-left: 4px solid #16a34a;">
-  <h2><span class="step-number" style="background: #16a34a;">5</span> プロジェクトに入って Claude Code 起動 → 動画制作スタート！</h2>
-
-  <div class="note" style="background: #f0fdf4; border-color: #86efac; color: #166534;">
-    ✅ <strong>ここで初めて Claude Code を起動します。</strong>プロジェクトフォルダに入ってから起動することで、<code>/step01-context</code> が即動きます。
-  </div>
-
-  <p style="margin-top: 16px;"><strong>① プロジェクトフォルダに移動</strong>（Step 3 で作ったプロジェクト名に置き換えてください）:</p>
-  <pre><code>cd projects/2026-04-19</code></pre>
-
-  <p style="margin-top: 16px;"><strong>② Claude Code を起動</strong>（Mac / Windows 共通）:</p>
-  <pre><code>claude --dangerously-skip-permissions</code></pre>
-
-  <p style="margin-top: 16px;"><strong>③ 最初のコマンドを実行</strong>:</p>
-  <pre><code>/step01-context</code></pre>
-
-  <p>あとはAIの指示に従って、<code>/step02-assets</code> → <code>/step03-transcript</code> → … と順番に進めるだけ！</p>
-</div>
-
-<!-- Update -->
-<div class="card" style="border-left: 4px solid #fbbf24;">
-  <h2>アップデート（バージョンアップ）</h2>
-  <p><strong>新しい動画を作るときは何もしなくてOK。</strong><br>
-  <code>bash 新規作成.sh</code> を実行すると、本体を自動で最新版に同期してからプロジェクトを作ります。</p>
-
-  <p style="margin-top: 16px;"><strong>進行中のプロジェクトに最新テンプレを適用したい場合のみ</strong>、以下を実行してください:</p>
-  <p style="font-size: 13px; color: #666; margin: 8px 0 4px;">① naoki-blueprint ディレクトリに移動（<code>~/Desktop/Cursor</code> は clone 先に合わせて読み替え）</p>
-  <pre><code>cd ~/Desktop/Cursor/naoki-blueprint</code></pre>
-  <p style="font-size: 13px; color: #666; margin: 12px 0 4px;">② アップデートスクリプトを実行</p>
-  <pre><code>bash アップデート.sh</code></pre>
-  <p style="font-size: 13px; color: #666; margin-top: 8px;">本体を最新版に更新しつつ、<code>projects/</code> 内の全プロジェクトを最新のスキル・スクリプトに同期します（素材・TSX・transcript は保護）。</p>
-
-  <div class="warning"><strong>⚠ 注意:</strong> 実行前に Claude Code を <strong>Ctrl+C を2回</strong>押して終了してください。</div>
-</div>
-
-<!-- Workflow -->
-<div class="workflow-card">
-  <h2>ワークフロー全体像 ― YouTube横動画（全20ステップ）</h2>
-
-  <div class="phase">フェーズ1: 素材準備</div>
-  <div class="step-row"><span class="step-cmd">/step01-context</span><span class="step-desc">動画の目的・ターゲットを整理</span></div>
-  <div class="step-row"><span class="step-cmd">/step02-assets</span><span class="step-desc">素材確認＆役割確定（本編/物理挿入/オーバーレイ/OP/ハイライト）</span></div>
-  <div class="step-row"><span class="step-cmd">/step03-transcript</span><span class="step-desc">本編をWhisperで文字起こし</span></div>
-  <div class="step-row"><span class="step-cmd">/step04-transcript-fix</span><span class="step-desc">台本と照合して誤変換を修正</span></div>
-  <div class="step-row"><span class="step-cmd">/step05-cut</span><span class="step-desc">無音＋言い直し一括カット（FFmpeg一発エンコード）</span></div>
-  <div class="step-row"><span class="step-cmd">/step06-transcript</span><span class="step-desc">カット後の再文字起こし＋修正再適用</span></div>
-
-  <div class="arrow">↓</div>
-
-  <div class="phase">フェーズ2: 動画構築</div>
-  <div class="step-row"><span class="step-cmd">/step07-template</span><span class="step-desc">テンプレート設定（フォント・サイズ・色・SE）</span></div>
-  <div class="step-row"><span class="step-cmd">/step08-telop</span><span class="step-desc">テロップデータ作成</span></div>
-  <div class="step-row"><span class="step-cmd">/step09-composition</span><span class="step-desc">コンポジション統合（動画の骨格が完成）</span></div>
-
-  <div class="arrow">↓</div>
-
-  <div class="phase">フェーズ3: 素材・演出挿入</div>
-  <div class="step-row"><span class="step-cmd">/step10-greenback</span><span class="step-desc">グリーンバック背景置換 <span class="step-optional">（任意）</span></span></div>
-  <div class="step-row"><span class="step-cmd">/step11-videos</span><span class="step-desc">デモ動画挿入（物理挿入=Series分割 / オーバーレイ=上に重ね） <span class="step-optional">（任意）</span></span></div>
-  <div class="step-row"><span class="step-cmd">/step12-slides-gen</span><span class="step-desc">台本からスライドHTML生成 <span class="step-optional">（任意）</span></span></div>
-  <div class="step-row"><span class="step-cmd">/step13-slides</span><span class="step-desc">スライドキャプチャ＋タイムライン <span class="step-optional">（任意）</span></span></div>
-  <div class="step-row"><span class="step-cmd">/step14-wipe</span><span class="step-desc">ワイプ位置調整 <span class="step-optional">（任意）</span></span></div>
-  <div class="step-row"><span class="step-cmd">/step15-images</span><span class="step-desc">画像挿入（感情ベース + AI画像生成） <span class="step-optional">（任意）</span></span></div>
-  <div class="step-row"><span class="step-cmd">/step16-special-components</span><span class="step-desc">箇条書き・見出し・CTA <span class="step-optional">（任意）</span></span></div>
-  <div class="step-row"><span class="step-cmd">/step17-endscreen</span><span class="step-desc">エンドスクリーン追加 <span class="step-optional">（任意）</span></span></div>
-
-  <div class="arrow">↓</div>
-
-  <div class="phase">フェーズ4: BGM・冒頭連結・出力</div>
-  <div class="step-row"><span class="step-cmd">/step18-bgm</span><span class="step-desc">BGM挿入</span></div>
-  <div class="step-row"><span class="step-cmd">/step19-opening</span><span class="step-desc">OP連結＋本編レンダリング（1回目・仮出し）</span></div>
-  <div class="step-row"><span class="step-cmd">/step20-highlight-final</span><span class="step-desc">本編MP4からハイライト自動抽出＋最終レンダリング → 完成！</span></div>
-</div>
-
-<!-- Workflow: ショート動画 -->
-<div class="workflow-card">
-  <h2>ワークフロー全体像 ― ショート動画（全14ステップ・縦1080×1920）</h2>
-
-  <div class="phase">フェーズ1: 素材準備</div>
-  <div class="step-row"><span class="step-cmd">/step01-context</span><span class="step-desc">動画コンテキスト整理（縦動画指定）</span></div>
-  <div class="step-row"><span class="step-cmd">/step02-assets</span><span class="step-desc">素材確認＆役割確定</span></div>
-  <div class="step-row"><span class="step-cmd">/step03-transcript</span><span class="step-desc">本編をWhisperで文字起こし（large-v3固定）</span></div>
-  <div class="step-row"><span class="step-cmd">/step04-transcript-fix</span><span class="step-desc">台本と照合して誤変換を修正</span></div>
-  <div class="step-row"><span class="step-cmd">/step05-cut</span><span class="step-desc">無音＋言い直し一括カット</span></div>
-  <div class="step-row"><span class="step-cmd">/step06-transcript</span><span class="step-desc">カット後の再文字起こし＋修正再適用</span></div>
-
-  <div class="arrow">↓</div>
-
-  <div class="phase">フェーズ2: 動画構築</div>
-  <div class="step-row"><span class="step-cmd">/step07-template</span><span class="step-desc">テンプレート設定（8種のテロップ）</span></div>
-  <div class="step-row"><span class="step-cmd">/step08-telop</span><span class="step-desc">テロップデータ作成（台本一字一句）</span></div>
-  <div class="step-row"><span class="step-cmd">/step09-composition</span><span class="step-desc">コンポジション構築（1080×1920）</span></div>
-
-  <div class="arrow">↓</div>
-
-  <div class="phase">フェーズ3: 素材挿入</div>
-  <div class="step-row"><span class="step-cmd">/step10-greenback</span><span class="step-desc">グリーンバック背景置換 <span class="step-optional">（任意）</span></span></div>
-  <div class="step-row"><span class="step-cmd">/step11-videos</span><span class="step-desc">デモ動画挿入 <span class="step-optional">（任意）</span></span></div>
-  <div class="step-row"><span class="step-cmd">/step12-images</span><span class="step-desc">画像挿入（AI生成・話者アイコン） <span class="step-optional">（任意）</span></span></div>
-
-  <div class="arrow">↓</div>
-
-  <div class="phase">フェーズ4: BGM・出力</div>
-  <div class="step-row"><span class="step-cmd">/step13-bgm</span><span class="step-desc">BGM挿入（音量0.03推奨）</span></div>
-  <div class="step-row"><span class="step-cmd">/step14-final</span><span class="step-desc">最終レンダリング（1080×1920 MP4）→ 完成！</span></div>
-</div>
-
-<!-- Folder structure -->
-<div class="card">
-  <h2>フォルダ構成</h2>
-  <div class="folder-tree">
-  <pre><code>naoki-blueprint/                 <span class="comment">← ダウンロードしたフォルダ</span>
-├── README.md                    <span class="comment">← ガイド</span>
-├── 新規作成.sh                   <span class="comment">← プロジェクト作成スクリプト</span>
-├── アップデート.sh               <span class="comment">← 最新版取得スクリプト</span>
-├── .template/           <span class="comment">← YouTube横動画テンプレート（編集しない）</span>
-│   ├── .claude/skills/          <span class="comment">← 20個のAIスキル + catchup + remotion-best-practices</span>
-│   ├── CLAUDE.md                <span class="comment">← AIの行動ルール</span>
-│   ├── scripts/validateLicense.mjs  <span class="comment">← ライセンス認証</span>
-│   ├── public/videos/main/      <span class="comment">← 本編動画</span>
-│   ├── public/videos/inserts/   <span class="comment">← 物理挿入動画（任意）</span>
-│   ├── public/videos/overlays/  <span class="comment">← オーバーレイ動画（任意）</span>
-│   ├── public/videos/opening/   <span class="comment">← OP動画（任意）</span>
-│   ├── public/videos/highlight/ <span class="comment">← ハイライト（自動生成）</span>
-│   ├── public/images/inserts/   <span class="comment">← 横挿入画像（任意）</span>
-│   ├── public/images/overlays/  <span class="comment">← 全画面画像（任意）</span>
-│   ├── public/bgm/              <span class="comment">← BGM</span>
-│   ├── public/se/               <span class="comment">← SE素材</span>
-│   ├── public/script/           <span class="comment">← ナレーション台本</span>
-│   └── ...
-├── .template-shorts/    <span class="comment">← ショート動画テンプレート（編集しない）</span>
-│   └── .claude/skills/          <span class="comment">← 14個のAIスキル</span>
-├── aislides/                    <span class="comment">← スライドテンプレートシステム（15種類）</span>
-│
-└── projects/                    <span class="comment">← あなたの動画プロジェクトはここ</span>
-    ├── tennis-serve-tips/       <span class="comment">← 例：1本目</span>
-    ├── cooking-pasta/           <span class="comment">← 例：2本目</span>
-    └── ...                      <span class="comment">← 何本でもOK</span></code></pre>
-  </div>
-</div>
-
-<!-- Support -->
-<div class="card" style="border-left: 4px solid #22d3ee;">
-  <h2>困ったとき / サポート</h2>
-  <p>ライセンスIDを忘れた、インストールで詰まった、動作がおかしい等、何かあれば <strong>Chatwork で Naoki に個別メッセージ</strong>してください。</p>
-  <p style="margin-top: 12px;">
-    <a href="https://www.chatwork.com/Coach_Naoki" target="_blank" style="display: inline-block; background: #22d3ee; color: #050506; padding: 10px 20px; border-radius: 6px; font-weight: 700; text-decoration: none;">Chatwork で Naoki に連絡 →</a>
-  </p>
-</div>
-
-<div class="footer">
-  &copy; Naoki Kobayashi
-</div>
-
-</div>
 <script>
-document.querySelectorAll('pre').forEach(pre => {
-  if (pre.closest('.folder-tree')) return;
-  const wrap = document.createElement('div');
-  wrap.className = 'code-wrap';
-  pre.parentNode.insertBefore(wrap, pre);
-  wrap.appendChild(pre);
-  const btn = document.createElement('button');
-  btn.className = 'copy-btn';
-  btn.textContent = 'Copy';
-  btn.addEventListener('click', () => {
-    const code = pre.querySelector('code');
-    const text = code ? code.innerText : pre.innerText;
-    navigator.clipboard.writeText(text).then(() => {
-      btn.textContent = 'Copied!';
-      btn.classList.add('copied');
-      setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1500);
-    });
+// メインコンテンツを読み込み
+fetch('./_main-content.html')
+  .then(r => r.text())
+  .then(html => {
+    document.getElementById('main-content').innerHTML = html;
+
+    // プレースホルダ用の初期値
+    const userName = document.getElementById('userName');
+    if (userName) userName.textContent = 'あなた';
+
+    // 今日の日付を .today-date に反映
+    const d = new Date();
+    const todayStr = d.getFullYear() + '-'
+                   + String(d.getMonth()+1).padStart(2,'0') + '-'
+                   + String(d.getDate()).padStart(2,'0');
+    document.querySelectorAll('.today-date').forEach(el => { el.textContent = todayStr; });
+
+    // コードブロックにコピーボタン自動付与
+    setupCodeCopyButtons();
+  })
+  .catch(e => {
+    document.getElementById('main-content').innerHTML =
+      '<p style="color:#666;text-align:center;padding:40px">コンテンツの読み込みに失敗しました。</p>';
+    console.error(e);
   });
-  wrap.appendChild(btn);
-});
+
+function setupCodeCopyButtons() {
+  document.querySelectorAll('.code').forEach(code => {
+    if (code.parentElement && code.parentElement.classList.contains('code-wrap')) return;
+    const wrap = document.createElement('div');
+    wrap.className = 'code-wrap';
+    code.parentNode.insertBefore(wrap, code);
+    wrap.appendChild(code);
+    const btn = document.createElement('button');
+    btn.className = 'code-copy';
+    btn.textContent = 'Copy';
+    btn.addEventListener('click', () => {
+      const text = code.innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        btn.textContent = '✓';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1500);
+      });
+    });
+    wrap.appendChild(btn);
+  });
+}
 </script>
+
 </body>
 </html>

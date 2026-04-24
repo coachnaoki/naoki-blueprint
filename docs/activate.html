@@ -4,276 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ライセンス発行 | Naoki's Blueprint</title>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: 'Helvetica Neue', 'Hiragino Kaku Gothic ProN', 'メイリオ', sans-serif;
-      background: #f5f5f5;
-      color: #333;
-      line-height: 1.8;
-      -webkit-font-smoothing: antialiased;
-      min-height: 100vh;
-      padding: 40px 20px;
-    }
-    .wrap {
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 0 20px;
-    }
-    .brand-tag {
-      font-size: 12px; letter-spacing: 0.32em;
-      color: #2563EB; text-transform: uppercase;
-      font-weight: 700;
-      margin-bottom: 10px;
-      text-align: center;
-    }
-    h1 {
-      font-size: 28px; font-weight: 800;
-      color: #121212; letter-spacing: -0.01em;
-      margin-bottom: 8px;
-      text-align: center;
-    }
-    .lead {
-      color: #666; font-size: 14px;
-      margin-bottom: 40px;
-      text-align: center;
-    }
-    .loading {
-      text-align: center; padding: 80px 20px;
-      color: #666; font-size: 14px;
-      background: #fff;
-      border: 1px solid #ddd;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-    }
-    .spinner {
-      display: inline-block;
-      width: 20px; height: 20px;
-      border: 2px solid #ddd;
-      border-top-color: #2563EB;
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-      vertical-align: middle;
-      margin-right: 10px;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    /* 成功パネル */
-    .license-panel {
-      background: #fff;
-      border: 1px solid #ddd;
-      border-radius: 12px;
-      padding: 32px 40px;
-      margin-bottom: 24px;
-      position: relative;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-      overflow: hidden;
-    }
-    .license-panel::before {
-      content: "";
-      position: absolute;
-      top: 0; left: 0; right: 0; height: 4px;
-      background: linear-gradient(90deg, #3b82f6, #8b5cf6, #ec4899);
-    }
-    .license-label {
-      font-size: 11px; letter-spacing: 0.28em;
-      color: #666; font-weight: 700;
-      text-transform: uppercase;
-      margin-bottom: 14px;
-    }
-    .license-id {
-      font-family: "SF Mono", Menlo, Consolas, monospace;
-      font-size: 32px; font-weight: 700;
-      color: #121212;
-      letter-spacing: 0.08em;
-      margin-bottom: 16px;
-      word-break: break-all;
-    }
-    .copy-btn {
-      display: inline-flex; align-items: center; gap: 8px;
-      background: #2563EB; color: #fff;
-      border: none; padding: 10px 20px;
-      border-radius: 6px;
-      font-size: 13px; font-weight: 700;
-      letter-spacing: 0.12em; cursor: pointer;
-      transition: background 0.15s;
-      font-family: inherit;
-    }
-    .copy-btn:hover { background: #1d4ed8; }
-    .copy-btn.copied { background: #16a34a; }
-
-    /* 手順セクション */
-    section.step-section {
-      background: #fff;
-      border: 1px solid #ddd;
-      border-radius: 12px;
-      padding: 32px 40px;
-      margin-bottom: 24px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-    }
-    section.step-section h2 {
-      font-size: 20px; font-weight: 700;
-      color: #121212;
-      margin-bottom: 16px;
-      display: flex; align-items: center; gap: 12px;
-      padding-left: 12px;
-      border-left: 4px solid #CCFF00;
-    }
-    section.step-section h2 .num {
-      font-family: "SF Mono", monospace;
-      font-size: 13px; font-weight: 700;
-      background: #2563EB; color: #fff;
-      padding: 3px 10px;
-      border-radius: 4px;
-      letter-spacing: 0.1em;
-    }
-    .code-wrap {
-      position: relative;
-      margin: 12px 0;
-    }
-    .code {
-      background: #1a1a2e;
-      border-radius: 8px;
-      color: #e0e0e0;
-      padding: 16px 56px 16px 20px;
-      font-family: "SF Mono", Menlo, Consolas, monospace;
-      font-size: 13px; line-height: 1.85;
-      overflow-x: auto;
-      white-space: pre;
-      margin: 0;
-    }
-    /* 更新履歴セクション内のインラインcode用 */
-    #changelog-box code {
-      background: #f0f0f0;
-      color: #121212;
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-family: "SF Mono", Menlo, Consolas, monospace;
-      font-size: 13px;
-    }
-    /* 本文中のインラインcode（ページ全体用） */
-    section p code,
-    section li code,
-    section h2 code {
-      background: #f0f0f0;
-      color: #121212;
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-family: "SF Mono", Menlo, Consolas, monospace;
-      font-size: 13px;
-    }
-    .code .cmt { color: #9ca3af; }
-    .code .hi { color: #fbbf24; font-weight: 700; }
-    .code .str { color: #86efac; }
-    .code-copy {
-      position: absolute;
-      top: 10px; right: 10px;
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.15);
-      color: #cbd5e1;
-      font-size: 11px; font-weight: 700;
-      letter-spacing: 0.14em;
-      padding: 5px 12px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-family: inherit;
-      transition: all 0.15s;
-    }
-    .code-copy:hover {
-      background: #2563EB;
-      color: #fff;
-      border-color: transparent;
-    }
-    .code-copy.copied {
-      background: #16a34a;
-      color: #fff;
-      border-color: transparent;
-    }
-    .choice-grid {
-      display: grid; grid-template-columns: 1fr 1fr;
-      gap: 12px; margin: 16px 0;
-    }
-    .choice-card {
-      background: #fafafa;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      padding: 20px 22px;
-    }
-    .choice-card .choice-num {
-      display: inline-block;
-      background: #2563EB; color: #fff;
-      font-family: "SF Mono", monospace;
-      font-size: 12px; font-weight: 700;
-      padding: 3px 8px;
-      border-radius: 4px;
-      letter-spacing: 0.1em;
-      margin-bottom: 10px;
-    }
-    .choice-card.short .choice-num { background: #ec4899; }
-    .choice-card h3 {
-      font-size: 15px; color: #121212;
-      margin-bottom: 6px; font-weight: 700;
-    }
-    .choice-card p {
-      font-size: 13px; color: #666;
-      margin: 0; line-height: 1.6;
-    }
-    .os-label {
-      display: inline-block;
-      font-size: 11px; font-weight: 700;
-      letter-spacing: 0.18em;
-      padding: 3px 10px;
-      border-radius: 4px;
-      text-transform: uppercase;
-      margin: 14px 0 6px;
-    }
-    .os-label.mac { background: #2563EB; color: #fff; }
-    .os-label.win { background: #8b5cf6; color: #fff; }
-    section p { color: #444; font-size: 14px; margin-bottom: 10px; }
-    section a { color: #2563EB; text-decoration: underline; }
-
-    /* エラー */
-    .error-panel {
-      background: #fef2f2;
-      border: 1px solid #fecaca;
-      border-radius: 12px;
-      padding: 32px 40px;
-      color: #991b1b;
-      text-align: center;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-    }
-    .error-panel h2 {
-      color: #dc2626; font-size: 20px;
-      margin-bottom: 10px;
-    }
-
-    /* CTA */
-    .cta {
-      display: flex; gap: 12px; margin-top: 20px;
-      flex-wrap: wrap;
-    }
-    .cta a {
-      background: #f0f0f0; color: #333;
-      padding: 10px 20px;
-      border-radius: 6px;
-      text-decoration: none;
-      font-size: 13px; font-weight: 700;
-      letter-spacing: 0.08em;
-      border: 1px solid #ddd;
-      transition: background 0.15s;
-    }
-    .cta a:hover { background: #e0e0e0; }
-    .cta a.primary { background: #2563EB; color: #fff; border-color: transparent; }
-    .cta a.primary:hover { background: #1d4ed8; }
-
-    .footer {
-      margin-top: 40px;
-      padding-top: 24px;
-      border-top: 1px solid #ddd;
-      color: #999; font-size: 12px; letter-spacing: 0.1em;
-      text-align: center;
-    }
-  </style>
+  <link rel="stylesheet" href="common.css">
 </head>
 <body>
 
@@ -287,244 +18,15 @@
   </div>
 
   <div id="result" style="display:none">
-    <!-- Support & Notes (top) -->
-    <section class="step-section" style="border-left:4px solid #22d3ee;background:#f0fdff">
-      <h2 style="margin-bottom:14px"><span class="num" style="background:#22d3ee;color:#050506">!</span>困ったとき / ブックマーク推奨</h2>
-      <p><strong style="color:#121212">このページのURLはブックマーク推奨。</strong>いつでもライセンスIDを再表示できます。</p>
-      <p style="margin-top:10px">ライセンスIDを忘れた時や今後サポートを受けたい場合は Chatwork で Naoki に個別メッセージしてください。</p>
-      <div class="cta">
-        <a href="https://www.chatwork.com/Coach_Naoki" target="_blank" class="primary">Chatwork で Naoki に連絡</a>
-      </div>
-    </section>
+    <!-- 共通コンテンツ（_main-content.html から読み込み） -->
+    <div id="main-content"></div>
 
-    <!-- Step 01: 環境セットアップ -->
-    <section class="step-section">
-      <h2><span class="num">01</span>環境セットアップ（初回のみ）</h2>
-      <p>動画制作に必要な4ツールをインストールします。<strong style="color:#121212">すでに入っている方はスキップ</strong>してOK。</p>
-
-      <div class="os-label mac">macOS (Apple Silicon)</div>
-      <div class="code">brew install node python@3.12 ffmpeg
-pip3.12 install mlx-whisper opencv-python
-npm install -g @anthropic-ai/claude-code</div>
-
-      <div class="os-label win">Windows</div>
-      <p style="font-size:14px;color:#444;margin:6px 0 4px">まずブラウザから事前準備:</p>
-      <ul style="color:#444;font-size:14px;padding-left:24px;line-height:1.9;margin-bottom:12px">
-        <li>Node.js: <a href="https://nodejs.org/" target="_blank">nodejs.org</a></li>
-        <li>Python 3.12: <a href="https://www.python.org/downloads/" target="_blank">python.org</a>（<strong style="color:#fde68a">「Add Python to PATH」必須</strong>）</li>
-        <li>FFmpeg: <a href="https://www.gyan.dev/ffmpeg/builds/" target="_blank">gyan.dev/ffmpeg</a>（PATHに追加）</li>
-      </ul>
-      <p style="font-size:14px;color:#444;margin:6px 0 4px">その後 PowerShell で:</p>
-      <div class="code">pip install faster-whisper opencv-python
-npm install -g @anthropic-ai/claude-code</div>
-
-      <div style="background:#fffbeb;border:1px solid #fcd34d;border-left:4px solid #f59e0b;border-radius:6px;padding:14px 18px;margin:14px 0 0;font-size:14px;color:#92400e;">
-        ⚠ Python は <strong>3.12 限定</strong>。3.14 では mlx-whisper が動きません。
-      </div>
-    </section>
-
-    <!-- Step 02: リポジトリ取得 -->
-    <section class="step-section">
-      <h2><span class="num">02</span>リポジトリ取得</h2>
-      <p><strong id="userName" style="color:#121212"></strong> さん、準備を始めましょう。</p>
-      <div style="background:#fffbeb;border:1px solid #fcd34d;border-left:4px solid #f59e0b;border-radius:6px;padding:14px 18px;margin:14px 0;font-size:14px;color:#92400e;">
-        ⚠ 既に Claude Code を開いている方は、ターミナル上で <strong>Ctrl+C</strong>（Mac は <strong>Control+C</strong>）を <strong>2回押して</strong>終了してから進めてください。Step 05 まで Claude Code は起動しません。
-      </div>
-
-      <p><strong style="color:#121212">① naoki-blueprint を置きたいフォルダに移動</strong>（お好きな場所でOK。以下は例）:</p>
-      <div class="code">cd ~/Desktop/Cursor</div>
-      <p style="font-size:13px;color:#666;margin-top:8px">💡 <code>~/Desktop/Cursor</code> は例です。<strong style="color:#121212">すでに別のフォルダで作業している方はそちらに cd</strong>してください。迷ったら <code>~/Desktop</code>（デスクトップ直下）でも大丈夫。Finder で作成済みのフォルダなら何でもOK。</p>
-
-      <p style="margin-top:20px"><strong style="color:#121212">② リポジトリをダウンロード</strong>（Mac / Windows 共通）:</p>
-      <div class="code">git clone https://github.com/coachnaoki/naoki-blueprint.git</div>
-
-      <p style="margin-top:20px"><strong style="color:#121212">③ ダウンロードしたフォルダに入る</strong>:</p>
-      <div class="code">cd naoki-blueprint</div>
-      <p style="font-size:13px;color:#666;margin-top:8px">📌 Step 03・04 も<strong style="color:#121212">通常のターミナル</strong>のまま進めます。Claude Code は Step 05 でプロジェクトフォルダに入ってから起動します（起動タイミングを間違えると認証・カレントディレクトリがずれる原因になるため）。</p>
-    </section>
-
-    <section class="step-section">
-      <h2><span class="num">03</span>ライセンス認証</h2>
-      <p><strong style="color:#121212">通常のターミナル</strong>でテンプレートフォルダに入り、あなたのライセンスIDを貼り付けて認証します:</p>
-      <div class="code">cd .template
-node scripts/validateLicense.mjs <span class="hi" id="licenseIdInCode">NK-XXXX-XXXX-XXXX</span>
-cd ..</div>
-      <p style="font-size:13px;color:#666">✅ 認証成功で <code>.license</code> ファイルが生成され、以降は自動認証されます。PCは1台に紐付きます。</p>
-    </section>
-
-    <section class="step-section">
-      <h2><span class="num">04</span>動画タイプを選んでプロジェクト作成</h2>
-      <p><strong style="color:#121212">通常のターミナル</strong>で <code>bash 新規作成.sh</code> を実行します:</p>
-      <div class="code">bash 新規作成.sh</div>
-      <p>起動すると、以下を順に聞かれます:</p>
-      <ol style="color:#444;font-size:15px;padding-left:24px;margin:12px 0 16px">
-        <li style="margin-bottom:6px">プロジェクト名（日付でOK。例: <code class="today-date">2026-04-19</code>）</li>
-        <li>動画タイプ</li>
-      </ol>
-      <div class="choice-grid">
-        <div class="choice-card">
-          <span class="choice-num">1</span>
-          <h3>YouTube 横動画</h3>
-          <p>1920×1080<br>20ステップ / スライド・ワイプ・OP・ハイライト対応</p>
-        </div>
-        <div class="choice-card short">
-          <span class="choice-num">2</span>
-          <h3>ショート動画</h3>
-          <p>1080×1920<br>14ステップ / テロップ8種に絞り情報密度を優先</p>
-        </div>
-      </div>
-      <p style="font-size:13px;color:#666">本体の自動アップデート → フォルダ作成 → <code>npm install</code> まで自動。認証済みの <code>.license</code> も新プロジェクトにコピーされます。</p>
-    </section>
-
-    <section class="step-section" style="border-left:4px solid #16a34a">
-      <h2><span class="num" style="background:#16a34a">05</span>プロジェクトに入って Claude Code 起動 → 素材配置 → 作業開始</h2>
-      <div style="background:#f0fdf4;border:1px solid #86efac;border-left:4px solid #16a34a;border-radius:6px;padding:14px 18px;margin:14px 0;font-size:14px;color:#166534;">
-        ✅ <strong style="color:#121212">ここで初めて Claude Code を起動します。</strong>プロジェクトフォルダに入ってから起動することで、<code style="background:#f0f0f0;color:#121212;padding:2px 6px;border-radius:4px;font-size:13px">/step01-context</code> が即動きます。
-      </div>
-
-      <p><strong style="color:#121212">① プロジェクトフォルダに移動</strong>（先ほどの新規作成.sh で指定したプロジェクト名を使う）:</p>
-      <div class="code">cd projects/<span class="hi today-date">2026-04-19</span></div>
-
-      <p style="margin-top:20px"><strong style="color:#121212">② Claude Code を起動</strong>（Mac / Windows 共通）:</p>
-      <div class="code">claude --dangerously-skip-permissions</div>
-
-      <p style="margin-top:20px"><strong style="color:#121212">③ 素材を <code>public/</code> に配置</strong>（Finder / エクスプローラーからドラッグ＆ドロップでOK）:</p>
-      <div class="code">public/
-├── videos/             <span class="cmt">動画素材</span>
-│   ├── main/           <span class="cmt">本編動画 </span><span class="str">★必須</span>
-│   ├── inserts/        <span class="cmt">物理挿入動画（任意）</span>
-│   ├── overlays/       <span class="cmt">オーバーレイ動画（任意）</span>
-│   ├── opening/        <span class="cmt">OP動画（横動画のみ・任意）</span>
-│   └── highlight/      <span class="cmt">ハイライト動画（自動生成・横動画のみ）</span>
-├── images/             <span class="cmt">画像素材</span>
-│   ├── inserts/        <span class="cmt">横に表示する画像（任意）</span>
-│   └── overlays/       <span class="cmt">全画面表示画像・アニメーション付（任意）</span>
-├── bgm/                <span class="cmt">BGM（MP3）</span> <span class="str">★必須</span>
-├── se/                 <span class="cmt">SE効果音</span> <span class="str">★必須</span>
-│   ├── 強調/
-│   ├── ポジティブ/
-│   └── ネガティブ/
-├── script/             <span class="cmt">ナレーション台本（推奨）</span>
-└── output/             <span class="cmt">完成動画の出力先</span></div>
-
-      <p style="margin-top:24px"><strong style="color:#121212">④ 素材を置いたら、Claude Code で作業開始</strong>:</p>
-      <div class="code">/step01-context</div>
-      <p>あとは AI が次のコマンドを案内してくれるので、質問に答えながら進めるだけ。</p>
-    </section>
-
-    <!-- Step 06: ワークフロー詳細（全20ステップ / ショート14ステップ） -->
-    <section class="step-section" style="border-left:4px solid #3b82f6">
-      <h2><span class="num" style="background:#3b82f6">🎬</span>ワークフロー詳細（横動画 全20 step / ショート 全14 step）</h2>
-      <p>各ステップは Claude Code でスラッシュコマンド1つで実行できます。<strong style="color:#121212">任意</strong> とあるステップは必要な演出だけ使えばOK。基本は AI が次のコマンドを案内してくれるので、<strong style="color:#121212">順番通りに進めるだけ</strong>で完成します。</p>
-
-      <!-- Phase 1 -->
-      <div style="margin-top:24px">
-        <div style="display:inline-block;background:#dbeafe;color:#1e40af;font-size:12px;font-weight:700;letter-spacing:0.14em;padding:4px 12px;border-radius:4px;margin-bottom:10px">PHASE 1 / 素材準備</div>
-        <ul style="list-style:none;padding-left:0;margin:0;color:#444;font-size:14px;line-height:1.7">
-          <li style="padding:8px 0;border-bottom:1px solid #f0f0f0"><code style="background:#f0f0f0;color:#2563EB;font-weight:700">/step01-context</code> 動画の目的・ターゲット・視聴者像を整理</li>
-          <li style="padding:8px 0;border-bottom:1px solid #f0f0f0"><code style="background:#f0f0f0;color:#2563EB;font-weight:700">/step02-assets</code> 素材確認（本編/物理挿入/オーバーレイ/OP/ハイライト）とFPS自動検出</li>
-          <li style="padding:8px 0;border-bottom:1px solid #f0f0f0"><code style="background:#f0f0f0;color:#2563EB;font-weight:700">/step03-transcript</code> 本編を Whisper で文字起こし（word-level timestamps）</li>
-          <li style="padding:8px 0;border-bottom:1px solid #f0f0f0"><code style="background:#f0f0f0;color:#2563EB;font-weight:700">/step04-transcript-fix</code> 台本と照合して誤変換を修正（固有名詞・数字を重点チェック）</li>
-          <li style="padding:8px 0;border-bottom:1px solid #f0f0f0"><code style="background:#f0f0f0;color:#2563EB;font-weight:700">/step05-cut</code> 無音 + 言い直しを一括カット。<strong style="color:#121212">word-boundary snap 92%精度</strong>（v1.3.0）で発話プツッ切れを防止</li>
-          <li style="padding:8px 0"><code style="background:#f0f0f0;color:#2563EB;font-weight:700">/step06-transcript</code> カット後の再文字起こし + 修正再適用</li>
-        </ul>
-      </div>
-
-      <!-- Phase 2 -->
-      <div style="margin-top:24px">
-        <div style="display:inline-block;background:#ede9fe;color:#6d28d9;font-size:12px;font-weight:700;letter-spacing:0.14em;padding:4px 12px;border-radius:4px;margin-bottom:10px">PHASE 2 / 動画構築</div>
-        <ul style="list-style:none;padding-left:0;margin:0;color:#444;font-size:14px;line-height:1.7">
-          <li style="padding:8px 0;border-bottom:1px solid #f0f0f0"><code style="background:#f0f0f0;color:#7c3aed;font-weight:700">/step07-template</code> テンプレート設定（フォント・サイズ・色・SE音量）を <code>templateConfig.ts</code> に定義</li>
-          <li style="padding:8px 0;border-bottom:1px solid #f0f0f0"><code style="background:#f0f0f0;color:#7c3aed;font-weight:700">/step08-telop</code> テロップデータ作成。AI が 8種のスタイル（normal/emphasis/negative等）から自動判定</li>
-          <li style="padding:8px 0"><code style="background:#f0f0f0;color:#7c3aed;font-weight:700">/step09-composition</code> MainComposition.tsx で動画 + テロップ + SE を統合。<strong style="color:#121212">Remotion Studio がブラウザで起動</strong>（localhost:3000）</li>
-        </ul>
-      </div>
-
-      <!-- Phase 3 -->
-      <div style="margin-top:24px">
-        <div style="display:inline-block;background:#fce7f3;color:#be185d;font-size:12px;font-weight:700;letter-spacing:0.14em;padding:4px 12px;border-radius:4px;margin-bottom:10px">PHASE 3 / 素材・演出挿入（任意）</div>
-        <ul style="list-style:none;padding-left:0;margin:0;color:#444;font-size:14px;line-height:1.7">
-          <li style="padding:8px 0;border-bottom:1px solid #f0f0f0"><code style="background:#f0f0f0;color:#db2777;font-weight:700">/step10-greenback</code> <span style="color:#999;font-size:12px">任意</span> グリーンバック背景置換。chromakey + rembg + HSV despill の3段パイプライン</li>
-          <li style="padding:8px 0;border-bottom:1px solid #f0f0f0"><code style="background:#f0f0f0;color:#db2777;font-weight:700">/step11-videos</code> <span style="color:#999;font-size:12px">任意</span> デモ動画挿入（物理挿入=Series分割 / オーバーレイ=上に重ね）</li>
-          <li style="padding:8px 0;border-bottom:1px solid #f0f0f0"><code style="background:#f0f0f0;color:#db2777;font-weight:700">/step12-slides-gen</code> <span style="color:#999;font-size:12px">任意・横のみ</span> 台本からスライドHTMLを生成</li>
-          <li style="padding:8px 0;border-bottom:1px solid #f0f0f0"><code style="background:#f0f0f0;color:#db2777;font-weight:700">/step13-slides</code> <span style="color:#999;font-size:12px">任意・横のみ</span> スライドキャプチャ + タイムライン配置</li>
-          <li style="padding:8px 0;border-bottom:1px solid #f0f0f0"><code style="background:#f0f0f0;color:#db2777;font-weight:700">/step14-wipe</code> <span style="color:#999;font-size:12px">任意・横のみ</span> ワイプ（顔出し）位置をピクセル座標で調整</li>
-          <li style="padding:8px 0;border-bottom:1px solid #f0f0f0"><code style="background:#f0f0f0;color:#db2777;font-weight:700">/step15-images</code> <span style="color:#999;font-size:12px">任意</span> 画像挿入（<strong style="color:#121212">3フェーズ構造</strong>: インサート / オーバーレイ / 顔アイコン）。Gemini AI画像生成対応</li>
-          <li style="padding:8px 0;border-bottom:1px solid #f0f0f0"><code style="background:#f0f0f0;color:#db2777;font-weight:700">/step16-special-components</code> <span style="color:#999;font-size:12px">任意・横のみ</span> 箇条書き・見出しバナー・CTAコンポーネント</li>
-          <li style="padding:8px 0"><code style="background:#f0f0f0;color:#db2777;font-weight:700">/step17-endscreen</code> <span style="color:#999;font-size:12px">任意・横のみ</span> エンドスクリーン（チャンネル登録誘導）追加</li>
-        </ul>
-      </div>
-
-      <!-- Phase 4 -->
-      <div style="margin-top:24px">
-        <div style="display:inline-block;background:#dcfce7;color:#166534;font-size:12px;font-weight:700;letter-spacing:0.14em;padding:4px 12px;border-radius:4px;margin-bottom:10px">PHASE 4 / BGM・出力</div>
-        <ul style="list-style:none;padding-left:0;margin:0;color:#444;font-size:14px;line-height:1.7">
-          <li style="padding:8px 0;border-bottom:1px solid #f0f0f0"><code style="background:#f0f0f0;color:#16a34a;font-weight:700">/step18-bgm</code> BGM挿入（フェードイン/アウト付き、区間・音量指定可、不足時は自動ループ）</li>
-          <li style="padding:8px 0;border-bottom:1px solid #f0f0f0"><code style="background:#f0f0f0;color:#16a34a;font-weight:700">/step19-opening</code> <span style="color:#999;font-size:12px">横のみ</span> OP連結 + 本編レンダリング（1回目）</li>
-          <li style="padding:8px 0"><code style="background:#f0f0f0;color:#16a34a;font-weight:700">/step20-highlight-final</code> 本編からハイライト自動抽出 + <strong style="color:#121212">ラウドネス正規化 -14 LUFS</strong>（v1.3.0）+ 最終レンダリング → <strong style="color:#121212">完成 🎉</strong></li>
-        </ul>
-      </div>
-
-      <!-- ショート動画の違い -->
-      <div style="background:#fff7ed;border:1px solid #fed7aa;border-left:4px solid #f97316;border-radius:6px;padding:16px 20px;margin-top:28px;font-size:14px;color:#9a3412">
-        <strong style="color:#121212">🎬 ショート動画（縦 / 14 step）との違い</strong>:
-        スライド生成（step12-13）・ワイプ（step14）・特殊コンポーネント（step16）・エンドスクリーン（step17）・OP連結（step19）・ハイライト抽出（step20）は<strong style="color:#121212">横動画のみ</strong>。ショートは必要最小限の14 step で情報密度を優先し、<code style="background:#f0f0f0;color:#121212;padding:2px 6px;border-radius:4px;font-size:13px">/step14-final</code> で 1080×1920 レンダリングして完成します。
-      </div>
-
-      <!-- 便利機能 -->
-      <div style="background:#eff6ff;border:1px solid #bfdbfe;border-left:4px solid #3b82f6;border-radius:6px;padding:16px 20px;margin-top:14px;font-size:14px;color:#1e40af">
-        <strong style="color:#121212">💡 便利コマンド</strong>:
-        <code style="background:#f0f0f0;color:#121212;padding:2px 6px;border-radius:4px;font-size:13px">/catchup</code> で現在の進捗を確認できます。中断しても AI がどのステップから再開すべきか教えてくれるので、気軽に休憩OK。
-      </div>
-    </section>
-
-    <!-- セミナースライド（配布） -->
-    <section class="step-section" style="border-left:4px solid #ec4899">
-      <h2><span class="num" style="background:#ec4899">📽️</span>セミナースライド（作業会の復習用）</h2>
-      <p>作業会でお見せしたスライド全20枚を、いつでもブラウザで見返せます。<strong style="color:#121212">テロップ8種・SE配置ルール・編集のコツ3選</strong>など、作業中に迷った時のリファレンスにどうぞ。</p>
-      <div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:18px">
-        <a href="./workshop-slides/" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:10px;padding:14px 24px;background:#121212;color:#CCFF00;border-radius:10px;text-decoration:none;font-weight:700;font-size:15px">▶ スライドを開く（全20枚）</a>
-        <a href="./workshop-slides/presenter.html" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:10px;padding:14px 24px;background:#fff;color:#121212;border:2px solid #121212;border-radius:10px;text-decoration:none;font-weight:700;font-size:15px">発表者ビューで開く（ノート付き）</a>
-      </div>
-      <p style="margin-top:14px;font-size:13px;color:#666">← / → キーでページ送り。サイドバーからアジェンダにジャンプできます。</p>
-    </section>
-
-    <section class="step-section" style="border-left:4px solid #fbbf24">
-      <h2><span class="num">UP</span>アップデート（完全自動・v1.5.5〜）</h2>
-      <p><strong style="color:#121212">何もしなくてOK。最新版が自動で適用されます。</strong></p>
-      <p style="margin-top:14px;font-size:14px">各 step 実行時に内部で <strong style="color:#121212">24時間に1回だけ</strong> 最新版チェックが走り、新しいバージョンがあれば自動でダウンロード・適用されます。作業中の素材（<code>public/</code>）・テロップデータ（<code>src/*.tsx</code>）・transcript は保護されるので、いつ自動更新が走っても作業は壊れません。</p>
-
-      <p style="margin-top:16px;font-size:14px">更新があると Claude Code のログに以下のようなメッセージが一瞬表示されます:</p>
-      <div class="code">📦 naoki-blueprint v1.5.5 → v1.5.6 に自動更新中...<br>✓ 更新完了</div>
-
-      <p style="margin-top:20px;font-size:13px;color:#666"><strong style="color:#121212">※ どうしても今すぐ最新版にしたい場合（レアケース）</strong>: Claude Code を <strong style="color:#121212">Ctrl+C を 2回</strong> 押して終了し、通常ターミナルで以下を実行:</p>
-      <div class="code">cd ~/Desktop/Cursor/naoki-blueprint && bash アップデート.sh</div>
-      <p style="margin-top:8px;font-size:12px;color:#999">通常は自動更新に任せてOKです。</p>
-    </section>
-
-    <!-- Changelog -->
-    <section class="step-section" style="border-left:4px solid #a78bfa">
-      <h2><span class="num">📋</span>更新履歴</h2>
-      <p>追加された機能・改善の一覧です。新しい動画を作るときは <code>bash 新規作成.sh</code> が自動で最新版を取得します。</p>
-
-      <p style="margin-top:16px;font-size:14px"><strong style="color:#121212">直近のハイライト</strong>（最新版 v1.6.0 / 2026-04-24）</p>
-      <ul style="margin:8px 0 20px 20px;color:#444;font-size:13px;line-height:1.8">
-        <li><strong style="color:#121212">✨ 新機能</strong>: 新規プロジェクト作成時に <code>.license</code> を自動コピー（<code>新規作成.sh</code> + <code>find-license.mjs</code>）。ライセンスID再入力が不要に。</li>
-        <li><strong style="color:#121212">🎨 個人環境</strong>: <code>/new-video</code> を Terminal.app 起動から Cursor 新ウィンドウ起動に切替。Mac/Windows/Linux 共通。</li>
-      </ul>
-
-      <p style="margin-top:20px">
-        <a href="changelog.html" style="display:inline-block;background:#CCFF00;color:#121212;padding:12px 24px;border-radius:8px;font-weight:700;text-decoration:none;font-size:15px">📋 すべての更新履歴を見る →</a>
-      </p>
-    </section>
-
-    <!-- License ID (bottom) -->
+    <!-- License ID (bottom) - activate.html 独自 -->
     <div class="license-panel" style="margin-top:24px">
       <div class="license-label">Your License ID</div>
       <div class="license-id" id="licenseId">NK-XXXX-XXXX-XXXX</div>
       <button class="copy-btn" id="copyBtn">📋 ライセンスIDをコピー</button>
     </div>
-
   </div>
 
   <div id="error" style="display:none" class="error-panel">
@@ -538,15 +40,6 @@ const API_URL = "https://script.google.com/macros/s/AKfycbz50xJ-uVfTMgHI4e0FTFa7
 const params = new URLSearchParams(window.location.search);
 const token = params.get('t');
 
-// 今日の日付（プロジェクト名デフォルト）を全ての .today-date に反映
-(function setTodayDate() {
-  const d = new Date();
-  const str = d.getFullYear() + '-'
-            + String(d.getMonth()+1).padStart(2,'0') + '-'
-            + String(d.getDate()).padStart(2,'0');
-  document.querySelectorAll('.today-date').forEach(el => { el.textContent = str; });
-})();
-
 if (!token) {
   showError('トークンが指定されていません。同意書の完了画面から開き直してください。');
 } else {
@@ -555,20 +48,37 @@ if (!token) {
 
 async function fetchLicense() {
   try {
+    // 1. GAS からライセンス取得
     const res = await fetch(API_URL + "?action=get&t=" + encodeURIComponent(token));
     const data = await res.json();
-    if (data.success) {
-      document.getElementById('loading').style.display = 'none';
-      document.getElementById('result').style.display = 'block';
-      document.getElementById('userName').textContent = data.name || '';
-      document.getElementById('licenseId').textContent = data.license_id;
-      document.getElementById('licenseIdInCode').textContent = data.license_id;
-      setupCodeCopyButtons();
-    } else {
+    if (!data.success) {
       showError(data.error || 'ライセンスの取得に失敗しました');
+      return;
     }
+
+    // 2. 共通コンテンツを読み込み
+    const mainRes = await fetch('./_main-content.html');
+    const mainHtml = await mainRes.text();
+    document.getElementById('main-content').innerHTML = mainHtml;
+
+    // 3. 個別値を反映（ライセンスID・ユーザー名・日付）
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('result').style.display = 'block';
+    document.getElementById('userName').textContent = data.name || '';
+    document.getElementById('licenseId').textContent = data.license_id;
+    document.getElementById('licenseIdInCode').textContent = data.license_id;
+
+    const d = new Date();
+    const todayStr = d.getFullYear() + '-'
+                   + String(d.getMonth()+1).padStart(2,'0') + '-'
+                   + String(d.getDate()).padStart(2,'0');
+    document.querySelectorAll('.today-date').forEach(el => { el.textContent = todayStr; });
+
+    // 4. コードブロックにコピーボタン付与
+    setupCodeCopyButtons();
   } catch (e) {
     showError('通信エラーが発生しました。しばらくしてから再度お試しください。');
+    console.error(e);
   }
 }
 
@@ -591,7 +101,6 @@ document.getElementById('copyBtn').addEventListener('click', () => {
   });
 });
 
-// コードブロックにコピーボタンを自動付与
 function setupCodeCopyButtons() {
   document.querySelectorAll('.code').forEach(code => {
     if (code.parentElement && code.parentElement.classList.contains('code-wrap')) return;
@@ -613,7 +122,6 @@ function setupCodeCopyButtons() {
     wrap.appendChild(btn);
   });
 }
-
 </script>
 
 </body>
