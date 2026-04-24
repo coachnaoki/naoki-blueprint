@@ -131,17 +131,13 @@ if prev_end < total_duration:
 # 4. 短すぎるセグメント（0.3秒未満）を除外
 keeps = [(s, e) for s, e in keeps if e - s >= 0.3]
 
-# 5. word-boundary snap + 非対称padding（推奨）
-# 各カット境界を transcript_words.json の word.end / word.start にスナップして、
-# 発話末尾に +150ms の余韻、次発話開始に -50ms の息継ぎ余白を残す。
-# silencedetect の timestamps は ±50-100ms ズレるので、word境界に揃えることで
-# 「発話がプツッと切れる」「息継ぎが消える」問題を防げる。
-#
-# 詳細アルゴリズムは横動画版 .template/.claude/skills/step05-cut/SKILL.md Phase 4 を参照。
-# snap できない境界は 0.075s の対称 padding にフォールバックする。
-# 値（AFTER=0.150 / BEFORE=0.050）は Naoki の聴感確認で確定した値。
-# 実測: snap成功率92%、legacyより3.1秒タイトにカット可能（Teleprompter 2分48秒テスト）。
+# 5. パディング（各セグメントの前後に0.075秒の対称余白）
+# カット境界を 0.075秒 だけ無音側に広げ、ブツ切り感を軽減する。
+# 音量ベース(silencedetect)の境界をそのまま使うシンプル方式。
+keeps = [(max(0, s - 0.075), min(total_duration, e + 0.075)) for s, e in keeps]
 ```
+
+> **なぜ word-boundary snap を使わないか**（v1.7.0 で廃止）: 詳細は横版 `.template/.claude/skills/step05-cut/SKILL.md` 参照。mlx-whisper の word timestamps は実発話境界より 100-300ms 内側にズレるため、snap すると発話末尾/先頭を削りすぎる。音量ベース対称 padding に完全回帰した。
 
 ### Phase 5: FFmpeg一発エンコード
 

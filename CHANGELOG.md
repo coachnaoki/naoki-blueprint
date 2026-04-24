@@ -18,6 +18,52 @@ naoki-blueprint のバージョンアップ履歴です。バージョンは [Se
 
 ---
 
+## [v1.7.0] - 2026-04-24
+
+### 🔥 word-boundary snap の廃止（step05-cut）
+
+v1.3.0 で導入した「カット境界を transcript_words.json の word.end/start にスナップする」方式を **完全廃止**し、v1.2.x 時代の **対称 0.075s padding（音量ベース）** に戻した。両テンプレ（横・ショート）共通で適用。
+
+### 経緯
+
+受講生フィードバックで「発話末尾がカットされすぎている」との声があり、Naoki が A/B 比較テストを実施：
+
+- **A** = legacy（0.075s 対称 padding、音量ベース）
+- **C** = word-boundary snap + AFTER 150ms / BEFORE 50ms（v1.3.0〜v1.6.0 の現行）
+
+同一素材（Teleprompter 2分48秒）で両方生成して聴感比較した結果：
+- A の方が発話末尾・先頭の余韻が自然に残る
+- C は **100-300ms 単位で末尾/先頭を削りすぎる** 境界が多発（例: 「あなた」の「あ」が消える、「〜ね」の「ね」の息が切れる）
+
+### 原因（技術的）
+
+- video-use（browser-use チーム公開）の snap アルゴリズムは **ElevenLabs Scribe の timestamp 精度（ズレ 50-100ms）** を前提に 150ms padding で吸収する設計
+- naoki-blueprint は **mlx-whisper（ローカル）** 運用で、word timestamps のズレは **100-300ms**（母音先頭・子音末尾を拾い損ねる）
+- AFTER 150ms では吸収しきれず、snap するほど発話境界が削られる結果に
+
+### 変更内容
+
+両テンプレの `.claude/skills/step05-cut/SKILL.md` Phase 4 を以下に変更：
+
+- **削除**: `word_before` / `word_after` 関数、`KEEP_AFTER` / `KEEP_BEFORE` / `FALLBACK` 定数、snap アルゴリズム全体
+- **戻した実装**: `keeps = [(max(0, s - 0.075), min(total_duration, e + 0.075)) for s, e in keeps]` の1行
+
+Phase 3 までの merge・keeps 計算は維持。言い直し検出（N-gram）も変更なし。
+
+### 効果（Teleprompter 2分48秒での実測）
+
+- **A (legacy)**: 116.75s keep（30.5% カット、38セグメント）← 本バージョン
+- C (snap): 113.80s keep（32.3% カット、40セグメント）← 旧バージョン
+- 差分 +2.95s。A の方が尺は長いが、発話末尾の自然さで勝る
+
+### 既存受講生への影響
+
+- **次回 `./アップデート.sh` で自動反映**。projects/XXX 配下にも step05-cut の新 SKILL.md が配布される
+- 既に step05 を終えたプロジェクトは再カットしなくても OK（cut 結果がそのまま残る）
+- 次回新規プロジェクトから A 方式で cut される
+
+---
+
 ## [v1.6.0] - 2026-04-24
 
 ### ✨ 新機能: 新規プロジェクトへの .license 自動コピー
