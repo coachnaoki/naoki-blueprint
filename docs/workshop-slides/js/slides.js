@@ -30,12 +30,12 @@ function slide01Cover() {
 // 02. AI が自動でやってくれる機能一覧
 function slide02Features() {
   return `<section class="slide" data-section="intro"
-    data-notes="このテンプレートがやってくれることは6つ。無音カット、文字起こし、テロップ配置、BGMとSE、レンダリング、そしてラウドネス正規化。word-boundary snapで発話末尾の切れ防止、loudnormでYouTube標準音量に自動で揃えてくれます。">
+    data-notes="このテンプレートがやってくれることは6つ。無音カット、文字起こし、テロップ配置、BGMとSE、レンダリング、そしてラウドネス正規化。音量ベースの対称 padding で発話末尾の切れ防止、loudnormでYouTube標準音量に自動で揃えてくれます。">
     ${ph(2, 'What it does')}
     <div class="slide-content">
       <h2>AI がやってくれる<span class="g-primary">6つのこと</span></h2>
       <div class="grid-3">
-        <div class="feature-tile"><div class="tile-num">01</div><div class="tile-title">無音カット</div><div class="tile-body">FFmpeg で沈黙区間と言い直しを一発削除<br/>word-boundary snap 92%精度</div></div>
+        <div class="feature-tile"><div class="tile-num">01</div><div class="tile-title">無音カット</div><div class="tile-body">FFmpeg で沈黙区間と言い直しを一発削除<br/>音量ベースで発話末尾の切れ防止</div></div>
         <div class="feature-tile"><div class="tile-num">02</div><div class="tile-title">文字起こし</div><div class="tile-body">Whisper large-v3 で word-level の精度</div></div>
         <div class="feature-tile"><div class="tile-num">03</div><div class="tile-title">テロップ自動配置</div><div class="tile-body">8種のデザインから AI が自動判定<br/>句読点削除・半角｢｣・2行対応</div></div>
         <div class="feature-tile"><div class="tile-num">04</div><div class="tile-title">SE & BGM</div><div class="tile-body">発言内容に合わせてランダム配置・フェード付き</div></div>
@@ -49,7 +49,7 @@ function slide02Features() {
 // 03. 動画タイプ選択 + プロジェクト作成
 function slide03TypeProject() {
   return `<section class="slide" data-section="start"
-    data-notes="プロジェクト作成は新規作成.shスクリプト1コマンドで自動化されています。実行するとプロジェクト名と動画タイプを聞かれるので答えるだけ。フォルダ作成・npm installまで自動です。v1.5.5以降はstep実行時に24時間毎に自動更新が走るので、新規作成前に特別な操作は不要になりました。">
+    data-notes="プロジェクト作成は新規作成.shスクリプト1コマンドで自動化されています。実行するとプロジェクト名と動画タイプを聞かれるので答えるだけ。フォルダ作成・npm installまで自動です。新規作成前に特別な操作は不要です。">
     ${ph(3, 'Create project')}
     <div class="slide-content">
       <h2>動画タイプを選んで<span class="g-primary">プロジェクト作成</span></h2>
@@ -70,7 +70,6 @@ function slide03TypeProject() {
           <div class="card-body">1080×1920<br/>14ステップ / テロップ8種に絞り情報密度を優先</div>
         </div>
       </div>
-      <p class="mt-32"><span class="pill pill--warm">v1.5.5〜</span>　本体の更新は <span class="hl">step実行時に24時間毎</span>に自動でチェック。<code>アップデート.sh</code>の手動実行は不要</p>
     </div>
   </section>`;
 }
@@ -208,7 +207,7 @@ function slide07WorkflowShort() {
 // 08. Phase 1
 function slide08Phase1() {
   return `<section class="slide" data-section="workflow"
-    data-notes="フェーズ1は素材準備。文字起こしから無音カットまでです。v1.3.0でword-boundary snapが導入されて、発話末尾が切れる問題がほぼ解消されました。ここで元動画の尺が40分くらいに縮みます。">
+    data-notes="フェーズ1は素材準備。文字起こしから無音カットまでです。音量ベースの対称 padding で発話末尾のプツッとした切れを防止しています。ここで元動画の尺が40分くらいに縮みます。">
     ${ph(8, 'Phase 1')}
     <div class="slide-content">
       <h2>Phase 1　<span class="g-primary">素材準備</span>　step01〜06</h2>
@@ -227,7 +226,7 @@ function slide08Phase1() {
         </div>
         <div class="card card--accent">
           <div class="card-title">step05〜06　一括カット</div>
-          <div class="card-body">無音 + 言い直しを FFmpeg 一発エンコード。<span class="hl">word-boundary snap 92%精度</span>で発話末尾プツッを防止</div>
+          <div class="card-body">無音 + 言い直しを FFmpeg 一発エンコード。<span class="hl">音量ベースで前後に余韻を残し</span>発話末尾プツッを防止</div>
         </div>
       </div>
     </div>
@@ -237,13 +236,13 @@ function slide08Phase1() {
 // 09. 🆕 編集のコツ① Remotion Studio でカット確認
 function slideTip1CutReview() {
   return `<section class="slide" data-section="workflow"
-    data-notes="v1.5.0から step05 完了時にRemotion Studioが自動起動します。localhost:3000でフレーム単位で確認できるので、発話末尾のプツッとした切れや不自然な間を耳と目でチェックしてください。word-boundary snapで92%精度ですが、残り8%は人の耳が勝負。気になる箇所はtranscript_fixed.jsonを直接編集してstep05を再実行するだけです。">
+    data-notes="step05 完了時にRemotion Studioが自動起動します。localhost:3000でフレーム単位で確認できるので、発話末尾のプツッとした切れや不自然な間を耳と目でチェックしてください。気になる箇所はtranscript_fixed.jsonを直接編集してstep05を再実行するだけです。">
     ${ph(9, 'Edit tip / Remotion review')}
     <div class="slide-content">
       <div class="tag" style="color:#fbbf24">💡 編集のコツ ①</div>
       <h2 class="mt-16">カット後は <span class="g-primary">Remotion Studio</span> でフレーム確認</h2>
       <div class="card card--warm mt-32">
-        <div class="card-title">🚀 v1.5.0〜 自動起動</div>
+        <div class="card-title">🚀 自動起動</div>
         <div class="card-body"><code>/step05</code> 完了時に Remotion Studio が <span class="hl">自動で起動</span>（<code>localhost:3000</code>）。フレーム単位で精密に確認できる</div>
       </div>
       <div class="grid-2 mt-32">
@@ -266,7 +265,7 @@ function slideTip1CutReview() {
           </div>
         </div>
       </div>
-      <p class="lead mt-32"><span class="hl">word-boundary snap</span> で92%は自動snap。残り8%は人の耳が勝負。</p>
+      <p class="lead mt-32">自動カットで大部分は整うが、<span class="hl">残りは人の耳が勝負</span>。</p>
     </div>
   </section>`;
 }
@@ -338,7 +337,7 @@ function slideTip2TemplateCheck() {
 // 12. Phase 3
 function slide12Phase3() {
   return `<section class="slide" data-section="workflow"
-    data-notes="フェーズ3は素材挿入。任意のステップが多いので、必要な演出だけ使ってください。v1.3.0でstep15の画像挿入が3フェーズ構造になり、インサート画像・オーバーレイ画像・顔アイコンが明確に分離されました。">
+    data-notes="フェーズ3は素材挿入。任意のステップが多いので、必要な演出だけ使ってください。step15の画像挿入は3フェーズ構造で、インサート画像・オーバーレイ画像・顔アイコンが明確に分離されています。">
     ${ph(12, 'Phase 3')}
     <div class="slide-content">
       <h2>Phase 3　<span class="g-primary">素材挿入</span>　任意</h2>
@@ -404,7 +403,7 @@ function slideTip3ImagePolicy() {
 // 14. Phase 4
 function slide14Phase4() {
   return `<section class="slide" data-section="workflow"
-    data-notes="最後のフェーズ。BGMを入れて、OP連結して、ハイライトを自動抽出、そしてv1.3.0で追加されたラウドネス正規化でYouTube基準に揃えて完成です。">
+    data-notes="最後のフェーズ。BGMを入れて、OP連結して、ハイライトを自動抽出、そしてラウドネス正規化でYouTube基準に揃えて完成です。">
     ${ph(14, 'Phase 4')}
     <div class="slide-content">
       <h2>Phase 4　<span class="g-primary">BGM・出力</span></h2>
@@ -430,7 +429,7 @@ function slide14Phase4() {
 // 15. テロップ8種
 function slide15Telop() {
   return `<section class="slide" data-section="rules"
-    data-notes="テロップは全部で8種類。発言の内容や感情に応じて、AIが自動で判定してくれます。v1.4.0からは句読点の自動削除・半角｢｣引用符・emphasisWord 複数単語対応・ショート動画の2行対応が入りました。">
+    data-notes="テロップは全部で8種類。発言の内容や感情に応じて、AIが自動で判定してくれます。句読点の自動削除・半角｢｣引用符・emphasisWord 複数単語対応・ショート動画の2行対応が入っています。">
     ${ph(15, 'Telop / 8 styles')}
     <div class="slide-content">
       <h2>テロップ<span class="g-primary">8デザイン</span></h2>
@@ -448,7 +447,7 @@ function slide15Telop() {
         </tbody>
       </table>
       <div class="card card--warm mt-32">
-        <div class="card-title">📝 v1.4.0 テロップ運用ルール</div>
+        <div class="card-title">📝 テロップ運用ルール</div>
         <div class="card-body">
           <span class="text-cyan bold">・</span> <span class="bold text-white">句読点削除</span>: <code>、</code> <code>。</code> は自動削除（<code>?</code> <code>!</code> は残す）<br/>
           <span class="text-cyan bold">・</span> <span class="bold text-white">引用符は半角</span> <code>｢｣</code>: 全角「」はセンタリングがズレるため統一<br/>
@@ -463,7 +462,7 @@ function slide15Telop() {
 // 16. SE配置ルール
 function slide16SE() {
   return `<section class="slide" data-section="rules"
-    data-notes="SEは3つのフォルダに分けて管理します。テロップのテンプレに応じて、フォルダの中からランダムに選ばれます。v1.3.0でSE音量が0.06に調整されて、BGMとのバランスがより自然になりました。">
+    data-notes="SEは3つのフォルダに分けて管理します。テロップのテンプレに応じて、フォルダの中からランダムに選ばれます。SE音量は0.06で、BGMとのバランスが自然になるよう調整済みです。">
     ${ph(16, 'SE rules')}
     <div class="slide-content">
       <h2>SE 配置ルール</h2>
@@ -497,7 +496,7 @@ function slide16SE() {
 // 17. 2本目以降
 function slide17SecondVideo() {
   return `<section class="slide" data-section="advanced"
-    data-notes="2本目以降はもっと簡単です。ライセンス認証はもう終わっているので、新規作成.shでプロジェクトを作って、そのフォルダに入ってClaude Codeを起動するだけ。v1.5.5以降は各step実行時に24時間に1回だけ本体の最新版チェックが裏で自動実行されるので、アップデート.shを手動で叩く必要もありません。">
+    data-notes="2本目以降はもっと簡単です。ライセンス認証はもう終わっているので、新規作成.shでプロジェクトを作って、そのフォルダに入ってClaude Codeを起動するだけです。">
     ${ph(17, 'For next videos')}
     <div class="slide-content">
       <h2>2本目以降は、<span class="g-primary">3コマンド。</span></h2>
@@ -511,10 +510,6 @@ cd projects/<span class="hi">2026-04-23</span>
 
 <span class="cmt"># ③ そこで Claude Code を起動 → /step01-context</span>
 claude --dangerously-skip-permissions</div>
-      <div class="card card--accent mt-32">
-        <div class="card-title">🔄 完全自動アップデート (v1.5.5〜)</div>
-        <div class="card-body">各 <code>/step</code> 実行時に <span class="hl">24時間に1回</span>だけ最新版チェックが裏で走る。差分があれば自動で <code>git reset --hard origin/main</code> → projects同期。<span class="bold text-white"><code>アップデート.sh</code> の手動実行は不要</span>（ネット不調やgit未初期化でも静かにスキップして作業継続）</div>
-      </div>
     </div>
   </section>`;
 }
