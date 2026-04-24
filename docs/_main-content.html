@@ -70,8 +70,8 @@ cd ..</div>
   <p style="margin-top:10px;font-size:14px">自動で引き継がれるもの:</p>
   <ul style="color:#444;font-size:14px;padding-left:24px;line-height:1.9">
     <li>✅ ツール類（node / python / ffmpeg / claude-code）— 再インストール不要</li>
-    <li>✅ naoki-blueprint 本体（v1.5.5〜 24時間ごとに自動更新）</li>
-    <li>✅ ライセンス（v1.6.0〜 新規プロジェクトに自動コピー、再認証不要）</li>
+    <li>✅ naoki-blueprint 本体 — 再ダウンロード不要</li>
+    <li>✅ ライセンス（新規プロジェクトに自動コピー、再認証不要）</li>
   </ul>
   <p style="margin-top:12px;font-size:14px"><strong style="color:#121212">つまり、下の Step 04 → Step 05 の2つを実行するだけで、新しい動画作りが始められます。</strong></p>
 </section>
@@ -97,7 +97,7 @@ cd ..</div>
       <p>1080×1920<br>14ステップ / テロップ8種に絞り情報密度を優先</p>
     </div>
   </div>
-  <p style="font-size:13px;color:#666">本体の自動アップデート → フォルダ作成 → <code>npm install</code> まで自動。認証済みの <code>.license</code> も新プロジェクトにコピーされます。</p>
+  <p style="font-size:13px;color:#666">フォルダ作成 → <code>npm install</code> まで自動。認証済みの <code>.license</code> も新プロジェクトにコピーされます。</p>
 </section>
 
 <section class="step-section" style="border-left:4px solid #16a34a">
@@ -149,7 +149,7 @@ cd ..</div>
       <li style="padding:8px 0;border-bottom:1px solid #f0f0f0"><code style="background:#f0f0f0;color:#2563EB;font-weight:700">/step02-assets</code> 素材確認（本編/物理挿入/オーバーレイ/OP/ハイライト）とFPS自動検出</li>
       <li style="padding:8px 0;border-bottom:1px solid #f0f0f0"><code style="background:#f0f0f0;color:#2563EB;font-weight:700">/step03-transcript</code> 本編を Whisper で文字起こし（word-level timestamps）</li>
       <li style="padding:8px 0;border-bottom:1px solid #f0f0f0"><code style="background:#f0f0f0;color:#2563EB;font-weight:700">/step04-transcript-fix</code> 台本と照合して誤変換を修正（固有名詞・数字を重点チェック）</li>
-      <li style="padding:8px 0;border-bottom:1px solid #f0f0f0"><code style="background:#f0f0f0;color:#2563EB;font-weight:700">/step05-cut</code> 無音 + 言い直しを一括カット。<strong style="color:#121212">word-boundary snap 92%精度</strong>（v1.3.0）で発話プツッ切れを防止</li>
+      <li style="padding:8px 0;border-bottom:1px solid #f0f0f0"><code style="background:#f0f0f0;color:#2563EB;font-weight:700">/step05-cut</code> 無音 + 言い直しを一括カット。音量ベースで前後に余韻を残し、発話プツッ切れを防止</li>
       <li style="padding:8px 0"><code style="background:#f0f0f0;color:#2563EB;font-weight:700">/step06-transcript</code> カット後の再文字起こし + 修正再適用</li>
     </ul>
   </div>
@@ -185,7 +185,7 @@ cd ..</div>
     <ul style="list-style:none;padding-left:0;margin:0;color:#444;font-size:14px;line-height:1.7">
       <li style="padding:8px 0;border-bottom:1px solid #f0f0f0"><code style="background:#f0f0f0;color:#16a34a;font-weight:700">/step18-bgm</code> BGM挿入（フェードイン/アウト付き、区間・音量指定可、不足時は自動ループ）</li>
       <li style="padding:8px 0;border-bottom:1px solid #f0f0f0"><code style="background:#f0f0f0;color:#16a34a;font-weight:700">/step19-opening</code> <span style="color:#999;font-size:12px">横のみ</span> OP連結 + 本編レンダリング（1回目）</li>
-      <li style="padding:8px 0"><code style="background:#f0f0f0;color:#16a34a;font-weight:700">/step20-highlight-final</code> 本編からハイライト自動抽出 + <strong style="color:#121212">ラウドネス正規化 -14 LUFS</strong>（v1.3.0）+ 最終レンダリング → <strong style="color:#121212">完成 🎉</strong></li>
+      <li style="padding:8px 0"><code style="background:#f0f0f0;color:#16a34a;font-weight:700">/step20-highlight-final</code> 本編からハイライト自動抽出 + <strong style="color:#121212">ラウドネス正規化 -14 LUFS</strong> + 最終レンダリング → <strong style="color:#121212">完成 🎉</strong></li>
     </ul>
   </div>
 
@@ -210,34 +210,5 @@ cd ..</div>
     <a href="./workshop-slides/" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:10px;padding:14px 24px;background:#121212;color:#CCFF00;border-radius:10px;text-decoration:none;font-weight:700;font-size:15px">▶ スライドを開く（全20枚）</a>
   </div>
   <p style="margin-top:14px;font-size:13px;color:#666">← / → キーでページ送り。サイドバーからアジェンダにジャンプできます。</p>
-</section>
-
-<section class="step-section" style="border-left:4px solid #fbbf24">
-  <h2><span class="num">UP</span>アップデート（完全自動・v1.5.5〜）</h2>
-  <p><strong style="color:#121212">何もしなくてOK。最新版が自動で適用されます。</strong></p>
-  <p style="margin-top:14px;font-size:14px">各 step 実行時に内部で <strong style="color:#121212">24時間に1回だけ</strong> 最新版チェックが走り、新しいバージョンがあれば自動でダウンロード・適用されます。作業中の素材（<code>public/</code>）・テロップデータ（<code>src/*.tsx</code>）・transcript は保護されるので、いつ自動更新が走っても作業は壊れません。</p>
-
-  <p style="margin-top:16px;font-size:14px">更新があると Claude Code のログに以下のようなメッセージが一瞬表示されます:</p>
-  <div class="code">📦 naoki-blueprint v1.5.5 → v1.5.6 に自動更新中...<br>✓ 更新完了</div>
-
-  <p style="margin-top:20px;font-size:13px;color:#666"><strong style="color:#121212">※ どうしても今すぐ最新版にしたい場合（レアケース）</strong>: Claude Code を <strong style="color:#121212">Ctrl+C を 2回</strong> 押して終了し、通常ターミナルで以下を実行:</p>
-  <div class="code">cd ~/Desktop/Cursor/naoki-blueprint && bash アップデート.sh</div>
-  <p style="margin-top:8px;font-size:12px;color:#999">通常は自動更新に任せてOKです。</p>
-</section>
-
-<!-- Changelog -->
-<section class="step-section" style="border-left:4px solid #a78bfa">
-  <h2><span class="num">📋</span>更新履歴</h2>
-  <p>追加された機能・改善の一覧です。新しい動画を作るときは <code>bash 新規作成.sh</code> が自動で最新版を取得します。</p>
-
-  <p style="margin-top:16px;font-size:14px"><strong style="color:#121212">直近のハイライト</strong>（最新版 v1.6.0 / 2026-04-24）</p>
-  <ul style="margin:8px 0 20px 20px;color:#444;font-size:13px;line-height:1.8">
-    <li><strong style="color:#121212">✨ 新機能</strong>: 新規プロジェクト作成時に <code>.license</code> を自動コピー（<code>新規作成.sh</code> + <code>find-license.mjs</code>）。ライセンスID再入力が不要に。</li>
-    <li><strong style="color:#121212">🎨 個人環境</strong>: <code>/new-video</code> を Terminal.app 起動から Cursor 新ウィンドウ起動に切替。Mac/Windows/Linux 共通。</li>
-  </ul>
-
-  <p style="margin-top:20px">
-    <a href="changelog.html" style="display:inline-block;background:#CCFF00;color:#121212;padding:12px 24px;border-radius:8px;font-weight:700;text-decoration:none;font-size:15px">📋 すべての更新履歴を見る →</a>
-  </p>
 </section>
 
