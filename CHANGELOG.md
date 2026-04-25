@@ -18,6 +18,60 @@ naoki-blueprint のバージョンアップ履歴です。バージョンは [Se
 
 ---
 
+## [v1.12.0] - 2026-04-26
+
+### ✨ my-workspace を「動画スタイル別 + 自動反映」に進化
+
+v1.11.0 で導入した `my-customizations.md` (テンプレ改変記憶) を **動画スタイル別ファイル + 動画完成時の自動記録** に進化させた。
+
+#### 主な変更
+
+- **ファイル名: `my-customizations.md` → `styles/{slug}.md`** に変更
+  - `my-customizations` は冗長 → `styles` にスリム化
+  - 動画スタイル別にカテゴリ分けできる構造へ
+- **`styles/default.md`** = 全動画共通の改変 (常に併用)
+- **`styles/{slug}.md`** = カテゴリ別の改変 (例: `doubles-tactics.md`, `qa.md`, `conditioning.md`)
+
+#### 動画スタイルの自動推定 (step01)
+
+step01-context が動画のターゲット・趣旨から自動推定し、`video-context.md` に `style: {slug}` として記録:
+- 「ダブルス戦術 サンドイッチ分割」→ `doubles-tactics`
+- 「ご質問にお答え」→ `qa`
+- 「肩痛予防ストレッチ」→ `conditioning`
+
+各 step (step08 / step09 / step16 / step18 等) が `style:` を読んで該当ファイルを参照する。
+
+#### 自動反映 (動画完成時にまとめて記録)
+
+旧 v1.11.0 は「読み込み」のみ。v1.12.0 は **書き出しも自動化**。
+
+1. 動画作成中に「emphasis のフォント変えて」等の改変指示があると Claude Code が `[STYLE-LOG]` として内部記録
+2. 動画完成時 (step14-final / step20-highlight-final) に **まとめて確認**:
+   ```
+   今回の動画作成中、以下の改変を行いました:
+   1. emphasis: fontFamily を Shippori Mincho → Noto Serif JP
+
+   これらを styles/{slug}.md に追記して自動反映しますか? (yes/no)
+   ```
+3. yes → 該当ファイルに `## YYYY-MM-DD 追記` ブロックで履歴追加
+4. 次回以降の同スタイル動画で自動反映
+
+都度確認するとトークン消費が大きいため、**動画完成時に1度だけ**確認する設計。
+
+#### 更新ファイル
+
+- 新規: `my-workspace/styles/default.example.md`
+- 削除: `my-workspace/my-customizations.example.md` (旧 v1.11.0)
+- 更新: `my-workspace/README.md` (スタイル別 + 自動反映の説明)
+- 更新: `my-workspace/.gitignore` (`styles/*.md` 除外、`.example.md` のみ追跡)
+- 更新: `.template-shorts/CLAUDE.md` / `.template/CLAUDE.md`
+  - 「受講生ナレッジの参照」セクションを styles/ 構造に
+  - 「動画作成中の改変追跡」セクション新規追加 ([STYLE-LOG] フォーマット)
+- 更新: `step01-context/SKILL.md` (両テンプレ): スタイル自動推定ルール追加
+- 更新: `step14-final/SKILL.md` (縦) / `step20-highlight-final/SKILL.md` (横): 動画完成時の改変記録ルール追加
+
+---
+
 ## [v1.11.0] - 2026-04-26
 
 ### 🔄 my-workspace の方針転換: 「話し方ノート」→「テンプレ改変記憶」

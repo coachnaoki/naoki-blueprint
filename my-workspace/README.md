@@ -4,24 +4,48 @@
 naoki-blueprint のすべての動画プロジェクトから自動参照されます。
 
 新しい動画を作るたびに「またあのカスタマイズやり直し…」が不要になります。
-1度書いておけば、Claude Code が次の動画でも改変済みの状態で生成してくれます。
 
 ---
 
-## 使い方（初回セットアップ）
+## 仕組み
 
-### `my-customizations.md` を作成する
+### 動画スタイル別の自動カテゴリ分け
 
-同じフォルダの `my-customizations.example.md` をコピーして、自分用に書き換えてください。
-
-```bash
-cp my-customizations.example.md my-customizations.md
+```
+my-workspace/styles/
+├ default.md           ← 全動画共通の改変
+├ doubles-tactics.md   ← ダブルス戦術系の動画スタイル
+├ conditioning.md      ← コンディショニング系
+├ qa.md                ← Q&A 系
+└ {自由に増える}.md    ← step01 で動画コンテキストから自動命名
 ```
 
-`my-customizations.md` に「改変したテロップデザイン」「改変したアニメ」「改変したコンポ」「その他カスタマイズ」を書きます。
-具体的な数値・色コード・パラメータを書いておくと Claude Code が忠実に反映します。
+- **step01-context** で動画の趣旨から「このスタイルは何系か」を自動推定
+- 既存の同系統スタイルがあれば再利用、無ければ新規作成
+- `default.md` は常に併用されるので、全動画共通の改変はここに書く
 
-書いたら保存。次の動画作成時から step01 / step08 / step09 等が自動的に読み込みます。
+### 自動反映 (動画完成時にまとめて記録)
+
+1. 動画作成中にあなたが「emphasis のフォント変えて」等の改変を指示
+2. Claude Code が変更を実装 (内部で記録)
+3. **動画完成時 (step14 / step20)** に「今回の改変を `styles/{カテゴリ}.md` に追記する?」と質問
+4. yes なら追記 → 次回以降の同カテゴリ動画で自動反映
+
+毎回手動で書き直す必要なし。動画を作るたびに自動で蓄積されていきます。
+
+---
+
+## 初回セットアップ
+
+`default.md` を作成しておくと「全動画共通の改変」が反映されます (任意)。
+
+```bash
+cd my-workspace/styles
+cp default.example.md default.md
+```
+
+カテゴリ別ファイル (`doubles-tactics.md` 等) は **動画作成中に自動で生成**されます。
+事前に作っておく必要はありません。
 
 ---
 
@@ -29,24 +53,28 @@ cp my-customizations.example.md my-customizations.md
 
 消えません。
 
-- `my-customizations.md` は `.gitignore` で除外されており、`git reset --hard` のアップデートでも保持されます
-- `my-customizations.example.md` と `README.md` だけはテンプレ側で更新されます (上書きOK)
+- `styles/*.md` (ただし `.example.md` を除く) は `.gitignore` で除外、`git reset --hard` のアップデートでも保持されます
+- `styles/default.example.md` と `README.md` だけはテンプレ側で更新されます (上書きOK)
 
 ---
 
 ## Claude Code はどう使う？
 
-各 step (特に step08-telop / step09-composition / step16-special-components 等) が
-開始時に `../../my-workspace/my-customizations.md` の存在を確認し、あれば読み込みます。
-内容に応じて生成物のテロップデザイン・アニメ・コンポを調整します。
+各 step (step08-telop / step09-composition / step16-special-components 等) が
+開始時に以下を読み込みます:
 
-`my-customizations.md` が無い場合は従来通り Naoki式デフォルトで生成されます。
+1. `styles/default.md` — 全動画共通の改変
+2. `styles/{動画スタイル}.md` — step01 で確定したスタイル別の改変
+
+ファイルが存在しない場合は Naoki式デフォルトで生成されます。
+
+動画完成時 (step14 / step20) には「今回の改変を style ファイルに追記する?」と聞かれます。
 
 ---
 
 ## 注意事項
 
 - CLAUDE.md の**固定値ルール** (テロップ色パレット・フォント・8文字制限等) を覆す変更は
-  自己責任になります。可能な限り **小さな調整** にとどめると安全です
+  自己責任になります。可能な限り**小さな調整**にとどめると安全です
 - 大幅な改変はテンプレの整合性を崩す場合があります
 - 書いた内容に問題があれば Claude Code がそのままエラーで止まることがあります

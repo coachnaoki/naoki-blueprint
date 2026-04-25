@@ -1,4 +1,5 @@
 # 受講生の実データは追跡しない（naoki-blueprint の自動アップデートで上書きされないため）
 
-# ユーザーが作る自分用ファイル
-my-customizations.md
+# styles/ 配下のユーザー実ファイル (.example.md だけ追跡)
+styles/*.md
+!styles/*.example.md

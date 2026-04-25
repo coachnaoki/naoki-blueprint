@@ -41,12 +41,36 @@ allowed-tools: Read, Write, Glob, Grep, Bash(ls *), Bash(node *)
 ## 趣旨・目的
 （動画の目的）
 
+## 動画スタイル
+- style: {slug}     # 例: doubles-tactics / qa / conditioning
+
 ## 制作設定
 - FPS: （step02 実行時に自動検出されます）
 
 ## 動画ファイル
 （step02で確認後に記録）
 ```
+
+### 動画スタイル (style) の自動推定
+
+ターゲット・趣旨・タイトル等から動画のカテゴリを自動推定し、`style: {slug}` として記録する。
+
+**slug 命名規則**: 英小文字 + ハイフン区切り (例: `doubles-tactics`, `singles-strategy`, `conditioning`, `qa`)
+
+**推定例**:
+- 「ダブルス戦術 サンドイッチ分割」→ `doubles-tactics`
+- 「シングルス配球」→ `singles-strategy`
+- 「肩痛予防ストレッチ」→ `conditioning`
+- 「ご質問にお答え」→ `qa`
+- 「テニススクール選び方」→ `school-selection`
+
+**推定後のフロー**:
+1. 推定した slug をユーザーに提示: 「動画スタイルを `doubles-tactics` と推定しました。OK?」
+2. 既存の `../../my-workspace/styles/{slug}.md` があれば「既存スタイル再利用」と伝える
+3. 無ければ「新規スタイル」として記録 (ファイル自体は step14 / step20 完了時に必要なら作成)
+4. ユーザーが別 slug を指定したらそれを優先
+
+`style:` を `video-context.md` に書いておくことで、step08 / step09 / step16 / step18 が読み込み時にどの style ファイルを使うか判断できる。
 
 ## 長尺動画の進め方（重要）
 - 動画が長い場合（目安: 3分以上）、一度に全体を作ると **やり直しが大変**

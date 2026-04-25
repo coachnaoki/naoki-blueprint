@@ -111,20 +111,63 @@ step14-final           → レンダリング
 各 step の作業を開始する際、**まず以下のファイルの存在を確認し、あれば読み込む**こと。
 
 ### 参照先
-- `../../my-workspace/my-customizations.md` — 受講生がテンプレを改変した内容の記憶 (テロップデザイン・アニメ・コンポーネントの自分用変更)
+- `../../my-workspace/styles/default.md` — 全動画共通の改変 (常に読み込み)
+- `../../my-workspace/styles/{動画スタイル}.md` — step01 で確定したカテゴリ別の改変 (例: `doubles-tactics.md`, `qa.md`)
+
+動画スタイルは step01-context で自動推定し、`video-context.md` に `style: {slug}` として記録される。各 step はこれを読んで該当ファイルを参照する。
 
 ### 適用ルール
-- **テロップ生成（step08-telop）**: `my-customizations.md` の「改変したテロップデザイン」を必ず反映する
-- **コンポジション拡張（step09-composition）**: 「改変したアニメーション」「改変したコンポーネント」を反映する
-- **特殊コンポ実装（step16-special-components）**: BulletList / CTA / HeadingBanner / ThemeTelop の改変を反映する
+- **テロップ生成（step08-telop）**: 改変したテロップデザイン (フォント・色・サイズ・縁取り) を必ず反映する
+- **コンポジション拡張（step09-composition）**: 改変したアニメーション (slideUp フレーム数等) を反映する
 - **ファイルが存在しない場合**: 従来通り Naoki式デフォルトで進行（警告不要）
 
 ### 優先順位
-1. `my-customizations.md` の記述（最優先 — 受講生個別の改変）
-2. このCLAUDE.mdのルール（テロップデザイン固定値等）
-3. 汎用的な判断
+1. `styles/{動画スタイル}.md` の記述（最優先 — カテゴリ別の改変）
+2. `styles/default.md` の記述（次優先 — 全動画共通の改変）
+3. このCLAUDE.mdのルール（テロップデザイン固定値等）
+4. 汎用的な判断
 
-`my-customizations.md` と CLAUDE.md のルールが矛盾する場合、**受講生の改変が優先**される (受講生の自己責任)。ただし固定値ルール (色パレット基本・8文字制限等) を覆す改変は警告すること。
+style ファイルと CLAUDE.md のルールが矛盾する場合、**受講生の改変が優先**される (自己責任)。ただし固定値ルール (色パレット基本・8文字制限等) を覆す改変は警告すること。
+
+---
+
+## 動画作成中の改変追跡（自動反映の仕組み）
+
+動画作成中にユーザーから「emphasis のフォント変えて」「BulletList の色を緑に」等の改変指示があった場合、Claude Code は **内部メモ** として記録する。
+
+### 記録フォーマット
+```
+[STYLE-LOG] {step}: {テンプレ/コンポ}: {変更内容}
+```
+
+例:
+```
+[STYLE-LOG] step08: emphasis: fontFamily を Shippori Mincho → Noto Serif JP
+[STYLE-LOG] step09: emphasis: slideUp を 10フレーム → 15フレーム
+```
+
+### 動画完成時の確認 (step14-final / step20-highlight-final)
+
+動画完成時、これまでに記録した [STYLE-LOG] をユーザーに提示し、以下を確認する:
+
+```
+今回の動画作成中、以下の改変を行いました:
+1. emphasis: fontFamily を Shippori Mincho → Noto Serif JP
+2. BulletList: ボックス色 #2563EB → #10B981
+
+これらを styles/{動画スタイル}.md に追記して、次回以降同じスタイルの動画で自動反映しますか? (yes/no)
+```
+
+- **yes**: 該当ファイルに追記。日付付きで履歴として残す
+- **no**: 何もしない
+
+### 追記フォーマット (style ファイル内)
+
+```markdown
+## YYYY-MM-DD 追記
+- emphasis: fontFamily を Shippori Mincho → Noto Serif JP
+- BulletList: ボックス色 #2563EB → #10B981
+```
 
 ---
 

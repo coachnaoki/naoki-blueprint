@@ -129,10 +129,34 @@
 
 <div class="card">
 
+<!-- v1.12.0 -->
+<div class="version-entry">
+  <div class="version-header">
+    <span class="version-badge latest">v1.12.0</span>
+    <span class="version-date">2026-04-26</span>
+  </div>
+
+  <div class="section-label">✨ 動画作成中の改変を「動画完成時に自動記録」できるようになりました</div>
+  <p class="version-desc">v1.11.0 は「事前に書いて反映」する方式でしたが、v1.12.0 では <strong>動画作成中に行った改変を完成時にまとめて自動記録</strong>。次回以降の同スタイル動画で自動反映されます。</p>
+  <ul>
+    <li><strong>動画スタイル別にカテゴリ分け</strong>: <code>styles/doubles-tactics.md</code> <code>styles/qa.md</code> <code>styles/conditioning.md</code> 等。step01 で動画コンテキストから自動推定。</li>
+    <li><strong>全動画共通の改変は <code>styles/default.md</code></strong>: 全スタイル共通の設定はここに。</li>
+    <li><strong>自動記録の流れ</strong>: 動画作成中に「emphasis のフォント変えて」と指示 → Claude Code が変更を実装 → 動画完成時にまとめて「styles/{スタイル}.md に追記する?」と確認 → yes で追記。</li>
+    <li><strong>次回以降は自動反映</strong>: 同じスタイルの新動画でその改変が自動で適用されます。</li>
+    <li><strong>都度確認しないのでトークン節約</strong>: 動画完成時に1度だけ確認する設計。</li>
+  </ul>
+
+  <div class="section-label">📌 v1.11.0 (my-customizations.md) からの変更</div>
+  <ul>
+    <li>ファイル名 <code>my-customizations.md</code> → <code>styles/{slug}.md</code> に変更 (短く・カテゴリ分け対応)</li>
+    <li>v1.11.0 は「読み込み」のみだったが、v1.12.0 で「書き出し」も自動化</li>
+  </ul>
+</div>
+
 <!-- v1.11.0 -->
 <div class="version-entry">
   <div class="version-header">
-    <span class="version-badge latest">v1.11.0</span>
+    <span class="version-badge">v1.11.0</span>
     <span class="version-date">2026-04-26</span>
   </div>
 
