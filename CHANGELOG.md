@@ -18,6 +18,38 @@ naoki-blueprint のバージョンアップ履歴です。バージョンは [Se
 
 ---
 
+## [v1.10.0] - 2026-04-25
+
+### 🔥 emphasis / emphasis2 微調整 (両テンプレ同時)
+
+v1.8.0 のリニューアル後、Naoki 確認を経て以下を微調整。
+
+#### emphasis 変更点
+- 赤本文を**対称グラデに変更** (上下濃 `#8d0000` / 中央薄 `#ff3b25`) — 上下が暗く中央が明るい立体感
+- **黒ドロップシャドウ層を独立追加** (クリーム縁と濃赤茶締めの間)
+  - 旧: 濃赤茶層に `e_softShadow` filter 適用 → 視認性低い
+  - 新: 独立 text 層 (x+3 y+4 stroke 4 + `e_shadowBlur` 軽ぼかし opacity 0.8) → 右下にズレた純黒の輪郭
+- **斜体化** (fontStyle "italic")
+- 濃赤茶縁 strokeWidth 13 → **6** (ドロップシャドウより少し太い)
+
+#### emphasis2 変更点
+- **外側3層を削除** (実体押し出し外/中、最外周濃茶輪郭)
+  - 旧: SVG 10層 (押し出し2段で立体感)
+  - 新: SVG 7層 (黄土色内縁・黄白エッジ・本体グラデ・上白反射・中央暗部・下再反射・金外光) — シンプル金属反射に
+- **斜体化** (fontStyle "italic")
+
+#### 変更なし
+- fontSize 122 維持 (両方)
+- カラーパレット主要色維持
+
+#### 更新ファイル
+- `.template-shorts/CLAUDE.md` (早見表 / カラー / 実装ガイド / 影表)
+- `.template/CLAUDE.md` (同様)
+- `.template-shorts/.claude/skills/step09-composition/SKILL.md` (分類表 / チェックリスト)
+- `.template/.claude/skills/step09-composition/SKILL.md` (同様)
+
+---
+
 ## [v1.9.0] - 2026-04-25
 
 ### ✨ my-workspace/ 新設（受講生専用ナレッジ領域）
