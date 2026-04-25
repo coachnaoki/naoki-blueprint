@@ -129,10 +129,84 @@
 
 <div class="card">
 
+<!-- v1.10.0 -->
+<div class="version-entry">
+  <div class="version-header">
+    <span class="version-badge latest">v1.10.0</span>
+    <span class="version-date">2026-04-25</span>
+  </div>
+
+  <div class="section-label">✨ 強調テロップが もっとカッコよくなりました</div>
+  <p class="version-desc">動画の冒頭やキーワードで使う 2種類の強調テロップ(赤の emphasis / 金の emphasis2)を細かく調整しました。次に作る動画から自動で適用されます。</p>
+  <ul>
+    <li><strong>赤の強調テロップ(emphasis)に立体感が出ました</strong>: 文字の上下が濃い赤、中央が明るい赤になり、奥行きが見えるようになりました。</li>
+    <li><strong>赤の強調テロップに黒い影がはっきり入りました</strong>: 背景が明るい動画でも文字が浮き上がって見えやすくなります。</li>
+    <li><strong>2つとも斜体になりました</strong>: 文字に動きが出て、Hook の勢いが強まります。</li>
+    <li><strong>金の強調テロップ(emphasis2)がスッキリしました</strong>: 不要に重たかった外周を削って、金属感を残したまま読みやすく。</li>
+  </ul>
+
+  <div class="section-label">📌 あなたが やることはありません</div>
+  <ul>
+    <li>次回 <code>./アップデート.sh</code> で自動反映。</li>
+    <li>既に作った動画は見た目変わりません(再レンダしない限り)。新しい動画から自動で新デザインに。</li>
+  </ul>
+</div>
+
+<!-- v1.9.0 -->
+<div class="version-entry">
+  <div class="version-header">
+    <span class="version-badge">v1.9.0</span>
+    <span class="version-date">2026-04-25</span>
+  </div>
+
+  <div class="section-label">✨ 「自分の話し方」を1回書けば、毎回反映されるようになりました</div>
+  <p class="version-desc">動画を作るたびに「私の一人称は◯◯で、口癖は△△で…」と説明する必要がなくなりました。1回書いておけば、台本生成・テロップ作成のすべてに自動で反映されます。</p>
+  <ul>
+    <li><strong>あなた専用のノート置き場が新設されました</strong>: <code>my-workspace/</code> フォルダに「話し方ノート」「過去の台本」「お手本動画のメモ」を置けます。</li>
+    <li><strong>毎回の入力作業がなくなります</strong>: 一人称・口癖・NGワード・キラーフレーズ・テロップ量・絵文字の好みを一度書けば、新しい動画でも自動で読み込まれます。</li>
+    <li><strong>過去台本やお手本動画も活かせます</strong>: <code>past-scripts/</code> や <code>benchmark-videos/</code> にメモしておけば、新企画作りで自動参考にされます。</li>
+    <li><strong>使い方</strong>: <code>my-workspace/my-style.example.md</code> をコピーして <code>my-style.md</code> として埋めるだけ。</li>
+    <li><strong>アップデートで上書きされない</strong>: 書いた内容はあなたのものとして守られます。</li>
+  </ul>
+</div>
+
+<!-- v1.8.0 -->
+<div class="version-entry">
+  <div class="version-header">
+    <span class="version-badge">v1.8.0</span>
+    <span class="version-date">2026-04-24</span>
+  </div>
+
+  <div class="section-label">🔥 強調テロップが プロデザイン級にクオリティアップ</div>
+  <p class="version-desc">動画の Hook やキーワードに使う 2種類の強調テロップを、Photoshop で作ったような重厚な質感に作り直しました。サムネ並みの押し出し感が出ます。</p>
+  <ul>
+    <li><strong>赤の強調テロップ(emphasis)が PSD級の質感に</strong>: 派手な赤グラデーション + 金色のグロー + 立体的な縁取りで、動画の冒頭が一気に映えます。</li>
+    <li><strong>金の強調テロップ(emphasis2)が金属反射に進化</strong>: 中心で反射が割れる本物の金属のような質感。数字や強調ワードがリッチに。</li>
+    <li><strong>使い方は今まで通り</strong>: <code>text</code> に文字を渡すだけ。書式の変更はゼロ。</li>
+    <li><strong>emphasis3 は廃止</strong>: emphasis2 の新デザインに統合されたため、Python での事前生成は不要になりました。</li>
+  </ul>
+</div>
+
+<!-- v1.7.0 -->
+<div class="version-entry">
+  <div class="version-header">
+    <span class="version-badge">v1.7.0</span>
+    <span class="version-date">2026-04-24</span>
+  </div>
+
+  <div class="section-label">🔥 カット後の発話の「ブツ切れ」が直りました</div>
+  <p class="version-desc">「あなた」の最初の「あ」が消える、「〜ね」の語尾が切れる、といった発話末尾・先頭が削られる問題を解消しました。次回作る動画から自然な発話に戻ります。</p>
+  <ul>
+    <li><strong>発話の余韻が自然に残るようになりました</strong>: カット時に文字単位で詰めるのをやめ、前後にちょっと余白を残す方式に戻しました。</li>
+    <li><strong>動画の尺は少し長くなる</strong>(2分48秒の素材で +約3秒)が、聞こえ方は明らかに自然になります。</li>
+    <li><strong>既存プロジェクトはそのままでOK</strong>: すでにカット済みの動画は再カット不要。次回新規動画から自動で新方式に。</li>
+  </ul>
+</div>
+
 <!-- v1.6.0 -->
 <div class="version-entry">
   <div class="version-header">
-    <span class="version-badge latest">v1.6.0</span>
+    <span class="version-badge">v1.6.0</span>
     <span class="version-date">2026-04-24</span>
   </div>
 
