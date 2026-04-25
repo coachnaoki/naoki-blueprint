@@ -111,22 +111,20 @@ step14-final           → レンダリング
 各 step の作業を開始する際、**まず以下のファイルの存在を確認し、あれば読み込む**こと。
 
 ### 参照先
-- `../../my-workspace/my-style.md` — 受講生の話し方・NGワード・好みのスタイル
-- `../../my-workspace/past-scripts/` — 過去台本アーカイブ（文体参考）
-- `../../my-workspace/benchmark-videos/` — お手本動画のメモ（構成参考）
+- `../../my-workspace/my-customizations.md` — 受講生がテンプレを改変した内容の記憶 (テロップデザイン・アニメ・コンポーネントの自分用変更)
 
 ### 適用ルール
-- **台本生成（step01 / step12-slides-gen 等）**: `my-style.md` の「一人称・二人称」「口癖」「NGワード」「キラーフレーズ」を必ず反映する
-- **テロップ生成（step08-telop）**: `my-style.md` の「テロップ量」「絵文字ルール」「強調の仕方」を反映する
-- **構成提案**: `benchmark-videos/` に記録されたお手本動画の構成を参考にする
-- **ファイルが存在しない場合**: 従来通り汎用テンプレで進行（警告不要）
+- **テロップ生成（step08-telop）**: `my-customizations.md` の「改変したテロップデザイン」を必ず反映する
+- **コンポジション拡張（step09-composition）**: 「改変したアニメーション」「改変したコンポーネント」を反映する
+- **特殊コンポ実装（step16-special-components）**: BulletList / CTA / HeadingBanner / ThemeTelop の改変を反映する
+- **ファイルが存在しない場合**: 従来通り Naoki式デフォルトで進行（警告不要）
 
 ### 優先順位
-1. `my-style.md` の記述（最優先 — 受講生個別のルール）
+1. `my-customizations.md` の記述（最優先 — 受講生個別の改変）
 2. このCLAUDE.mdのルール（テロップデザイン固定値等）
 3. 汎用的な判断
 
-`my-style.md` と CLAUDE.md のルールが矛盾する場合、**テロップデザイン固定値**（色・フォント等）は CLAUDE.md を優先、**文体・構成**は my-style.md を優先する。
+`my-customizations.md` と CLAUDE.md のルールが矛盾する場合、**受講生の改変が優先**される (受講生の自己責任)。ただし固定値ルール (色パレット基本・8文字制限等) を覆す改変は警告すること。
 
 ---
 

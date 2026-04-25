@@ -18,6 +18,37 @@ naoki-blueprint のバージョンアップ履歴です。バージョンは [Se
 
 ---
 
+## [v1.11.0] - 2026-04-26
+
+### 🔄 my-workspace の方針転換: 「話し方ノート」→「テンプレ改変記憶」
+
+v1.9.0 で導入した `my-style.md` (話し方・NGワード・キラーフレーズ等の受講生プロフィール) は、ChatWork 連絡前のレビューで Naoki から「話し方は台本側で完結する。本当に欲しいのはテンプレ改変の記憶」との指摘を受け、**全面リファクタ**。
+
+#### 変更内容
+
+- **削除**: `my-workspace/my-style.example.md` / `past-scripts/` / `benchmark-videos/` (話し方系・参考素材系)
+- **新規**: `my-workspace/my-customizations.example.md` (受講生がテンプレを改変した内容を記録するテンプレ)
+  - 改変したテロップデザイン (フォント・色・サイズ・縁取り)
+  - 改変したアニメーション (slideUp フレーム数・easing 等)
+  - 改変したコンポーネント (BulletList / CTA / HeadingBanner / ThemeTelop の色・サイズ等)
+  - その他カスタマイズ (BGM フェード・SE音量・画像挿入挙動 等)
+- **更新**: `my-workspace/README.md` (改変記憶用の説明に書き換え)
+- **更新**: `my-workspace/.gitignore` (`my-customizations.md` を除外、過去のフォルダ除外を整理)
+- **更新**: 両テンプレ (`.template-shorts/CLAUDE.md` / `.template/CLAUDE.md`) の「受講生ナレッジの参照」セクションを `my-customizations.md` 参照に置換
+
+#### なぜこっちが本質か
+
+- 動画を作るたびに「あの色変更、また書き直さないと…」のループから解放される
+- テロップデザインの自分流カスタマイズを 1度書けば永続化
+- 「話し方」は台本生成の文脈で吸収できるため、ファイル化する必要が薄かった
+
+#### 既存受講生への影響
+
+- v1.9.0 をすでに使い始めて `my-style.md` を作成済みの方は、内容を参考に `my-customizations.md` へ書き直し
+- ChatWork で受講生に告知前のため、実害はほぼゼロ
+
+---
+
 ## [v1.10.0] - 2026-04-25
 
 ### 🔥 emphasis / emphasis2 微調整 (両テンプレ同時)

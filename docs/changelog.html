@@ -129,10 +129,33 @@
 
 <div class="card">
 
+<!-- v1.11.0 -->
+<div class="version-entry">
+  <div class="version-header">
+    <span class="version-badge latest">v1.11.0</span>
+    <span class="version-date">2026-04-26</span>
+  </div>
+
+  <div class="section-label">✨ 自分が改変したテンプレを記憶できる場所が新設されました</div>
+  <p class="version-desc">「動画作るたびに、あの色変更また書き直すのか…」のループから解放されます。1度書けば、新しい動画でも改変済みのまま自動反映。</p>
+  <ul>
+    <li><strong>テロップデザインの自分流カスタマイズが永続化</strong>: 例えば「emphasis のフォントを Noto Serif JP に変える」を1回書けば、次の動画でも自動でその設定。</li>
+    <li><strong>アニメーション・コンポーネントの改変もまとめて記憶</strong>: slideUp フレーム数 / BulletList の色 / CTA のサイズ etc.</li>
+    <li><strong>使い方</strong>: <code>my-workspace/my-customizations.example.md</code> をコピーして <code>my-customizations.md</code> として埋めるだけ。</li>
+    <li><strong>アップデートで上書きされない</strong>: 書いた内容はあなたのものとして守られます。</li>
+  </ul>
+
+  <div class="section-label">📌 v1.9.0 からの方針転換</div>
+  <ul>
+    <li>v1.9.0 で導入した「話し方ノート」(<code>my-style.md</code>) は廃止しました。話し方は台本側で完結するため、ファイル化の必要が薄かったため。</li>
+    <li>本当に欲しかった「テンプレ改変の記憶」用に置き換えています。</li>
+  </ul>
+</div>
+
 <!-- v1.10.0 -->
 <div class="version-entry">
   <div class="version-header">
-    <span class="version-badge latest">v1.10.0</span>
+    <span class="version-badge">v1.10.0</span>
     <span class="version-date">2026-04-25</span>
   </div>
 
@@ -159,15 +182,8 @@
     <span class="version-date">2026-04-25</span>
   </div>
 
-  <div class="section-label">✨ 「自分の話し方」を1回書けば、毎回反映されるようになりました</div>
-  <p class="version-desc">動画を作るたびに「私の一人称は◯◯で、口癖は△△で…」と説明する必要がなくなりました。1回書いておけば、台本生成・テロップ作成のすべてに自動で反映されます。</p>
-  <ul>
-    <li><strong>あなた専用のノート置き場が新設されました</strong>: <code>my-workspace/</code> フォルダに「話し方ノート」「過去の台本」「お手本動画のメモ」を置けます。</li>
-    <li><strong>毎回の入力作業がなくなります</strong>: 一人称・口癖・NGワード・キラーフレーズ・テロップ量・絵文字の好みを一度書けば、新しい動画でも自動で読み込まれます。</li>
-    <li><strong>過去台本やお手本動画も活かせます</strong>: <code>past-scripts/</code> や <code>benchmark-videos/</code> にメモしておけば、新企画作りで自動参考にされます。</li>
-    <li><strong>使い方</strong>: <code>my-workspace/my-style.example.md</code> をコピーして <code>my-style.md</code> として埋めるだけ。</li>
-    <li><strong>アップデートで上書きされない</strong>: 書いた内容はあなたのものとして守られます。</li>
-  </ul>
+  <div class="section-label">✨ my-workspace/ を新設(v1.11.0で「テンプレ改変記憶」に方針転換)</div>
+  <p class="version-desc">動画ごとの設定再入力をなくす目的で <code>my-workspace/</code> を新設しました。当初は「話し方ノート」(<code>my-style.md</code>) でしたが、レビューを経て v1.11.0 で「テンプレ改変の記憶」(<code>my-customizations.md</code>) に方針転換しています。最新の使い方は v1.11.0 を参照してください。</p>
 </div>
 
 <!-- v1.8.0 -->

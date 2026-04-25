@@ -1,11 +1,4 @@
 # 受講生の実データは追跡しない（naoki-blueprint の自動アップデートで上書きされないため）
 
 # ユーザーが作る自分用ファイル
-my-style.md
-
-# 過去台本・ベンチマーク動画は .gitkeep 以外すべて無視
-past-scripts/*
-!past-scripts/.gitkeep
-
-benchmark-videos/*
-!benchmark-videos/.gitkeep
+my-customizations.md
