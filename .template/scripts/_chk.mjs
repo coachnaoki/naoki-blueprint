@@ -37,31 +37,32 @@ const _autoUpdate=async()=>{
     // 3) git fetch（タイムアウト10秒、失敗時はスキップ）
     try{_ex("git fetch origin",{cwd:root,stdio:"ignore",timeout:10000});}catch{return;}
 
-    // 4) HEAD と origin/main を比較
+    // 3.5) アップデート権限 + version_track 取得（v1 → main, v2 → v2.0）
+    let targetBranch="main";
+    if(_e(_lf)){try{const d=JSON.parse(_r(_lf,"utf-8"));const fp=_g();const r=await fetch(`${_k}?action=check_update&id=${encodeURIComponent(d.license_id)}&fp=${fp}`,{signal:AbortSignal.timeout(5000)});const j=await r.json();if(j.update_allowed===false)return;if(j.version_track==="v2")targetBranch="v2.0";}catch{}}
+
+    // 4) HEAD と origin/${targetBranch} を比較
     let local,remote;
     try{
       local=_ex("git rev-parse HEAD",{cwd:root}).toString().trim();
-      remote=_ex("git rev-parse origin/main",{cwd:root}).toString().trim();
+      remote=_ex(`git rev-parse origin/${targetBranch}`,{cwd:root}).toString().trim();
     }catch{return;}
     if(local===remote)return;
-
-    // 4.5) アップデート権限チェック（サイレント）
-    if(_e(_lf)){try{const d=JSON.parse(_r(_lf,"utf-8"));const fp=_g();const r=await fetch(`${_k}?action=check_update&id=${encodeURIComponent(d.license_id)}&fp=${fp}`,{signal:AbortSignal.timeout(5000)});const j=await r.json();if(j.update_allowed===false)return;}catch{}}
 
     // 5) バージョン取得
     let cv="?",nv="?";
     try{cv=_r(_j(root,"VERSION"),"utf-8").trim();}catch{}
-    try{nv=_ex("git show origin/main:VERSION",{cwd:root}).toString().trim();}catch{}
+    try{nv=_ex(`git show origin/${targetBranch}:VERSION`,{cwd:root}).toString().trim();}catch{}
 
-    process.stderr.write(`\x1b[33m📦 naoki-blueprint v${cv} → v${nv} に自動更新中...\x1b[0m\n`);
+    process.stderr.write(`\x1b[33m📦 naoki-blueprint v${cv} → v${nv} に自動更新中... (${targetBranch})\x1b[0m\n`);
 
     // 6) アップデート.sh を /tmp/ にコピーしてから実行（自己書き換え問題の回避）
-    //    git reset --hard origin/main でスクリプト自身が書き換わる可能性があるため、
+    //    git reset --hard でスクリプト自身が書き換わる可能性があるため、
     //    必ず別パスにコピーしたものを実行する
     const tmpScript=`/tmp/naoki-blueprint-update-${process.pid}-${now}.sh`;
     try{
       _ex(`cp "${_j(root,"アップデート.sh")}" "${tmpScript}"`,{stdio:"ignore"});
-      const result=_sp("bash",[tmpScript],{cwd:root,stdio:"inherit"});
+      const result=_sp("bash",[tmpScript,targetBranch],{cwd:root,stdio:"inherit"});
       if(result.status!==0){
         process.stderr.write(`\x1b[31m⚠ アップデートスクリプトが異常終了しました (exit ${result.status})\x1b[0m\n`);
       }else{
