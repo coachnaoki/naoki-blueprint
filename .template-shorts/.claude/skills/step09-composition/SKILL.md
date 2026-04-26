@@ -10,27 +10,69 @@ allowed-tools: Read, Write, Edit, Glob, Grep, Bash(npx tsc *), Bash(npx remotion
 
 # Step 09: コンポジション構築（拡張）
 
-`src/MainComposition.tsx` を拡張する。**step05で暫定版（動画のみ）が既に生成済み**。ここではテロップレンダラーと SE システムを追加していく。Root.tsx と index.ts は step05 で作成済みなので、durationInFrames / fps の確認のみ。
+`src/MainComposition.tsx` を拡張する。**step05で暫定版（動画のみ）が既に生成済み**。ここではテロップレンダラーと SE システムを追加していく。
+
+**重要**: step08 完了時点で `gen-editable.mjs` により以下が生成済み:
+- `src/EditableTelops.ts`（schema + telopMeta）
+- `src/Root.tsx`（schema + defaultProps inline、Visual Editing 対応）
+
+Root.tsx は **step09 では触らない**（gen-editable.mjs が管理する）。durationInFrames/fps は step05 の値を保持して生成されている。
 
 ## 前提条件
 - Step 05（カット）が完了し、暫定 `src/MainComposition.tsx` / `src/Root.tsx` / `src/index.ts` が存在する
-- Step 07（テンプレート設定）とStep 08（テロップデータ）が完了していること
+- Step 07（テンプレート設定）とStep 08（テロップデータ + gen-editable.mjs実行）が完了していること
   - `src/templateConfig.ts`
   - `src/telopData.ts`
+  - `src/EditableTelops.ts`（自動生成）
+  - `src/Root.tsx`（自動生成、schema + defaultProps inline）
 - Remotion Studio が起動中（step05で起動済み、ここではホットリロードで反映される）
 
 ## やること
 
 ### 1. コンポーネントの構造設計
 
-MainComposition.tsx は以下の3つのレンダリングシステムで構成する：
+MainComposition は **Visual Editing 対応の Props 受け取り型**で実装する。これにより Studio で各テロップの start/end をドラッグ編集できる。
+
+```typescript
+import { useMemo } from "react";
+import { telopData, type TelopEntry } from "./telopData";
+import { telopMeta, type MainCompositionProps } from "./EditableTelops";
+
+export const MainComposition: React.FC<MainCompositionProps> = (props) => {
+  const frame = useCurrentFrame();
+
+  // Studio Props パネルで編集された start/end と、不変メタ (text/template/emphasisWord) を結合
+  const editableTelopData = useMemo<TelopEntry[]>(
+    () =>
+      Object.entries(props.telops).map(([key, range]) => {
+        const meta = telopMeta[key];
+        return {
+          text: meta.text,
+          startFrame: range.start,
+          endFrame: range.end,
+          template: meta.template,
+          ...(meta.emphasisWord !== undefined ? { emphasisWord: meta.emphasisWord } : {}),
+        };
+      }),
+    [props.telops]
+  );
+
+  // SE タイミングも editableTelopData に追従させる
+  const seEntries = useMemo(() => buildSEEntriesFromData(editableTelopData), [editableTelopData]);
+
+  // 以降、editableTelopData をテロップレンダラー / SE エントリで使用
+  ...
+};
+```
+
+以下の3つのレンダリングシステムで構成する：
 
 #### A. ベース動画
 - カット済み動画（`public/videos/main/*_cut.mp4`）を `OffthreadVideo` で全画面表示
 - `objectFit: "cover"` で画面全体に表示
 
 #### B. テロップレンダラー
-- `telopData` から現在のフレームに該当するテロップを取得
+- `editableTelopData` から現在のフレームに該当するテロップを取得（**`telopData` は直接参照しない**）
 - テンプレートごとにスタイルを分岐（switch文）
 - アニメーション: slideUp / slideLeft（表示開始10フレーム）、**フェードアウトなし**（パッと消える）
 - 共通スタイル: `position: absolute, top: "75%", left: "50%", transform: "translate(-50%, -50%)"`, **whiteSpace: "nowrap"**, **fontWeight: 900**, **borderRadius禁止**（角は四角）— 縦動画は下から1/4の位置（1920×0.75 = 1440px地点）
@@ -110,21 +152,21 @@ stroke + filter が SVG viewBox を超えて広がるため、以下を必須:
 **すべてのテロップにドロップシャドウをつける。** 影がないと背景と文字が溶けて読みにくくなる。SVG系はSVG外側の `<div>` に `filter` を指定、CSS系は各レイヤーの `<div>` に指定。具体的な値はCLAUDE.mdの「テロップのドロップシャドウ」表を参照。
 
 ```typescript
-// テロップ取得ロジック
-let currentTelop: TelopEntry | undefined;
-for (let i = 0; i < telopData.length; i++) {
-  const t = telopData[i];
-  const nextStart = i < telopData.length - 1 ? telopData[i + 1].startFrame : t.endFrame + 1;
-  const hideAt = (nextStart - t.endFrame) > 25 ? t.endFrame + 1 : nextStart;
-  if (frame >= t.startFrame && frame < hideAt) {
-    currentTelop = t;
-    break;
+// テロップ取得ロジック（editableTelopData ベース・useMemo 推奨）
+const currentTelop = useMemo<TelopEntry | undefined>(() => {
+  for (let i = 0; i < editableTelopData.length; i++) {
+    const t = editableTelopData[i];
+    const nextStart = i < editableTelopData.length - 1 ? editableTelopData[i + 1].startFrame : t.endFrame + 1;
+    const hideAt = (nextStart - t.endFrame) > 25 ? t.endFrame + 1 : nextStart;
+    if (frame >= t.startFrame && frame < hideAt) return t;
   }
-}
+  return undefined;
+}, [editableTelopData, frame]);
 ```
 
 #### C. SE（効果音）システム
-- `telopData` + `templateConfig` からSEを自動生成
+- `editableTelopData` + `templateConfig` からSEを動的生成（Visual Editing で start 編集時に追従）
+- 純粋関数 `buildSEEntriesFromData(telops: TelopEntry[])` として定義し、`useMemo` で再計算
 - **最低50フレーム（2秒）間隔**: 密集するSEを間引く
 - **直近2回重複回避**: 候補リストから直近2つのSEを除外してから選択（do-whileリトライではなくfilterで除外）
 - **第三者発言の文途中スキップ**: テキスト末尾が「、」や助詞（は/の/に/を/が/で/も/て/と）の場合SEなし
@@ -151,47 +193,15 @@ const selectedSE = candidates[index];
 
 上記の設計に基づき MainComposition.tsx を作成する。
 
-### 3. Root.tsx にコンポジション登録
+### 3. Root.tsx は触らない（step08 で生成済み）
 
-`src/Root.tsx` にコンポジションを登録する。
+`src/Root.tsx` は step08 の `gen-editable.mjs` 実行時に自動生成されている:
+- `<Composition>` 1個（id="MainVideo"）
+- `schema={mainCompositionSchema}`（EditableTelops.ts から import）
+- `defaultProps={{ telops: { ... } }}`（テロップ70個分が inline 展開）
+- `durationInFrames` / `fps` / `width` / `height` は step05 の値を保持
 
-```typescript
-import { Composition } from "remotion";
-import { MainComposition } from "./MainComposition";
-
-export const RemotionRoot: React.FC = () => {
-  return (
-    <>
-      <Composition
-        id="MainVideo"
-        component={MainComposition}
-        durationInFrames={/* video-context.md の総フレーム数 */}
-        fps={/* video-context.md の FPS */}
-        width={1080}
-        height={1920}
-      />
-    </>
-  );
-};
-```
-
-- `fps` は `video-context.md` の制作設定に記載されたFPSを使用する
-- `durationInFrames` は `video-context.md` の総フレーム数を使用する
-
-### 4. Root.tsx の durationInFrames / fps 確認
-
-step05 で生成済みの `src/Root.tsx` で `durationInFrames` / `fps` が正しい値になっているか確認。誤っていれば修正する。
-
-```typescript
-<Composition
-  id="MainVideo"
-  component={MainComposition}
-  durationInFrames={/* カット後のフレーム数 */}
-  fps={/* video-context.md のFPS */}
-  width={1080}
-  height={1920}
-/>
-```
+**step09 では Root.tsx を編集しない**。万が一値がズレていれば `gen-editable.mjs` を再実行（既存値を読み取って維持される）。
 
 Remotion Studio は step05 で既に起動済みなので、ここでの起動処理は不要。ホットリロードで MainComposition.tsx の拡張内容が自動反映される。
 
@@ -203,6 +213,14 @@ npx tsc --noEmit
 
 ## CLAUDE.md 準拠チェック
 
+### Visual Editing 対応（v2.0 必須）
+- [ ] `MainComposition` を `React.FC<MainCompositionProps>` 形式で定義（props 受け取り）
+- [ ] `editableTelopData` を `useMemo` で構築（props.telops と telopMeta を結合）
+- [ ] `currentTelop` の取得が `editableTelopData` ベース（`telopData` 直接参照していない）
+- [ ] `seEntries` を `useMemo(() => buildSEEntriesFromData(editableTelopData))` で動的計算
+- [ ] `Root.tsx` を step09 で編集していない（step08 の gen-editable.mjs 出力を維持）
+
+### テロップ実装ルール
 - [ ] `whiteSpace: "nowrap"` がテロップに設定されている
 - [ ] テロップの `fontWeight: 900`
 - [ ] `borderRadius` を使っていない（角は四角）

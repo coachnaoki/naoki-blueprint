@@ -150,10 +150,31 @@ export const telopData: TelopEntry[] = [
 - **emphasisWordは normal_emphasis 専用**: 他のテンプレートに書いても無視される。配列指定も可（対句・複数強調用）
 - **TypeScript ビルドチェック**: `npx tsc --noEmit`
 
+## 7. Visual Editing 用ファイル生成（必須）
+
+`src/telopData.ts` を確定したら、Studio 上で時間をドラッグ調整できるようにするためのファイル群を生成する。
+
+```bash
+node scripts/gen-editable.mjs
+```
+
+これで以下が生成される:
+- `src/EditableTelops.ts` — zod schema + テロップメタデータ（自動生成、直接編集禁止）
+- `src/Root.tsx` — `<Composition>` の `defaultProps` に各テロップが inline 展開される
+
+### 受講生がやること（step09 完了後の運用）
+
+1. `npm run dev` で Remotion Studio 起動
+2. MainVideo を選んで右パネル Props タブを開く
+3. 各テロップ `[t00] いきなりですが` を展開して `start` / `end` を編集
+4. プレビュー即反映、Root.tsx に自動 codemod 保存
+5. 編集確定したい時: `node scripts/finalize.mjs` で telopData.ts に逆同期
+
 ## 完了条件
 - `src/telopData.ts` が存在する
 - 字幕カバー率90%以上
 - 重複・接触がない
+- `node scripts/gen-editable.mjs` 実行済み（EditableTelops.ts と Root.tsx が生成されている）
 - TypeScript ビルドが通る
 
 ## 完了後
@@ -164,6 +185,7 @@ export const telopData: TelopEntry[] = [
 【テロップ数】○○個
 【テンプレート内訳】normal: ○, emphasis: ○, negative: ○, ...
 【カバー率】○○%
+【Visual Editing】Root.tsx に inline 展開済み
 
 次のステップ → /step09-composition（コンポジション構築）
 進めますか？
