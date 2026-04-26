@@ -92,15 +92,20 @@ const runPKCEFlow = (licenseId) => {
       };
 
       if (errorParam) {
+        const friendlyMsg =
+          errorParam === "access_denied"
+            ? "Google ログインをキャンセルしました。もう一度実行してください"
+            : `Google での認証に失敗しました (${errorParam})`;
         res.writeHead(400, { "Content-Type": "text/html; charset=utf-8" });
-        res.end(errorHtml(errorParam));
-        finish(() => reject(new Error(`OAuth エラー: ${errorParam}`)));
+        res.end(errorHtml(friendlyMsg));
+        finish(() => reject(new Error(friendlyMsg)));
         return;
       }
       if (returnedState !== state) {
+        const msg = "認証情報が壊れました（セキュリティチェック失敗）。もう一度実行してください";
         res.writeHead(400, { "Content-Type": "text/html; charset=utf-8" });
-        res.end(errorHtml("state 不一致 (CSRF 防止)"));
-        finish(() => reject(new Error("state 不一致")));
+        res.end(errorHtml(msg));
+        finish(() => reject(new Error(msg)));
         return;
       }
 

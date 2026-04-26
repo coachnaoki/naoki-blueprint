@@ -92,15 +92,20 @@ const runPKCEFlow = (licenseId) => {
       };
 
       if (errorParam) {
+        const friendlyMsg =
+          errorParam === "access_denied"
+            ? "Google ログインをキャンセルしました。もう一度実行してください"
+            : `Google での認証に失敗しました (${errorParam})`;
         res.writeHead(400, { "Content-Type": "text/html; charset=utf-8" });
-        res.end(errorHtml(errorParam));
-        finish(() => reject(new Error(`OAuth エラー: ${errorParam}`)));
+        res.end(errorHtml(friendlyMsg));
+        finish(() => reject(new Error(friendlyMsg)));
         return;
       }
       if (returnedState !== state) {
+        const msg = "認証情報が壊れました（セキュリティチェック失敗）。もう一度実行してください";
         res.writeHead(400, { "Content-Type": "text/html; charset=utf-8" });
-        res.end(errorHtml("state 不一致 (CSRF 防止)"));
-        finish(() => reject(new Error("state 不一致")));
+        res.end(errorHtml(msg));
+        finish(() => reject(new Error(msg)));
         return;
       }
 
@@ -130,11 +135,11 @@ const runPKCEFlow = (licenseId) => {
       const opener =
         process.platform === "darwin" ? "open" :
         process.platform === "win32" ? "start" : "xdg-open";
-      exec(`${opener} "${authUrl.toString()}"`, (err) => {
-        if (err) {
-          process.stdout.write(`手動でこのURLを開いてください:\n  ${authUrl.toString()}\n\n`);
-        }
-      });
+      exec(`${opener} "${authUrl.toString()}"`, () => {});
+
+      // ブラウザ自動オープンが失敗してもユーザーが操作できるよう、手動URLを必ず表示
+      process.stdout.write("\x1b[2mブラウザが自動で開かない場合は、以下のURLを手動でコピーしてブラウザに貼り付けてください:\x1b[0m\n");
+      process.stdout.write(`\x1b[2m  ${authUrl.toString()}\x1b[0m\n\n`);
       process.stdout.write("\x1b[33m⏳ 認証完了を待機中（最大10分）...\x1b[0m\n");
     });
 
