@@ -95,14 +95,14 @@ const _autoUpdate=async()=>{
         const j=await r.json();
         if(!j.valid){
           process.stderr.write(`\x1b[31m✗ ${j.error}\x1b[0m\n`);
-          process.stderr.write(`\x1b[33m  再連携が必要な場合: node scripts/linkGoogle.mjs ${d.license_id}\x1b[0m\n`);
+          process.stderr.write(`\x1b[33m  再連携が必要な場合: Claude Code に「/link-google」と入力してください\x1b[0m\n`);
           process.exit(1);
         }
       }catch{}
     }else{
       if(d.fingerprint!==fp){
         process.stderr.write("\x1b[31m✗ 別PCのライセンスです\x1b[0m\n");
-        process.stderr.write("\x1b[33m  2台目で使う場合: node scripts/linkGoogle.mjs <ライセンスID>（要 Google 連携）\x1b[0m\n");
+        process.stderr.write("\x1b[33m  2台目で使う場合: Claude Code に「/link-google」または「2台目で使いたい」と入力してください\x1b[0m\n");
         process.exit(1);
       }
       try{
