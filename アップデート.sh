@@ -35,26 +35,35 @@ echo "現在のバージョン: v$CURRENT_VERSION"
 echo "  ($CURRENT_COMMIT)"
 echo ""
 
-# --- ① アップデート権限チェック（サイレント） ------------------------------
+# --- ① アップデート権限チェック + version_track 取得（サイレント） ----------
 # .license から license_id + fingerprint を取り、check_update API を叩く。
-# update_allowed が false の場合は本体更新をスキップして「最新版です」と表示する。
-# API 失敗時（ネットワーク断等）は従来通り更新を進める（オフライン対応）。
+# update_allowed が false の場合は本体更新をスキップ。
+# version_track="v2" なら v2.0 ブランチ、それ以外（v1 / 未取得）は main ブランチ。
+# API 失敗時（ネットワーク断等）は main ブランチで進める（オフライン対応・後方互換）。
+# 第1引数 ($1) で targetBranch をオーバーライド可能（_chk.mjs から呼ばれる場合）。
 UPDATE_ALLOWED=1
+TARGET_BRANCH="${1:-main}"  # デフォルト main、引数で上書き可能
 if [ -f ".license" ] && command -v python3 >/dev/null 2>&1; then
   LICENSE_ID=$(python3 -c 'import json,sys;d=json.load(open(".license"));print(d.get("license_id",""))' 2>/dev/null)
   LICENSE_FP=$(python3 -c 'import json,sys;d=json.load(open(".license"));print(d.get("fingerprint",""))' 2>/dev/null)
   if [ -n "$LICENSE_ID" ] && [ -n "$LICENSE_FP" ]; then
     API_URL="https://script.google.com/macros/s/AKfycbz50xJ-uVfTMgHI4e0FTFa7b21q3S4oMftfI2SidWJPSbC_bhKYkmqFOj_RG0FWYkQe/exec"
     RESP=$(curl -sL --max-time 5 "$API_URL?action=check_update&id=$LICENSE_ID&fp=$LICENSE_FP" 2>/dev/null)
-    if [ -n "$RESP" ] && echo "$RESP" | grep -q '"update_allowed":false'; then
-      UPDATE_ALLOWED=0
+    if [ -n "$RESP" ]; then
+      if echo "$RESP" | grep -q '"update_allowed":false'; then
+        UPDATE_ALLOWED=0
+      fi
+      # version_track="v2" なら v2.0 ブランチに切替（コマンドライン引数が無い場合のみ）
+      if [ -z "$1" ] && echo "$RESP" | grep -q '"version_track":"v2"'; then
+        TARGET_BRANCH="v2.0"
+      fi
     fi
   fi
 fi
 
 # --- ② 本体を最新版に同期 --------------------------------------------------
 if [ "$UPDATE_ALLOWED" = "1" ]; then
-  echo "→ 最新版を取得中..."
+  echo "→ 最新版を取得中... (branch: $TARGET_BRANCH)"
   if ! git fetch origin 2>/dev/null; then
     echo "⚠️  最新版の取得に失敗しました（ネットワークを確認してください）。"
     echo "   現在のバージョンでプロジェクト同期のみ実行します。"
@@ -63,14 +72,14 @@ if [ "$UPDATE_ALLOWED" = "1" ]; then
 fi
 
 LOCAL=$(git rev-parse HEAD)
-REMOTE=$(git rev-parse origin/main 2>/dev/null)
+REMOTE=$(git rev-parse "origin/$TARGET_BRANCH" 2>/dev/null)
 
 if [ "$UPDATE_ALLOWED" = "1" ] && [ -n "$REMOTE" ] && [ "$LOCAL" != "$REMOTE" ]; then
-  REMOTE_VERSION=$(git show "origin/main:VERSION" 2>/dev/null | head -1 || echo "unknown")
+  REMOTE_VERSION=$(git show "origin/$TARGET_BRANCH:VERSION" 2>/dev/null | head -1 || echo "unknown")
   echo ""
-  echo "📦 新しいバージョンが見つかりました: v$CURRENT_VERSION → v$REMOTE_VERSION"
+  echo "📦 新しいバージョンが見つかりました: v$CURRENT_VERSION → v$REMOTE_VERSION ($TARGET_BRANCH)"
   echo ""
-  git log --oneline HEAD..origin/main | head -10
+  git log --oneline "HEAD..origin/$TARGET_BRANCH" | head -10
   echo ""
 
   # ルート直下のローカル変更を保護（受講生がうっかり CLAUDE.md などを編集していた場合のセーフティネット）
@@ -84,13 +93,19 @@ if [ "$UPDATE_ALLOWED" = "1" ] && [ -n "$REMOTE" ] && [ "$LOCAL" != "$REMOTE" ];
     echo ""
   fi
 
-  git reset --hard origin/main >/dev/null 2>&1
+  # ブランチが違う場合は checkout してから reset
+  CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
+  if [ "$CURRENT_BRANCH" != "$TARGET_BRANCH" ]; then
+    git checkout -B "$TARGET_BRANCH" "origin/$TARGET_BRANCH" >/dev/null 2>&1
+  else
+    git reset --hard "origin/$TARGET_BRANCH" >/dev/null 2>&1
+  fi
   NEW_VERSION=$(cat VERSION 2>/dev/null || echo "unknown")
   NEW_COMMIT=$(git log -1 --format="%h %s")
-  echo "✓ 最新版に更新しました: v$NEW_VERSION"
+  echo "✓ 最新版に更新しました: v$NEW_VERSION ($TARGET_BRANCH)"
   echo "  ($NEW_COMMIT)"
 else
-  echo "✓ すでに最新版です (v$CURRENT_VERSION)"
+  echo "✓ すでに最新版です (v$CURRENT_VERSION, branch: $TARGET_BRANCH)"
 fi
 echo ""
 
