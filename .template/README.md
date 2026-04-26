@@ -221,8 +221,7 @@ Claude Code を起動して、最初のコマンドを実行：
 │   └── slideTimeline.ts     ← タイムライン（自動生成）
 ├── scripts/
 │   ├── validateLicense.mjs        ← ライセンス認証
-│   ├── captureSlides.mjs          ← スライドキャプチャ
-│   └── captureSlideBlocks.mjs     ← ブロック分割キャプチャ
+│   └── captureSlides.mjs          ← スライドキャプチャ + ブロック分割（v2.0統合）
 ├── package.json
 ├── remotion.config.ts
 └── tsconfig.json

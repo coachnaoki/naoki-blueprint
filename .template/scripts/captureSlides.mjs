@@ -1,158 +1,136 @@
+#!/usr/bin/env node
+/**
+ * v2.0: aislides/slides.html をキャプチャ + ブロック分割PNG生成
+ *
+ * - ビューポート 1920×1080 / deviceScaleFactor=2 (実質3840×2160)
+ * - `<section class="slide" data-blocks="N">` のスライドはブロック分割
+ *   → `data-block-index="K"` の要素を K まで表示してキャプチャ
+ *   → block 1, 2, ..., N の N枚を生成
+ * - data-blocks が無いスライドは通常キャプチャ1枚
+ *
+ * 使い方:
+ *   node scripts/captureSlides.mjs
+ *
+ * 出力: public/slides/slide-NN.png または slide-NN-blockK.png
+ */
 import puppeteer from "puppeteer";
-import path from "path";
-import fs from "fs";
-import { fileURLToPath } from "url";
+import path from "node:path";
+import fs from "node:fs";
+import url from "node:url";
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const slidesHtml = path.resolve(__dirname, "../../aislides/slides.html");
-const outputDir = path.resolve(__dirname, "../public/slides");
+const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
+const SLIDES_HTML = path.resolve(__dirname, "../aislides/slides.html");
+const OUTPUT_DIR = path.resolve(__dirname, "../public/slides");
 
-// ★ プロジェクトごとに変更する
-const TOTAL_SLIDES = 10;
+const WIDTH = 1920;
+const HEIGHT = 1080;
 
-const WIDTH = 1280;
-const HEIGHT = 720;
-
-// テンプレートタイプ → ブロック分割設定の自動マッピング
-// 複数アイテムを持つテンプレートは自動でブロック分割画像を生成する
-const BLOCK_TEMPLATE_MAP = {
-  "three-cards":   { selector: ".grid-cols-3 > div", countKey: "cards" },
-  "three-tactics": { selector: ".grid-cols-3 > div", countKey: "cards" },
-  "two-columns":   { selector: ".gap-8 > .flex-1",   countKey: "columns" },
-  "steps":         { selector: ".flex-col.px-12 > div.rounded-2xl", countKey: "steps" },
-  "closing":       { selector: ".grid > div",         countKey: "cards" },
-  "before-after":  { selector: ".gap-6.items-stretch > .flex-1", countKey: "_beforeAfter" },
-  "stats":         { selector: ".gap-8 > .flex-1",   countKey: "stats" },
-  "checklist":     { selector: ".flex-col.justify-start > div", countKey: "items" },
-  "timeline":      { selector: ".flex-col.justify-start > div", countKey: "events" },
-  "ranking":       { selector: ".flex-col.justify-start > div", countKey: "items" },
-  "versus":        { selector: ".gap-6.items-stretch > .flex-1", countKey: "_versus" },
-  "agenda":        { selector: ".flex-col.justify-center > div", countKey: "items" },
-};
-
-async function detectBlockSplits(browser) {
-  const page = await browser.newPage();
-  await page.goto(`file://${slidesHtml}`, { waitUntil: "networkidle0", timeout: 30000 });
-
-  const slideTypes = await page.evaluate(() => {
-    return SLIDE_SCRIPT.map((s) => ({
-      type: s.type,
-      itemCount:
-        (s.cards && s.cards.length) ||
-        (s.columns && s.columns.length) ||
-        (s.steps && s.steps.length) ||
-        (s.stats && s.stats.length) ||
-        (s.items && s.items.length) ||
-        (s.events && s.events.length) ||
-        (s.before && s.after ? 2 : 0) ||
-        (s.left && s.right ? 2 : 0) ||
-        0,
-    }));
-  });
-
-  await page.close();
-
-  const blockSplits = {};
-  slideTypes.forEach((slide, idx) => {
-    const mapping = BLOCK_TEMPLATE_MAP[slide.type];
-    if (mapping && slide.itemCount >= 2) {
-      blockSplits[idx + 1] = {
-        count: slide.itemCount,
-        selector: mapping.selector,
-      };
-    }
-  });
-
-  return blockSplits;
-}
-
-async function capturePage(browser, url, outPath, blockConfig) {
-  const page = await browser.newPage();
-  await page.setViewport({ width: WIDTH, height: HEIGHT, deviceScaleFactor: 2 });
-  await page.goto(url, { waitUntil: "networkidle0", timeout: 30000 });
-  await page.evaluate(() => document.fonts.ready);
-  await new Promise((r) => setTimeout(r, 500));
-
-  if (blockConfig) {
-    await page.evaluate(
-      (sel, visibleCount) => {
-        const items = document.querySelectorAll(sel);
-        items.forEach((el, idx) => {
-          if (idx >= visibleCount) el.style.visibility = "hidden";
-        });
-        // 一部のアイテムが非表示の場合、親内のabsolute要素（矢印等）も非表示
-        if (visibleCount < items.length && items.length > 0) {
-          const parent = items[0].parentElement;
-          if (parent) {
-            parent.querySelectorAll(":scope > .absolute").forEach((el) => {
-              el.style.visibility = "hidden";
-            });
-          }
-        }
-      },
-      blockConfig.selector,
-      blockConfig.visibleCount
-    );
-    await new Promise((r) => setTimeout(r, 300));
+(async () => {
+  if (!fs.existsSync(SLIDES_HTML)) {
+    console.error(`❌ slides.html が見つかりません: ${SLIDES_HTML}`);
+    process.exit(1);
   }
-
-  const stageBox = await page.evaluate(() => {
-    const el = document.querySelector(".slide-container");
-    if (!el) return null;
-    const rect = el.getBoundingClientRect();
-    return { x: rect.x, y: rect.y, width: rect.width, height: rect.height };
-  });
-
-  if (stageBox) {
-    await page.screenshot({
-      path: outPath,
-      clip: { x: stageBox.x, y: stageBox.y, width: stageBox.width, height: stageBox.height },
-    });
-  } else {
-    await page.screenshot({ path: outPath });
-  }
-
-  await page.close();
-}
-
-async function main() {
-  if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir, { recursive: true });
+  fs.mkdirSync(OUTPUT_DIR, { recursive: true });
 
   const browser = await puppeteer.launch({
     headless: "new",
     args: ["--no-sandbox", "--disable-setuid-sandbox"],
   });
 
-  // SLIDE_SCRIPTからブロック分割対象を自動検出
-  const BLOCK_SPLITS = await detectBlockSplits(browser);
-  console.log("🔍 Auto-detected block splits:", JSON.stringify(BLOCK_SPLITS, null, 2));
+  // 1. スライド構成を一括取得
+  const infoPage = await browser.newPage();
+  await infoPage.setViewport({ width: WIDTH, height: HEIGHT, deviceScaleFactor: 2 });
+  await infoPage.goto(`file://${SLIDES_HTML}`, { waitUntil: "networkidle0", timeout: 30000 });
 
-  for (let i = 1; i <= TOTAL_SLIDES; i++) {
-    const url = `file://${slidesHtml}?slide=${i}`;
-    const padded = String(i).padStart(2, "0");
+  const slideInfo = await infoPage.evaluate(() => {
+    return Array.from(document.querySelectorAll("section.slide")).map((sec, i) => ({
+      index: i + 1,
+      blocks: parseInt(sec.getAttribute("data-blocks"), 10) || 0,
+    }));
+  });
+  await infoPage.close();
 
-    const outPath = path.join(outputDir, `slide-${padded}.png`);
-    await capturePage(browser, url, outPath);
-    console.log(`✅ Slide ${i} → ${outPath}`);
+  console.log(`📑 スライド数: ${slideInfo.length}`);
+  const totalPNGs = slideInfo.reduce((sum, s) => sum + (s.blocks || 1), 0);
+  console.log(`🎨 生成PNG数: ${totalPNGs}\n`);
 
-    const split = BLOCK_SPLITS[i];
-    if (split) {
-      for (let b = 1; b <= split.count; b++) {
-        const blockPath = path.join(outputDir, `slide-${padded}-block${b}.png`);
-        await capturePage(browser, url, blockPath, {
-          selector: split.selector,
-          visibleCount: b,
-        });
-        console.log(`  📦 Block ${b} → ${blockPath}`);
+  // 2. 各スライドをキャプチャ
+  for (const info of slideInfo) {
+    if (info.blocks > 0) {
+      for (let k = 1; k <= info.blocks; k++) {
+        await capture(browser, info.index, k, info.blocks);
       }
+    } else {
+      await capture(browser, info.index, null, 0);
     }
   }
 
   await browser.close();
-  console.log(`\n🎉 All ${TOTAL_SLIDES} slides captured!`);
-}
+  console.log(`\n✅ 完了: ${OUTPUT_DIR}`);
+})();
 
-main().catch((err) => {
-  console.error(err);
-  process.exit(1);
-});
+async function capture(browser, slideN, blockK, totalBlocks) {
+  const page = await browser.newPage();
+  await page.setViewport({ width: WIDTH, height: HEIGHT, deviceScaleFactor: 2 });
+
+  await page.goto(`file://${SLIDES_HTML}`, { waitUntil: "networkidle0", timeout: 30000 });
+  await page.evaluate(() => document.fonts.ready);
+
+  // 表示制御 (HTML側にJSを書かなくてもpuppeteer側で行う)
+  await page.evaluate(
+    ({ slideN, blockK }) => {
+      document.body.classList.add("capture-mode");
+      const slides = document.querySelectorAll("section.slide");
+      slides.forEach((sec, i) => {
+        if (i + 1 !== slideN) {
+          sec.style.display = "none";
+        } else {
+          sec.setAttribute("data-capture-target", "1");
+        }
+      });
+      if (blockK !== null) {
+        const target = slides[slideN - 1];
+        if (target) {
+          target.querySelectorAll("[data-block-index]").forEach((el) => {
+            const idx = parseInt(el.getAttribute("data-block-index"), 10);
+            if (idx > blockK) el.style.visibility = "hidden";
+          });
+        }
+      }
+    },
+    { slideN, blockK }
+  );
+  await new Promise((r) => setTimeout(r, 400));
+
+  const box = await page.evaluate(() => {
+    const el = document.querySelector('section.slide[data-capture-target="1"]');
+    if (!el) return null;
+    el.scrollIntoView({ block: "start", inline: "start" });
+    const rect = el.getBoundingClientRect();
+    return {
+      x: rect.x + window.scrollX,
+      y: rect.y + window.scrollY,
+      width: rect.width,
+      height: rect.height,
+    };
+  });
+
+  const filename =
+    blockK !== null
+      ? `slide-${String(slideN).padStart(2, "0")}-block${blockK}.png`
+      : `slide-${String(slideN).padStart(2, "0")}.png`;
+  const filepath = path.join(OUTPUT_DIR, filename);
+
+  if (box) {
+    await page.screenshot({
+      path: filepath,
+      clip: { x: box.x, y: box.y, width: box.width, height: box.height },
+    });
+  } else {
+    await page.screenshot({ path: filepath });
+  }
+
+  const blockInfo = blockK !== null ? ` (block ${blockK}/${totalBlocks})` : "";
+  console.log(`  ✓ ${filename}${blockInfo}`);
+  await page.close();
+}

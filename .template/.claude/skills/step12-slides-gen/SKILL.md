@@ -1,213 +1,368 @@
 ---
 name: step12-slides-gen
-description: 台本（ユーザー提供）をもとに、slidesのテンプレートシステムでHTMLスライドを自動生成する。ユーザーが「スライド生成」「HTMLスライド」「aislides」「ステップ12」と言ったら起動する。
+description: 台本＋ターゲット情報をベースに、動画挿入用の HTML スライドを Claude Design 並みの品質で生成する。ユーザーが「スライド生成」「HTMLスライド」「aislides」「ステップ12」と言ったら起動する。
 argument-hint: [なし]
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash(node *), Bash(node scripts/_chk.mjs *)
 ---
 
 <!-- LICENSE_GUARD: DO NOT REMOVE -->
-> **認証必須**: このステップ開始前に `node scripts/_chk.mjs step12-slides-gen` を実行。exit code が 0 以外なら即中止し「ライセンスが無効です。権利者にお問い合わせください」と伝える。（詳細は CLAUDE.md の「ライセンス認証」セクション参照）
+> **認証必須**: このステップ開始前に `node scripts/_chk.mjs step12-slides-gen` を実行。exit code が 0 以外なら即中止し「ライセンスが無効です。権利者にお問い合わせください」と伝える。
 
-# Step 13: スライド生成（台本→HTML）
+# Step 12: スライド生成（台本→Claude Design 並みの HTML）
 
-ユーザーから受け取った台本をもとに、`aislides/slides.html` のテンプレートシステムを使ってHTMLスライドを生成する。
+台本＋受講生から聞いた情報（ターゲット・トンマナ・文字サイズ・画像）をベースに、`aislides/slides.html` を**動的に**生成する。固定テンプレート（17種類）は廃止。毎回ターゲットに合わせたユニークなデザイン。
 
-## 前提条件
-- Step 07（文字起こし修正）が完了していること
-- ユーザーから台本（スライドの構成・内容）が提供されていること
+## 対象動画
+- **横動画のみ**（1920×1080）。縦動画は本ステップ非対応。
+- **YouTube 動画用**（スマホ・PC 視聴を想定）
+- コンテンツ域: 1920×880（下 200px はテロップ域として確保）
 
-## テンプレート一覧
-
-| テンプレート | 用途 | 必須フィールド |
-|---|---|---|
-| `title` | タイトルスライド | icon, title, subtitle |
-| `three-cards` | 3カラムカード | title, cards[{icon, title, lines}] |
-| `three-tactics` | 3戦術カード | title, cards[{role, icon, main, sub}] |
-| `two-columns` | 左右比較 | title, columns[{badge, icon, main}] |
-| `steps` | 縦ステップリスト | title, steps[{label, icon, style, content, num}] |
-| `big-message` | 大メッセージ | title, icon, message |
-| `closing` | クロージング | title, icon, cards[{title, desc}] |
-| `before-after` | ビフォーアフター | title, before{label,icon,main,sub}, after{label,icon,main,sub} |
-| `stats` | 統計カード | title, stats[{icon,number,unit,desc}] |
-| `checklist` | チェックリスト | title, items[{text,check}] |
-| `timeline` | タイムライン | title, events[{icon,time,title,desc}] |
-| `ranking` | ランキング | title, items[{rank,title,desc}] |
-| `versus` | VS比較 | title, left{label,color,icon,main}, right{label,color,icon,main} |
-| `quote` | 引用・問いかけ | quote, source, sourceIcon, icon |
-| `highlight-box` | 強調メッセージ | title, icon, message |
-| `agenda` | 目次・アジェンダ | title, items[{title, sub, icon}] |
-| `section` | 章扉 | number, title, description |
-
-### プロパティの型ルール（必須）
-
-| プロパティ | 正しい値 | NG例 | 説明 |
-|---|---|---|---|
-| `titleUnderline` | 下線を引きたい**キーワード文字列**（例: `"3ステップ"`） | `true` / `false` | booleanではなく文字列を渡す |
-| `badgeIconColor` | `"red"` または省略 | `"#ff4444"` / `"blue"` | カスタム色コードは不可 |
-| `titleHighlight` | title内の**一部分の文字列**（例: `"ボレー"`） | titleと同じ全文 | titleと同一にしない |
-
-### 比較スライドの左右配置ルール（必須）
-
-**比較・対比スライドでは、左にネガティブ（課題・問題）、右にポジティブ（解決・理想）を配置する。**
-
-| テンプレート | 左側 | 右側 | 備考 |
-|---|---|---|---|
-| `two-columns` | columns[0] = ネガティブ（badgeColor: "dark"） | columns[1] = ポジティブ（badgeColor: "green"） | データ順で左右が決まる |
-| `before-after` | before = ネガティブ（白背景） | after = ポジティブ（黒背景） | 構造的に固定済み |
-| `versus` | left = ネガティブ（color: "gray"） | right = ポジティブ（color: "green"） | データ順で左右が決まる |
-
-**理由**: 左→右の視線の流れが「問題→解決」の改善ストーリーと一致し、視聴者が直感的に理解しやすい。
-
-## 動画スライドモード（必須）
-
-naoki-blueprintのスライドは**動画内に表示されるスライド**。右上にワイプ（話者の丸窓）、下部200pxに字幕が入るため、これらの領域にコンテンツを置かない。
-
-| ルール | 対応 |
-|---|---|
-| 右上ワイプ領域を空ける | `catchphrase: ""` （空文字）にする |
-| 下部200pxを字幕用に空ける | `big-message` は `panel` プロパティを省略、`two-columns` は `sub` を省略 |
-| ステップ数の制限 | `steps` は2つまでが基本（3つ以上は自動compactモードになるが下部が圧迫される） |
+## YouTube 視認性ルール（最重要）
+- **最低文字サイズ 40px**（スマホ縦画面視聴前提。caption・small は廃止）
+  - スマホで YouTube 動画を縦持ちで見ると 1920px → 横 360px まで縮小される
+  - 32px の文字は実質 6px で読めない → **40px 以上必須**
+- **行間 1.55 以上**（密集させない）
+- 強調は1スライドに1箇所、巨大に（80px+）
+- **本文は最大2行以内**（3行以上は情報過多 → 別スライドに分割）
+- **装飾要素（罫線・引用符・図形）は文字に被らせない**（z-index または位置調整）
+- 補足説明テキストは可能な限り削減
 
 ## やること
 
-### 0. スライド候補の提案
+### 1. ユーザーから情報収集（対話型・必須）
 
-ユーザーに確認する：「スライドにしたい台本部分はありますか？指定がなければ提案します。」
+以下を順に聞く。受講生から `my-workspace/my-style.md` があれば、そこから既知情報を読み込んで省略してOK。
 
-ユーザーが指定しない場合は、`transcript_words.json` と `video-context.md` を分析してスライド候補を提案する。
+```
+スライドを作ります。教えてください:
 
-**スライド候補の基準：**
-- 専門用語の説明（図やテキストで補足した方が分かりやすい）
-- リスト・手順の列挙（口頭だけでは覚えられない）
-- 比較・対比（並べて見せた方が分かりやすい）
-- 数字・データの提示（視覚的に印象づける）
-- タイトル・エンディング
+1. ターゲット視聴者は？
+   例: 40代男性テニス中級者 / 主婦・子育て層 / エンジニア / 高齢者・健康志向
+2. トンマナ希望は？
+   - 落ち着いた・専門的
+   - 明るい・親しみやすい
+   - クリーン・機能的
+   - カジュアル・ポップ
+3. 文字の大きさ希望は？
+   - 標準（h1: 72px、body: 24px）
+   - 大きめ（h1: 96px、body: 32px）
+   - 特大（h1: 128px、body: 40px / 高齢者向け）
+4. 差し込みたい画像はありますか？
+   - パスを教えてください（任意、複数可）
+5. 出力スライド数の希望は？
+   - 自動（台本ベースで判定）
+   - 指定（例: 12枚）
+```
 
-**スライドにしない場面：**
-- 体験談・エピソード（話者の表情が大事）
-- 感情的な訴え・CTA
-- 自己紹介（テロップ・画像等で対応）
-- 短い補足・つなぎの発言
+### 2. 台本読み込み
 
-### 1. 台本の確認
+`public/script/` から台本ファイルを読み込む。なければユーザーに台本テキストを直接聞く。
 
-ユーザーから台本を受け取る。台本には以下が含まれる：
-- 各スライドに表示する内容（テキスト、構成）
-- 動画の流れに沿った順番
+### 3. デザイン体系の決定（内蔵知識）
 
-### 2. テンプレートの選定
+ステップ1の回答から、以下を Claude が動的に決定する。
 
-台本の各スライドに最適なテンプレートを選ぶ：
+#### ターゲット別カラー選定
 
-| 伝えたいこと | 推奨テンプレート |
-|---|---|
-| タイトル・動画の冒頭 | `title` |
-| 今日話すこと全体像（冒頭の予告） | `agenda` |
-| 章の区切り・PART表示 | `section` |
-| 3つのポイント・コツ | `three-cards` または `three-tactics` |
-| 比較・対比 | `two-columns` / `versus` / `before-after` |
-| 手順・ステップ | `steps` / `timeline` |
-| 衝撃的データ・数字 | `big-message` / `stats` |
-| 警告・重要メッセージ | `big-message` / `highlight-box` |
-| まとめ・締めくくり | `closing` |
-| チェックポイント | `checklist` |
-| ランキング・順位 | `ranking` |
-| 問いかけ・引用 | `quote` |
+| ターゲット | プライマリ | アクセント | ニュートラル基調 |
+|---|---|---|---|
+| 40代男性プロフェッショナル | 紺 `#1e3a8a` | ゴールド `#d4af37` | グレー50-900 |
+| 主婦・子育て層 | パステルピンク `#fbb6ce` | コーラル `#fb7185` | クリーム50-700 |
+| エンジニア | ダークグレー `#1f2937` | ティール `#14b8a6` | グレー100-900 |
+| 高齢者・健康志向 | 濃緑 `#15803d` | 暖色オレンジ `#ea580c` | 白基調 |
+| テニスコーチ層 | 紺 `#0f3a8a` + 白 | 黄緑 `#84cc16` | 白基調 |
+| 美容・ライフスタイル | ローズ `#e11d48` | ベージュ `#d6b894` | クリーム50-300 |
 
-#### agenda / section の使い分け（セミナー・講座動画向け）
+それ以外は**ターゲットの属性から判断**して動的決定。固定じゃない。
 
-| テンプレート | いつ使う | 備考 |
+#### トンマナ別フォント選定
+
+| トンマナ | 見出し | 本文 |
 |---|---|---|
-| `agenda` | 動画冒頭で「今日話す3つのこと」を予告する | 5分超の動画で視聴維持率を上げる効果。titleの直後に配置 |
-| `section` | 動画を複数パートに分ける時の章扉 | 10分超のセミナー・講座動画で章を明示。本編中の区切りに使う |
+| 落ち着いた・専門的 | Shippori Mincho 800 | Inter 500 |
+| 明るい・親しみやすい | Zen Maru Gothic 700 | Zen Kaku Gothic New 400 |
+| クリーン・機能的 | Inter 800 | Inter 400 |
+| カジュアル・ポップ | M PLUS Rounded 1c 800 | Noto Sans JP 400 |
 
-**短い動画（5分以下）では不要。** 冗長になる。
+### 4. デザイン原則（必須遵守）
 
-#### ストーリー構成の基本フロー
-**短い動画（5分以下）**:
-表紙（title）→ 問題提起（quote / big-message）→ 分析（stats / two-columns）→ 解決策（three-cards / steps）→ 根拠（stats / before-after）→ 結論（highlight-box）→ まとめ（closing）
+#### 4-1. 色彩の階層化（のっぺり禁止）
+- ニュートラル階調（50/100/200/700/900）+ プライマリ + アクセント1色を使う
+- 単色ベタ塗りのカードは禁止
+- 「沈める」(Gray 50/100 + 細ボーダー Gray 200) と「浮かせる」(プライマリ700 + 白文字) を組み合わせる
 
-**セミナー・講座動画（10分以上）**:
-表紙（title）→ **今日話すこと（agenda）** → **PART1（section）** → 本編 → **PART2（section）** → 本編 → まとめ（closing）
+#### 4-2. タイポグラフィの階層（YouTube + スマホ視認性ベース・最低 40px）
+明確な段差をつける:
 
-#### 2枚連続で同じテンプレートを使わない
-視覚的な変化をつけるため、**同じテンプレートを連続して使わない**。例えば `three-cards` → `three-cards` ではなく、`three-cards` → `steps` → `three-cards` のように間に別のテンプレートを挟む。
+```css
+h1 (タイトル): 112-144px / weight 800 / 行間 1.1
+h2 (見出し): 80-96px / weight 700 / 行間 1.2
+h3 (サブ見出し): 56-72px / weight 700 / 行間 1.3
+body (本文): 40-48px / weight 500 / 行間 1.55-1.65
+label: 32-40px / weight 700 / letter-spacing 0.2em
+```
 
-### 3. SLIDE_SCRIPT の生成
+**caption / small（32px 以下）は廃止**。スマホ縦画面で YouTube 視聴時に読めなくなる。
 
-`aislides/slides.html` の `SLIDE_SCRIPT` 配列を台本の内容で書き換える。
+文字サイズ希望（標準/大きめ/特大）に応じて全体スケールするが、**全要素 40px 以上を厳守**。
 
-#### テキスト記述ルール（必須）
-1. 1項目につき最大2行まで
-2. 改行は文節の境界で行う（助詞・て形・文末の直後など）
-3. 改行直前に「、」「。」は付けない（削除する）
-4. 単語の途中で改行しない
-5. 1行に収まる文には改行を入れない
+#### 4-3. 余白の8倍数システム
 
-#### 改行の書き方
-- steps の content/label、closing の desc、panel の label → `<br>` を使う
-- big-message の message、title の title → `\n` を使う（自動で `<br>` に変換）
+```css
+spacing: 8px / 16px / 24px / 32px / 48px / 64px / 96px / 128px
+```
 
-#### ハイライト（黄色マーカー）
+**8の倍数のみ**。中途半端な数値（17px / 23px 等）禁止。
+
+#### 4-4. 1スライド1メッセージ
+
+- 各スライドに伝えたいメッセージは1つだけ
+- 文字情報は最小限、図解優先
+- 強調は1スライドに1箇所だけ
+
+#### 4-5. 動画コンテキスト適用
+
+- 解像度: **1920×1080 ピッタリ**
+- **下 200px はテロップ域**（コンテンツを置かない）
+- 実コンテンツ域: **1920×880**（高さ 880px 以内）
+- 動画再生中の視認性: コントラスト比 4.5:1 以上、文字サイズ最低 24px
+
+#### 4-6. borderRadius は使う（CLAUDE.md のテロップルールとは別）
+
+スライドは Web プレゼン感覚で borderRadius OK。テロップ（角は四角）とは独立。
+
+#### 4-7. 単語の途中で改行しない（必須）
+
+CSS で `word-break: keep-all; line-break: strict;` を全体に適用する:
+
+```css
+* { word-break: keep-all; line-break: strict; overflow-wrap: break-word; }
+```
+
+これで日本語は **語境界（助詞・句読点・意味の切れ目）** でしか自動改行されない。
+
+**手動 `<br>` の入れ方ルール**:
+- ❌ NG: 「サンドイッチ<br>分割」（単語内で切る）
+- ❌ NG: 「タ<br>イミング」（カタカナ語を分割）
+- ✅ OK: 「ストレートを<br>抜かれない立ち位置」（助詞「を」の後で切る）
+- ✅ OK: 「ポーチに早く入る、<br>確実に決める」（読点の後で切る）
+
+**改行する位置の優先順位**:
+1. 句読点（、。）の直後
+2. 助詞（は/の/に/を/が/で/も/て/と）の直後
+3. 単語境界（漢字とカタカナの境）
+4. 文の意味的なまとまり（主語・述語など）
+
+「サンドイッチ分割」のような複合語は **改行せず1行で**。スライド幅 1920px に対して文字サイズ 32-144px なら、まず単語が幅オーバーしないので、無理に改行する必要はない。
+
+### 5. ブロック分割（必須・カードや要素を順番に出す演出）
+
+動画挿入時、情報が一気に出ると単調になる。カード・ステップ・要素を**段階的に表示**して「ポコッ」と積み上がる演出を作るため、`data-blocks` 属性でブロック分割を指定する。
+
+#### HTML 仕様
+
 ```html
-<span style='background:#CCFF00'>強調テキスト</span>
-```
-※ px-2 などのパディングは絶対に付けない
+<!-- ブロック分割するスライド -->
+<section class="slide" data-blocks="3">
+  <!-- 共通の見出し（全blockで表示） -->
+  <h1>勝率を変える 3つの基本</h1>
 
-#### FontAwesome アイコン
-よく使うアイコン例：
-- `fa-trophy` — 優勝・実績
-- `fa-bullseye` — 的・精度
-- `fa-map-marker-alt` — 位置・場所
-- `fa-brain` — 知識・戦術・考え方
-- `fa-eye` — 観察・視点
-- `fa-exclamation-triangle` — 警告・注意
-- `fa-check-circle` — 確認・OK
-- `fa-hand-holding-heart` — 安心・サポート
-- `fa-chalkboard-teacher` — 指導・レッスン
-- `fa-play-circle` — スタート・再生
-- `fa-lightbulb` — アイデア・ヒント
-- `fa-chart-line` — 成長・データ
-- `fa-star` — おすすめ・重要
-
-### 4. slides.html の更新
-
-`aislides/slides.html` の `SLIDE_SCRIPT` 部分のみを編集する。テンプレートエンジン（renderTitle等の関数群）やCSS・HTMLは変更しない。
-
-### 5. ブラウザで確認
-
-```bash
-open aislides/slides.html
+  <!-- 段階表示する要素 -->
+  <div data-block-index="1">...カード1...</div>
+  <div data-block-index="2">...カード2...</div>
+  <div data-block-index="3">...カード3...</div>
+</section>
 ```
 
-ユーザーに確認してもらい、修正があれば対応する。
+- `data-blocks="N"`: そのスライドが N 段階で展開する
+- `data-block-index="K"`: K=1..N、K まで表示時に表示される（K より大きいindexは hidden）
+- `visibility: hidden` でレイアウト維持（display:none ではない）。block 1 でも block 3 と同じグリッド/flex 位置を保つ
+- URL パラメータ: `slides.html?slide=6&block=2` → slide 6 を block 2 まで表示
+- `data-block-index` が無い要素（共通見出し等）は全 block で表示
 
-## 品質チェックリスト（生成後に必ず確認）
+#### 分割するスライドの判断基準
 
-- [ ] `titleHighlight` が `title` と同じ全文になっていないか（一部分だけを指定する）
-- [ ] 改行禁止パターン（助詞の前で改行、単語途中で改行）に違反していないか
-- [ ] 2枚連続で同じテンプレートを使っていないか
-- [ ] 動画モードで下部200pxにコンテンツ（panel / sub）がはみ出していないか
-- [ ] `catchphrase` が空文字 `""` になっているか（右上ワイプ領域を空けるため）
-- [ ] ハイライトに `px-2` 等のパディングが付いていないか
-- [ ] プレースホルダー（LAYOUT, PHOTO等）が残っていないか
-- [ ] `titleUnderline` にboolean（true/false）を使っていないか
+| 種別 | data-blocks | 分け方 |
+|---|---|---|
+| stats（数字パネル複数） | 2 | 数字A → 数字B（区切り線も2側） |
+| three-cards / 3要素列挙 | 3 | カード1 → 2 → 3 |
+| answer + 番号サマリー | 3 | 01 → 02 → 03 |
+| vs / before-after | 2 | 左 → 矢印+右 |
+| checklist + key-concept | 4 | チェック1 → 2 → 3 → KEY CONCEPT |
+| steps + key-moment | 4 | KEY MOMENT(数字) → ステップ1 → 2 → 3 |
+| 3 targets / ranking | 3 | 1位 → 2位 → 3位 |
 
-## 完了条件
-- `aislides/slides.html` の SLIDE_SCRIPT が台本の内容で更新されている
-- テキスト記述ルールに準拠している
-- 品質チェックリストを全項目クリアしている
-- ユーザーが内容を確認済み
+#### 分割しないスライド
 
-## 完了後
+title / question / quote / closing / big-message（1メッセージ完結型）
+
+### 6. HTML 生成
+
+`aislides/slides.html` を上書きする。
+
+#### 構造
+
+```html
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <title>Naoki式セミナースライド</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=...&display=swap" rel="stylesheet">
+  <style>
+    /* リセット + デザイントークン (CSS Custom Properties) */
+    :root {
+      --primary-500: #1e3a8a;
+      --primary-700: #1e40af;
+      --accent-500: #d4af37;
+      --gray-50: #f9fafb;
+      --gray-100: #f3f4f6;
+      --gray-200: #e5e7eb;
+      --gray-700: #374151;
+      --gray-900: #111827;
+      /* spacing */
+      --space-1: 8px;
+      --space-2: 16px;
+      --space-3: 24px;
+      --space-4: 32px;
+      --space-6: 48px;
+      --space-8: 64px;
+      --space-12: 96px;
+      --space-16: 128px;
+    }
+    /* スライド共通 */
+    .slide {
+      width: 1920px;
+      height: 1080px;
+      position: relative;
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+    .slide .content {
+      position: absolute;
+      top: 0; left: 0;
+      width: 1920px;
+      height: 880px;  /* ← テロップ域 200px を空ける */
+      padding: var(--space-8);
+      box-sizing: border-box;
+    }
+    /* タイポグラフィ */
+    h1 { font-size: 72px; font-weight: 800; line-height: 1.1; }
+    h2 { font-size: 48px; font-weight: 700; line-height: 1.2; }
+    h3 { font-size: 32px; font-weight: 600; line-height: 1.3; }
+    p { font-size: 24px; font-weight: 400; line-height: 1.6; }
+  </style>
+</head>
+<body>
+  <section class="slide slide-01">
+    <div class="content">
+      <h1>...</h1>
+      <p>...</p>
+    </div>
+  </section>
+  <!-- 各スライドはユニークなレイアウトで -->
+</body>
+</html>
+```
+
+各スライドはユニークなレイアウトでOK（テンプレ縛りなし）。Claude が台本の各章ごとに最適なレイアウトを選ぶ。
+
+### 7. 自己レビュー → 自動改善（必須・新規）
+
+HTML 生成後、Claude が自分で生成物をチェックし、問題があれば即修正する。**生成 → レビュー → 改善のループ**を回す。
+
+#### レビュー項目（チェックリスト）
+
+| # | 項目 | 確認方法 |
+|---|---|---|
+| 1 | 解像度 1920×1080 固定 | `.slide` の width/height |
+| 2 | テロップ域確保（content height ≤ 880px） | `.content` の height |
+| 3 | **文字サイズ最低 40px**（YouTube + スマホ縦画面視認性） | 全 font-size を grep |
+| 4 | `word-break: keep-all` が CSS にある | `*` セレクタ確認 |
+| 5 | **単語の途中で `<br>` してない** | 各 `<br>` の前後を目視 |
+| 6 | 余白が8倍数のみ | margin/padding/gap を grep |
+| 7 | のっぺり配色（gray-50/100/200/700/900 + プライマリ + アクセント の3種類以上使用） | カラー使用回数 |
+| 8 | 1スライド1メッセージ | 各 `.slide` のテキスト量 |
+| 9 | **本文 3行以上なし**（リストは別扱い） | `<p>` に `<br>` 2個以上ないか |
+| 10 | borderRadius OK（角丸あり、Web プレゼン感覚） | 確認のみ |
+| 11 | **小さい label / caption（32px 以下）が無い** | font-size を grep |
+| 12 | スライド毎にユニークなレイアウト | 構造の重複チェック |
+| 13 | **装飾と文字の重なりなし** | 引用符・線・図形と h1/h2 の z-index/位置 |
+| 14 | **アイコンが本当に必要な所のみ**（装飾アイコン無し） | `<i class="fa-` を grep、矢印・引用符のみ可 |
+| 15 | **bar-bot を使っていない**（上バーのみ） | `bar-bot` クラス不在 |
+| 16 | **ブロック分割対応**（カード/ステップ系は `data-blocks="N"` + `data-block-index` 必須） | stats / 3-cards / vs / before-after / steps + key-moment スライド |
+
+#### 自己レビューフロー
 
 ```
-✅ Step 13 完了: スライドHTMLを生成しました。
+1. HTML 生成完了
+2. 上記 16 項目を自分でチェック
+3. 違反項目を発見したら、その箇所を即修正
+4. 再度 16 項目をチェック
+5. 全てクリアするまでループ
+6. クリアしたらユーザーに報告
+```
 
-【生成スライド】
-- スライド数: ○○枚
-- テンプレート: title × ○, big-message × ○, ...
+**ユーザーには「生成完了後の最終版」だけを提示する**。レビュー過程の試行錯誤は内部処理。
 
-次のステップ → /step13-slides（スライドキャプチャ＋タイムライン）
+#### 自己レビューで発見しやすい問題と対処
+
+| 発見した問題 | 対処 |
+|---|---|
+| `font-size: 32px` がある（40px 未満） | 40px 以上に修正 |
+| `<br>` の前が「サンドイッチ」、後ろが「分割」 | `<br>` を削除して1行に |
+| 1スライドに3つ以上のメッセージ | スライドを2枚に分割 |
+| 本文 `<p>` に `<br>` が2個以上（3行以上） | 内容を削減 or スライド分割 |
+| カラーが2色以下（白＋紺だけ等） | gray 階調を追加 |
+| 余白に `padding: 17px` 等の半端な値 | 16px or 24px に修正 |
+| `.content` の height が 920px | 880px に修正 |
+| 引用符などの装飾が h1/h2 と重なる | 装飾の位置を調整 or サイズ縮小 |
+| label を 28px 以下で書いた | 32-40px に底上げ |
+| キャプション・小さい説明テキストが多い | 削除 or 統合 |
+
+### 8. プレビュー案内
+
+```
+✅ Step 12 完了: スライド HTML を生成しました。
+
+【ファイル】aislides/slides.html
+【スライド数】○○枚
+【解像度】1920×1080（下 200px テロップ域確保）
+【ターゲット】<受講生回答>
+【トンマナ】<受講生回答>
+
+ブラウザで確認するには:
+  open aislides/slides.html
+
+次のステップ → /step13-slides（Puppeteer キャプチャ + slideTimeline.ts）
 進めますか？
 ```
+
+## 完了条件
+- `aislides/slides.html` が生成されている
+- 横動画解像度（1920×1080）で正常表示
+- テロップ域（下 200px）を侵食していない
+- ターゲット・トンマナを反映している
+- 8倍数余白・色彩階層・タイポ階層を遵守している
+- **文字サイズ全 40px 以上**（スマホ縦画面 YouTube 視認性）
+- **単語の途中で改行していない**（word-break: keep-all + 意味境界 `<br>`）
+- **本文は最大2行以内**（3行以上は別スライドに分割）
+- **装飾要素が文字に被っていない**
+- **自己レビュー14項目を全てクリアしている**
+
+## 失敗パターンと対処
+
+| 症状 | 原因 | 対処 |
+|---|---|---|
+| 単色のっぺり | ニュートラル階調未使用 | gray-50/100/200/700/900 を併用 |
+| 文字小さすぎ | 動画再生中の視認性無視 | 最低 24px、見出し 48px+ |
+| 余白がガタガタ | 適当な数値 | spacing-1〜16 の8倍数のみ |
+| テロップと被る | 880px を超えた | content の height を 880px 以下に |
+| デザインダサい | 階層なし | h1/h2/body のサイズ・ウェイト差を明確に |
+
+## v2.0 での変更点（旧 17 テンプレートからの移行）
+
+- **v1.x まで**: 17種類の固定テンプレート（title / three-cards / steps 等）から選択
+- **v2.0 以降**: 動的生成（テンプレ廃止、毎回ターゲット最適化）
+- 旧 SLIDE_SCRIPT 変数システムも廃止、Claude が直接 HTML 構造を書き出す
