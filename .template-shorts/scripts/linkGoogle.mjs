@@ -200,13 +200,14 @@ const runPKCEFlow = (licenseId) => {
     };
     fs.writeFileSync(licenseFile, JSON.stringify(licenseData, null, 2));
 
+    const slotLabel = result.slot_used === "fp2" ? "2台目" : "1台目";
     process.stdout.write("\n\x1b[32m✅ Google 連携完了！\x1b[0m\n\n");
     process.stdout.write(`   名前:        ${result.name}\n`);
     process.stdout.write(`   ライセンス:  ${result.license_id}\n`);
     process.stdout.write(`   Google:      ${result.google_email}\n`);
-    process.stdout.write(`   スロット:    ${result.slot_used} (このPCを ${result.slot_used} に登録)\n\n`);
+    process.stdout.write(`   このPC:      ${slotLabel}として登録\n\n`);
     process.stdout.write("\x1b[36m   これで最大2台まで使えるようになりました。\x1b[0m\n");
-    process.stdout.write("\x1b[36m   2台目で使う時も、同じ手順で linkGoogle.mjs を実行してください。\x1b[0m\n\n");
+    process.stdout.write("\x1b[36m   別のPCで使う時は、そのPCで Claude Code を開いて /link-google と入力してください。\x1b[0m\n\n");
   } catch (err) {
     process.stderr.write(`\n\x1b[31m✗ ${err.message}\x1b[0m\n\n`);
     process.exit(1);

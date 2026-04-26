@@ -62,7 +62,7 @@ node scripts/linkGoogle.mjs <ライセンスID>
 【あなたのアカウント】
 - 名前: ○○さん
 - Google: ○○@gmail.com
-- スロット: fp1 / fp2 のどちらか
+- このPC: 1台目 or 2台目 として登録
 
 【これからできること】
 - このPCでも引き続き使えます
