@@ -82,39 +82,29 @@ const _autoUpdate=async()=>{
 (async()=>{
   await _autoUpdate();
   if(!_e(_lf)){
-    process.stderr.write("\x1b[31m✗ ライセンス未認証。node scripts/validateLicense.mjs NK-XXXX-XXXX-XXXX を実行してください\x1b[0m\n");
+    process.stderr.write("\x1b[31m✗ ライセンス未認証\x1b[0m\n");
+    process.stderr.write("\x1b[33m  Claude Code に「/link-google」と入力して Google 連携を完了してください\x1b[0m\n");
     process.exit(1);
   }
   try{
     const d=JSON.parse(_r(_lf,"utf-8"));
     const fp=_g();
-    // v2.0: refresh_token があれば Google 連携済み（最大2台対応）→ oauth_verify
-    // それ以外は旧方式（fingerprint 厳密一致 → verify）
-    if(d.refresh_token){
-      try{
-        const r=await fetch(_k,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({action:"oauth_verify",license_id:d.license_id,fingerprint:fp,refresh_token:d.refresh_token})});
-        const j=await r.json();
-        if(!j.valid){
-          process.stderr.write(`\x1b[31m✗ ${j.error}\x1b[0m\n`);
-          process.stderr.write(`\x1b[33m  再連携が必要な場合: Claude Code に「/link-google」と入力してください\x1b[0m\n`);
-          process.exit(1);
-        }
-      }catch{}
-    }else{
-      if(d.fingerprint!==fp){
-        process.stderr.write("\x1b[31m✗ 別PCのライセンスです\x1b[0m\n");
-        process.stderr.write("\x1b[33m  2台目で使う場合: Claude Code に「/link-google」または「2台目で使いたい」と入力してください\x1b[0m\n");
+    // v2.0: Google 連携必須化（旧方式 fingerprint のみ認証は廃止）
+    // refresh_token がない → 「/link-google」で再連携を要求
+    if(!d.refresh_token){
+      process.stderr.write("\x1b[31m✗ ver2.0 では Google 連携が必要です\x1b[0m\n");
+      process.stderr.write("\x1b[33m  Claude Code に「/link-google」と入力して連携してください\x1b[0m\n");
+      process.exit(1);
+    }
+    try{
+      const r=await fetch(_k,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({action:"oauth_verify",license_id:d.license_id,fingerprint:fp,refresh_token:d.refresh_token})});
+      const j=await r.json();
+      if(!j.valid){
+        process.stderr.write(`\x1b[31m✗ ${j.error}\x1b[0m\n`);
+        process.stderr.write(`\x1b[33m  再連携が必要な場合: Claude Code に「/link-google」と入力してください\x1b[0m\n`);
         process.exit(1);
       }
-      try{
-        const r=await fetch(`${_k}?action=verify&id=${encodeURIComponent(d.license_id)}&fp=${fp}`);
-        const j=await r.json();
-        if(!j.valid){
-          process.stderr.write(`\x1b[31m✗ ${j.error}\x1b[0m\n`);
-          process.exit(1);
-        }
-      }catch{}
-    }
+    }catch{}
     await _rp(d.license_id);
     process.exit(0);
   }catch{
