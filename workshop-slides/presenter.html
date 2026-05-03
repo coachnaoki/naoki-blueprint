@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>発表者ビュー</title>
+  <!-- 本体と同じフォント・スタイルを読む（パスはプロジェクトに合わせる） -->
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    :root {
+      --pv-bg: #1a1a1a;
+      --pv-panel: #262626;
+      --pv-accent: #B8893E;
+      --pv-text: #f0f0f0;
+      --pv-text-sub: #888;
+    }
+    html, body { height: 100%; }
+    body.presenter {
+      font-family: 'Noto Sans JP', sans-serif;
+      background: var(--pv-bg); color: var(--pv-text);
+      padding: 16px; display: flex; flex-direction: column; gap: 12px;
+      overflow: hidden;
+    }
+    .pv-header {
+      display: flex; justify-content: space-between; align-items: center;
+      padding-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.12);
+      flex-shrink: 0;
+    }
+    .pv-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 16px; font-weight: 600; letter-spacing: 0.2em;
+      color: var(--pv-accent); text-transform: uppercase;
+    }
+    .pv-counter {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px; font-weight: 600; letter-spacing: 0.1em;
+      font-variant-numeric: tabular-nums;
+    }
+    .pv-main {
+      display: grid; grid-template-columns: 1.1fr 1fr;
+      gap: 16px; flex: 1; min-height: 0;
+    }
+    .pv-col { display: flex; flex-direction: column; gap: 12px; min-height: 0; }
+    .pv-panel-label {
+      font-size: 10px; font-weight: 600; color: var(--pv-accent);
+      letter-spacing: 0.22em; text-transform: uppercase; margin-bottom: 6px;
+    }
+    .pv-current { flex: 1.7; min-height: 0; display: flex; flex-direction: column; }
+    .pv-thumbs { flex: 1; min-height: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .pv-thumb { display: flex; flex-direction: column; min-height: 0; cursor: pointer; transition: transform 0.15s ease; }
+    .pv-thumb:hover { transform: translateY(-2px); }
+    .pv-thumb:hover .pv-frame { border-color: var(--pv-accent); box-shadow: 0 6px 22px rgba(184,137,62,0.3); }
+    .pv-thumb.disabled { cursor: default; opacity: 0.5; }
+    .pv-thumb.disabled:hover { transform: none; }
+    .pv-thumb.disabled:hover .pv-frame { border-color: rgba(255,255,255,0.08); box-shadow: 0 4px 16px rgba(0,0,0,0.3); }
+    .pv-frame {
+      position: relative; width: 100%; aspect-ratio: 16 / 9;
+      border-radius: 6px; overflow: hidden;
+      background: var(--c-base, #FAF7F2);
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+    }
+    .pv-current .pv-frame { flex: 1; aspect-ratio: auto; }
+    .pv-frame .slide {
+      width: 100% !important; height: 100% !important;
+      max-width: none !important; max-height: none !important;
+      position: absolute !important; inset: 0 !important;
+      box-shadow: none !important;
+    }
+    .pv-thumb-caption {
+      font-size: 11px; color: var(--pv-text-sub);
+      margin-top: 6px; display: flex; justify-content: space-between;
+      letter-spacing: 0.08em;
+    }
+    .pv-thumb-caption .num {
+      color: var(--pv-accent); font-family: 'Cormorant Garamond', serif;
+      font-weight: 600; font-variant-numeric: tabular-nums;
+    }
+    .pv-thumb-empty {
+      display: flex; align-items: center; justify-content: center;
+      color: var(--pv-text-sub); font-size: 12px; letter-spacing: 0.1em;
+      background: #1f1f1f !important;
+    }
+    .pv-notes-panel {
+      background: var(--pv-panel); border-radius: 10px;
+      padding: 18px 22px; display: flex; flex-direction: column; min-height: 0;
+    }
+    .pv-notes-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+    .pv-edit-hint { font-size: 10px; color: var(--pv-text-sub); letter-spacing: 0.1em; }
+    .pv-edit-hint.saved { color: #4ade80; }
+    .pv-notes {
+      font-family: 'Noto Serif JP', serif; font-size: 17px; line-height: 1.9;
+      color: #f0f0f0; overflow-y: auto; flex: 1; outline: none;
+      border-radius: 4px; padding: 4px 6px; margin: -4px -6px;
+      transition: background 0.2s, opacity 0.2s ease, transform 0.3s ease;
+    }
+    .pv-notes:focus { background: rgba(255,255,255,0.04); }
+    .pv-notes.swapping { opacity: 0; transform: translateY(10px); }
+    .pv-notes.edited { box-shadow: inset 3px 0 0 var(--pv-accent); }
+    .pv-waiting { display: flex; align-items: center; justify-content: center; flex: 1; color: var(--pv-text-sub); font-size: 14px; }
+    .pv-footer {
+      display: flex; justify-content: space-between; align-items: center;
+      padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.08);
+      font-size: 11px; color: var(--pv-text-sub); letter-spacing: 0.08em;
+      flex-shrink: 0;
+    }
+    .pv-status-dot {
+      display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+      background: #4ade80; margin-right: 8px; vertical-align: middle;
+      animation: pvPulse 2s infinite;
+    }
+    .pv-status-dot.disconnected { background: #f87171; animation: none; }
+    @keyframes pvPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+  </style>
+</head>
+<body class="presenter">
+  <div class="pv-header">
+    <div class="pv-title">Presenter View</div>
+    <div class="pv-counter" id="counter">-- / --</div>
+  </div>
+
+  <div class="pv-main">
+    <div class="pv-col">
+      <div class="pv-current">
+        <div class="pv-panel-label">Current</div>
+        <div class="pv-frame" id="currentFrame">
+          <div class="pv-thumb-empty" style="position:absolute;inset:0">本体スライドを操作すると表示されます</div>
+        </div>
+      </div>
+      <div class="pv-thumbs">
+        <div class="pv-thumb">
+          <div class="pv-panel-label">Previous</div>
+          <div class="pv-frame" id="prevFrame">
+            <div class="pv-thumb-empty" style="position:absolute;inset:0">—</div>
+          </div>
+          <div class="pv-thumb-caption"><span>前のスライド</span><span class="num" id="prevNum"></span></div>
+        </div>
+        <div class="pv-thumb">
+          <div class="pv-panel-label">Next</div>
+          <div class="pv-frame" id="nextFrame">
+            <div class="pv-thumb-empty" style="position:absolute;inset:0">—</div>
+          </div>
+          <div class="pv-thumb-caption"><span>次のスライド</span><span class="num" id="nextNum"></span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pv-notes-panel">
+      <div class="pv-notes-header">
+        <div class="pv-panel-label" style="margin-bottom:0">Notes</div>
+        <span class="pv-edit-hint" id="editHint">クリックで編集</span>
+      </div>
+      <div class="pv-notes" id="notes" contenteditable="true" spellcheck="false">
+        <div class="pv-waiting">カンペがここに表示されます</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pv-footer">
+    <div><span class="pv-status-dot disconnected" id="statusDot"></span><span id="statusText">本体ウィンドウ未接続</span></div>
+    <div>← / → で本体をページ送り</div>
+  </div>
+
+  <script src="js/slides.js"></script>
+  <script>
+    // ★ channel名は本体 app.js と必ず一致させる
+    const CHANNEL_NAME = 'naoki-blueprint-workshop-presenter';
+    const NOTES_KEY = 'naoki-blueprint-workshop-notes-override';
+
+    const counter = document.getElementById('counter');
+    const currentFrame = document.getElementById('currentFrame');
+    const prevFrame = document.getElementById('prevFrame');
+    const nextFrame = document.getElementById('nextFrame');
+    const prevNum = document.getElementById('prevNum');
+    const nextNum = document.getElementById('nextNum');
+    const notes = document.getElementById('notes');
+    const statusDot = document.getElementById('statusDot');
+    const statusText = document.getElementById('statusText');
+    const editHint = document.getElementById('editHint');
+    const prevThumb = prevFrame.closest('.pv-thumb');
+    const nextThumb = nextFrame.closest('.pv-thumb');
+
+    const factories = window.slideFactories || [];
+    let currentIndex = -1;
+
+    function loadOverrides() {
+      try { return JSON.parse(localStorage.getItem(NOTES_KEY)) || {}; } catch { return {}; }
+    }
+    function saveOverride(index, text) {
+      const o = loadOverrides();
+      if (text && text.trim()) o[index] = text;
+      else delete o[index];
+      localStorage.setItem(NOTES_KEY, JSON.stringify(o));
+    }
+
+    function renderSlideInto(frame, index) {
+      if (index < 0 || index >= factories.length) {
+        frame.innerHTML = '<div class="pv-thumb-empty" style="position:absolute;inset:0">—</div>';
+        return;
+      }
+      const html = factories[index]();
+      if (!html) return;
+      // スライド全体を1920x1080の内部座標でスケールして表示
+      frame.innerHTML = `<div class="pv-slide-scaler" style="position:absolute;inset:0;overflow:hidden"><div class="pv-slide-inner" style="position:absolute;top:0;left:0;width:1920px;height:1080px;transform-origin:top left;">${html}</div></div>`;
+      // active化
+      const slideEl = frame.querySelector('.slide');
+      if (slideEl) slideEl.classList.add('active');
+      // スケーリング
+      requestAnimationFrame(() => {
+        const rect = frame.getBoundingClientRect();
+        const inner = frame.querySelector('.pv-slide-inner');
+        if (!inner || rect.width === 0) return;
+        const scale = Math.min(rect.width / 1920, rect.height / 1080);
+        const offsetX = (rect.width - 1920 * scale) / 2;
+        const offsetY = (rect.height - 1080 * scale) / 2;
+        inner.style.transform = `translate(${offsetX}px, ${offsetY}px) scale(${scale})`;
+      });
+    }
+
+    function swapNotesContent(html, edited) {
+      if (document.activeElement === notes) return;
+      notes.classList.add('swapping');
+      setTimeout(() => {
+        notes.innerHTML = html;
+        notes.classList.toggle('edited', !!edited);
+        notes.classList.remove('swapping');
+      }, 180);
+    }
+
+    function escapeHtml(s) {
+      return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    }
+
+    const channel = new BroadcastChannel(CHANNEL_NAME);
+    let connected = false;
+    let heartbeatTimer;
+    function markConnected() {
+      if (!connected) {
+        connected = true;
+        statusDot.classList.remove('disconnected');
+        statusText.textContent = '同期中';
+      }
+      clearTimeout(heartbeatTimer);
+      heartbeatTimer = setTimeout(() => {
+        connected = false;
+        statusDot.classList.add('disconnected');
+        statusText.textContent = '本体ウィンドウ未接続';
+      }, 4000);
+    }
+
+    channel.onmessage = (e) => {
+      const data = e.data;
+      if (!data) return;
+      if (data.type === 'state') {
+        markConnected();
+        const i = data.index, total = data.total;
+        currentIndex = i;
+        counter.textContent = String(i + 1).padStart(2, '0') + ' / ' + String(total).padStart(2, '0');
+        renderSlideInto(currentFrame, i);
+        renderSlideInto(prevFrame, i - 1);
+        renderSlideInto(nextFrame, i + 1);
+        prevNum.textContent = i > 0 ? String(i).padStart(2, '0') : '';
+        nextNum.textContent = i < total - 1 ? String(i + 2).padStart(2, '0') : '';
+        prevThumb.classList.toggle('disabled', i <= 0);
+        nextThumb.classList.toggle('disabled', i >= total - 1);
+
+        const overrides = loadOverrides();
+        const override = overrides[i];
+        const sourceText = override != null ? override : (data.notes || '');
+        swapNotesContent(
+          sourceText
+            ? escapeHtml(sourceText).replace(/\n/g, '<br>')
+            : '<div class="pv-waiting" style="padding:40px 0">（このスライドにカンペはありません。クリックで追記できます）</div>',
+          override != null
+        );
+        editHint.textContent = override != null ? '編集済み · クリックで修正' : 'クリックで編集';
+        editHint.classList.toggle('saved', override != null);
+      } else if (data.type === 'heartbeat') {
+        markConnected();
+      }
+    };
+
+    channel.postMessage({ type: 'hello' });
+
+    prevThumb.addEventListener('click', () => {
+      if (prevThumb.classList.contains('disabled')) return;
+      channel.postMessage({ type: 'goTo', index: currentIndex - 1 });
+    });
+    nextThumb.addEventListener('click', () => {
+      if (nextThumb.classList.contains('disabled')) return;
+      channel.postMessage({ type: 'goTo', index: currentIndex + 1 });
+    });
+
+    let saveTimer;
+    function persistNotes() {
+      if (currentIndex < 0) return;
+      const text = notes.innerText.replace(/\n{3,}/g, '\n\n').trim();
+      const fallback = (factories[currentIndex] ? factories[currentIndex]().notes : '') || '';
+      if (text && text !== fallback.trim()) {
+        saveOverride(currentIndex, text);
+        notes.classList.add('edited');
+        editHint.textContent = '保存済み ✓';
+        editHint.classList.add('saved');
+      } else {
+        saveOverride(currentIndex, '');
+        notes.classList.remove('edited');
+        editHint.textContent = 'クリックで編集';
+        editHint.classList.remove('saved');
+      }
+    }
+    notes.addEventListener('input', () => {
+      clearTimeout(saveTimer);
+      editHint.textContent = '入力中...';
+      editHint.classList.remove('saved');
+      saveTimer = setTimeout(persistNotes, 500);
+    });
+    notes.addEventListener('blur', () => { clearTimeout(saveTimer); persistNotes(); });
+    notes.addEventListener('focus', () => {
+      if (notes.querySelector('.pv-waiting')) notes.innerHTML = '';
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (document.activeElement === notes) return;
+      if (['ArrowRight','ArrowLeft',' ','PageDown','PageUp'].includes(e.key)) {
+        e.preventDefault();
+        channel.postMessage({ type: 'key', key: e.key });
+      }
+    });
+  </script>
+</body>
+</html>

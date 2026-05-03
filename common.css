@@ -1,0 +1,268 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Helvetica Neue', 'Hiragino Kaku Gothic ProN', 'メイリオ', sans-serif;
+      background: #f5f5f5;
+      color: #333;
+      line-height: 1.8;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+    .wrap {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+    .brand-tag {
+      font-size: 12px; letter-spacing: 0.32em;
+      color: #2563EB; text-transform: uppercase;
+      font-weight: 700;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+    h1 {
+      font-size: 28px; font-weight: 800;
+      color: #121212; letter-spacing: -0.01em;
+      margin-bottom: 8px;
+      text-align: center;
+    }
+    .lead {
+      color: #666; font-size: 14px;
+      margin-bottom: 40px;
+      text-align: center;
+    }
+    .loading {
+      text-align: center; padding: 80px 20px;
+      color: #666; font-size: 14px;
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    .spinner {
+      display: inline-block;
+      width: 20px; height: 20px;
+      border: 2px solid #ddd;
+      border-top-color: #2563EB;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      vertical-align: middle;
+      margin-right: 10px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* 成功パネル */
+    .license-panel {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      padding: 32px 40px;
+      margin-bottom: 24px;
+      position: relative;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      overflow: hidden;
+    }
+    .license-panel::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 4px;
+      background: linear-gradient(90deg, #3b82f6, #8b5cf6, #ec4899);
+    }
+    .license-label {
+      font-size: 11px; letter-spacing: 0.28em;
+      color: #666; font-weight: 700;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+    .license-id {
+      font-family: "SF Mono", Menlo, Consolas, monospace;
+      font-size: 32px; font-weight: 700;
+      color: #121212;
+      letter-spacing: 0.08em;
+      margin-bottom: 16px;
+      word-break: break-all;
+    }
+    .copy-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: #2563EB; color: #fff;
+      border: none; padding: 10px 20px;
+      border-radius: 6px;
+      font-size: 13px; font-weight: 700;
+      letter-spacing: 0.12em; cursor: pointer;
+      transition: background 0.15s;
+      font-family: inherit;
+    }
+    .copy-btn:hover { background: #1d4ed8; }
+    .copy-btn.copied { background: #16a34a; }
+
+    /* 手順セクション */
+    section.step-section {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      padding: 32px 40px;
+      margin-bottom: 24px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    section.step-section h2 {
+      font-size: 20px; font-weight: 700;
+      color: #121212;
+      margin-bottom: 16px;
+      display: flex; align-items: center; gap: 12px;
+      padding-left: 12px;
+      border-left: 4px solid #CCFF00;
+    }
+    section.step-section h2 .num {
+      font-family: "SF Mono", monospace;
+      font-size: 13px; font-weight: 700;
+      background: #2563EB; color: #fff;
+      padding: 3px 10px;
+      border-radius: 4px;
+      letter-spacing: 0.1em;
+    }
+    .code-wrap {
+      position: relative;
+      margin: 12px 0;
+    }
+    .code {
+      background: #1a1a2e;
+      border-radius: 8px;
+      color: #e0e0e0;
+      padding: 16px 56px 16px 20px;
+      font-family: "SF Mono", Menlo, Consolas, monospace;
+      font-size: 13px; line-height: 1.85;
+      overflow-x: auto;
+      white-space: pre;
+      margin: 0;
+    }
+    /* 更新履歴セクション内のインラインcode用 */
+    #changelog-box code {
+      background: #f0f0f0;
+      color: #121212;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: "SF Mono", Menlo, Consolas, monospace;
+      font-size: 13px;
+    }
+    /* 本文中のインラインcode（ページ全体用） */
+    section p code,
+    section li code,
+    section h2 code {
+      background: #f0f0f0;
+      color: #121212;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: "SF Mono", Menlo, Consolas, monospace;
+      font-size: 13px;
+    }
+    .code .cmt { color: #9ca3af; }
+    .code .hi { color: #fbbf24; font-weight: 700; }
+    .code .str { color: #86efac; }
+    .code-copy {
+      position: absolute;
+      top: 10px; right: 10px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      color: #cbd5e1;
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 0.14em;
+      padding: 5px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.15s;
+    }
+    .code-copy:hover {
+      background: #2563EB;
+      color: #fff;
+      border-color: transparent;
+    }
+    .code-copy.copied {
+      background: #16a34a;
+      color: #fff;
+      border-color: transparent;
+    }
+    .choice-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 12px; margin: 16px 0;
+    }
+    .choice-card {
+      background: #fafafa;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 20px 22px;
+    }
+    .choice-card .choice-num {
+      display: inline-block;
+      background: #2563EB; color: #fff;
+      font-family: "SF Mono", monospace;
+      font-size: 12px; font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 4px;
+      letter-spacing: 0.1em;
+      margin-bottom: 10px;
+    }
+    .choice-card.short .choice-num { background: #ec4899; }
+    .choice-card h3 {
+      font-size: 15px; color: #121212;
+      margin-bottom: 6px; font-weight: 700;
+    }
+    .choice-card p {
+      font-size: 13px; color: #666;
+      margin: 0; line-height: 1.6;
+    }
+    .os-label {
+      display: inline-block;
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 0.18em;
+      padding: 3px 10px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      margin: 14px 0 6px;
+    }
+    .os-label.mac { background: #2563EB; color: #fff; }
+    .os-label.win { background: #8b5cf6; color: #fff; }
+    section p { color: #444; font-size: 14px; margin-bottom: 10px; }
+    section a { color: #2563EB; text-decoration: underline; }
+
+    /* エラー */
+    .error-panel {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: 12px;
+      padding: 32px 40px;
+      color: #991b1b;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    .error-panel h2 {
+      color: #dc2626; font-size: 20px;
+      margin-bottom: 10px;
+    }
+
+    /* CTA */
+    .cta {
+      display: flex; gap: 12px; margin-top: 20px;
+      flex-wrap: wrap;
+    }
+    .cta a {
+      background: #f0f0f0; color: #333;
+      padding: 10px 20px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 13px; font-weight: 700;
+      letter-spacing: 0.08em;
+      border: 1px solid #ddd;
+      transition: background 0.15s;
+    }
+    .cta a:hover { background: #e0e0e0; }
+    .cta a.primary { background: #2563EB; color: #fff; border-color: transparent; }
+    .cta a.primary:hover { background: #1d4ed8; }
+
+    .footer {
+      margin-top: 40px;
+      padding-top: 24px;
+      border-top: 1px solid #ddd;
+      color: #999; font-size: 12px; letter-spacing: 0.1em;
+      text-align: center;
+    }

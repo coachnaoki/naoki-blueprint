@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Naoki's Blueprint - 丸投げビジネス動画編集テンプレート</title>
+  <link rel="stylesheet" href="common.css">
+</head>
+<body>
+
+<div class="wrap">
+  <div class="brand-tag">Naoki's Blueprint</div>
+  <h1>丸投げビジネス動画編集テンプレート</h1>
+  <p class="lead">台本を読み込ませるだけで、テロップ・SE・BGM・スライド・ワイプ入りの動画が完成する仕組み</p>
+
+  <div id="main-content"></div>
+</div>
+
+<script>
+// メインコンテンツを読み込み
+fetch('./_main-content.html')
+  .then(r => r.text())
+  .then(html => {
+    document.getElementById('main-content').innerHTML = html;
+
+    // プレースホルダ用の初期値
+    const userName = document.getElementById('userName');
+    if (userName) userName.textContent = 'あなた';
+
+    // 今日の日付を .today-date に反映
+    const d = new Date();
+    const todayStr = d.getFullYear() + '-'
+                   + String(d.getMonth()+1).padStart(2,'0') + '-'
+                   + String(d.getDate()).padStart(2,'0');
+    document.querySelectorAll('.today-date').forEach(el => { el.textContent = todayStr; });
+
+    // コードブロックにコピーボタン自動付与
+    setupCodeCopyButtons();
+  })
+  .catch(e => {
+    document.getElementById('main-content').innerHTML =
+      '<p style="color:#666;text-align:center;padding:40px">コンテンツの読み込みに失敗しました。</p>';
+    console.error(e);
+  });
+
+function setupCodeCopyButtons() {
+  document.querySelectorAll('.code').forEach(code => {
+    if (code.parentElement && code.parentElement.classList.contains('code-wrap')) return;
+    const wrap = document.createElement('div');
+    wrap.className = 'code-wrap';
+    code.parentNode.insertBefore(wrap, code);
+    wrap.appendChild(code);
+    const btn = document.createElement('button');
+    btn.className = 'code-copy';
+    btn.textContent = 'Copy';
+    btn.addEventListener('click', () => {
+      const text = code.innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        btn.textContent = '✓';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1500);
+      });
+    });
+    wrap.appendChild(btn);
+  });
+}
+</script>
+
+</body>
+</html>
